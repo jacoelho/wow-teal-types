@@ -8,7 +8,7 @@ import (
 )
 
 func Acquire(ctx context.Context, root, snapshot, cache string) (sourcelock.Snapshot, error) {
-	lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "scripts/wow_api/client_sources.json"))
+	lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
 	if e != nil {
 		return sourcelock.Snapshot{}, e
 	}
@@ -36,7 +36,7 @@ func StageSelected(ctx context.Context, root, snapshot, cache, region string) (s
 		return record, nil
 	}
 	if region == "" {
-		lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "scripts/wow_api/client_sources.json"))
+		lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
 		if e != nil {
 			return sourcelock.Snapshot{}, e
 		}

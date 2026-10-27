@@ -13,15 +13,15 @@ The [architecture entry point](../architecture.md) defines ownership.
 ## Sources and projection
 
 [`.wow-version`](../../.wow-version) selects the client release.
-[`sources.json`](../../scripts/wow_api/sources.json) locks generator inputs;
-[`client_sources.json`](../../scripts/wow_api/client_sources.json) locks the
+[`sources.json`](../../internal/wowapi/inputs/sources.json) locks generator inputs;
+[`client_sources.json`](../../internal/wowapi/inputs/client_sources.json) locks the
 complete acquired client UI inventory. Original packaged bytes remain intact.
 Missing or modified Blizzard files fail without a source-mirror fallback.
 
 Blizzard metadata selects native arity, ordered returns, defaults, absence and
 restrictions. Questie annotations supplement missing surfaces. Explicit
-[FrameXML additions](../../scripts/wow_api/framexml.json) and
-[contract corrections](../../scripts/wow_api/overrides.json) fill selected gaps.
+[FrameXML additions](../../internal/wowapi/inputs/framexml.json) and
+[contract corrections](../../internal/wowapi/inputs/overrides.json) fill selected gaps.
 Native decoding rejects unsupported fields and value shapes before interpretation.
 
 Teal cannot express every source distinction. Packaged Lua/XML does not determine

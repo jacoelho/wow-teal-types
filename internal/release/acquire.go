@@ -345,7 +345,7 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 	if e = projectVersion(root, record.Identity()); e != nil {
 		return p, e
 	}
-	sources, e := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
+	sources, e := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		return p, e
 	}

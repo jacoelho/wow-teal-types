@@ -34,11 +34,11 @@ cross-source reports, runtime captures or approval ledgers.
 
 ## Source validation
 
-[`client_sources.json`](scripts/wow_api/client_sources.json) records the client UI
+[`client_sources.json`](internal/wowapi/inputs/client_sources.json) records the client UI
 inventory, configuration identities, content keys, SHA-256 hashes and sizes.
 Acquisition verifies every file before publishing a snapshot. Original Lua, XML,
 TOC and listed asset bytes remain in that snapshot; Blizzard inputs have no
-source-mirror fallback. [`sources.json`](scripts/wow_api/sources.json) owns the
+source-mirror fallback. [`sources.json`](internal/wowapi/inputs/sources.json) owns the
 selected generator inputs and pinned annotation revisions.
 
 Literal parsing rejects unsupported statements and duplicate keys. Native decoding

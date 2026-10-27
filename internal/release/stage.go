@@ -15,7 +15,7 @@ import (
 	"wow-teal-types/internal/wowapi"
 )
 
-var maintainedDirs = []string{"internal", "tools", "scripts/wow_api", "types/wow", "bin", "tests", "docs", "examples", "rockspecs", ".github/workflows"}
+var maintainedDirs = []string{"internal", "tools", "types/wow", "bin", "docs", "examples", "rockspecs", ".github/workflows"}
 var maintainedFiles = []string{".wow-version", "go.mod", "tlconfig.lua", "LICENSE", "README.md", "UPDATING.md", "package.json", "Makefile", "check-all.sh"}
 
 func copyMaintained(root, target string) error {
@@ -53,7 +53,7 @@ func copyMaintained(root, target string) error {
 func sourcePaths(p wowapi.Project, group, name string) string { return p.InputPath(group, name) }
 func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 	p := wowapi.NewProject(root)
-	lock, e := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
+	lock, e := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		return nil, e
 	}
@@ -159,10 +159,10 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 			lock[group] = sourcelock.SourceGroup{Kind: "casc", ClientLockSHA256: sha(receipt), Path: old.Path, Normalization: "lf-final-newline", Files: rows}
 		}
 	}
-	if e = atomicWrite(filepath.Join(root, "scripts/wow_api/client_sources.json"), receipt, 0644); e != nil {
+	if e = atomicWrite(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"), receipt, 0644); e != nil {
 		return nil, e
 	}
-	if e = writeObject(filepath.Join(root, "scripts/wow_api/sources.json"), lock); e != nil {
+	if e = writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), lock); e != nil {
 		return nil, e
 	}
 	return lock, nil
@@ -295,7 +295,7 @@ func (g *github) inventory(ctx context.Context, repo, revision, prefix string) (
 }
 func refreshCommunity(ctx context.Context, root string, g *github, questieRef string) error {
 	p := wowapi.NewProject(root)
-	lock, e := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
+	lock, e := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		return e
 	}
@@ -356,7 +356,7 @@ func refreshCommunity(ctx context.Context, root string, g *github, questieRef st
 		}
 		lock[group] = source
 	}
-	return writeObject(filepath.Join(root, "scripts/wow_api/sources.json"), lock)
+	return writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), lock)
 }
 
 // StageRelease acquires an immutable candidate, including explicit third-party revisions.

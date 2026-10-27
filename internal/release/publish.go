@@ -49,7 +49,7 @@ type journal struct {
 	Files  []publicationRow `json:"files"`
 }
 
-var ownedOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json"}
+var ownedOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json"}
 
 func sameIdentity(a, b *fileIdentity) bool {
 	return a == nil && b == nil || a != nil && b != nil && *a == *b

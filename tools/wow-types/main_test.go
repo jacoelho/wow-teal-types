@@ -40,7 +40,7 @@ func TestCachePathUsesCallerDirectory(t *testing.T) {
 		t.Fatal(err)
 	}
 	root := t.TempDir()
-	for _, name := range []string{".wow-version", "scripts/wow_api/client_sources.json"} {
+	for _, name := range []string{".wow-version", "internal/wowapi/inputs/client_sources.json"} {
 		data, err := os.ReadFile(filepath.Join(repository, name))
 		if err != nil {
 			t.Fatal(err)

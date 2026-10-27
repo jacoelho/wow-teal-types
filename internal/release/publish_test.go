@@ -29,7 +29,7 @@ func publicationFixture(t *testing.T) (string, string, string) {
 		t.Fatal(e)
 	}
 	fixtureFile(t, root, ".wow-version", []byte("12.1.5.70575"))
-	for _, name := range []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"} {
+	for _, name := range []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"} {
 		old, new := []byte("old "+name), []byte("new "+name)
 		if name == "package.json" {
 			old = []byte(`{"schema_version":1,"version":"1.2.3","name":"old","license":"MIT","teal_version":"0.24.8","wow_build":"12.1.5.70575","files":{}}`)
@@ -38,7 +38,7 @@ func publicationFixture(t *testing.T) (string, string, string) {
 		fixtureFile(t, root, name, old)
 		fixtureFile(t, next, name, new)
 	}
-	for _, name := range []string{"types/wow/native_values.d.tl", "scripts/wow_api/framexml.json", "scripts/wow_api/overrides.json", "tools/check_secrets.lua"} {
+	for _, name := range []string{"types/wow/native_values.d.tl", "internal/wowapi/inputs/framexml.json", "internal/wowapi/inputs/overrides.json", "tools/check_secrets.lua"} {
 		fixtureFile(t, root, name, []byte("maintained input "+name))
 		fixtureFile(t, next, name, []byte("candidate must not publish this"))
 	}
@@ -63,7 +63,7 @@ func TestPublicationOwnsOnlyDerivedOutputsAndIsRepeatable(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	want := []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
+	want := []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
 	slices.Sort(want)
 	got := slices.Clone(changed)
 	slices.Sort(got)
@@ -83,7 +83,7 @@ func TestPublicationOwnsOnlyDerivedOutputsAndIsRepeatable(t *testing.T) {
 			t.Fatal(name)
 		}
 	}
-	for _, name := range []string{"types/wow/native_values.d.tl", "scripts/wow_api/framexml.json", "scripts/wow_api/overrides.json", "tools/check_secrets.lua"} {
+	for _, name := range []string{"types/wow/native_values.d.tl", "internal/wowapi/inputs/framexml.json", "internal/wowapi/inputs/overrides.json", "tools/check_secrets.lua"} {
 		b, _ := os.ReadFile(filepath.Join(root, name))
 		if string(b) != "maintained input "+name {
 			t.Fatalf("changed maintained input: %s", name)
@@ -218,7 +218,7 @@ func TestRecoveryPreservesExternalEditAndRestoresAfterItIsResolved(t *testing.T)
 func TestFailedCandidateRetainsDiagnosticsAndActiveVersion(t *testing.T) {
 	root := t.TempDir()
 	fixtureFile(t, root, ".wow-version", []byte("12.1.5.70575"))
-	fixtureFile(t, root, "scripts/wow_api/client_sources.json", []byte(`{"version":"12.1.5.70575","build":70575}`))
+	fixtureFile(t, root, "internal/wowapi/inputs/client_sources.json", []byte(`{"version":"12.1.5.70575","build":70575}`))
 	fixtureFile(t, root, "types/wow/wow.d.tl", []byte("usable previous declarations"))
 	_, e := Update(t.Context(), root)
 	if e == nil {

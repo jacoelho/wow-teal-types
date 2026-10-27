@@ -54,7 +54,7 @@ func TestSourceSchemaRejectsMalformedShapes(t *testing.T) {
 	}
 }
 func TestPublishedClientLockRoundTripPreservesBytes(t *testing.T) {
-	data, err := os.ReadFile(filepath.Join("../..", "scripts/wow_api/client_sources.json"))
+	data, err := os.ReadFile(filepath.Join("../..", "internal/wowapi/inputs/client_sources.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -27,7 +27,7 @@ func metadataFixture(t *testing.T) string {
 		}
 		fixtureFile(t, root, name, data)
 	}
-	for _, name := range append(consumer.RequiredFiles(), "package.json", "LICENSE", "README.md", "examples/minimal/WowTealExample.toc", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json") {
+	for _, name := range append(consumer.RequiredFiles(), "package.json", "LICENSE", "README.md", "examples/minimal/WowTealExample.toc", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json") {
 		copyFile(name)
 	}
 	return root

@@ -22,7 +22,7 @@
     "tools/wow-teal/main.go": "348deead00be2f0770ac73e5459f8121f1a8178f2bf452faa87addae4d059cf6",
     "types/wow/call_policy.lua": "6e7a4605d826d19b7df5fa99acc194374e150aa36a703155cca36060e605d6a6",
     "types/wow/native_values.d.tl": "4497b3e705fc06327f4ffa70a99494c78567660f5221b8ac77568bc3b0e21236",
-    "types/wow/wow.d.tl": "c083c5d56c7ab16b501c19c6650b5281eaf27d241eb236c4d626309516c843cd",
+    "types/wow/wow.d.tl": "5b8443ffb921f7834a1ed1eea076c58f54b7084b6f54c910c6afc11d66f8b7fe",
     "types/wow/wow_env.d.tl": "f44e6ba22aa85fefa9c1901dcef8a30b16434bb22cb2aab92b7af09f5462c4e1",
     "types/wow/wow_secure_env.d.tl": "90528a04f1774f6bacd0e029e25e0cec0913e7fd7b83d08f29e81c274150f6d7"
   },

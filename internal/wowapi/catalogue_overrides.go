@@ -97,7 +97,7 @@ func (c *catalogue) applyOverrides() {
 		}
 	}
 	var overrides catalogueOverrides
-	if e := decodeJSON(mustFile(filepath.Join(c.project.Root, "scripts/wow_api/overrides.json")), &overrides); e != nil {
+	if e := decodeJSON(mustFile(filepath.Join(c.project.Root, "internal/wowapi/inputs/overrides.json")), &overrides); e != nil {
 		reject(e.Error())
 	}
 	c.abiTuples = overrides.ABITuples

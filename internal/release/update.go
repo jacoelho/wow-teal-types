@@ -60,7 +60,7 @@ func compareArtifacts(root string, files map[string][]byte) error {
 	return nil
 }
 func generateCandidate(ctx context.Context, root, runDir string, selected consumer.Version) (string, error) {
-	lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "scripts/wow_api/client_sources.json"))
+	lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
 	if e != nil {
 		return "", e
 	}

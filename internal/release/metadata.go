@@ -28,11 +28,11 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	native, err := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
+	native, err := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
 	if err != nil {
 		return nil, err
 	}
-	client, err := sourcelock.ReadSnapshot(filepath.Join(root, "scripts/wow_api/client_sources.json"))
+	client, err := sourcelock.ReadSnapshot(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
 	if err != nil {
 		return nil, err
 	}

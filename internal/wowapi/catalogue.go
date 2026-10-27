@@ -296,7 +296,7 @@ func (c *catalogue) tealValue(expression, owner string, generics []string) strin
 	return converter.walk(expression, 0)
 }
 func (c *catalogue) sourceLocks() sourcelock.Sources {
-	locks, e := sourcelock.ReadSources(filepath.Join(c.project.Root, "scripts/wow_api/sources.json"))
+	locks, e := sourcelock.ReadSources(filepath.Join(c.project.Root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		reject(e.Error())
 	}
@@ -738,7 +738,7 @@ type frameXMLClass struct {
 
 func (c *catalogue) loadFrameXML() {
 	var supplement frameXMLSupplement
-	if e := decodeJSON(mustFile(filepath.Join(c.project.Root, "scripts/wow_api/framexml.json")), &supplement); e != nil {
+	if e := decodeJSON(mustFile(filepath.Join(c.project.Root, "internal/wowapi/inputs/framexml.json")), &supplement); e != nil {
 		reject(e.Error())
 	}
 	source := "reviewed FrameXML supplement"

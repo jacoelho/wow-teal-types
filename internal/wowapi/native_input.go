@@ -10,7 +10,7 @@ import (
 )
 
 func (p Project) readNativeDocuments() ([]NativeDocument, error) {
-	lock, err := sourcelock.ReadSources(filepath.Join(p.Root, "scripts/wow_api/sources.json"))
+	lock, err := sourcelock.ReadSources(filepath.Join(p.Root, "internal/wowapi/inputs/sources.json"))
 	if err != nil {
 		return nil, err
 	}

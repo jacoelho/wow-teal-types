@@ -74,7 +74,7 @@ func escapePath(path string) string {
 	return strings.Join(parts, "/")
 }
 func syncPrimary(ctx context.Context, p wowapi.Project) error {
-	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "scripts/wow_api/sources.json"))
+	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		return e
 	}
@@ -119,7 +119,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 
 // Bootstrap populates ordinary caches only from a verified native projection and pinned community inputs.
 func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, error) {
-	p, e := Projection(root, snapshot, filepath.Join(root, "scripts/wow_api/client_sources.json"))
+	p, e := Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
 	if e != nil {
 		return p, e
 	}
@@ -127,7 +127,7 @@ func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, erro
 		return p, e
 	}
 	ordinary := wowapi.NewProject(root)
-	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "scripts/wow_api/sources.json"))
+	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		return p, e
 	}
@@ -164,7 +164,7 @@ func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, erro
 // Cache files remain optional, integrity-checked projections rather than authorities.
 func seedCaches(origin, target string) error {
 	p := wowapi.NewProject(origin)
-	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "scripts/wow_api/sources.json"))
+	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		return e
 	}

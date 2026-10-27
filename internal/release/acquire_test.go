@@ -70,17 +70,17 @@ func TestCompleteSnapshotRejectsMissingChangedExtraAndSymlinkInputs(t *testing.T
 }
 func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T) {
 	root, snapshot, lock := snapshotFixture(t)
-	if e := writeObject(filepath.Join(root, "scripts/wow_api/client_sources.json"), lock); e != nil {
+	if e := writeObject(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"), lock); e != nil {
 		t.Fatal(e)
 	}
 	doc := []byte("local A = {}\nAPIDocumentation:AddDocumentationTable(A)\n")
 	support := []byte("schema\n")
 	version := []byte("12.1.5.70575\n")
 	source := sourcelock.Sources{"blizzard": sourceFixture("A.lua", doc), "blizzard_support": sourceFixture("Blizzard_SharedXML/UI.xsd", support), "blizzard_version": sourceFixture("version.txt", version)}
-	if e := writeObject(filepath.Join(root, "scripts/wow_api/sources.json"), source); e != nil {
+	if e := writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), source); e != nil {
 		t.Fatal(e)
 	}
-	p, e := Projection(root, snapshot, filepath.Join(root, "scripts/wow_api/client_sources.json"))
+	p, e := Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -92,11 +92,11 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 	if e != nil || !bytes.Contains(raw, []byte("\r\n")) {
 		t.Fatal("raw client bytes changed")
 	}
-	if _, e = Projection(root, snapshot, filepath.Join(root, "scripts/wow_api/client_sources.json")); e != nil {
+	if _, e = Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json")); e != nil {
 		t.Fatal(e)
 	}
 	fixtureFile(t, filepath.Dir(p.InputPath("blizzard", "A.lua")), "A.lua", []byte("modified"))
-	if _, e = Projection(root, snapshot, filepath.Join(root, "scripts/wow_api/client_sources.json")); e == nil {
+	if _, e = Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json")); e == nil {
 		t.Fatal("modified projection accepted")
 	}
 }
