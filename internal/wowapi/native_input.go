@@ -34,7 +34,7 @@ func (p Project) readNativeDocuments() ([]NativeDocument, error) {
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", source.Name, err)
 		}
-		documents = append(documents, NativeDocument{Name: source.Name, Metadata: metadata, Raw: raw})
+		documents = append(documents, NativeDocument{Name: source.Name, Metadata: metadata})
 	}
 	return documents, nil
 }

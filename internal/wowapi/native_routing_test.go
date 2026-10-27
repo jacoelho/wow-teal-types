@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"wow-teal-types/internal/sourcelock"
 )
 
 func TestLayeredRegionContractsPreserveSourceAndReceiverCapabilities(t *testing.T) {
@@ -28,54 +27,11 @@ func TestLayeredRegionContractsPreserveSourceAndReceiverCapabilities(t *testing.
 	if err != nil {
 		t.Fatal(err)
 	}
-	manifest := c.manifest()
-	if _, err := project.AuditMetadata(&manifest); err != nil {
-		t.Fatal(err)
-	}
-	lock, err := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	snapshot, err := sourcelock.ReadSnapshot(filepath.Join(root, "scripts/wow_api/client_sources.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	_, coverage, err := project.coverageNative(t.Context(), manifest, lock, snapshot)
-	if err != nil {
-		t.Fatal(err)
-	}
-	coverageNames := map[string]int{}
-	for _, contract := range coverage {
-		coverageNames[contract.Name]++
-	}
-	functions := map[string]NativeFunction{}
-	for _, doc := range c.nativeDocs {
-		if doc.Metadata.Name == "SimpleRegionAPI" {
-			for _, function := range doc.Metadata.Functions {
-				functions[function.Name] = function
-			}
-		}
-	}
 	names := []string{"GetDrawLayer", "SetDrawLayer", "GetVertexColor", "SetVertexColor", "SetVertexColorFromBoolean"}
 	outputs := projection.render()
 	policy := string(outputs["call_policy.lua"])
 	for _, name := range names {
 		symbol := "LayeredRegion." + name
-		matches := 0
-		for _, entry := range manifest.Symbols {
-			if entry.Name == "Region."+name {
-				t.Errorf("old receiver still owns %s", name)
-			}
-			if entry.Name == symbol {
-				matches++
-				if entry.Source != "blizzard:SimpleRegionAPIDocumentation.lua" || entry.Function == nil || !metadataEqual(entry.Function.Raw, functions[name].Raw) {
-					t.Errorf("native provenance changed for %s", symbol)
-				}
-			}
-		}
-		if matches != 1 || coverageNames[symbol] != 1 || coverageNames["Region."+name] != 0 {
-			t.Errorf("source/coverage inventory for %s: %d/%d", symbol, matches, coverageNames[symbol])
-		}
 		if _, err := projection.signatures(symbol); err != nil {
 			t.Error(err)
 		}

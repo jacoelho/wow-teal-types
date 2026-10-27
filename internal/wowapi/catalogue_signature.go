@@ -204,13 +204,7 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 		for _, name := range annotation.Arguments {
 			param, present := params[name]
 			value := "unknown"
-			if !present {
-				var symbol *string
-				if annotation.QualifiedName != "" {
-					symbol = &annotation.QualifiedName
-				}
-				c.notes = append(c.notes, RepresentationNote{Symbol: symbol, Rule: "source parameter has no type annotation", Parameter: name, Source: item.Source})
-			} else {
+			if present {
 				value = c.tealValue(param.Type, owner, generics)
 			}
 			if name == "..." {
@@ -251,11 +245,6 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 				value = "OpaqueValue..."
 			}
 			returns = append(returns, value)
-			var symbol *string
-			if annotation.QualifiedName != "" {
-				symbol = &annotation.QualifiedName
-			}
-			c.notes = append(c.notes, RepresentationNote{Symbol: symbol, Rule: "wiki stub has no result annotation; result tuple remains dynamic", Source: item.Source})
 		}
 	}
 	signature := "function"
@@ -432,7 +421,6 @@ func (c *catalogue) reconcileInheritance() {
 		for _, method := range sortedKeys(record.Methods) {
 			item := record.Methods[method]
 			if previous := methods[method]; previous != nil && previous.Native != nil && item.Native == nil {
-				c.notes = append(c.notes, RepresentationNote{Symbol: stringPointer(name + "." + method), Rule: "inherit canonical native ancestor contract"})
 				continue
 			}
 			methods[method] = item

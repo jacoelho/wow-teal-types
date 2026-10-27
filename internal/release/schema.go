@@ -22,16 +22,6 @@ type extractorReceipt struct {
 		ActualSize   int64  `json:"actual_size"`
 	} `json:"archive_index_size_hints"`
 }
-type projectionFile struct {
-	ClientPath *string `json:"client_path"`
-	Group      string  `json:"group"`
-	Name       string  `json:"name"`
-	Source     string  `json:"source"`
-}
-type projectionReceipt struct {
-	Files          []projectionFile `json:"files"`
-	SnapshotSHA256 string           `json:"snapshot_sha256"`
-}
 type PublicationResult struct {
 	Files  int    `json:"files,omitempty"`
 	Status string `json:"status"`
@@ -60,12 +50,9 @@ type updateFailure struct {
 	WoWVersion    string `json:"wow_version,omitempty"`
 }
 type StageResult struct {
-	Blockers           []string `json:"blockers"`
-	NativeBuild        string   `json:"nativeBuild"`
-	ReviewRequired     bool     `json:"reviewRequired"`
-	Status             string   `json:"status"`
-	ValidationRequired []string `json:"validationRequired"`
-	Workspace          string   `json:"workspace"`
+	NativeBuild string `json:"nativeBuild"`
+	Status      string `json:"status"`
+	Workspace   string `json:"workspace"`
 }
 type stageFailure struct {
 	Status    string `json:"status"`

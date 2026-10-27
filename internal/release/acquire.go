@@ -331,7 +331,7 @@ func Stage(ctx context.Context, root, output, cache string, identity sourcelock.
 	return sourcelock.ReadSnapshot(filepath.Join(output, "snapshot.json"))
 }
 
-// Projection bridges packaged bytes to the precise reviewed source representation.
+// Projection bridges packaged bytes to the locked source representation.
 func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 	p := wowapi.NewProject(root)
 	lock, e := sourcelock.ReadSnapshot(lockPath)
@@ -354,13 +354,12 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 		return p, e
 	}
 	identity := sha(lockBytes)
-	dest := filepath.Join(root, "build/wow-api-client-projection", identity)
+	dest := filepath.Join(root, "build/wow-api-source", identity)
 	files := map[string]bool{}
 	for _, row := range record.Files {
 		files[row.Path] = true
 	}
 	pending := map[string][]byte{}
-	evidence := []projectionFile{}
 	paths := map[string]string{}
 	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
 		source := sources[group]
@@ -387,7 +386,7 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 					return p, err
 				}
 				if path == "" {
-					return p, fmt.Errorf("reviewed source absent from client: %s", relative)
+					return p, fmt.Errorf("locked source absent from client: %s", relative)
 				}
 				origin = sourcelock.ClientPath(path)
 				b, e = readFile(filepath.Join(snapshot, "raw", filepath.FromSlash(path)), maxFile)
@@ -401,25 +400,15 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 				}
 				b = normalized(b, 1)
 			} else if blob(b) != row.SHA {
-				b = reviewedBytes(b, row)
+				b = lockedBytes(b, row)
 			}
 			if len(b) != row.Size || blob(b) != row.SHA {
-				return p, fmt.Errorf("client source differs from reviewed contract: %s", relative)
+				return p, fmt.Errorf("client source differs from locked contract: %s", relative)
 			}
 			pending[group+"/"+name] = b
-			kind := "client"
-			if group == "blizzard_version" {
-				kind = "version"
-			}
-			evidence = append(evidence, projectionFile{ClientPath: origin.Value, Group: group, Name: name, Source: kind})
 		}
 		paths[group] = filepath.Join(dest, group)
 	}
-	report, e := jsonBytes(projectionReceipt{Files: evidence, SnapshotSHA256: identity})
-	if e != nil {
-		return p, e
-	}
-	pending["projection.json"] = report
 	if exists(dest) {
 		disk := map[string]bool{}
 		e = filepath.WalkDir(dest, func(path string, d fs.DirEntry, e error) error {
@@ -485,7 +474,7 @@ func normalized(b []byte, count int) []byte {
 	base := bytes.TrimRight(bytes.ReplaceAll(b, []byte("\r\n"), []byte("\n")), "\n")
 	return append(append([]byte{}, base...), bytes.Repeat([]byte("\n"), count)...)
 }
-func reviewedBytes(b []byte, row sourcelock.SourceFile) []byte {
+func lockedBytes(b []byte, row sourcelock.SourceFile) []byte {
 	for n := range 16 {
 		v := normalized(b, n)
 		if len(v) == row.Size && blob(v) == row.SHA {

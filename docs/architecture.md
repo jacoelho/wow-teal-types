@@ -6,15 +6,12 @@ usage, [UPDATING](../UPDATING.md) describes release operations, and the
 Maintainer commands and their source inputs require the source checkout; the
 consumer archive contains only consumer commands and tests.
 
-The [erased-type removal record](no-any-types.md) owns the current migration
-requirements and verification gates. That migration is not yet complete.
-
 ## Capability ownership
 
 | Capability | Owner | Contract |
 | --- | --- | --- |
 | Acquire and publish a release cohort | `internal/release` | `Update` prepares and verifies a candidate before publishing; `Recover` resolves interrupted publication. These are the only active cohort writers. |
-| Interpret evidence and project declarations | `internal/wowapi` | Preserve raw evidence, finalize a typed declaration graph, render once, and audit the same emitted bytes. |
+| Project declarations | `internal/wowapi` | Validate native metadata, apply explicit corrections, finalize a typed declaration graph, and render declarations and call permissions. |
 | Check and build an addon | `internal/consumer` | Capture bounded inputs, verify copied package bytes, run all compiler phases against that capture, then publish checked Lua. |
 | Extract the selected client | `tools/cdn` | Independent Go module; verified acquisition feeds the release boundary. |
 | Validate locked source identities | `internal/sourcelock` | Concrete transport schemas and path validation shared by acquisition and interpretation. |
@@ -60,27 +57,36 @@ source paths back to the caller's paths.
 Consumer output belongs to its receipt. A build rejects foreign or edited output,
 stages a complete replacement, and restores the previous directory on install
 failure. If restoration also fails, it retains the backup and reports its path
-and both errors. Probe publication follows the same local recovery rule. These
-small capability-specific transactions do not need a shared filesystem framework.
+and both errors.
 Callers serialize publication to the same destination.
 
 Release publication owns a larger journaled cohort transaction and its recovery
-command. Its journal and fingerprint gates remain distinct from consumer/probe
-directory replacement. None of these operations claims power-loss atomicity.
+command. Its journal and input fingerprints remain distinct from consumer
+directory replacement. Neither operation claims power-loss atomicity.
 
 ## Declaration generation
 
-The closed `internal/wowapi/literal` syntax tree retains raw evidence, including
-unknown fields and exact number kinds. It carries no arbitrary Go payload.
-Concrete interpreted models own domain decisions; raw sidecars remain evidence.
+Maintainers run generation and registry publication manually from the source
+checkout, following [UPDATING](../UPDATING.md). GitHub Actions validates the
+committed consumer snapshot and its packaging contracts.
 
-Raw source records retain metadata that Teal cannot express. Interpretation builds
-a mutable catalogue, then finalization resolves graph closure into concrete
-fields, methods and signatures. Rendering consumes that finalized representation
-without changing it. Cross-checks inspect the exact rendered files and finalized
-signatures; they do not reconstruct or render a competing graph. Full generation
-is repeated to verify determinism across acquisition, interpretation and rendering.
+Locked client and annotation sources feed `internal/wowapi`. Its closed literal
+parser validates source syntax without arbitrary Go payloads. Native decoding
+rejects unsupported fields, shapes and permissions before constructing concrete
+models. Explicit overrides own the corrections missing from those sources.
 
-A generic mutable map renderer was rejected because it allowed rendering to change
-the graph being audited. A broad filesystem abstraction was rejected because local
-rename injection is sufficient to test the actual recovery boundary.
+Interpretation builds a mutable catalogue; finalization resolves graph closure
+into concrete fields, methods and signatures. Rendering consumes that finalized
+representation without changing it and emits three declaration files plus the
+native call policy. Full generation runs twice to verify determinism.
+
+Source locks own acquisition identities; `package.json` owns consumer file hashes.
+There is no separate release provenance file, report manifest, cross-source audit,
+runtime probe or approval ledger. Generation verifies its inputs and compiler
+contracts; it does not independently corroborate every API against a running client.
+The compiler's own source manifest remains necessary for reproducible rebuilding.
+
+A mutable map renderer was rejected because rendering must not change the graph.
+A shared filesystem framework was rejected because local rename injection suffices
+to test the actual recovery boundary. Audit reports and approval fingerprints were
+removed rather than retained as a second source of generation authority.

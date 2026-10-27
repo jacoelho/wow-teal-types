@@ -1,4 +1,4 @@
-// Package literal retains source syntax whose fields are not known until review.
+// Package literal parses closed Lua and JSON literal syntax.
 // Interpreted API contracts use concrete types outside this package.
 package literal
 
@@ -29,7 +29,7 @@ const (
 	Expression
 )
 
-// Object is the keyed syntax of a raw evidence document, never a domain model.
+// Object is keyed source syntax, never a domain model.
 type Object map[string]Value
 
 // Value is a closed raw literal. Its zero value is null. Constructors and accessors

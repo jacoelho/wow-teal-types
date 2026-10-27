@@ -12,7 +12,6 @@ import (
 	"syscall"
 	"wow-teal-types/internal/consumer"
 	"wow-teal-types/internal/release"
-	"wow-teal-types/internal/wowapi"
 )
 
 func main() {
@@ -51,7 +50,7 @@ func run(ctx context.Context, args []string) error {
 		}
 	}
 	if len(args) == 0 {
-		return fmt.Errorf("expected generate, check-generator, bootstrap, acquire-client, stage-release, capture, probe, recover or version")
+		return fmt.Errorf("expected generate, check-generator, bootstrap, acquire-client, stage-release, recover or version")
 	}
 	command := args[0]
 	options, positionals, e := parseOptions(args[1:])
@@ -120,28 +119,7 @@ func run(ctx context.Context, args []string) error {
 		if output == "" {
 			output = filepath.Join(root, "build/wow-api-candidates", selected.Full)
 		}
-		refs := map[string]string{}
-		for _, name := range []string{"blizzard", "questie", "tsm", "wowless", "backup"} {
-			refs[name] = options[name+"-ref"]
-		}
-		return writeResult(release.StageRelease(ctx, root, output, snapshot, refs))
-	case "capture":
-		for _, name := range []string{"manifest", "receipt", "output"} {
-			if options[name] == "" {
-				return fmt.Errorf("capture requires --%s", name)
-			}
-		}
-		return writeResult(wowapi.IngestCapture(positionals[0], options["manifest"], options["receipt"], options["output"]))
-	case "probe":
-		project := wowapi.NewProject(root)
-		switch positionals[0] {
-		case "plan":
-			return writeResult(project.ProbePlan(ctx))
-		case "build":
-			return writeResult(project.BuildProbe(ctx, options["output"], ""))
-		default:
-			return fmt.Errorf("unknown probe command %q", positionals[0])
-		}
+		return writeResult(release.StageRelease(ctx, root, output, snapshot, options["questie-ref"]))
 	default:
 		return fmt.Errorf("unknown command %q", command)
 	}
@@ -160,7 +138,7 @@ func parseOptions(args []string) (map[string]string, []string, error) {
 	options := map[string]string{}
 	var rest []string
 	allowed := map[string]bool{}
-	for _, n := range strings.Fields("output client-source cache region snapshot questie-ref tsm-ref wowless-ref backup-ref blizzard-ref manifest receipt") {
+	for _, n := range strings.Fields("output client-source cache region snapshot questie-ref") {
 		allowed[n] = true
 	}
 	for n := 0; n < len(args); n++ {
@@ -196,8 +174,7 @@ func validateOptions(command string, options map[string]string, positionals []st
 		"stage-client": "client-source snapshot cache region", "verify-client": "client-source snapshot",
 		"build-extractor": "",
 		"check-generator": "client-source snapshot",
-		"stage-release":   "client-source snapshot output blizzard-ref questie-ref tsm-ref wowless-ref backup-ref",
-		"capture":         "manifest receipt output", "probe": "output",
+		"stage-release":   "client-source snapshot output questie-ref",
 	}
 	names, known := allowed[command]
 	if !known {
@@ -215,17 +192,6 @@ func validateOptions(command string, options map[string]string, positionals []st
 		}
 	}
 	switch command {
-	case "capture":
-		if len(positionals) != 1 {
-			return fmt.Errorf("capture requires one file")
-		}
-	case "probe":
-		if len(positionals) != 1 {
-			return fmt.Errorf("probe requires plan or build")
-		}
-		if positionals[0] == "plan" && len(options) > 0 {
-			return fmt.Errorf("probe plan does not accept output options")
-		}
 	case "verify-client":
 		if len(positionals) > 1 {
 			return fmt.Errorf("verify-client accepts at most one snapshot")
@@ -240,7 +206,7 @@ func validateOptions(command string, options map[string]string, positionals []st
 
 // resolvePaths fixes caller-relative paths before acquisition changes subprocess directories.
 func resolvePaths(command string, options map[string]string, positionals []string) error {
-	for _, name := range []string{"client-source", "snapshot", "cache", "output", "manifest", "receipt"} {
+	for _, name := range []string{"client-source", "snapshot", "cache", "output"} {
 		if path := options[name]; path != "" {
 			absolute, err := filepath.Abs(path)
 			if err != nil {
@@ -249,7 +215,7 @@ func resolvePaths(command string, options map[string]string, positionals []strin
 			options[name] = absolute
 		}
 	}
-	if command == "capture" || command == "verify-client" {
+	if command == "verify-client" {
 		for index, path := range positionals {
 			absolute, err := filepath.Abs(path)
 			if err != nil {

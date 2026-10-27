@@ -1,4 +1,4 @@
-// Package wowapi converts verified native and annotation inputs into one audited catalogue.
+// Package wowapi converts verified native and annotation inputs into Teal declarations.
 package wowapi
 
 import (
@@ -8,14 +8,12 @@ import (
 	"fmt"
 	"path/filepath"
 	"sort"
-	"strings"
 )
 
 // Project selects explicit, immutable input roots for one generation.
 type Project struct {
 	Root   string
 	inputs map[string]string
-	reader string
 }
 
 type Artifacts struct {
@@ -34,7 +32,6 @@ func NewProject(root string) Project {
 }
 func (p Project) WithInputs(paths map[string]string) Project {
 	next := NewProject(p.Root)
-	next.reader = p.reader
 	for k, v := range p.inputs {
 		next.inputs[k] = v
 	}
@@ -61,16 +58,6 @@ func sortedKeys[V any](m map[string]V) []string {
 	sort.Strings(keys)
 	return keys
 }
-func relativeName(root, path string) (string, error) {
-	r, e := filepath.Rel(root, path)
-	if e != nil || r == ".." || strings.HasPrefix(r, "../") {
-		return "", fmt.Errorf("path escapes project: %s", path)
-	}
-	return filepath.ToSlash(r), nil
-}
-
-// WithReader selects the independently verified schema-matched TSM reader.
-func (p Project) WithReader(binary string) Project { p.reader = binary; return p }
 
 type CatalogueStatistics struct {
 	InputFiles          int `json:"input_files"`

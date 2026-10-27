@@ -4,25 +4,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"unicode/utf16"
 
 	"wow-teal-types/internal/wowapi/literal"
 )
 
-// The three formats are existing byte contracts: review digests, interned names,
-// and human-readable reports. Native metadata separately retains literal UTF-8.
-func jsonCompact[T any](v T) ([]byte, error)    { return encodeJSON(v, false, false, true) }
-func jsonDefault[T any](v T) ([]byte, error)    { return encodeJSON(v, false, true, true) }
-func jsonPretty[T any](v T) ([]byte, error)     { return encodeJSON(v, true, false, true) }
-func jsonPrettyUTF8[T any](v T) ([]byte, error) { return encodeJSON(v, true, false, false) }
-func digest[T any](v T) (string, error) {
-	b, e := jsonCompact(v)
-	if e != nil {
-		return "", e
-	}
-	return sha256hex(b), nil
-}
-func encodeJSON[T any](v T, pretty, spaced, ascii bool) ([]byte, error) {
+// Stable field ordering and ASCII escaping preserve interned declaration names.
+func jsonCompact[T any](v T) ([]byte, error) { return encodeJSON(v, false) }
+func jsonDefault[T any](v T) ([]byte, error) { return encodeJSON(v, true) }
+func encodeJSON[T any](v T, spaced bool) ([]byte, error) {
 	var b bytes.Buffer
 	enc := json.NewEncoder(&b)
 	enc.SetEscapeHTML(false)
@@ -39,14 +30,7 @@ func encodeJSON[T any](v T, pretty, spaced, ascii bool) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if pretty {
-		var indented bytes.Buffer
-		if err = json.Indent(&indented, data, "", "  "); err != nil {
-			return nil, err
-		}
-		data = indented.Bytes()
-	}
-	if spaced && !pretty {
+	if spaced {
 		var out bytes.Buffer
 		quoted, escaped := false, false
 		for _, c := range data {
@@ -67,7 +51,7 @@ func encodeJSON[T any](v T, pretty, spaced, ascii bool) ([]byte, error) {
 		}
 		data = out.Bytes()
 	}
-	if ascii {
+	{
 		var out bytes.Buffer
 		for _, r := range string(data) {
 			if r < 127 {
@@ -81,8 +65,37 @@ func encodeJSON[T any](v T, pretty, spaced, ascii bool) ([]byte, error) {
 		}
 		data = out.Bytes()
 	}
-	if pretty {
-		data = append(data, '\n')
-	}
 	return data, nil
+}
+
+func decodeJSON[T any](data []byte, value *T) error {
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(value); err != nil {
+		return err
+	}
+	var trailing json.RawMessage
+	if err := decoder.Decode(&trailing); err != io.EOF {
+		return fmt.Errorf("trailing JSON data")
+	}
+	return nil
+}
+
+func jsonEqual[T any](a, b T) bool {
+	x, err := jsonCompact(a)
+	if err != nil {
+		reject(fmt.Sprintf("JSON encoding: %s", err))
+	}
+	y, err := jsonCompact(b)
+	if err != nil {
+		reject(fmt.Sprintf("JSON encoding: %s", err))
+	}
+	return bytes.Equal(x, y)
+}
+func jsonDigest[T any](value T) string {
+	data, err := jsonCompact(value)
+	if err != nil {
+		reject(fmt.Sprintf("JSON encoding: %s", err))
+	}
+	return sha256hex(data)
 }

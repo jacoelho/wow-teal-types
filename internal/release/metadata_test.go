@@ -1,7 +1,6 @@
 package release
 
 import (
-	"bytes"
 	"maps"
 	"os"
 	"path/filepath"
@@ -30,15 +29,6 @@ func metadataFixture(t *testing.T) string {
 	}
 	for _, name := range append(consumer.RequiredFiles(), "package.json", "LICENSE", "README.md", "examples/minimal/WowTealExample.toc", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json") {
 		copyFile(name)
-	}
-	provenance, err := readJSON[provenanceRecord](filepath.Join(root, "provenance.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	for name := range provenance.SourceLockSHA256 {
-		if name != "extractor.json" {
-			copyFile("scripts/wow_api/" + name)
-		}
 	}
 	return root
 }
@@ -110,25 +100,5 @@ func TestMetadataComparisonRejectsStaleFilesWithoutRefresh(t *testing.T) {
 	}
 	if !maps.Equal(before, metadataInputs(t, root)) {
 		t.Fatal("metadata comparison refreshed stale inputs")
-	}
-}
-
-func TestProvenanceSerializationPreservesApprovedBytes(t *testing.T) {
-	root := metadataFixture(t)
-	path := filepath.Join(root, "provenance.json")
-	before, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	value, err := readJSON[provenanceRecord](path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	after, err := jsonBytes(value)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if !bytes.Equal(before, after) {
-		t.Fatal("concrete provenance representation changed approved bytes")
 	}
 }

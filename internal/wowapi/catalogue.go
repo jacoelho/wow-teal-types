@@ -65,20 +65,16 @@ type catalogue struct {
 	defs                                                                                              map[string]*catalogueDefinition
 	aliases                                                                                           map[string]*catalogueAlias
 	globals                                                                                           map[string]*catalogueFunction
-	symbols                                                                                           []ManifestSymbol
-	files                                                                                             []ManifestFile
-	notes                                                                                             []RepresentationNote
 	errors                                                                                            []string
 	questie                                                                                           []AnnotationDocument
 	nativeDocs                                                                                        []NativeDocument
 	used, secretStructs, nativeNames, nativeFunctions, resolving, secureGlobals, absencePreconditions map[string]bool
 	abiTuples                                                                                         map[string][]string
-	excludedMethods                                                                                   map[string]SupplementalExclusion
 	defOrder, globalOrder                                                                             []string
 }
 
 func newCatalogue(p Project) *catalogue {
-	return &catalogue{project: p, defs: map[string]*catalogueDefinition{"OpaqueValue": {Kind: "external", Source: "opaque native/LuaLS unknown carrier"}}, aliases: map[string]*catalogueAlias{}, globals: map[string]*catalogueFunction{}, symbols: []ManifestSymbol{}, files: []ManifestFile{}, notes: []RepresentationNote{}, errors: []string{}, questie: []AnnotationDocument{}, nativeDocs: []NativeDocument{}, used: map[string]bool{}, secretStructs: map[string]bool{}, nativeNames: map[string]bool{}, nativeFunctions: map[string]bool{}, resolving: map[string]bool{}, secureGlobals: map[string]bool{}, absencePreconditions: map[string]bool{}, abiTuples: map[string][]string{}, excludedMethods: map[string]SupplementalExclusion{}, defOrder: []string{"OpaqueValue"}, globalOrder: []string{}}
+	return &catalogue{project: p, defs: map[string]*catalogueDefinition{"OpaqueValue": {Kind: "external", Source: "opaque native/LuaLS unknown carrier"}}, aliases: map[string]*catalogueAlias{}, globals: map[string]*catalogueFunction{}, errors: []string{}, questie: []AnnotationDocument{}, nativeDocs: []NativeDocument{}, used: map[string]bool{}, secretStructs: map[string]bool{}, nativeNames: map[string]bool{}, nativeFunctions: map[string]bool{}, resolving: map[string]bool{}, secureGlobals: map[string]bool{}, absencePreconditions: map[string]bool{}, abiTuples: map[string][]string{}, defOrder: []string{"OpaqueValue"}, globalOrder: []string{}}
 }
 func (c *catalogue) setDef(name string, item *catalogueDefinition) {
 	if _, ok := c.defs[name]; !ok {
@@ -287,7 +283,6 @@ func (c *catalogue) tealValue(expression, owner string, generics []string) strin
 					}
 				}
 			}
-			c.notes = append(c.notes, RepresentationNote{Expression: expression, Representation: replacement, Rule: "common table surface of source union"})
 			next := []string{}
 			for _, v := range values {
 				if !containsString(tables, v) {
@@ -323,10 +318,8 @@ func (c *catalogue) loadQuestie() {
 		path := doc.Path
 		source := "questie:" + path
 		if strings.HasPrefix(path, "Lua/") {
-			c.files = append(c.files, ManifestFile{Source: source, Disposition: "compiler-builtins"})
 			continue
 		}
-		c.files = append(c.files, ManifestFile{Source: source, Disposition: "converted"})
 		for _, alias := range doc.Aliases {
 			alternatives := []string{}
 			if alias.Type != "" {
@@ -341,7 +334,6 @@ func (c *catalogue) loadQuestie() {
 				continue
 			}
 			if strings.HasSuffix(expression, "|") {
-				c.notes = append(c.notes, RepresentationNote{Symbol: stringPointer(alias.Name), Rule: "remove empty trailing union member", Source: source})
 				expression = strings.TrimRight(expression, "| ")
 			}
 			c.aliases[alias.Name] = &catalogueAlias{Expression: expression, Source: source, Line: alias.Line}
@@ -471,19 +463,6 @@ func scriptName(name string) string {
 	return strings.TrimSuffix(name, "API")
 }
 func (c *catalogue) loadNative() {
-	lock := c.sourceLocks()
-	for _, key := range sortedKeys(lock) {
-		for _, file := range lock[key].Files {
-			name := file.Name
-			if key != "blizzard" && key != "questie" || key == "blizzard" && !strings.HasSuffix(name, ".lua") {
-				disposition := "verification-evidence"
-				if key == "blizzard" {
-					disposition = "registration-index"
-				}
-				c.files = append(c.files, ManifestFile{Source: key + ":" + name, Disposition: disposition})
-			}
-		}
-	}
 	docs, e := c.project.readNativeDocuments()
 	if e != nil {
 		reject(e.Error())
@@ -493,7 +472,6 @@ func (c *catalogue) loadNative() {
 	for _, document := range docs {
 		doc := document.Metadata
 		source := "blizzard:" + document.Name
-		c.files = append(c.files, ManifestFile{Source: source, Disposition: "converted"})
 		for _, table := range doc.Tables {
 			name, kind := table.Name, table.Type
 			if c.nativeNames[name] {
@@ -596,10 +574,6 @@ func (c *catalogue) loadNative() {
 			} else {
 				c.setGlobal(name, item)
 			}
-			c.symbols = append(c.symbols, ManifestSymbol{Name: symbol, Source: source, Function: &function, Restrictions: item.Native.Policy.restrictions()})
-		}
-		for _, event := range doc.Events {
-			c.symbols = append(c.symbols, ManifestSymbol{Name: firstNonempty(event.LiteralName, event.Name), Source: source, Event: &event})
 		}
 	}
 	for _, doc := range c.nativeDocs {
@@ -750,11 +724,10 @@ func (c *catalogue) nativeTypeValue(item NativeParameter, secret bool) string {
 }
 
 type frameXMLSupplement struct {
-	Description string               `json:"description"`
-	Aliases     map[string]string    `json:"aliases"`
-	Classes     []frameXMLClass      `json:"classes"`
-	Globals     map[string]string    `json:"globals"`
-	Evidence    []RepresentationNote `json:"evidence"`
+	Description string            `json:"description"`
+	Aliases     map[string]string `json:"aliases"`
+	Classes     []frameXMLClass   `json:"classes"`
+	Globals     map[string]string `json:"globals"`
 }
 type frameXMLClass struct {
 	Name    string            `json:"name"`
@@ -802,7 +775,6 @@ func (c *catalogue) loadFrameXML() {
 	for _, name := range sortedKeys(supplement.Globals) {
 		c.setGlobal(name, &catalogueFunction{ResolvedSignature: stringPointer(c.tealValue(supplement.Globals[name], "", nil)), Source: source})
 	}
-	c.notes = append(c.notes, supplement.Evidence...)
 }
 func (p Project) Generate(ctx context.Context) (artifacts Artifacts, err error) {
 	defer captureError(&err)
@@ -819,41 +791,11 @@ func (p Project) Generate(ctx context.Context) (artifacts Artifacts, err error) 
 		return Artifacts{}, e
 	}
 	outputs := projection.render()
-	manifest := c.manifest()
-	preserved, e := p.AuditMetadata(&manifest)
-	if e != nil {
-		return Artifacts{}, e
-	}
-	if e = RequireKnownMetadata(preserved); e != nil {
-		return Artifacts{Files: map[string][]byte{"evidence/generated/wow_native_metadata.json": mustJSONUTF8(preserved)}}, e
-	}
-	crosscheck, e := p.crosscheck(ctx, c, manifest, projection, outputs)
-	if e != nil {
-		return Artifacts{}, e
-	}
 	files := map[string][]byte{}
 	for name, b := range outputs {
 		files[filepath.ToSlash(filepath.Join("types/wow", name))] = b
 	}
-	manifestBytes, e := jsonPretty(manifest)
-	if e != nil {
-		return Artifacts{}, e
-	}
-	files["evidence/generated/wow_manifest.json"] = manifestBytes
-	crosscheckBytes, e := jsonPretty(crosscheck)
-	if e != nil {
-		return Artifacts{}, e
-	}
-	files["evidence/generated/wow_tsm_crosscheck.json"] = crosscheckBytes
-	files["evidence/generated/wow_native_metadata.json"] = mustJSONUTF8(preserved)
-	return Artifacts{Files: files, Statistics: manifest.Statistics}, nil
-}
-func mustJSONUTF8[T any](v T) []byte {
-	b, e := jsonPrettyUTF8(v)
-	if e != nil {
-		reject(fmt.Sprintf("%s", e))
-	}
-	return b
+	return Artifacts{Files: files, Statistics: c.statistics()}, nil
 }
 func mustFile(path string) []byte {
 	b, e := os.ReadFile(path)
@@ -861,4 +803,26 @@ func mustFile(path string) []byte {
 		reject(fmt.Sprintf("%s", e))
 	}
 	return b
+}
+
+func (c *catalogue) statistics() CatalogueStatistics {
+	stats := CatalogueStatistics{TypeExports: len(c.defs) + len(c.aliases)}
+	for _, source := range c.sourceLocks() {
+		stats.InputFiles += len(source.Files)
+	}
+	for _, doc := range c.nativeDocs {
+		stats.NativeFunctions += len(doc.Metadata.Functions)
+		stats.NativeEvents += len(doc.Metadata.Events)
+	}
+	for _, doc := range c.questie {
+		if strings.HasPrefix(doc.Path, "Lua/") {
+			continue
+		}
+		for _, function := range doc.Functions {
+			if !strings.HasPrefix(strings.TrimLeft(function.Raw, " \t"), "local function ") {
+				stats.QuestieDeclarations++
+			}
+		}
+	}
+	return stats
 }

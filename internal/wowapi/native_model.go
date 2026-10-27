@@ -3,35 +3,31 @@ package wowapi
 import (
 	"fmt"
 	"math/big"
+	"slices"
+	"strings"
 	"wow-teal-types/internal/wowapi/literal"
 )
 
-// NativeDocument keeps reviewed source syntax beside the interpreted contract.
-// Raw is retained for lossless evidence and is never the declaration model.
+// NativeDocument pairs a source name with its decoded contracts.
 type NativeDocument struct {
 	Name     string
 	Metadata NativeMetadata
-	Raw      literal.Object
 }
 type NativeMetadata struct {
-	Documentation []string
-	Environment   string
-	Events        []NativeEvent
-	Functions     []NativeFunction
-	Name          string
-	Namespace     string
-	ObjectType    string
-	Predicates    []NativePredicate
-	Tables        []NativeTable
-	Type          string
-	Raw           literal.Object
+	Environment string
+	Events      []NativeEvent
+	Functions   []NativeFunction
+	Name        string
+	Namespace   string
+	ObjectType  string
+	Predicates  []NativePredicate
+	Tables      []NativeTable
+	Type        string
 }
 type NativeFunction struct {
 	Name, Type, Namespace string
 	Arguments, Returns    []NativeParameter
-	Documentation         []string
 	Policy                NativePolicy
-	Raw                   literal.Object
 }
 type NativeParameter struct {
 	HasDefault                                                 bool
@@ -39,28 +35,20 @@ type NativeParameter struct {
 	Nilable, NilableContents, NeverSecret, NeverSecretContents *bool
 	ConditionalSecret, ConditionalSecretContents, SecretValue  *bool
 	StrideIndex                                                *int
-	Documentation                                              []string
-	Raw                                                        literal.Object
 }
 type NativeEvent struct {
 	Name, Type, LiteralName string
 	Payload                 []NativeParameter
-	Documentation           []string
 	Policy                  NativePolicy
-	Raw                     literal.Object
 }
 type NativeTable struct {
 	EnumMetadata                       []string
 	Policy                             NativePolicy
 	Name, Type                         string
 	Arguments, Fields, Values, Returns []NativeParameter
-	Documentation                      []string
-	Raw                                literal.Object
 }
 type NativePredicate struct {
 	Name, Type, FailureMode string
-	Documentation           []string
-	Raw                     literal.Object
 }
 type NativeReference struct{ Name string }
 type NativeAspectArgument struct {
@@ -162,7 +150,7 @@ func nativeText(raw literal.Object, name string) (string, error) {
 	}
 	return text, nil
 }
-func nativeOptionalText(raw literal.Object, name string) (*string, error) {
+func nativeEnum(raw literal.Object, name string, allowed ...string) (*string, error) {
 	if _, present := raw[name]; !present {
 		return nil, nil
 	}
@@ -170,7 +158,23 @@ func nativeOptionalText(raw literal.Object, name string) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
+	if !slices.Contains(allowed, text) {
+		return nil, fmt.Errorf("unsupported native %s value %q", name, text)
+	}
 	return &text, nil
+}
+func nativeKind(raw literal.Object, allowed ...string) (string, error) {
+	value, err := nativeEnum(raw, "Type", allowed...)
+	if err != nil {
+		return "", err
+	}
+	if value == nil {
+		return "", fmt.Errorf("native Type must be a nonempty string")
+	}
+	return *value, nil
+}
+func nativeEnvironment(raw literal.Object) (*string, error) {
+	return nativeEnum(raw, "Environment", "All", "SecureOnly")
 }
 func nativeOptionalBool(raw literal.Object, name string) (*bool, error) {
 	value, present := raw[name]
@@ -202,24 +206,21 @@ func nativeOptionalInt(raw literal.Object, name string) (*int, error) {
 	}
 	return &result, nil
 }
-func nativeStrings(raw literal.Object, name string) ([]string, error) {
-	value, present := raw[name]
+func validateNativeDocumentation(raw literal.Object) error {
+	value, present := raw["Documentation"]
 	if !present {
-		return nil, nil
+		return nil
 	}
 	array, ok := value.Array()
 	if !ok {
-		return nil, fmt.Errorf("native %s must be an array", name)
+		return fmt.Errorf("native Documentation must be an array")
 	}
-	values := make([]string, len(array))
 	for i, item := range array {
-		value, ok := item.Text()
-		if !ok {
-			return nil, fmt.Errorf("native %s[%d] must be a string", name, i)
+		if _, ok := item.Text(); !ok {
+			return fmt.Errorf("native Documentation[%d] must be a string", i)
 		}
-		values[i] = value
 	}
-	return values, nil
+	return nil
 }
 func nativeItems[T any](raw literal.Object, name string, decode func(literal.Object) (T, error)) ([]T, error) {
 	value, present := raw[name]
@@ -275,6 +276,9 @@ func nativeReferences(raw literal.Object, name string) ([]NativeReference, error
 	return values, nil
 }
 func decodeNativeAspect(raw literal.Object) (NativeAspectArgument, error) {
+	if err := nativeFields(raw, "Argument Aspect", false); err != nil {
+		return NativeAspectArgument{}, err
+	}
 	name, err := nativeText(raw, "Argument")
 	if err != nil {
 		return NativeAspectArgument{}, err
@@ -505,10 +509,10 @@ func decodeNativePolicy(raw literal.Object) (policy NativePolicy, err error) {
 	if policy.UniqueEvent, err = nativeOptionalBool(raw, "UniqueEvent"); err != nil {
 		return policy, err
 	}
-	if policy.Environment, err = nativeOptionalText(raw, "Environment"); err != nil {
+	if policy.Environment, err = nativeEnvironment(raw); err != nil {
 		return policy, err
 	}
-	if policy.SecretArguments, err = nativeOptionalText(raw, "SecretArguments"); err != nil {
+	if policy.SecretArguments, err = nativeEnum(raw, "SecretArguments", "AllowedWhenTainted", "AllowedWhenUntainted", "NotAllowed"); err != nil {
 		return policy, err
 	}
 	if policy.SecretArgumentsAddAspect, err = nativeReferences(raw, "SecretArgumentsAddAspect"); err != nil {
@@ -526,23 +530,37 @@ func decodeNativePolicy(raw literal.Object) (policy NativePolicy, err error) {
 	return policy, nil
 }
 func decodeNativeMetadata(raw literal.Object) (value NativeMetadata, err error) {
-	value.Raw = raw
+	if err = nativeFields(raw, "Name Type Namespace ObjectType Environment Documentation Functions Events Tables Predicates", false); err != nil {
+		return value, err
+	}
 	if value.Name, err = nativeText(raw, "Name"); err != nil {
 		return value, err
 	}
-	if value.Type, err = nativeText(raw, "Type"); err != nil {
+	kind, err := nativeEnum(raw, "Type", "System", "ScriptObject")
+	if err != nil {
 		return value, err
+	}
+	if kind != nil {
+		value.Type = *kind
 	}
 	if value.Namespace, err = nativeText(raw, "Namespace"); err != nil {
 		return value, err
 	}
-	if value.ObjectType, err = nativeText(raw, "ObjectType"); err != nil {
+	objectType, err := nativeEnum(raw, "ObjectType", "Userdata")
+	if err != nil {
 		return value, err
 	}
-	if value.Environment, err = nativeText(raw, "Environment"); err != nil {
+	if objectType != nil {
+		value.ObjectType = *objectType
+	}
+	environment, err := nativeEnvironment(raw)
+	if err != nil {
 		return value, err
 	}
-	if value.Documentation, err = nativeStrings(raw, "Documentation"); err != nil {
+	if environment != nil {
+		value.Environment = *environment
+	}
+	if err = validateNativeDocumentation(raw); err != nil {
 		return value, err
 	}
 	if value.Functions, err = nativeItems(raw, "Functions", decodeNativeFunction); err != nil {
@@ -557,20 +575,40 @@ func decodeNativeMetadata(raw literal.Object) (value NativeMetadata, err error) 
 	if value.Predicates, err = nativeItems(raw, "Predicates", decodeNativePredicate); err != nil {
 		return value, err
 	}
+	functions := map[string]bool{}
+	for _, function := range value.Functions {
+		if functions[function.Name] {
+			return value, fmt.Errorf("duplicate native function %s", function.Name)
+		}
+		functions[function.Name] = true
+	}
+	events := map[string]bool{}
+	for _, event := range value.Events {
+		if events[event.Name] {
+			return value, fmt.Errorf("duplicate native event %s", event.Name)
+		}
+		events[event.Name] = true
+	}
+
 	return value, nil
 }
 func decodeNativeFunction(raw literal.Object) (value NativeFunction, err error) {
-	value.Raw = raw
+	if err = nativeIdentity(raw); err != nil {
+		return value, err
+	}
+	if err = nativeFields(raw, "Name Type Namespace Documentation Arguments Returns", true); err != nil {
+		return value, err
+	}
 	if value.Name, err = nativeText(raw, "Name"); err != nil {
 		return value, err
 	}
-	if value.Type, err = nativeText(raw, "Type"); err != nil {
+	if value.Type, err = nativeKind(raw, "Function"); err != nil {
 		return value, err
 	}
 	if value.Namespace, err = nativeText(raw, "Namespace"); err != nil {
 		return value, err
 	}
-	if value.Documentation, err = nativeStrings(raw, "Documentation"); err != nil {
+	if err = validateNativeDocumentation(raw); err != nil {
 		return value, err
 	}
 	if value.Arguments, err = nativeItems(raw, "Arguments", decodeNativeParameter); err != nil {
@@ -585,7 +623,17 @@ func decodeNativeFunction(raw literal.Object) (value NativeFunction, err error) 
 	return value, nil
 }
 func decodeNativeParameter(raw literal.Object) (value NativeParameter, err error) {
-	value.Raw = raw
+	if _, err = nativeOptionalInt(raw, "EnumValue"); err != nil {
+		return value, err
+	}
+	for _, name := range []string{"Default", "Value"} {
+		if err = nativeScalar(raw, name); err != nil {
+			return value, err
+		}
+	}
+	if err = nativeFields(raw, "Name Type InnerType KeyType Mixin Documentation Nilable NilableContents NeverSecret NeverSecretContents ConditionalSecret ConditionalSecretContents SecretValue StrideIndex Default Value EnumValue", false); err != nil {
+		return value, err
+	}
 	_, value.HasDefault = raw["Default"]
 	if value.Name, err = nativeText(raw, "Name"); err != nil {
 		return value, err
@@ -602,7 +650,7 @@ func decodeNativeParameter(raw literal.Object) (value NativeParameter, err error
 	if value.Mixin, err = nativeText(raw, "Mixin"); err != nil {
 		return value, err
 	}
-	if value.Documentation, err = nativeStrings(raw, "Documentation"); err != nil {
+	if err = validateNativeDocumentation(raw); err != nil {
 		return value, err
 	}
 	if value.Nilable, err = nativeOptionalBool(raw, "Nilable"); err != nil {
@@ -632,17 +680,22 @@ func decodeNativeParameter(raw literal.Object) (value NativeParameter, err error
 	return value, nil
 }
 func decodeNativeEvent(raw literal.Object) (value NativeEvent, err error) {
-	value.Raw = raw
+	if err = nativeIdentity(raw); err != nil {
+		return value, err
+	}
+	if err = nativeFields(raw, "Name Type LiteralName Documentation Payload", true); err != nil {
+		return value, err
+	}
 	if value.Name, err = nativeText(raw, "Name"); err != nil {
 		return value, err
 	}
-	if value.Type, err = nativeText(raw, "Type"); err != nil {
+	if value.Type, err = nativeKind(raw, "Event"); err != nil {
 		return value, err
 	}
 	if value.LiteralName, err = nativeText(raw, "LiteralName"); err != nil {
 		return value, err
 	}
-	if value.Documentation, err = nativeStrings(raw, "Documentation"); err != nil {
+	if err = validateNativeDocumentation(raw); err != nil {
 		return value, err
 	}
 	if value.Payload, err = nativeItems(raw, "Payload", decodeNativeParameter); err != nil {
@@ -654,14 +707,21 @@ func decodeNativeEvent(raw literal.Object) (value NativeEvent, err error) {
 	return value, nil
 }
 func decodeNativeTable(raw literal.Object) (value NativeTable, err error) {
-	value.Raw = raw
+	for _, name := range []string{"NumValues", "MinValue", "MaxValue"} {
+		if _, err = nativeOptionalInt(raw, name); err != nil {
+			return value, err
+		}
+	}
+	if err = nativeFields(raw, "Name Type Documentation Arguments Fields Values Returns NumValues MinValue MaxValue", true); err != nil {
+		return value, err
+	}
 	if value.Name, err = nativeText(raw, "Name"); err != nil {
 		return value, err
 	}
-	if value.Type, err = nativeText(raw, "Type"); err != nil {
+	if value.Type, err = nativeKind(raw, "Enumeration", "Structure", "CallbackType", "Constants"); err != nil {
 		return value, err
 	}
-	if value.Documentation, err = nativeStrings(raw, "Documentation"); err != nil {
+	if err = validateNativeDocumentation(raw); err != nil {
 		return value, err
 	}
 	if value.Arguments, err = nativeItems(raw, "Arguments", decodeNativeParameter); err != nil {
@@ -687,24 +747,30 @@ func decodeNativeTable(raw literal.Object) (value NativeTable, err error) {
 	return value, nil
 }
 func decodeNativePredicate(raw literal.Object) (value NativePredicate, err error) {
-	value.Raw = raw
+	if err = nativeFields(raw, "Name Type FailureMode Documentation", false); err != nil {
+		return value, err
+	}
 	if value.Name, err = nativeText(raw, "Name"); err != nil {
 		return value, err
 	}
-	if value.Type, err = nativeText(raw, "Type"); err != nil {
+	if value.Type, err = nativeKind(raw, "Precondition", "Secret"); err != nil {
 		return value, err
 	}
-	if value.FailureMode, err = nativeText(raw, "FailureMode"); err != nil {
+	failureMode, err := nativeEnum(raw, "FailureMode", "Error", "ReturnNothing", "ReturnWithError")
+	if err != nil {
 		return value, err
 	}
-	if value.Documentation, err = nativeStrings(raw, "Documentation"); err != nil {
+	if failureMode != nil {
+		value.FailureMode = *failureMode
+	}
+	if err = validateNativeDocumentation(raw); err != nil {
 		return value, err
 	}
 	return value, nil
 }
 
 func (table NativeTable) Callback() NativeFunction {
-	return NativeFunction{Name: table.Name, Type: table.Type, Arguments: table.Arguments, Returns: table.Returns, Documentation: table.Documentation, Policy: table.Policy, Raw: table.Raw}
+	return NativeFunction{Name: table.Name, Type: table.Type, Arguments: table.Arguments, Returns: table.Returns, Policy: table.Policy}
 }
 
 func (p NativePolicy) restrictions() NativePolicy {
@@ -975,4 +1041,125 @@ func (p *NativeParameter) UnmarshalJSON(data []byte) error {
 	}
 	*p = value
 	return nil
+}
+
+// Unknown metadata can change call permissions. Reject it before interpreting
+// contracts so a source update cannot silently weaken the generated policy.
+func nativeFields(raw literal.Object, allowed string, policy bool) error {
+	fields := strings.Fields(allowed)
+	for _, name := range sortedKeys(raw) {
+		if !slices.Contains(fields, name) && !(policy && nativePolicyField(name)) {
+			return fmt.Errorf("unsupported native field %s", name)
+		}
+	}
+	return nil
+}
+func nativePolicyField(name string) bool {
+	switch name {
+	case "AddsForbiddenAspects",
+		"ChecksForbiddenAspects",
+		"Environment",
+		"SecretArguments",
+		"SecretArgumentsAddAspect",
+		"SecretReturnsForAspect",
+		"CallbackEvent",
+		"CheckAllowChangeParent",
+		"CheckAllowInheritForbiddenLayoutAspects",
+		"ConstSecretAccessor",
+		"HasRestrictions",
+		"IsProtectedFunction",
+		"MayReturnNothing",
+		"MouseFocusValidForLimitedInput",
+		"RequireNPERestricted",
+		"RequiresActiveCommentator",
+		"RequiresAssignableScript",
+		"RequiresCanChangeHitTestPoints",
+		"RequiresClubsInitialized",
+		"RequiresCommentator",
+		"RequiresComparableUnitTokens",
+		"RequiresDeclassifiedUnitIdentity",
+		"RequiresFontStringTextAccess",
+		"RequiresFriendList",
+		"RequiresIndexInRange",
+		"RequiresLimitedInput",
+		"RequiresNonReadOnlyCVar",
+		"RequiresNonSecretAura",
+		"RequiresNonSecureCVar",
+		"RequiresRecentAllies",
+		"RequiresRestrictedAbbreviationBreakpoints",
+		"RequiresScriptObjectAlphaAccess",
+		"RequiresScriptObjectDesaturationAccess",
+		"RequiresSpellDiminishUI",
+		"RequiresStatusBarDesaturationAccess",
+		"RequiresSupportedScript",
+		"RequiresTimedSignalMapAccess",
+		"RequiresUnitAuraAccess",
+		"RequiresUnitIdentityAccess",
+		"RequiresValidAbbreviationBreakpoints",
+		"RequiresValidActionSlot",
+		"RequiresValidAndPublicCVar",
+		"RequiresValidFontAsset",
+		"RequiresValidFontHeight",
+		"RequiresValidInviteTarget",
+		"RequiresValidTimelineEvent",
+		"RequiresValidUnitAuraInstance",
+		"RestrictedForMacroChatMessages",
+		"ReturnsNeverSecret",
+		"SecretInActivePvPMatch",
+		"SecretInChatMessagingLockdown",
+		"SecretPayloads",
+		"SecretReturns",
+		"SecretWhenAnchoringSecret",
+		"SecretWhenAurasRestricted",
+		"SecretWhenCooldownsRestricted",
+		"SecretWhenCurveSecret",
+		"SecretWhenEncounterEvent",
+		"SecretWhenInCombat",
+		"SecretWhenLossOfControlInfoRestricted",
+		"SecretWhenLuaTableHasSecretKeys",
+		"SecretWhenNumericFormatterSecret",
+		"SecretWhenTotemSlotSecret",
+		"SecretWhenUnitAuraRestricted",
+		"SecretWhenUnitComparisonRestricted",
+		"SecretWhenUnitHealthMaxRestricted",
+		"SecretWhenUnitIdentityRestricted",
+		"SecretWhenUnitNameIdentityRestricted",
+		"SecretWhenUnitPossessionRestricted",
+		"SecretWhenUnitPowerMaxRestricted",
+		"SecretWhenUnitPowerRestricted",
+		"SecretWhenUnitSpellCastRestricted",
+		"SecretWhenUnitStatsRestricted",
+		"SecretWhenUnitThreatStateRestricted",
+		"SecretWhenUnitThreatValuesRestricted",
+		"SecureHooksAllowed",
+		"SynchronousEvent",
+		"TransliteratorAllowed",
+		"UniqueEvent":
+		return true
+	}
+	return false
+}
+func nativeIdentity(raw literal.Object) error {
+	for _, name := range []string{"Name", "Type"} {
+		value, err := nativeText(raw, name)
+		if err != nil {
+			return err
+		}
+		if value == "" {
+			return fmt.Errorf("native %s must be a nonempty string", name)
+		}
+	}
+	return nil
+}
+func nativeScalar(raw literal.Object, name string) error {
+	value, present := raw[name]
+	if !present {
+		return nil
+	}
+	switch value.Kind() {
+	case literal.Boolean, literal.String, literal.Integer, literal.FloatKind, literal.Reference, literal.Expression:
+		return nil
+	default:
+		return fmt.Errorf("native %s must be a scalar or named constant", name)
+	}
 }

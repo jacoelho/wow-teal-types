@@ -49,9 +49,7 @@ type journal struct {
 	Files  []publicationRow `json:"files"`
 }
 
-var ownedOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "evidence/generated/wow_manifest.json", "evidence/generated/wow_tsm_crosscheck.json", "evidence/generated/wow_client_coverage.json", "evidence/generated/wow_native_metadata.json", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json", "provenance.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json"}
-
-const equivalenceReceipt = "scripts/wow_api/source_equivalence.json"
+var ownedOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json"}
 
 func sameIdentity(a, b *fileIdentity) bool {
 	return a == nil && b == nil || a != nil && b != nil && *a == *b
@@ -197,9 +195,6 @@ func outputNames(workspace string) ([]string, error) {
 	}
 	names := append([]string{}, ownedOutputs...)
 	names = append(names, "rockspecs/wow-tl-type-"+v+"-1.rockspec.in")
-	if exists(filepath.Join(workspace, equivalenceReceipt)) {
-		names = append(names, equivalenceReceipt)
-	}
 	sortStrings(names)
 	for k, n := range names {
 		if n == "package.json" {
@@ -428,10 +423,10 @@ func Recover(root string) (PublicationResult, error) {
 	if e != nil {
 		return PublicationResult{}, e
 	}
-	if j.Schema != 1 || j.Root != root || len(j.Files) < 1 || len(j.Files) > len(ownedOutputs)+2 {
+	if j.Schema != 1 || j.Root != root || len(j.Files) < 1 || len(j.Files) > len(ownedOutputs)+1 {
 		return PublicationResult{}, fmt.Errorf("invalid publication journal inventory")
 	}
-	allowed := map[string]bool{equivalenceReceipt: true}
+	allowed := map[string]bool{}
 	for _, n := range ownedOutputs {
 		allowed[n] = true
 	}

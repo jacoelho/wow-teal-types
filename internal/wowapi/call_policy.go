@@ -34,7 +34,7 @@ func (c *catalogue) projectCallable(item *catalogueFunction, owner, symbol strin
 	for _, choice := range c.signatureChoices(item, owner) {
 		policy := c.signaturePolicy(choice.contract, symbol, choice.expression)
 		if index, ok := seen[choice.expression]; ok {
-			if !evEqual(out[index].policy, policy) {
+			if !jsonEqual(out[index].policy, policy) {
 				reject(fmt.Sprintf("ambiguous permissions for identical overload: %s", symbol))
 			}
 			continue
@@ -124,7 +124,7 @@ func (p declarationProjection) renderCallPolicy(files map[string][]byte) []byte 
 			locations[path] = map[string]callPolicy{}
 		}
 		key := strconv.Itoa(line) + ":" + strconv.Itoa(column)
-		if previous, ok := locations[path][key]; ok && !evEqual(previous, *policy) {
+		if previous, ok := locations[path][key]; ok && !jsonEqual(previous, *policy) {
 			reject(fmt.Sprintf("conflicting native policy origin: %s:%s", path, key))
 		}
 		locations[path][key] = *policy

@@ -45,7 +45,7 @@ type projectedGlobal struct {
 }
 
 // declarationProjection owns the normalized values consumed by rendering and
-// effective-contract auditing. Source metadata never crosses into the renderer.
+// call-policy generation. Source metadata never crosses into the renderer.
 type declarationProjection struct {
 	declarations  []projectedDeclaration
 	globals       []projectedGlobal
@@ -122,7 +122,7 @@ func (c *catalogue) finalize(ctx context.Context) (projection declarationProject
 }
 
 func (c *catalogue) projectionState() string {
-	return evDigest(struct {
+	return jsonDigest(struct {
 		Definitions   map[string]*catalogueDefinition
 		Aliases       map[string]*catalogueAlias
 		Globals       map[string]*catalogueFunction

@@ -30,9 +30,9 @@ var excluded = map[string]bool{".git": true, ".venv": true, "__pycache__": true,
 var moduleName = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9]*(\.[A-Za-z_][A-Za-z_0-9]*)*$`)
 
 // RequiredFiles is the complete immutable consumer execution closure. The
-// producer, CDN extractor, Rust reader and test fixtures are not runtime inputs.
+// producer, CDN extractor and test fixtures are not runtime inputs.
 func RequiredFiles() []string {
-	names := []string{".wow-version", "bin/wow-teal", "go.mod", "go.sum", "provenance.json", "tools/check_secrets.lua", "tools/check_runtime_imports.lua", "tools/wow-teal/main.go",
+	names := []string{".wow-version", "bin/wow-teal", "go.mod", "tools/check_secrets.lua", "tools/check_runtime_imports.lua", "tools/wow-teal/main.go",
 		"tools/teal/tl", "tools/teal/cli.lua", "tools/teal/tl.lua", "tools/teal/argparse.lua", "tools/teal/contract.lua", "tools/teal/check_capabilities.lua", "tools/teal/LICENSE", "types/wow/call_policy.lua",
 		"internal/consumer/consumer.go", "internal/consumer/schema.go", "internal/consumer/files.go", "internal/consumer/version.go", "internal/consumer/snapshot.go", "internal/consumer/rockspec.go", "internal/consumer/package.go"}
 	for _, name := range modules {

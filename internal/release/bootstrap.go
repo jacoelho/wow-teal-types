@@ -61,136 +61,11 @@ func parallel(ctx context.Context, items []sourceJob, fn func(context.Context, s
 	return ctx.Err()
 }
 
-type sourceDigest struct {
-	size         *int
-	sha256, blob string
-}
-
-func matches(b []byte, digest sourceDigest) bool {
-	return len(b) <= maxPayload && (digest.size == nil || len(b) == *digest.size) && (digest.sha256 == "" || sha(b) == digest.sha256) && (digest.blob == "" || blob(b) == digest.blob)
-}
-
 type sourceJob struct {
-	group, repo, commit, upstream, name string
-	digest                              sourceDigest
+	group, repo, commit, upstream, name, blob string
+	size                                      int
 }
 
-func lockedDigest(row sourcelock.LockedFile) sourceDigest {
-	git := row.SHA
-	if row.GitBlobSHA1 != "" {
-		git = row.GitBlobSHA1
-	}
-	return sourceDigest{&row.Size, row.SHA256, git}
-}
-func secondaryJobs(root string) ([]sourceJob, error) {
-	var jobs []sourceJob
-	tsm, err := sourcelock.ReadTSM(filepath.Join(root, "scripts/wow_api/tsm_sources.json"))
-	if err != nil {
-		return nil, err
-	}
-	for _, row := range tsm.Files {
-		upstream := row.Path
-		if upstream == "" {
-			prefix := "https://raw.githubusercontent.com/" + tsm.Repository + "/" + tsm.Commit + "/"
-			if !strings.HasPrefix(row.URL, prefix) {
-				return nil, fmt.Errorf("TSM source URL is not pinned")
-			}
-			upstream = strings.TrimPrefix(row.URL, prefix)
-		}
-		jobs = append(jobs, sourceJob{"tsm", tsm.Repository, tsm.Commit, upstream, row.Name, lockedDigest(row)})
-	}
-	b := tsm.Blizzard
-	jobs = append(jobs, sourceJob{"tsm", b.Repository, b.Commit, "version.txt", "blizzard-version.txt", sourceDigest{sha256: b.VersionSHA256}})
-	crosscheck, err := sourcelock.ReadCrosscheck(filepath.Join(root, "scripts/wow_api/native_crosscheck_sources.json"))
-	if err != nil {
-		return nil, err
-	}
-	for _, row := range crosscheck.Files {
-		jobs = append(jobs, sourceJob{"native-crosscheck", row.Repository, row.Commit, row.UpstreamPath, row.Name, lockedDigest(row)})
-	}
-	backup, err := sourcelock.ReadBackup(filepath.Join(root, "scripts/wow_api/native_backup_sources.json"))
-	if err != nil {
-		return nil, err
-	}
-	for _, row := range backup.Files {
-		jobs = append(jobs, sourceJob{"native-backup", backup.Repository, backup.Commit, backup.Path + "/" + row.Name, row.Name, lockedDigest(row)})
-	}
-	return jobs, nil
-}
-func syncSecondary(ctx context.Context, root string, online bool) error {
-	jobs, e := secondaryJobs(root)
-	if e != nil {
-		return e
-	}
-	total := 0
-	for _, j := range jobs {
-		size := maxPayload
-		if j.digest.size != nil {
-			size = *j.digest.size
-		}
-		total += size
-	}
-	if total > maxTotal {
-		return fmt.Errorf("locked secondary inputs exceed aggregate limit")
-	}
-	return parallel(ctx, jobs, func(ctx context.Context, j sourceJob) error {
-		if !hex40.MatchString(j.commit) {
-			return fmt.Errorf("acquisition requires immutable commit")
-		}
-		if _, e := safeJoin("/", j.upstream); e != nil {
-			return e
-		}
-		path, e := safeJoin(root, "references/wow-api/"+j.group+"/"+j.name)
-		if e != nil {
-			return e
-		}
-		var local []byte
-		if exists(path) {
-			local, e = readFile(path, maxPayload)
-			if e != nil {
-				return e
-			}
-			if !matches(local, j.digest) {
-				return fmt.Errorf("modified pinned input: %s", path)
-			}
-		}
-		if online || local == nil {
-			address := "https://raw.githubusercontent.com/" + j.repo + "/" + j.commit + "/" + escapePath(j.upstream)
-			b, e := fetch(ctx, address, maxPayload)
-			if e != nil {
-				return e
-			}
-			if strings.HasSuffix(j.name, ".bin.zst") && bytes.HasPrefix(b, []byte("version https://git-lfs.github.com/")) {
-				parts := strings.Split(string(b), "\n")
-				if len(parts) != 4 || parts[0] != "version https://git-lfs.github.com/spec/v1" || !strings.HasPrefix(parts[1], "oid sha256:") || !strings.HasPrefix(parts[2], "size ") {
-					return fmt.Errorf("invalid LFS pointer: %s", j.name)
-				}
-				var size int
-				fmt.Sscanf(parts[2], "size %d", &size)
-				if size < 1 || size > maxPayload {
-					return fmt.Errorf("LFS payload exceeds limit")
-				}
-				b, e = fetch(ctx, "https://media.githubusercontent.com/media/"+j.repo+"/"+j.commit+"/"+escapePath(j.upstream), maxPayload)
-				if e != nil {
-					return e
-				}
-				if len(b) != size || sha(b) != strings.TrimPrefix(parts[1], "oid sha256:") {
-					return fmt.Errorf("Git LFS identity mismatch: %s", j.name)
-				}
-			}
-			if !matches(b, j.digest) {
-				return fmt.Errorf("locked input identity mismatch: %s", address)
-			}
-			if local != nil && !bytes.Equal(local, b) {
-				return fmt.Errorf("online pinned input differs: %s", path)
-			}
-			if local == nil {
-				return atomicWrite(path, b, 0644)
-			}
-		}
-		return nil
-	})
-}
 func escapePath(path string) string {
 	parts := strings.Split(path, "/")
 	for n := range parts {
@@ -207,7 +82,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 	for _, group := range keys(lock) {
 		source := lock[group]
 		for _, r := range source.Files {
-			jobs = append(jobs, sourceJob{group, source.Repository, source.Commit, strings.Trim(source.Path+"/"+r.Name, "/"), r.Name, sourceDigest{size: &r.Size, blob: r.SHA}})
+			jobs = append(jobs, sourceJob{group, source.Repository, source.Commit, strings.Trim(source.Path+"/"+r.Name, "/"), r.Name, r.SHA, r.Size})
 		}
 	}
 	return parallel(ctx, jobs, func(ctx context.Context, j sourceJob) error {
@@ -220,7 +95,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 			if e != nil {
 				return e
 			}
-			if len(b) != *j.digest.size || blob(b) != j.digest.blob {
+			if len(b) != j.size || blob(b) != j.blob {
 				return fmt.Errorf("modified pinned source: %s", path)
 			}
 			return nil
@@ -235,7 +110,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 		if e != nil {
 			return e
 		}
-		if len(b) != *j.digest.size || blob(b) != j.digest.blob {
+		if len(b) != j.size || blob(b) != j.blob {
 			return fmt.Errorf("community blob identity mismatch: %s", j.name)
 		}
 		return atomicWrite(path, b, 0644)
@@ -283,9 +158,6 @@ func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, erro
 			return p, e
 		}
 	}
-	if e = syncSecondary(ctx, root, false); e != nil {
-		return p, e
-	}
 	return p, nil
 }
 
@@ -317,34 +189,6 @@ func seedCaches(origin, target string) error {
 			if e = atomicWrite(dst, b, 0644); e != nil {
 				return e
 			}
-		}
-	}
-	jobs, e := secondaryJobs(target)
-	if e != nil {
-		return e
-	}
-	for _, j := range jobs {
-		relative := "references/wow-api/" + j.group + "/" + j.name
-		src, e := safeJoin(origin, relative)
-		if e != nil {
-			return e
-		}
-		if !exists(src) {
-			continue
-		}
-		b, e := readFile(src, maxPayload)
-		if e != nil {
-			return e
-		}
-		if !matches(b, j.digest) {
-			return fmt.Errorf("modified pinned cross-check cache: %s", j.name)
-		}
-		dst, e := safeJoin(target, relative)
-		if e != nil {
-			return e
-		}
-		if e = atomicWrite(dst, b, 0644); e != nil {
-			return e
 		}
 	}
 	return nil

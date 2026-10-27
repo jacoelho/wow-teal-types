@@ -16,14 +16,12 @@ func TestMutatingCommandsRejectIgnoredOptions(t *testing.T) {
 	if e := validateOptions("generate", map[string]string{}, []string{"unexpected"}); e == nil {
 		t.Fatal("ignored positional argument")
 	}
-	if e := validateOptions("probe", map[string]string{"output": "ignored"}, []string{"plan"}); e == nil {
-		t.Fatal("probe plan ignored --output")
-	}
+
 }
 
 func TestRemovedPublicationCommandsRejectWithoutWrites(t *testing.T) {
 	root := t.TempDir()
-	for _, name := range []string{"catalogue", "coverage", "metadata"} {
+	for _, name := range []string{"catalogue", "coverage", "metadata", "capture", "probe"} {
 		if err := run(t.Context(), []string{"--root", root, name}); err == nil || !strings.Contains(err.Error(), "unknown command") {
 			t.Fatalf("removed %s command: %v", name, err)
 		}

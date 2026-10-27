@@ -7,29 +7,39 @@ import (
 )
 
 type catalogueOverrides struct {
-	Aliases                      map[string]RepresentationNote `json:"aliases"`
-	OpaqueObjects                map[string]RepresentationNote `json:"opaque_objects"`
-	ABITuples                    map[string][]string           `json:"abi_tuples"`
-	ABITupleEvidence             map[string]RepresentationNote `json:"abi_tuple_evidence"`
-	SecretEffects                []RepresentationNote          `json:"secret_effects"`
-	NativeContracts              []nativeContractOverride      `json:"native_contracts"`
-	SupplementalMethodExclusions []SupplementalExclusion       `json:"supplemental_method_exclusions"`
-	ReceiverHierarchy            []receiverHierarchyOverride   `json:"receiver_hierarchy"`
+	Aliases                      map[string]aliasOverride    `json:"aliases"`
+	OpaqueObjects                map[string]opaqueOverride   `json:"opaque_objects"`
+	ABITuples                    map[string][]string         `json:"abi_tuples"`
+	SecretEffects                []secretEffectOverride      `json:"secret_effects"`
+	NativeContracts              []nativeContractOverride    `json:"native_contracts"`
+	SupplementalMethodExclusions []supplementalExclusion     `json:"supplemental_method_exclusions"`
+	ReceiverHierarchy            []receiverHierarchyOverride `json:"receiver_hierarchy"`
+}
+type aliasOverride struct {
+	Type string `json:"type"`
+}
+type opaqueOverride struct {
+	Representation string `json:"representation"`
+}
+type secretEffectOverride struct {
+	Symbols []string `json:"symbols"`
 }
 type nativeContractOverride struct {
 	Symbols       []string           `json:"symbols"`
 	Signature     *string            `json:"signature"`
 	Returns       *[]NativeParameter `json:"returns"`
 	ArgumentTypes map[string]string  `json:"argument_types"`
-	Reason        string             `json:"reason"`
-	Evidence      EvidenceReferences `json:"evidence"`
+}
+type supplementalExclusion struct {
+	Owner     string `json:"owner"`
+	Method    string `json:"method"`
+	Source    string `json:"source"`
+	Signature string `json:"signature"`
 }
 type receiverHierarchyOverride struct {
-	Owner         string             `json:"owner"`
-	ExpectedBases []string           `json:"expected_bases"`
-	Bases         []string           `json:"bases"`
-	Reason        string             `json:"reason"`
-	Evidence      EvidenceReferences `json:"evidence"`
+	Owner         string   `json:"owner"`
+	ExpectedBases []string `json:"expected_bases"`
+	Bases         []string `json:"bases"`
 }
 
 func (c *catalogue) definition(name string) *catalogueDefinition {
@@ -75,17 +85,8 @@ func annotationArgument(item *catalogueFunction, name string) *AnnotationParamet
 	reject(fmt.Sprintf("missing required params argument %s", name))
 	return nil
 }
-func (c *catalogue) note(symbol, rule string, extra ...RepresentationNote) {
-	note := RepresentationNote{Symbol: stringPointer(symbol), Rule: rule}
-	if len(extra) > 0 {
-		note = extra[0]
-		note.Symbol = stringPointer(symbol)
-		note.Rule = rule
-	}
-	c.notes = append(c.notes, note)
-}
-func evidenceText(text string) *EvidenceReferences { return &EvidenceReferences{Text: &text} }
 func (c *catalogue) applyOverrides() {
+	// Frame actors and legacy world actors have different SetPlayerModelFromGlues arguments.
 	c.definition("ModelSceneFrameActor").Bases = []string{"ModelSceneFrameActorBase"}
 	legacyActor := c.definition("ModelSceneActor")
 	legacyActor.Bases = []string{"Object"}
@@ -95,7 +96,6 @@ func (c *catalogue) applyOverrides() {
 			methods[name] = value
 		}
 	}
-	c.note("ModelSceneFrameActor", "keep native frame actor separate from Questie's legacy world-actor alias; their SetPlayerModelFromGlues argument lists differ")
 	var overrides catalogueOverrides
 	if e := decodeJSON(mustFile(filepath.Join(c.project.Root, "scripts/wow_api/overrides.json")), &overrides); e != nil {
 		reject(e.Error())
@@ -104,14 +104,10 @@ func (c *catalogue) applyOverrides() {
 	for _, name := range sortedKeys(overrides.Aliases) {
 		item := overrides.Aliases[name]
 		c.aliases[name] = &catalogueAlias{Expression: item.Type, Source: "reviewed override"}
-		item.Symbol = stringPointer(name)
-		c.notes = append(c.notes, item)
 	}
 	for _, name := range sortedKeys(overrides.OpaqueObjects) {
 		item := overrides.OpaqueObjects[name]
 		c.record(name, "reviewed opaque native object").Opaque = item.Representation != "table"
-		item.Symbol = stringPointer(name)
-		c.notes = append(c.notes, item)
 	}
 	c.setGlobal("CreateFrame", &catalogueFunction{
 		ResolvedSignature: stringPointer("function(" + c.literal([]string{"StatusBar"}) + ", ? string, ? Frame, ? string, ? number): StatusBar"),
@@ -120,35 +116,33 @@ func (c *catalogue) applyOverrides() {
 			ResolvedSignature: stringPointer("function(string, ? string, ? Frame, ? string, ? number): Frame"),
 		}},
 	})
+	// Native arity and restrictions still apply to numeric IDs, paths and texture objects.
 	c.method("TextureBase", "SetTexture").Native.Arguments[0].Type = "TextureAsset"
-	c.note("TextureBase.SetTexture", "retain native arity/restrictions; correct texture carrier to numeric file ID, path, or texture object", RepresentationNote{Evidence: evidenceText("Questie Widget/Base/TextureBase.lua and Blizzard numeric icon-file call sites")})
 	c.aliases["fileID"] = &catalogueAlias{Expression: "number", Source: "Lua 5.1 numeric asset-ID carrier; native ID validation still applies"}
-	c.note("fileID", "numeric Lua 5.1 carrier, matching existing opaque-number sinks; native ID validation remains required")
+	// FrameXML also uses coordinate-only and omitted-relative-point shorthands.
 	point := c.method("ScriptRegionResizing", "SetPoint")
 	point.ResolvedSignature = stringPointer("function(self, FramePoint, ? ScriptRegion | string, ? FramePoint, ? number, ? number)")
 	point.Variants = []*catalogueFunction{{ResolvedSignature: stringPointer("function(self, FramePoint, ? number, ? number)")}, {ResolvedSignature: stringPointer("function(self, FramePoint, ScriptRegion | string, ? number, ? number)")}}
-	c.note("ScriptRegionResizing.SetPoint", "retain documented native call shorthands from Questie and Blizzard FrameXML call sites")
+	// Timer results are cancellable handles; callbacks receive the same handle.
 	for _, name := range []string{"NewTimer", "NewTicker"} {
 		c.method("C_Timer", name).Native.Returns[0].Type = "FunctionContainer"
 	}
 	c.aliases["TickerCallback"] = &catalogueAlias{Expression: "FunctionContainer|fun(cb:FunctionContainer)", Source: "reviewed timer callback/handle carrier"}
-	c.note("C_Timer.NewTimer/NewTicker", "native timer results are cancellable FunctionContainer handles; callback receives that handle", RepresentationNote{Evidence: evidenceText("Questie Type/FunctionContainer.lua; locked RingedFrameTemplate.lua and LoopingSoundEffect.lua")})
 	for _, owner := range []string{"Font", "FontString", "EditBox", "SimpleHTML"} {
 		nativeArgument(c.method(owner, "SetFontObject"), "font").Type = "FontObject"
 	}
+	// SecureHandlers.lua stores arbitrary Lua values in frame attributes.
 	for _, name := range []string{"SetAttribute", "SetAttributeNoHandler"} {
 		v := nativeArgument(c.method("Frame", name), "value")
 		v.Type, v.Nilable = "LuaValueVariant", boolPointer(true)
 	}
-	c.note("Frame.SetAttribute/SetAttributeNoHandler", "native attributes accept arbitrary Lua values, including FrameXML frame/table/bool attributes; preserve explicit dynamic boundary", RepresentationNote{Evidence: evidenceText("locked Blizzard_RestrictedAddOnEnvironment/SecureHandlers.lua")})
-	c.note("Font/FontString/EditBox/SimpleHTML.SetFontObject", "accept a named font or Font object", RepresentationNote{Evidence: evidenceText("Questie FontObject alias and locked FrameXML font call sites")})
+	// FrameXML calls SetText with only text; color, alpha and wrap are optional.
 	for i := 1; i < len(c.method("GameTooltip", "SetText").Native.Arguments); i++ {
 		c.method("GameTooltip", "SetText").Native.Arguments[i].Nilable = boolPointer(true)
 	}
-	c.note("GameTooltip.SetText", "color, alpha and wrap arguments are optional", RepresentationNote{Evidence: evidenceText("Questie Widget/Frame/GameTooltip.lua; locked Blizzard_SettingsPanel.lua GameTooltip:SetText(categoryTutorial.tooltip)")})
 	c.definition("LuaDurationManualClock").Bases = append(c.definition("LuaDurationManualClock").Bases, "LuaDurationClockObject")
 	c.definition("SecondsFormatter").Bases = append(c.definition("SecondsFormatter").Bases, "NumericFormatter")
-	c.note("LuaDurationManualClock/SecondsFormatter", "preserve base clock/formatter handle contracts required by native duration consumers")
+	// Numeric curves retain numeric results; general curves may return other carriers.
 	numericCurves := []*catalogueFunction{c.global("UnitHealthPercent"), c.global("UnitPowerPercent")}
 	durationMethods := c.definition("DurationObject").Methods
 	for _, name := range sortedKeys(durationMethods) {
@@ -173,11 +167,9 @@ func (c *catalogue) applyOverrides() {
 		item.Native.Returns[0].Type = "number"
 		item.Variants = []*catalogueFunction{original}
 	}
-	c.note("UnitHealthPercent/UnitPowerPercent/DurationObject.Evaluate*", "numeric curves retain a number-like result; general base/color curves retain the opaque native variant", RepresentationNote{Evidence: evidenceText("native LuaCurveEvaluatedResult documentation distinguishes supplied-curve result carriers")})
 	c.method("RootMenuDescriptionProxy", "AddMenuReleasedCallback").Annotation.Params[0].Type = "fun(menu:MenuProxy,reason:number)"
-	c.note("RootMenuDescriptionProxy.AddMenuReleasedCallback", "callback receives released menu proxy and numeric close reason", RepresentationNote{Evidence: evidenceText("locked Blizzard_Menu/Menu.lua onReleased invocation")})
 	annotationArgument(c.global("SetupTextureKitOnFrame"), "setVisibility").Optional = true
-	c.note("SetupTextureKitOnFrame.setVisibility", "optional: native helper tests its truthiness before changing visibility")
+	// Library-name-dependent results require an explicit consumer type assertion.
 	for _, name := range []string{"NewLibrary", "GetLibrary"} {
 		item := c.method("LibStub", name)
 		item.Annotation.Generics = []string{}
@@ -197,21 +189,20 @@ func (c *catalogue) applyOverrides() {
 	if len(item.Annotation.Returns) == 1 {
 		item.Annotation.Returns = append(item.Annotation.Returns, AnnotationReturn{Type: "number?", Name: stringPointer("minor")})
 	}
-	c.note("LibStub", "dependent library-name inference requires explicit consumer type assertion")
 	for _, name := range []string{"CreateEnumRadioMenu", "CreateEnumRadioContextMenu"} {
 		annotationArgument(c.method("MenuUtil", name), "enum").Type = "table<string,V>"
 	}
+	// Extra mixin members are consumer-owned, beyond the guaranteed root surface.
 	for _, owner := range []string{"Menu", "MenuUtil"} {
 		item := c.method(owner, "CreateRootMenuDescription")
 		item.Annotation.Generics = []string{}
 		item.Annotation.Params[0].Type = "table"
 		item.Annotation.Returns[0].Type = "RootMenuDescriptionProxy"
 	}
-	c.note("Menu.CreateRootMenuDescription", "mixin input is a table; result retains the guaranteed root-description surface. Extra mixin members require a consumer-owned type.")
 	v := annotationArgument(c.method("AceComm-3.0", "SendCommMessage"), "callbackArg")
 	v.Type, v.Optional = "any", true
 	c.definition("AceHook-3.0").Fields["hooks"].Type = "table<any,unknown>"
-	c.note("AceHook-3.0.hooks", "undiscriminable hook-registry values remain opaque")
+	// Repair the malformed annotation to accept a macro name or numeric index.
 	annotationArgument(c.global("SetBindingMacro"), "name").Type = "number|string"
 	for i := range c.global("GetCurrenciesString").Annotation.Returns {
 		output := &c.global("GetCurrenciesString").Annotation.Returns[i]
@@ -222,11 +213,6 @@ func (c *catalogue) applyOverrides() {
 	annotationArgument(c.global("GetCurrenciesString"), "currencies").Type = "(number|table)[]"
 	c.global("GetCurrenciesString").Annotation.Returns[0].Type = "string?"
 	c.aliases["KStringDiscordUserName"] = &catalogueAlias{Expression: "string", Source: "Blizzard Discord user-name text carrier"}
-	c.note("CreateFrame", "literal StatusBar construction retains its native subtype; other frame names return the common Frame surface, and template composition is not inferred", RepresentationNote{Evidence: evidenceText("questie:Data/Wiki.lua:3602 and Blizzard_Menu/Compositor.lua:191")})
-	c.note("MenuUtil.CreateEnumRadioMenu", "enum is a string-keyed table of V, iterated through pairs by FrameXML")
-	c.note("AceComm-3.0.SendCommMessage.callbackArg", "single optional arbitrary callback argument, not a variadic type pack")
-	c.note("SetBindingMacro.name", "repair malformed annotation to macro name or index")
-	c.note("GetCurrenciesString", "accept numeric IDs, keyed currency entries or positional argument tables; an empty list returns nil")
 	call := c.global("LibStub")
 	call.Method = true
 	c.definition("LibStub").Methods["metamethod __call"] = call
@@ -238,7 +224,6 @@ func (c *catalogue) applyOverrides() {
 			for _, variant := range variants {
 				variant.SecretEffect = true
 			}
-			c.note(symbol, effect.Reason, RepresentationNote{Evidence: effect.Evidence})
 		}
 	}
 	for _, correction := range overrides.NativeContracts {
@@ -253,18 +238,16 @@ func (c *catalogue) applyOverrides() {
 			for argument, typeName := range correction.ArgumentTypes {
 				nativeArgument(item, argument).Type = typeName
 			}
-			c.note(symbol, correction.Reason, RepresentationNote{Evidence: &correction.Evidence})
 		}
 	}
 	c.applyNativeTableContracts()
 	c.applySecureCallContracts()
-	// The recorded native fixture constructs this exact animation subtype.
+	// Preserve the subtype selected by the literal animation name.
 	animation := c.method("AnimationGroup", "CreateAnimation")
 	genericAnimation := animation.clone()
 	animation.ResolvedSignature = stringPointer("function(self, " + c.literal([]string{"RadialProgress"}) + ", ? string, ? string): RadialProgress")
 	animation.Variants = append([]*catalogueFunction{genericAnimation}, animation.Variants...)
-	c.note("AnimationGroup.CreateAnimation", "literal RadialProgress construction retains the native receiver subtype", RepresentationNote{Evidence: evidenceText("recorded public RadialProgress native fixture")})
-	c.applyObservedReceiverContracts(overrides)
+	c.applyReceiverCorrections(overrides)
 	c.applyLayeredRegionHierarchy()
 }
 func (c *catalogue) symbolItem(symbol string) *catalogueFunction {
@@ -274,14 +257,10 @@ func (c *catalogue) symbolItem(symbol string) *catalogueFunction {
 	}
 	return c.method(symbol[:index], symbol[index+1:])
 }
-func (c *catalogue) applyObservedReceiverContracts(overrides catalogueOverrides) {
+func (c *catalogue) applyReceiverCorrections(overrides catalogueOverrides) {
 	exclusions, hierarchies := overrides.SupplementalMethodExclusions, overrides.ReceiverHierarchy
 	if len(exclusions) == 0 && len(hierarchies) == 0 {
 		return
-	}
-	observed, e := c.project.LoadObservations()
-	if e != nil {
-		reject(e.Error())
 	}
 	for _, rule := range exclusions {
 		owner, name := rule.Owner, rule.Method
@@ -290,28 +269,7 @@ func (c *catalogue) applyObservedReceiverContracts(overrides catalogueOverrides)
 		if item == nil || item.Native != nil || item.Source != rule.Source || c.signatureValue(item, owner) != rule.Signature {
 			reject(fmt.Sprintf("review changed supplemental exclusion contract: %s", symbol))
 		}
-		source := rule.Source
-		relative := strings.TrimPrefix(source, "questie:")
-		if !strings.HasPrefix(source, "questie:") || filepath.IsAbs(relative) || containsString(strings.Split(filepath.ToSlash(relative), "/"), "..") {
-			reject(fmt.Sprintf("invalid supplemental exclusion source: %s", symbol))
-		}
-		if sha256hex(mustFile(c.project.InputPath("questie", relative))) != rule.SourceSHA256 || observed.Sources.Build != rule.Build {
-			reject(fmt.Sprintf("review changed supplemental exclusion provenance: %s", symbol))
-		}
-		if len(rule.NegativeCases) == 0 {
-			reject(fmt.Sprintf("supplemental exclusion lacks negative native observations: %s", symbol))
-		}
-		for _, name := range rule.NegativeCases {
-			if observed.Hierarchy[name].State != "absent" {
-				reject(fmt.Sprintf("supplemental exclusion lacks negative native observations: %s", symbol))
-			}
-		}
-		rule.Original = ExcludedAnnotationFunction{AnnotationFunction: *item.clone().Annotation, Source: item.Source}
-		rule.ObservationSources = observed.Sources
-		rule.CurrentSourceCohortMatches = observed.Applicable
-		c.excludedMethods[symbol] = rule
 		delete(c.definition(owner).Methods, name)
-		c.note(symbol, "exclude unsupported common supplemental guarantee", RepresentationNote{Reason: rule.Reason, Evidence: &EvidenceReferences{List: rule.Evidence}})
 	}
 	for _, rule := range hierarchies {
 		owner := rule.Owner
@@ -324,7 +282,6 @@ func (c *catalogue) applyObservedReceiverContracts(overrides catalogueOverrides)
 			}
 		}
 		c.definition(owner).Bases = append([]string{}, rule.Bases...)
-		c.note(owner, rule.Reason, RepresentationNote{Evidence: &rule.Evidence, ObservedBuild: observed.Sources.Build, CurrentSourceCohortMatches: boolPointer(observed.Applicable)})
 	}
 }
 
@@ -369,7 +326,6 @@ func (c *catalogue) applyNativeTableContracts() {
 			variant.ResolvedSignature = stringPointer(signature)
 			item.Variants = append(item.Variants, variant)
 		}
-		c.note("table."+contract.name, "preserve documented container inputs and input/output type relations", RepresentationNote{Evidence: evidenceText("locked LuaTableExtensionsDocumentation.lua function and return documentation")})
 	}
 }
 
@@ -384,5 +340,4 @@ func (c *catalogue) applySecureCallContracts() {
 	}
 	argument.Type = members[1]
 	item.Variants = append(item.Variants, &catalogueFunction{ResolvedSignature: stringPointer("function(string, unknown...): unknown..."), Source: item.Source})
-	c.note("securecall", "function-name lookup has opaque results; only a supplied callback establishes its result relation")
 }

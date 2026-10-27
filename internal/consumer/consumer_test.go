@@ -374,7 +374,7 @@ func TestConsumerCLIUsesAddonWorkingDirectory(t *testing.T) {
 func TestConsumerPackageIsReproducibleAndExcludesProducer(t *testing.T) {
 	f := newAddon(t)
 	repo := repositoryRoot(t)
-	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "docs/no-any-types.md", "tools/teal/tests/compiler.lua", "tools/teal/README.md", "tools/teal/provenance.json", "tools/teal/unknown.patch", "tools/teal/rebuild.py", "tools/teal/upstream/tl.lua", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
+	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "tools/teal/tests/compiler.lua", "tools/teal/README.md", "tools/teal/provenance.json", "tools/teal/unknown.patch", "tools/teal/rebuild.py", "tools/teal/upstream/tl.lua", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
 		writeTest(t, filepath.Join(f.root, name), fileText(t, filepath.Join(repo, name)))
 	}
 	first, err := Package(f.root)

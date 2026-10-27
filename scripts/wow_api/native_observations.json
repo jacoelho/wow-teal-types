@@ -1,9 +1,0 @@
-{
-  "acquisition": "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0.acquisition.json",
-  "acquisition_sha256": "5f4f2c075e89c94a6e9759c624c17c0a8a6ec46cde075127771995c52c4a75fd",
-  "build": "12.1.5.70575",
-  "bundle": "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0",
-  "evidence_sha256": "890f0b353fd3148397e030c8db904ab1153a3d13efa4d48cdb7e6f0cedb53f8e",
-  "schema_version": 1,
-  "source_inputs_sha256": "b2e308aaa7b09e7a59c89dfcc5993d83ee0d63f6b18f919b909d4bdf9b3e1589"
-}

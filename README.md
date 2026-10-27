@@ -98,7 +98,7 @@ end
 Keep those checks in the consuming function. A cast, a helper's permission check
 or a previous getter result does not establish access to the current value.
 Plain `tl check` does not enforce all these rules; use the `wow-teal` command.
-Values erased through `any` still require runtime care.
+Generated declarations use opaque `unknown` where source precision is missing.
 
 Some declarations cover legacy APIs or optional libraries; check availability
 before using them. Retain nil guards. Type checking cannot grant protected-call
@@ -109,4 +109,4 @@ See the [declaration contract](docs/api/teal-catalogue.md) for precision limits.
 Maintainers updating for a new WoW release should use [UPDATING.md](UPDATING.md).
 
 Project-authored code and documentation use the [MIT license](LICENSE).
-Upstream source material and retained evidence keep their original terms.
+Upstream source material keeps its original terms.

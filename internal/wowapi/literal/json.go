@@ -9,14 +9,14 @@ import (
 )
 
 // ParseJSON keeps source number kinds and rejects duplicate keys before a typed
-// evidence decoder interprets the resulting syntax. It never decodes into an
+// native decoder interprets the resulting syntax. It never decodes into an
 // erased Go payload.
 func ParseJSON(data []byte) (Value, error) {
 	if len(data) > 128<<20 {
-		return Value{}, fmt.Errorf("JSON evidence exceeds 128 MiB")
+		return Value{}, fmt.Errorf("JSON input exceeds 128 MiB")
 	}
 	if !utf8.Valid(data) {
-		return Value{}, fmt.Errorf("invalid UTF-8 JSON evidence")
+		return Value{}, fmt.Errorf("invalid UTF-8 JSON input")
 	}
 	p := jsonParser{data: data, budget: 1 << 20}
 	value, err := p.value(0)
@@ -77,11 +77,11 @@ func (p *jsonParser) text() (string, error) {
 func (p *jsonParser) value(depth int) (Value, error) {
 	p.budget--
 	if depth > 64 || p.budget < 0 {
-		return Value{}, fmt.Errorf("JSON evidence exceeds nesting or value bound")
+		return Value{}, fmt.Errorf("JSON input exceeds nesting or value bound")
 	}
 	p.space()
 	if p.at >= len(p.data) {
-		return Value{}, fmt.Errorf("unexpected end of JSON evidence")
+		return Value{}, fmt.Errorf("unexpected end of JSON input")
 	}
 	switch p.data[p.at] {
 	case '"':

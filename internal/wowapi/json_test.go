@@ -6,7 +6,7 @@ import (
 	"wow-teal-types/internal/wowapi/literal"
 )
 
-func TestReviewJSONByteContracts(t *testing.T) {
+func TestCanonicalJSONByteContracts(t *testing.T) {
 	value := struct {
 		Empty        []string      `json:"empty"`
 		Float        literal.Float `json:"float"`
@@ -28,15 +28,5 @@ func TestReviewJSONByteContracts(t *testing.T) {
 	}
 	if string(spaced) != `["a,b:c", 1000000.0, 1e-05, 1e+16]` {
 		t.Fatalf("interning JSON: %s", spaced)
-	}
-	pretty, e := jsonPretty(struct {
-		A bool     `json:"a"`
-		B []string `json:"b"`
-	}{false, []string{}})
-	if e != nil {
-		t.Fatal(e)
-	}
-	if string(pretty) != "{\n  \"a\": false,\n  \"b\": []\n}\n" {
-		t.Fatalf("report JSON: %q", pretty)
 	}
 }

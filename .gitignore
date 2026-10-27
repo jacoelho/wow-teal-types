@@ -11,8 +11,3 @@ references/wow-api/blizzard/
 references/wow-api/support/
 references/wow-api/version/
 references/wow-api/questie-runtime/
-references/wow-api/native-crosscheck/
-references/wow-api/native-backup/
-references/wow-api/tsm/*
-!references/wow-api/tsm/resolved-bindings.json
-scripts/wow_api/tsm_resolved_export/target/

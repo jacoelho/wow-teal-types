@@ -52,13 +52,6 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	provenance, err := readJSON[provenanceRecord](filepath.Join(root, "provenance.json"))
-	if err != nil {
-		return nil, err
-	}
-	if provenance.SchemaVersion != 1 || provenance.PackageName == "" || provenance.SourceLockSHA256 == nil || provenance.Limits == nil || provenance.Compiler.StrictArity == nil {
-		return nil, fmt.Errorf("invalid provenance schema")
-	}
 	files := map[string]string{}
 	for _, name := range consumer.RequiredFiles() {
 		files[name] = ""
@@ -66,51 +59,7 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 	manifest.Files = files
 	manifest.WoWBuild = selected.Full
 	manifest.TealVersion = consumer.TealVersion
-	provenance.PackageVersion = manifest.Version
-	provenance.Compiler.Version = manifest.TealVersion
-	provenance.Client = provenanceClient{Build: selected.Build, Flavor: "retail", Interface: selected.Interface, Version: selected.Version}
-	lockNames := map[string]bool{"client_sources.json": true}
-	for name := range provenance.SourceLockSHA256 {
-		if name != "extractor.json" {
-			lockNames[name] = true
-		}
-	}
-	locks := map[string]string{}
-	for _, name := range keys(lockNames) {
-		path, e := safeJoin(root, "scripts/wow_api/"+name)
-		if e != nil {
-			return nil, e
-		}
-		data, e := readFile(path, maxPayload)
-		if e != nil {
-			return nil, e
-		}
-		locks[name] = sha(data)
-	}
-	provenance.SourceLockSHA256 = locks
-	for name, source := range native {
-		value := sourceSummary(source)
-		switch name {
-		case "blizzard":
-			provenance.Sources.Blizzard = value
-		case "blizzard_support":
-			provenance.Sources.BlizzardSupport = value
-		case "blizzard_version":
-			provenance.Sources.BlizzardVersion = value
-		case "questie":
-			provenance.Sources.Questie = value
-		case "questie_runtime":
-			provenance.Sources.QuestieRuntime = value
-		default:
-			return nil, fmt.Errorf("unsupported provenance source group %q", name)
-		}
-	}
-	provenance.Sources.ClientCASC = clientSummary(client)
 	outputs := map[string][]byte{}
-	outputs["provenance.json"], err = jsonBytes(provenance)
-	if err != nil {
-		return nil, err
-	}
 	read := func(name string) ([]byte, error) {
 		path, e := safeJoin(root, name)
 		if e != nil {
