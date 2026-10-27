@@ -752,15 +752,10 @@ func (c *catalogue) loadFrameXML() {
 			record.Fields[name] = &catalogueField{Type: cls.Fields[name]}
 		}
 		for _, name := range sortedKeys(cls.Methods) {
-			expression := cls.Methods[name]
-			callback := c.tealValue(expression, owner, nil)
-			signature := c.defs[callback].Signature
-			receiver := "function(" + ident(owner)
-			pattern := regexp.MustCompile(`^fun\(\s*self\s*:\s*` + regexp.QuoteMeta(owner) + `\s*[,)]`)
-			if !pattern.MatchString(expression) || !strings.HasPrefix(signature, receiver) || len(signature) <= len(receiver) || !strings.ContainsRune(",)", rune(signature[len(receiver)])) {
-				reject(fmt.Sprintf("%s.%s: expected an explicit owning receiver", owner, name))
+			signature, err := c.frameXMLMethod(cls.Methods[name], owner)
+			if err != nil {
+				reject(fmt.Sprintf("%s.%s: %s", owner, name, err))
 			}
-			signature = "function(self" + signature[len(receiver):]
 			record.Methods[name] = &catalogueFunction{ResolvedSignature: &signature, Source: source}
 		}
 	}
@@ -768,6 +763,24 @@ func (c *catalogue) loadFrameXML() {
 		c.setGlobal(name, &catalogueFunction{ResolvedSignature: stringPointer(c.tealValue(supplement.Globals[name], "", nil)), Source: source})
 	}
 }
+func (c *catalogue) frameXMLMethod(expression, owner string) (signature string, err error) {
+	defer captureError(&err)
+	pattern := regexp.MustCompile(`^fun\(\s*self\s*:\s*` + regexp.QuoteMeta(owner) + `\s*[,)]`)
+	if !pattern.MatchString(expression) {
+		reject("expected an explicit owning receiver")
+	}
+	callback := c.defs[c.tealValue(expression, owner, nil)]
+	if callback == nil || callback.Kind != "callback" {
+		reject("expected a method function")
+	}
+	signature = callback.Signature
+	receiver := "function(" + ident(owner)
+	if !strings.HasPrefix(signature, receiver) || len(signature) <= len(receiver) || !strings.ContainsRune(",)", rune(signature[len(receiver)])) {
+		reject("expected an explicit owning receiver")
+	}
+	return "function(self" + signature[len(receiver):], nil
+}
+
 func (p Project) Generate(ctx context.Context) (artifacts Artifacts, err error) {
 	defer captureError(&err)
 	if e := ctx.Err(); e != nil {

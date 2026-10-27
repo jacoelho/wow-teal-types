@@ -23,6 +23,8 @@ func TestFinalizedDeclarationsResolveGeneratedTypesInheritanceAndSecrecy(t *test
 	holder.Fields["left"] = &catalogueField{Type: "{value:number}"}
 	holder.Fields["right"] = &catalogueField{Type: "{value:number}"}
 	holder.Fields["callback"] = &catalogueField{Type: "fun(value:number):string"}
+	callback := &catalogueDefinition{Kind: "callback", Generics: []string{"T"}, Signature: "function(T): T"}
+	c.setDef("Transform", callback)
 	c.setGlobal("GetPayload", &catalogueFunction{Source: "fixture", Native: &NativeFunction{Returns: []NativeParameter{{Type: "Payload", SecretValue: boolPointer(true)}}}})
 
 	projection, err := c.finalize(t.Context())
@@ -39,6 +41,7 @@ func TestFinalizedDeclarationsResolveGeneratedTypesInheritanceAndSecrecy(t *test
 		"   record Shape_bc707ec91b8a\n      value: number\n   end",
 		"   type Callback_4e54a059defc = function(number): string",
 		"   type Global_GetPayload = function(): Payload",
+		"   type Transform<T> = function(T): T",
 	} {
 		if !strings.Contains(declarations, expected) {
 			t.Errorf("missing declaration:\n%s\nactual:\n%s", expected, declarations)
@@ -52,6 +55,7 @@ func TestFinalizedDeclarationsResolveGeneratedTypesInheritanceAndSecrecy(t *test
 	}
 
 	// A finalized projection is independent of subsequent source changes.
+	callback.Generics[0] = "Mutated"
 	payload.Fields["count"] = &catalogueField{Native: &NativeParameter{Type: "string"}}
 	c.globals["GetPayload"] = &catalogueFunction{ResolvedSignature: stringPointer("function(): string")}
 	for name, expected := range outputs {

@@ -3,6 +3,7 @@ package wowapi
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strings"
 )
 
@@ -245,7 +246,7 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 	case "callback":
 		declaration.kind = declarationCallback
 		declaration.name = name
-		declaration.generics = item.Generics
+		declaration.generics = slices.Clone(item.Generics)
 		declaration.expression = item.Signature
 	case "record", "interface", "converted_record":
 		declaration.kind = declarationRecord
