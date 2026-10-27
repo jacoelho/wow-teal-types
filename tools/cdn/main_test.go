@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -146,5 +149,64 @@ func TestRunRejectsCaseAliasedDirectoriesBeforeAcquisition(t *testing.T) {
 			}
 			requireNoAcquiredFiles(t, root, configPath)
 		})
+	}
+}
+
+func TestParseKeyRejectsMalformedKeys(t *testing.T) {
+	for _, value := range []string{"", "a", strings.Repeat("a", 30), strings.Repeat("a", 34), strings.Repeat("A", 32), strings.Repeat("g", 32), strings.Repeat("0", 32)} {
+		if _, err := parseKey(value); err == nil {
+			t.Fatalf("accepted malformed key %q", value)
+		}
+	}
+	got, err := parseKey("0102030405060708090a0b0c0d0e0f10")
+	if err != nil || got != (key{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}) {
+		t.Fatalf("valid key = %x, %v", got, err)
+	}
+}
+
+func TestExtractorReceiptWireContract(t *testing.T) {
+	data, err := os.ReadFile("testdata/extractor-result.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	receipt := extractorReceipt{
+		clientIdentity: clientIdentity{Product: "wow", Region: "eu", Locale: "enUS", Build: 70575, Version: "12.1.5.70575", BuildConfig: strings.Repeat("a", 32), CDNConfig: strings.Repeat("b", 32), ProductConfig: strings.Repeat("c", 32)},
+		Files:          []fileReceipt{{Path: "Interface/example.lua", Size: 5, SHA256: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", ContentKey: "5d41402abc4b2a76b9719d911017c592"}},
+	}
+	encoded, err := json.Marshal(receipt)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got, want map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &got); err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(data, &want); err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != len(want) {
+		t.Fatalf("receipt fields = %s; want %s", encoded, data)
+	}
+	for name, expected := range want {
+		actual, ok := got[name]
+		if !ok {
+			t.Fatalf("receipt missing %s", name)
+		}
+		if name != "files" {
+			if !bytes.Equal(actual, expected) {
+				t.Errorf("%s = %s; want %s", name, actual, expected)
+			}
+			continue
+		}
+		var actualFiles, expectedFiles []fileReceipt
+		if err := json.Unmarshal(actual, &actualFiles); err != nil {
+			t.Fatal(err)
+		}
+		if err := json.Unmarshal(expected, &expectedFiles); err != nil {
+			t.Fatal(err)
+		}
+		if !slices.Equal(actualFiles, expectedFiles) {
+			t.Fatalf("receipt files = %+v; want %+v", actualFiles, expectedFiles)
+		}
 	}
 }

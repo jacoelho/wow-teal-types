@@ -32,7 +32,7 @@ func literalIndex(t *testing.T, tag int) ([]byte, key) {
 		copy(data[position:], value)
 	}
 	copy(data[4128:], []byte{1, 0, 0, 4, 4, 4, 16, 8, 1, 0, 0, 0})
-	k, err := cdnKey(indexVectors[tag-1][3])
+	k, err := parseKey(indexVectors[tag-1][3])
 	if err != nil {
 		t.Fatal(err)
 	}

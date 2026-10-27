@@ -111,11 +111,11 @@ func TestCDNArchiveRangeBoundary(t *testing.T) {
 			}))
 			defer server.Close()
 			c := testCDN(t, server)
-			facts, differences, err := c.prepareIndexes(t.Context(), map[string][]string{
+			err := c.prepareIndexes(t.Context(), map[string][]string{
 				"archives": {hex.EncodeToString(archive[:])}, "archives-index-size": {"1"},
 			})
-			if err != nil || facts.ArchiveCount != 1 || facts.ArchiveEntries != 1 || len(differences) != 1 {
-				t.Fatalf("index facts = %+v, differences = %+v, error = %v", facts, differences, err)
+			if err != nil {
+				t.Fatal(err)
 			}
 			data, err := c.encoded(t.Context(), ek, 32)
 			if mode == "correct" {
@@ -198,7 +198,7 @@ func TestCDNIndexWorkersAreBoundedAndCancellationLeavesNoContent(t *testing.T) {
 	defer server.Close()
 	c := testCDN(t, server)
 	done := make(chan error, 1)
-	go func() { _, _, err := c.prepareIndexes(t.Context(), values); done <- err }()
+	go func() { done <- c.prepareIndexes(t.Context(), values) }()
 	for range 4 {
 		select {
 		case <-started:
@@ -241,5 +241,38 @@ func TestCDNIndexWorkersAreBoundedAndCancellationLeavesNoContent(t *testing.T) {
 		return err
 	}); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestCDNRejectsInvalidArchiveHintsBeforeRequests(t *testing.T) {
+	archive := strings.Repeat("a", 32)
+	for _, test := range []struct {
+		name     string
+		archives []string
+		sizes    []string
+	}{
+		{"empty", nil, nil},
+		{"missing-size", []string{archive}, nil},
+		{"extra-size", []string{archive}, []string{"1", "2"}},
+		{"nonnumeric", []string{archive}, []string{"unknown"}},
+		{"zero", []string{archive}, []string{"0"}},
+		{"negative", []string{archive}, []string{"-1"}},
+		{"duplicate", []string{archive, archive}, []string{"1", "1"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			var requests atomic.Int32
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				requests.Add(1)
+				w.WriteHeader(http.StatusInternalServerError)
+			}))
+			defer server.Close()
+			c := testCDN(t, server)
+			if err := c.prepareIndexes(t.Context(), map[string][]string{"archives": test.archives, "archives-index-size": test.sizes}); err == nil {
+				t.Fatal("invalid archive hints accepted")
+			}
+			if requests.Load() != 0 {
+				t.Fatalf("invalid hints issued %d requests", requests.Load())
+			}
+		})
 	}
 }

@@ -4,23 +4,7 @@ import "wow-teal-types/internal/sourcelock"
 
 type extractorReceipt struct {
 	sourcelock.ClientIdentity
-	Installation string                  `json:"installation,omitempty"`
-	Files        []sourcelock.ClientFile `json:"files"`
-	Manifests    []struct {
-		FileDataID uint32 `json:"file_data_id"`
-		Path       string `json:"path"`
-	} `json:"manifests"`
-	ArchiveIndexVerification struct {
-		ArchiveCount   int   `json:"archive_count"`
-		ArchiveBytes   int64 `json:"archive_bytes"`
-		ArchiveEntries int64 `json:"archive_entries"`
-		ArchiveBlocks  int64 `json:"archive_blocks"`
-	} `json:"archive_index_verification"`
-	ArchiveIndexSizeHints []struct {
-		Archive      string `json:"archive"`
-		DeclaredSize int64  `json:"declared_size"`
-		ActualSize   int64  `json:"actual_size"`
-	} `json:"archive_index_size_hints"`
+	Files []sourcelock.ClientFile `json:"files"`
 }
 type PublicationResult struct {
 	Files  int    `json:"files,omitempty"`

@@ -26,7 +26,7 @@ const maxFile = 8 << 20
 const maxMetadata = 384 << 20
 const maxFiles = 20000
 
-type sourceConfig struct {
+type clientIdentity struct {
 	Product       string `json:"product"`
 	Region        string `json:"region"`
 	Locale        string `json:"locale"`
@@ -35,11 +35,14 @@ type sourceConfig struct {
 	BuildConfig   string `json:"build_config"`
 	CDNConfig     string `json:"cdn_config"`
 	ProductConfig string `json:"product_config"`
-	Installation  string `json:"installation,omitzero"`
+}
+type sourceConfig struct {
+	clientIdentity
+	Installation string `json:"installation,omitzero"`
 }
 type manifestID struct {
-	ID   uint32 `json:"file_data_id"`
-	Path string `json:"path"`
+	ID   uint32
+	Path string
 }
 
 var manifests = []manifestID{{6067012, "Interface/ui-code-list.txt"}, {6067013, "Interface/ui-toc-list.txt"}, {6076661, "Interface/ui-gen-addon-list.txt"}}
@@ -49,6 +52,10 @@ type fileReceipt struct {
 	Size       int    `json:"size"`
 	SHA256     string `json:"sha256"`
 	ContentKey string `json:"content_key"`
+}
+type extractorReceipt struct {
+	clientIdentity
+	Files []fileReceipt `json:"files"`
 }
 type preparedFile struct {
 	path    string
@@ -211,8 +218,7 @@ func extract(ctx context.Context, config sourceConfig, output, cache string) err
 		return fmt.Errorf("verified build configuration does not identify %s", expected)
 	}
 	fmt.Printf("Loading pinned %s for enUS...\n", expected)
-	verification, differences, err := c.prepareIndexes(ctx, cdn)
-	if err != nil {
+	if err := c.prepareIndexes(ctx, cdn); err != nil {
 		return err
 	}
 	keys := build["encoding"]
@@ -416,13 +422,7 @@ sendFiles:
 	}
 	receipts = append(receipts, results...)
 	sort.Slice(receipts, func(i, j int) bool { return receipts[i].Path < receipts[j].Path })
-	receipt := struct {
-		sourceConfig
-		Manifests    []manifestID         `json:"manifests"`
-		Files        []fileReceipt        `json:"files"`
-		Verification indexVerification    `json:"archive_index_verification"`
-		Differences  []sizeHintDifference `json:"archive_index_size_hints"`
-	}{config, manifests, receipts, verification, differences}
+	receipt := extractorReceipt{config.clientIdentity, receipts}
 	data, err = json.MarshalIndent(receipt, "", "  ")
 	if err != nil {
 		return err
@@ -438,6 +438,7 @@ sendFiles:
 	fmt.Printf("Verified extraction receipt: %s\n", path)
 	return nil
 }
+
 // Prepare directories before comparing identities so missing path components
 // and filesystem aliases are resolved by the filesystem itself.
 func prepareDirectory(path string) (string, error) {

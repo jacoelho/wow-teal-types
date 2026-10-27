@@ -19,19 +19,6 @@ import (
 	"time"
 )
 
-type indexVerification struct {
-	ArchiveCount   int   `json:"archive_count"`
-	ArchiveBytes   int64 `json:"archive_bytes"`
-	ArchiveEntries int64 `json:"archive_entries"`
-	ArchiveBlocks  int64 `json:"archive_blocks"`
-}
-
-type sizeHintDifference struct {
-	Archive      string `json:"archive"`
-	DeclaredSize int64  `json:"declared_size"`
-	ActualSize   int64  `json:"actual_size"`
-}
-
 type cdnClient struct {
 	cache        string
 	installation string
@@ -50,16 +37,6 @@ func newCDN(cache, installation string) *cdnClient {
 }
 
 func (c *cdnClient) close() { c.client.CloseIdleConnections() }
-
-func cdnKey(text string) (key, error) {
-	var k key
-	data, err := hex.DecodeString(text)
-	if err != nil || len(data) != len(k) || text != strings.ToLower(text) || bytes.Equal(data, make([]byte, 16)) {
-		return k, fmt.Errorf("invalid lowercase nonzero content key %q", text)
-	}
-	copy(k[:], data)
-	return k, nil
-}
 
 func cdnPath(namespace, kind string, k key) string {
 	text := hex.EncodeToString(k[:])
@@ -119,28 +96,26 @@ func verifyEncodingKey(data []byte, expected key) error {
 	return verifyBLTEEnvelope(data)
 }
 
-func (c *cdnClient) prepareIndexes(ctx context.Context, values map[string][]string) (indexVerification, []sizeHintDifference, error) {
-	var facts indexVerification
+func (c *cdnClient) prepareIndexes(ctx context.Context, values map[string][]string) error {
 	archives, sizes := values["archives"], values["archives-index-size"]
 	if len(archives) == 0 || len(archives) > 10_000 || len(sizes) != len(archives) {
-		return facts, nil, errors.New("CDN config must contain 1..10000 archives with matching size hints")
+		return errors.New("CDN config must contain 1..10000 archives with matching size hints")
 	}
-	keys, hints := make([]key, len(archives)), make([]int64, len(archives))
+	keys := make([]key, len(archives))
 	seen := make(map[key]bool, len(archives))
 	for i, archive := range archives {
-		k, err := cdnKey(archive)
+		k, err := parseKey(archive)
 		if err != nil {
-			return facts, nil, err
+			return err
 		}
 		if seen[k] {
-			return facts, nil, fmt.Errorf("duplicate archive %s", archive)
+			return fmt.Errorf("duplicate archive %s", archive)
 		}
 		seen[k], keys[i] = true, k
 		size, err := strconv.ParseInt(sizes[i], 10, 64)
 		if err != nil || size <= 0 {
-			return facts, nil, fmt.Errorf("archive %s has invalid size hint %q", archive, sizes[i])
+			return fmt.Errorf("archive %s has invalid size hint %q", archive, sizes[i])
 		}
-		hints[i] = size
 	}
 	run, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -176,23 +151,13 @@ func (c *cdnClient) prepareIndexes(ctx context.Context, values map[string][]stri
 	}
 	workers.Wait()
 	if firstError != nil {
-		return facts, nil, firstError
+		return firstError
 	}
 	if err := ctx.Err(); err != nil {
-		return facts, nil, err
+		return err
 	}
-	var differences []sizeHintDifference
-	for i, index := range indices {
-		facts.ArchiveBytes += int64(len(index.data))
-		facts.ArchiveEntries += int64(index.entries)
-		facts.ArchiveBlocks += int64(index.blocks)
-		if hints[i] != int64(len(index.data)) {
-			differences = append(differences, sizeHintDifference{archives[i], hints[i], int64(len(index.data))})
-		}
-	}
-	facts.ArchiveCount = len(indices)
 	c.indices = indices
-	return facts, differences, nil
+	return nil
 }
 
 func (c *cdnClient) archiveIndex(ctx context.Context, k key, account func(int) error) (archiveIndex, error) {
