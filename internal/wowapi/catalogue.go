@@ -54,20 +54,36 @@ func setEqual(a, b map[string]bool) bool {
 }
 
 type catalogue struct {
-	project                                                                                     Project
-	defs                                                                                        map[string]*catalogueDefinition
-	aliases                                                                                     map[string]*catalogueAlias
-	globals                                                                                     map[string]*catalogueFunction
-	errors                                                                                      []string
-	questie                                                                                     []AnnotationDocument
-	nativeDocs                                                                                  []NativeDocument
-	secretStructs, nativeNames, nativeFunctions, resolving, secureGlobals, absencePreconditions map[string]bool
-	abiTuples                                                                                   map[string][]string
-	defOrder, globalOrder                                                                       []string
+	project              Project
+	defs                 map[string]*catalogueDefinition
+	aliases              map[string]*catalogueAlias
+	globals              map[string]*catalogueFunction
+	errors               []string
+	inputStats           CatalogueStatistics
+	secretStructs        map[string]bool
+	resolving            map[string]bool
+	secureGlobals        map[string]bool
+	absencePreconditions map[string]bool
+	abiTuples            map[string][]string
+	defOrder             []string
+	globalOrder          []string
 }
 
 func newCatalogue(p Project) *catalogue {
-	return &catalogue{project: p, defs: map[string]*catalogueDefinition{"OpaqueValue": {Kind: "external", Source: "opaque native/LuaLS unknown carrier"}}, aliases: map[string]*catalogueAlias{}, globals: map[string]*catalogueFunction{}, errors: []string{}, questie: []AnnotationDocument{}, nativeDocs: []NativeDocument{}, secretStructs: map[string]bool{}, nativeNames: map[string]bool{}, nativeFunctions: map[string]bool{}, resolving: map[string]bool{}, secureGlobals: map[string]bool{}, absencePreconditions: map[string]bool{}, abiTuples: map[string][]string{}, defOrder: []string{"OpaqueValue"}, globalOrder: []string{}}
+	return &catalogue{
+		project:              p,
+		defs:                 map[string]*catalogueDefinition{"OpaqueValue": {Kind: "external", Source: "opaque native/LuaLS unknown carrier"}},
+		aliases:              map[string]*catalogueAlias{},
+		globals:              map[string]*catalogueFunction{},
+		errors:               []string{},
+		secretStructs:        map[string]bool{},
+		resolving:            map[string]bool{},
+		secureGlobals:        map[string]bool{},
+		absencePreconditions: map[string]bool{},
+		abiTuples:            map[string][]string{},
+		defOrder:             []string{"OpaqueValue"},
+		globalOrder:          []string{},
+	}
 }
 func (c *catalogue) setDef(name string, item *catalogueDefinition) {
 	if _, ok := c.defs[name]; !ok {
@@ -185,9 +201,6 @@ func pythonTuple(values []string) string {
 	}
 	return "(" + strings.Join(out, ", ") + ")"
 }
-func (c *catalogue) teal(expression, owner string, generics []string) (string, error) {
-	return captureString(func() string { return c.tealValue(expression, owner, generics) })
-}
 func (c *catalogue) tealValue(expression, owner string, generics []string) string {
 	converter := typeConverter{raw: expression, self: ident(owner), literal: c.literal, record: c.anonymous}
 	converter.resolve = func(name string) string {
@@ -295,25 +308,26 @@ func (c *catalogue) sourceLocks() sourcelock.Sources {
 	return locks
 }
 func (c *catalogue) loadQuestie() {
-	rows := c.sourceLocks()["questie"].Files
+	locks := c.sourceLocks()
+	for _, source := range locks {
+		c.inputStats.InputFiles += len(source.Files)
+	}
+	rows := locks["questie"].Files
 	sort.SliceStable(rows, func(i, j int) bool { return rows[i].Name < rows[j].Name })
 	for _, row := range rows {
-		if strings.HasSuffix(row.Name, ".lua") {
-			path, e := c.project.InputPath("questie", row.Name)
-			if e != nil {
-				reject(e.Error())
-			}
-			doc, e := parseAnnotationFile(path, row.Name)
-			if e != nil {
-				reject(e.Error())
-			}
-			c.questie = append(c.questie, doc)
+		if !strings.HasSuffix(row.Name, ".lua") {
+			continue
 		}
-	}
-	for _, doc := range c.questie {
-		path := doc.Path
-		source := "questie:" + path
-		if strings.HasPrefix(path, "Lua/") {
+		path, e := c.project.InputPath("questie", row.Name)
+		if e != nil {
+			reject(e.Error())
+		}
+		doc, e := parseAnnotationFile(path, row.Name)
+		if e != nil {
+			reject(e.Error())
+		}
+		source := "questie:" + doc.Path
+		if strings.HasPrefix(doc.Path, "Lua/") {
 			continue
 		}
 		for _, alias := range doc.Aliases {
@@ -373,6 +387,7 @@ func (c *catalogue) loadQuestie() {
 			if function.Local {
 				continue
 			}
+			c.inputStats.QuestieDeclarations++
 			item := functionFromAnnotation(function, source)
 			owner := stringValue(function.Owner)
 			name := function.Name
@@ -463,16 +478,23 @@ func (c *catalogue) loadNative() {
 		reject(e.Error())
 	}
 	sort.SliceStable(docs, func(i, j int) bool { return docs[i].Name < docs[j].Name })
-	c.nativeDocs = docs
+	nativeNames, nativeFunctions := map[string]bool{}, map[string]bool{}
 	for _, document := range docs {
 		doc := document.Metadata
+		c.inputStats.NativeFunctions += len(doc.Functions)
+		c.inputStats.NativeEvents += len(doc.EventNames)
+		for _, predicate := range doc.Predicates {
+			if predicate.Type == "Precondition" && containsString([]string{"ReturnNothing", "ReturnWithError"}, predicate.FailureMode) {
+				c.absencePreconditions[predicate.Name] = true
+			}
+		}
 		source := "blizzard:" + document.Name
 		for _, table := range doc.Tables {
 			name, kind := table.Name, table.Type
-			if c.nativeNames[name] {
+			if nativeNames[name] {
 				reject(fmt.Sprintf("%s: duplicate native type %s", source, name))
 			}
-			c.nativeNames[name] = true
+			nativeNames[name] = true
 			switch kind {
 			case "Enumeration":
 				delete(c.defs, name)
@@ -548,10 +570,10 @@ func (c *catalogue) loadNative() {
 			if owner != "" {
 				symbol = owner + "." + name
 			}
-			if c.nativeFunctions[symbol] {
+			if nativeFunctions[symbol] {
 				reject(fmt.Sprintf("%s: duplicate native function %s", source, symbol))
 			}
-			c.nativeFunctions[symbol] = true
+			nativeFunctions[symbol] = true
 			item := functionFromNative(function, source, doc.Type == "ScriptObject")
 			if item.Native.Policy.Environment == nil {
 				item.Native.Policy.Environment = stringPointer(firstNonempty(doc.Environment, "All"))
@@ -568,13 +590,6 @@ func (c *catalogue) loadNative() {
 				c.defs[owner].Methods[name] = item
 			} else {
 				c.setGlobal(name, item)
-			}
-		}
-	}
-	for _, doc := range c.nativeDocs {
-		for _, predicate := range doc.Metadata.Predicates {
-			if predicate.Type == "Precondition" && containsString([]string{"ReturnNothing", "ReturnWithError"}, predicate.FailureMode) {
-				c.absencePreconditions[predicate.Name] = true
 			}
 		}
 	}
@@ -811,23 +826,7 @@ func mustFile(path string) []byte {
 }
 
 func (c *catalogue) statistics() CatalogueStatistics {
-	stats := CatalogueStatistics{TypeExports: len(c.defs) + len(c.aliases)}
-	for _, source := range c.sourceLocks() {
-		stats.InputFiles += len(source.Files)
-	}
-	for _, doc := range c.nativeDocs {
-		stats.NativeFunctions += len(doc.Metadata.Functions)
-		stats.NativeEvents += len(doc.Metadata.Events)
-	}
-	for _, doc := range c.questie {
-		if strings.HasPrefix(doc.Path, "Lua/") {
-			continue
-		}
-		for _, function := range doc.Functions {
-			if !function.Local {
-				stats.QuestieDeclarations++
-			}
-		}
-	}
+	stats := c.inputStats
+	stats.TypeExports = len(c.defs) + len(c.aliases)
 	return stats
 }

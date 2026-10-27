@@ -146,16 +146,6 @@ func sameManifest(a, b PackageManifest) bool {
 	return maps.Equal(a.Files, b.Files) && a.License == b.License && a.Name == b.Name && a.SchemaVersion == b.SchemaVersion && a.TealVersion == b.TealVersion && a.Version == b.Version && a.WoWBuild == b.WoWBuild
 }
 
-func manifestBytes(value PackageManifest) ([]byte, error) {
-	var buffer bytes.Buffer
-	encoder := json.NewEncoder(&buffer)
-	encoder.SetEscapeHTML(false)
-	encoder.SetIndent("", "  ")
-	if err := encoder.Encode(value); err != nil {
-		return nil, err
-	}
-	return buffer.Bytes(), nil
-}
 func receiptBytes(value BuildReceipt) ([]byte, error) {
 	var buffer bytes.Buffer
 	encoder := json.NewEncoder(&buffer)

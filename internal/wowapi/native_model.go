@@ -15,7 +15,7 @@ type NativeDocument struct {
 }
 type NativeMetadata struct {
 	Environment string
-	Events      []NativeEvent
+	EventNames  []string
 	Functions   []NativeFunction
 	Name        string
 	Namespace   string
@@ -35,11 +35,6 @@ type NativeParameter struct {
 	Nilable, NilableContents, NeverSecret, NeverSecretContents *bool
 	ConditionalSecret, ConditionalSecretContents, SecretValue  *bool
 	StrideIndex                                                *int
-}
-type NativeEvent struct {
-	Name, Type string
-	Payload    []NativeParameter
-	Policy     NativePolicy
 }
 type NativeTable struct {
 	EnumMetadata               []string
@@ -451,7 +446,7 @@ func decodeNativeMetadata(raw literal.Object) (value NativeMetadata, err error) 
 	if value.Functions, err = nativeItems(raw, "Functions", decodeNativeFunction); err != nil {
 		return value, err
 	}
-	if value.Events, err = nativeItems(raw, "Events", decodeNativeEvent); err != nil {
+	if value.EventNames, err = nativeItems(raw, "Events", decodeNativeEvent); err != nil {
 		return value, err
 	}
 	if value.Tables, err = nativeItems(raw, "Tables", decodeNativeTable); err != nil {
@@ -468,11 +463,11 @@ func decodeNativeMetadata(raw literal.Object) (value NativeMetadata, err error) 
 		functions[function.Name] = true
 	}
 	events := map[string]bool{}
-	for _, event := range value.Events {
-		if events[event.Name] {
-			return value, fmt.Errorf("duplicate native event %s", event.Name)
+	for _, event := range value.EventNames {
+		if events[event] {
+			return value, fmt.Errorf("duplicate native event %s", event)
 		}
-		events[event.Name] = true
+		events[event] = true
 	}
 
 	return value, nil
@@ -564,32 +559,32 @@ func decodeNativeParameter(raw literal.Object) (value NativeParameter, err error
 	}
 	return value, nil
 }
-func decodeNativeEvent(raw literal.Object) (value NativeEvent, err error) {
+func decodeNativeEvent(raw literal.Object) (name string, err error) {
 	if err = nativeIdentity(raw); err != nil {
-		return value, err
+		return name, err
 	}
 	if err = nativeFields(raw, "Name Type LiteralName Documentation Payload", true); err != nil {
-		return value, err
+		return name, err
 	}
-	if value.Name, err = nativeText(raw, "Name"); err != nil {
-		return value, err
+	if name, err = nativeText(raw, "Name"); err != nil {
+		return name, err
 	}
-	if value.Type, err = nativeKind(raw, "Event"); err != nil {
-		return value, err
+	if _, err = nativeKind(raw, "Event"); err != nil {
+		return name, err
 	}
 	if _, err = nativeText(raw, "LiteralName"); err != nil {
-		return value, err
+		return name, err
 	}
 	if err = validateNativeDocumentation(raw); err != nil {
-		return value, err
+		return name, err
 	}
-	if value.Payload, err = nativeItems(raw, "Payload", decodeNativeParameter); err != nil {
-		return value, err
+	if _, err = nativeItems(raw, "Payload", decodeNativeParameter); err != nil {
+		return name, err
 	}
-	if value.Policy, err = decodeNativePolicy(raw); err != nil {
-		return value, err
+	if _, err = decodeNativePolicy(raw); err != nil {
+		return name, err
 	}
-	return value, nil
+	return name, nil
 }
 func decodeNativeTable(raw literal.Object) (value NativeTable, err error) {
 	for _, name := range []string{"NumValues", "MinValue", "MaxValue"} {

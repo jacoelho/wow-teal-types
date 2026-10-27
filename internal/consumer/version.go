@@ -11,7 +11,6 @@ import (
 
 type Version struct {
 	Full      string
-	Version   string
 	Build     int
 	Interface int
 }
@@ -39,7 +38,7 @@ func ReadVersion(root string) (Version, error) {
 			return Version{}, fmt.Errorf("invalid .wow-version component: %w", err)
 		}
 	}
-	return Version{strings.TrimSuffix(string(data), "\n"), strings.Join(match[1:4], "."), values[3], values[0]*10000 + values[1]*100 + values[2]}, nil
+	return Version{Full: strings.TrimSuffix(string(data), "\n"), Build: values[3], Interface: values[0]*10000 + values[1]*100 + values[2]}, nil
 }
 
 func (v Version) Require(fullVersion string, build int) error {

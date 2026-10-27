@@ -57,9 +57,6 @@ func (c *catalogue) projectSignature(signature string) string {
 	}
 	return parts[0] + ": " + strings.Join(results, ", ")
 }
-func (c *catalogue) signature(item *catalogueFunction, owner string) (string, error) {
-	return captureString(func() string { return c.signatureValue(item, owner) })
-}
 func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string {
 	receiverSecret := c.secretStructs[owner] && !item.returnsNeverSecret()
 	if item.ResolvedSignature != nil {
@@ -372,8 +369,9 @@ func (c *catalogue) prepareGlobals() {
 }
 func (c *catalogue) reconcileInheritance() {
 	type expanded struct {
-		fields  map[string]*catalogueField
-		methods map[string]*catalogueFunction
+		fields          map[string]*catalogueField
+		methods         map[string]*catalogueFunction
+		inheritedFields map[string]bool
 	}
 	cache := map[string]expanded{}
 	var expand func(string, []string) expanded
@@ -410,7 +408,6 @@ func (c *catalogue) reconcileInheritance() {
 		for k := range fields {
 			inheritedFields[k] = true
 		}
-		record.InheritedFields = inheritedFields
 		for k, v := range record.Fields {
 			fields[k] = v
 		}
@@ -421,7 +418,7 @@ func (c *catalogue) reconcileInheritance() {
 			}
 			methods[method] = item
 		}
-		result := expanded{fields, methods}
+		result := expanded{fields, methods, inheritedFields}
 		cache[name] = result
 		return result
 	}
@@ -441,7 +438,7 @@ func (c *catalogue) reconcileInheritance() {
 		record.Methods = methods
 		fields := map[string]*catalogueField{}
 		for key, value := range record.Fields {
-			if !record.InheritedFields[key] || value.Native != nil {
+			if !cache[name].inheritedFields[key] || value.Native != nil {
 				fields[key] = value
 			}
 		}

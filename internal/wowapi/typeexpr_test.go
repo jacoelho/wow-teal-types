@@ -35,10 +35,9 @@ APIDocumentation:AddDocumentationTable(Example);`
 	}
 }
 func TestTypeExpressionsPreserveExplicitContracts(t *testing.T) {
-	convert := func(raw string) (string, error) {
-		return captureString(func() string {
-			return (typeConverter{raw: raw, self: "Owner", resolve: func(s string) string { return s }, literal: func(values []string) string { return "Enum_" + strings.Join(values, "_") }, record: func(fields []recordField) string { return "NamedRecord" }}).walk(raw, 0)
-		})
+	convert := func(raw string) (value string, err error) {
+		defer captureError(&err)
+		return (typeConverter{raw: raw, self: "Owner", resolve: func(s string) string { return s }, literal: func(values []string) string { return "Enum_" + strings.Join(values, "_") }, record: func(fields []recordField) string { return "NamedRecord" }}).walk(raw, 0), nil
 	}
 	for _, test := range []struct{ raw, want string }{{"number|nil", "number | nil"}, {"table<string,number>", "{string: number}"}, {"(number|string)[]", "{number | string}"}, {"{[1]:string,[2]:number}", "{string, number}"}, {"fun(self, enabled?:boolean,...:string): number,string", "function(Owner, ? boolean, string...): number, string"}, {"'b'|'a'|'a'", "Enum_a_b"}, {"'one'?|'two'", "nil | Enum_one_two"}, {"{value:number}", "NamedRecord"}, {"true|5", "boolean | number"}} {
 		got, e := convert(test.raw)

@@ -107,7 +107,7 @@ func captureBuildInputs(ctx context.Context, root string, sources, include []str
 }
 
 func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
-	path, err := checkedPath(root, "package.json", false)
+	path, err := checkedPath(root, "package.json")
 	if err != nil {
 		return err
 	}
@@ -132,7 +132,7 @@ func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
 		if err = ctx.Err(); err != nil {
 			return err
 		}
-		path, err := checkedPath(root, name, false)
+		path, err := checkedPath(root, name)
 		if err != nil {
 			return fmt.Errorf("package integrity mismatch: %s: %w", name, err)
 		}

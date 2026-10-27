@@ -2,6 +2,7 @@ package consumer
 
 import (
 	"archive/zip"
+	"encoding/json"
 	"maps"
 	"os"
 	"os/exec"
@@ -33,7 +34,7 @@ func newAddon(t *testing.T) addonFixture {
 		files[name] = fingerprint(data)
 	}
 	manifest.Files = files
-	data, err := manifestBytes(manifest)
+	data, err := json.Marshal(manifest)
 	if err != nil {
 		t.Fatal(err)
 	}

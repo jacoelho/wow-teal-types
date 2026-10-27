@@ -25,11 +25,6 @@ func captureError(target *error) {
 		}
 	}
 }
-func captureString(fn func() string) (value string, err error) {
-	defer captureError(&err)
-	value = fn()
-	return
-}
 
 type luaToken struct {
 	text string

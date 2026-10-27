@@ -74,7 +74,7 @@ func Recipe(root string, manifest PackageManifest, repository string, descriptio
 	if !printable(license) {
 		return "", fmt.Errorf("package license must be a nonempty printable string")
 	}
-	if _, err := checkedPath(root, "LICENSE", false); err != nil {
+	if _, err := checkedPath(root, "LICENSE"); err != nil {
 		return "", fmt.Errorf("project LICENSE file is required: %w", err)
 	}
 	if !releaseVersion.MatchString(version) || compiler != TealVersion {
@@ -98,7 +98,7 @@ func Recipe(root string, manifest PackageManifest, repository string, descriptio
 	}
 	var installs strings.Builder
 	for _, name := range expected {
-		path, err := checkedPath(root, name, false)
+		path, err := checkedPath(root, name)
 		if err != nil {
 			return "", err
 		}

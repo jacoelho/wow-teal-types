@@ -25,6 +25,15 @@ writing and read-only comparison are separate operations. Recipe rendering is
 consumer-owned, while its maintained template belongs to the release cohort.
 Standalone metadata, catalogue, coverage and template-refresh writers are removed.
 
+The CDN command creates output and cache directories, resolves symlinks, and
+compares directory identities and ancestors before acquisition. This rejects
+overlap under the filesystem's own case and alias rules. Rejected requests may
+leave empty directories; extraction and cache file writes have not started.
+Extraction receipts carry client identity and verified files; release owns the
+manifest selection. Installation paths remain acquisition inputs. Archive
+checksums and size-hint validation belong to extraction, without a separate
+reporting model.
+
 ## Captured compiler inputs
 
 A consumer invocation owns a private directory until completion. It captures the
@@ -63,6 +72,9 @@ Callers serialize publication to the same destination.
 Release publication owns a larger journaled cohort transaction and its recovery
 command. Its journal and input fingerprints remain distinct from consumer
 directory replacement. Neither operation claims power-loss atomicity.
+Recovery and extractor building do not require `.wow-version`. Explicit snapshot
+verification uses the supplied snapshot; default snapshot paths require the
+selected version.
 
 ## Declaration generation
 
@@ -96,6 +108,12 @@ declaration is rejected so physical line counts remain exact. Secure aliases ret
 the originating declaration's policy. Full generation runs twice to verify
 determinism. Read-only generator checks compare declarations and package metadata
 before invoking the same consumer declaration check used by release candidates.
+
+Ingestion retains declaration facts and counts, discarding source documents after
+validation and predicate extraction. Duplicate detection and inheritance expansion
+own their bookkeeping locally. Finalized declarations own their slices independently
+of the mutable catalogue. Closure compares deterministic JSON state for at most 32
+passes; historical encoding is reserved for generated names and emitted metadata.
 
 Source locks own acquisition identities; `package.json` owns consumer file hashes.
 There is no separate release provenance file, report manifest, cross-source audit,

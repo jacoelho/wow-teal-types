@@ -52,28 +52,7 @@ func TestBuildReceiptSchemaAcceptsMinimalOwnershipAndRejectsMalformedInput(t *te
 }
 
 func TestConsumerSchemaWireBytes(t *testing.T) {
-	manifest := PackageManifest{Files: map[string]string{"b": "two", "a": "one"}, License: "MIT", Name: "name<&", SchemaVersion: 1, TealVersion: "0.24.8", Version: "0.1.0", WoWBuild: "12.1.5.70575"}
-	actual, err := manifestBytes(manifest)
-	if err != nil {
-		t.Fatal(err)
-	}
-	const wantManifest = `{
-  "files": {
-    "a": "one",
-    "b": "two"
-  },
-  "license": "MIT",
-  "name": "name<&",
-  "schema_version": 1,
-  "teal_version": "0.24.8",
-  "version": "0.1.0",
-  "wow_build": "12.1.5.70575"
-}
-`
-	if string(actual) != wantManifest {
-		t.Fatalf("manifest bytes changed:\n%s", actual)
-	}
-	actual, err = receiptBytes(BuildReceipt{Files: map[string]string{"<Main>.lua": "digest"}, PackageManifestSHA256: "manifest", PackageVersion: "0.1.0"})
+	actual, err := receiptBytes(BuildReceipt{Files: map[string]string{"<Main>.lua": "digest"}, PackageManifestSHA256: "manifest", PackageVersion: "0.1.0"})
 	if err != nil {
 		t.Fatal(err)
 	}

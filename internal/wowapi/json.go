@@ -80,11 +80,3 @@ func decodeJSON[T any](data []byte, value *T) error {
 	}
 	return nil
 }
-
-func jsonDigest[T any](value T) string {
-	data, err := jsonCompact(value)
-	if err != nil {
-		reject(fmt.Sprintf("JSON encoding: %s", err))
-	}
-	return sha256hex(data)
-}

@@ -14,7 +14,6 @@ type catalogueDefinition struct {
 	Values                             []string
 	Signature                          string
 	Generics                           []string
-	InheritedFields                    map[string]bool
 }
 type catalogueAlias struct {
 	Expression, Source string

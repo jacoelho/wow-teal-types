@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -18,10 +17,6 @@ func fileHash(path string) (string, error) {
 	}
 	return fingerprint(data), nil
 }
-func blobSHA(data []byte) string {
-	sum := sha1.Sum(append(fmt.Appendf(nil, "blob %d%c", len(data), 0), data...))
-	return hex.EncodeToString(sum[:])
-}
 func validRelative(name string) bool {
 	if name == "" || filepath.IsAbs(name) || strings.ContainsAny(name, "\\\x00") {
 		return false
@@ -33,7 +28,7 @@ func validRelative(name string) bool {
 	}
 	return true
 }
-func checkedPath(root, name string, missing bool) (string, error) {
+func checkedPath(root, name string) (string, error) {
 	if !validRelative(name) {
 		return "", fmt.Errorf("invalid package manifest path: %s", name)
 	}
@@ -57,9 +52,6 @@ func checkedPath(root, name string, missing bool) (string, error) {
 		current = parent
 	}
 	info, err := os.Lstat(path)
-	if os.IsNotExist(err) && missing {
-		return path, nil
-	}
 	if err != nil {
 		return "", err
 	}

@@ -52,7 +52,7 @@ func Verify(root string) (PackageManifest, error) {
 		return PackageManifest{}, fmt.Errorf("package manifest inventory mismatch")
 	}
 	for _, name := range slices.Sorted(maps.Keys(files)) {
-		path, err := checkedPath(root, name, false)
+		path, err := checkedPath(root, name)
 		if err != nil {
 			return PackageManifest{}, fmt.Errorf("package integrity mismatch: %s: %w", name, err)
 		}

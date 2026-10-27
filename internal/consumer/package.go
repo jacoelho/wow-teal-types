@@ -72,7 +72,7 @@ func Package(root string) (PackageResult, error) {
 	zipped := zip.NewWriter(temporary)
 	zipped.RegisterCompressor(zip.Deflate, func(writer io.Writer) (io.WriteCloser, error) { return flate.NewWriter(writer, flate.BestCompression) })
 	for _, name := range slices.Sorted(maps.Keys(names)) {
-		path, e := checkedPath(root, name, false)
+		path, e := checkedPath(root, name)
 		if e != nil {
 			_ = zipped.Close()
 			_ = temporary.Close()

@@ -1,7 +1,9 @@
 package wowapi
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"slices"
 	"strings"
@@ -70,20 +72,24 @@ func (c *catalogue) finalize(ctx context.Context) (projection declarationProject
 		if len(c.errors) > 0 {
 			return declarationProjection{}, fmt.Errorf("%d conversion errors: %s", len(c.errors), strings.Join(uniqueStrings(c.errors), "\n"))
 		}
-		if before == c.projectionState() {
+		if bytes.Equal(before, c.projectionState()) {
 			return projection, nil
 		}
 	}
 	return declarationProjection{}, fmt.Errorf("declaration projection did not converge within 32 passes")
 }
 
-func (c *catalogue) projectionState() string {
-	return jsonDigest(struct {
+func (c *catalogue) projectionState() []byte {
+	data, err := json.Marshal(struct {
 		Definitions   map[string]*catalogueDefinition
 		Aliases       map[string]*catalogueAlias
 		Globals       map[string]*catalogueFunction
 		SecretStructs map[string]bool
 	}{c.defs, c.aliases, c.globals, c.secretStructs})
+	if err != nil {
+		reject(fmt.Sprintf("encode declaration projection state: %s", err))
+	}
+	return data
 }
 
 func (c *catalogue) projectAttempt(label string, fn func()) {

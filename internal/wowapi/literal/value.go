@@ -112,12 +112,6 @@ func (v Value) Object() (Object, bool) {
 	return out, true
 }
 func (v Value) Reference() (string, bool) { return v.text, v.kind == Reference }
-func (v Value) Expression() (string, Value, Value, bool) {
-	if v.kind != Expression {
-		return "", Value{}, Value{}, false
-	}
-	return v.text, *v.left, *v.right, true
-}
 func (v Value) Equal(other Value) bool {
 	if v.kind != other.kind {
 		return false
@@ -245,14 +239,5 @@ func (v Value) writeJSON(out *bytes.Buffer, depth int) error {
 	default:
 		return fmt.Errorf("invalid literal kind %d", v.kind)
 	}
-	return nil
-}
-
-func (v *Value) UnmarshalJSON(data []byte) error {
-	value, err := ParseJSON(data)
-	if err != nil {
-		return err
-	}
-	*v = value
 	return nil
 }
