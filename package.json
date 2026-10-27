@@ -1,0 +1,28 @@
+{
+  "files": {
+    ".wow-version": "d5a0b4871d841510a8a41016bcad2efab40fa8dffb210b3c64e5bbc2e659f5d2",
+    "bin/wow-teal": "ede0663805533c24392f9c95f654eb797c5cffbd2a3c079e77a8a892cfaf3fb9",
+    "go.mod": "1df306f7fe58489151c95b1191bd50b54634b649f9761360af423e6a8ef78e83",
+    "go.sum": "ff6dac09ab3f5857925f01c0336e5c9499120ef2f3e7050ec60f55e39a408fec",
+    "internal/consumer/consumer.go": "09847582995c1aa19410dd4fcfd2e6042e77d51376acc2b331f766bfaa79428b",
+    "internal/consumer/files.go": "2e912be7199a1795c862ec640fb544fcdc75332dd7f07c0549974921f0b5b415",
+    "internal/consumer/package.go": "86bb788446531804feb9bd44a020cfa0b4c0a10a47dd28fcfd4898cd931e9bfa",
+    "internal/consumer/rockspec.go": "4ccfa7e57ce0790f6b145538f258af1bc79f1466feca9e6de85d3ef97153569e",
+    "internal/consumer/snapshot.go": "66a229f193ea4bbd0372f0788cb8e20e0dacb546fc538d42f20e4bcdf21252fd",
+    "internal/consumer/version.go": "160308222f047513ac3f10e0ebd1ef52ae80d729bc0158be4c3fa37775c93e00",
+    "provenance.json": "6fe9160b1ebe8c0c67f1c5b76db95bd5cd494e297901c0f04b0197e26cd859db",
+    "tools/check_runtime_imports.lua": "d522280bcffffe110b18f889e7bd8c5c56070233d3c448dd2667d46083a906c2",
+    "tools/check_secrets.lua": "7c3c8c56e4ddd8e1e7a4835b9fe14078ed9f054cf59da2e93be14a2768ab3592",
+    "tools/wow-teal/main.go": "348deead00be2f0770ac73e5459f8121f1a8178f2bf452faa87addae4d059cf6",
+    "types/wow/native_values.d.tl": "4497b3e705fc06327f4ffa70a99494c78567660f5221b8ac77568bc3b0e21236",
+    "types/wow/wow.d.tl": "e1557a66538753f327a4dbdfa731b5f28147731fc8f4840f5c54cfd5f48a2e92",
+    "types/wow/wow_env.d.tl": "f7da7980b5e3f66e6e4a1c37826eb55935250bf187151d050f645502696e0220",
+    "types/wow/wow_secure_env.d.tl": "2ff44febf8cfeb42661e8a8a5fab89b36bf11557593c13dbb6eab9652d61d073"
+  },
+  "license": "MIT",
+  "name": "wow-teal-types",
+  "schema_version": 1,
+  "teal_version": "0.24.8",
+  "version": "0.1.0",
+  "wow_build": "12.1.5.70575"
+}

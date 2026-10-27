@@ -1,0 +1,416 @@
+{
+  "aliases": {
+    "ClubMemberOpaqueId": {
+      "type": "number",
+      "reason": "The native schema names the identifier; Questie's parameter and field declarations explicitly preserve its numeric representation. The word Opaque describes the ID's meaning and does not establish WoW secret-value status.",
+      "evidence": [
+        "references/wow-api/blizzard/ClubDocumentation.lua:72",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Blizzard_APIDocumentationGenerated/ClubDocumentation.lua#L25"
+      ]
+    },
+    "ConnectionProtocol": {
+      "type": "number",
+      "reason": "Blizzard indexes the TCP/UDP sequence using each GetProtocolTypes return. Preserve the native numeric token and the function's stride semantics.",
+      "evidence": [
+        "references/wow-api/blizzard/ConnectionDocumentation.lua:56",
+        "https://github.com/Gethe/wow-ui-source/blob/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59/Interface/AddOns/Blizzard_PerformanceBar/PerformanceBar.lua#L45",
+        "https://github.com/Gethe/wow-ui-source/blob/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59/Interface/AddOns/Blizzard_PerformanceBar/PerformanceBar.lua#L81"
+      ]
+    },
+    "DurationTextBinding": {
+      "type": "DurationTextBindingObject",
+      "reason": "The native duration-text binding object's Assign and Copy methods use DurationTextBinding for the same userdata receiver type.",
+      "evidence": [
+        "https://github.com/Gethe/wow-ui-source/blob/15881d522c44cd106d3d8660106ec9f9d2f44167/Interface/AddOns/Blizzard_APIDocumentationGenerated/DurationTextBindingObjectAPIDocumentation.lua#L3",
+        "references/wow-api/blizzard/DurationTextBindingObjectAPIDocumentation.lua:18",
+        "references/wow-api/blizzard/DurationTextBindingObjectAPIDocumentation.lua:70"
+      ]
+    },
+    "FontAsset": {
+      "type": "string",
+      "reason": "Questie declares the matching FontString GetFont return as string and the SetFont argument as FontFile, whose alias is string. This models the supported file-path surface; it does not substitute a Font widget for a font asset.",
+      "evidence": [
+        "references/wow-api/blizzard/SimpleFontStringAPIDocumentation.lua:130",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/Font/FontString.lua#L47",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/UIType/Font.lua#L2"
+      ]
+    },
+    "LuaDurationClock": {
+      "type": "LuaDurationClockObject",
+      "reason": "LuaDurationClockAPIDocumentation names the userdata script object LuaDurationClockObjectAPI; duration methods refer to its handle as LuaDurationClock.",
+      "evidence": [
+        "https://github.com/Gethe/wow-ui-source/blob/15881d522c44cd106d3d8660106ec9f9d2f44167/Interface/AddOns/Blizzard_APIDocumentationGenerated/LuaDurationClockAPIDocumentation.lua#L3",
+        "references/wow-api/blizzard/LuaDurationObjectAPIDocumentation.lua:191"
+      ]
+    },
+    "LuaInventorySlot": {
+      "type": "number",
+      "reason": "The native argument documentation requires an INVSLOT_ constant; Blizzard declares those constants as numbers.",
+      "evidence": [
+        "references/wow-api/blizzard/PaperDollInfoDocumentation.lua:225",
+        "https://github.com/Gethe/wow-ui-source/blob/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59/Interface/AddOns/Blizzard_FrameXMLBase/Constants.lua#L151"
+      ]
+    },
+    "LuaValueVariant": {
+      "type": "any",
+      "reason": "This is an explicitly dynamic native boundary. MeasureCall uses LuaValueVariant for its callable, arbitrary supplied arguments and arbitrary returned values; restricting the alias to tables rejects valid calls and scalar returns.",
+      "evidence": [
+        "https://github.com/Gethe/wow-ui-source/blob/15881d522c44cd106d3d8660106ec9f9d2f44167/Interface/AddOns/Blizzard_APIDocumentationGenerated/AddOnProfilerDocumentation.lua#L134",
+        "references/wow-api/blizzard/AddOnProfilerDocumentation.lua:138",
+        "references/wow-api/blizzard/AddOnProfilerDocumentation.lua:139",
+        "references/wow-api/blizzard/AddOnProfilerDocumentation.lua:145"
+      ]
+    },
+    "MenuTemplateBase": {
+      "type": "Frame",
+      "reason": "Blizzard declares MenuTemplateBase as a Frame template. MenuProxy already owns its proxy-specific API; the unresolved template base contributes the common native frame surface.",
+      "evidence": [
+        "https://github.com/Gethe/wow-ui-source/blob/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59/Interface/AddOns/Blizzard_Menu/Menu.xml#L3",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/FrameXML/Blizzard_Menu/Proxies/MenuProxy.lua#L4"
+      ]
+    },
+    "Milliseconds": {
+      "type": "number",
+      "reason": "Questie explicitly types both the matching GetMinimumCountdownDuration return and SetMinimumCountdownDuration argument as numbers, in milliseconds.",
+      "evidence": [
+        "references/wow-api/blizzard/FrameAPICooldownDocumentation.lua:195",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/Frame/Cooldown.lua#L77",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/Frame/Cooldown.lua#L184"
+      ]
+    },
+    "ScriptTypeName": {
+      "type": "ScriptType",
+      "reason": "The script-name position corresponds to the open string ScriptType alias. Its literal suggestions are not a closed native script whitelist.",
+      "evidence": [
+        "references/wow-api/blizzard/SimpleAnimAPIDocumentation.lua:99",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/UIType/ScriptType.lua#L2"
+      ]
+    },
+    "UnitCastBarID": {
+      "type": "number",
+      "reason": "Questie's latest master types the matching UnitCastingInfo and UnitChannelInfo castBarID positions as numbers. Native nilability and NeverSecret metadata remain attached to each position.",
+      "evidence": [
+        "references/wow-api/blizzard/UnitDocumentation.lua:838",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua#L313",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Blizzard_APIDocumentationGenerated/UnitDocumentation.lua#L334"
+      ]
+    },
+    "kstringAuroraName": {
+      "type": "string",
+      "reason": "The BNet invite accountName is carried as text to Blizzard's color-text wrapper. Kstring encoding changes its content, not the Lua string carrier.",
+      "evidence": [
+        "references/wow-api/blizzard/BattleNetDocumentation.lua:428",
+        "https://github.com/Gethe/wow-ui-source/blob/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59/Interface/AddOns/Blizzard_FriendsFrame/Mainline/FriendRequestsListTemplates.lua#L389",
+        "https://github.com/Gethe/wow-ui-source/blob/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59/Interface/AddOns/Blizzard_SharedXMLBase/Color.lua#L68"
+      ]
+    },
+    "CVarValue": {
+      "type": "string|number",
+      "reason": "Public CVar values include strings and numbers; secret argument restrictions are independent and remain native.",
+      "evidence": [
+        "references/wow-api/support/Blizzard_SettingsDefinitions_Frame/Social.lua:251",
+        "tsm:vendor/Annotations/Core/Blizzard_APIDocumentationGenerated/CVarDocumentation.lua"
+      ]
+    }
+  },
+  "opaque_objects": {
+    "AnchorMixin": {
+      "representation": "table",
+      "reason": "Blizzard's anchor is a mixin-owned table. Its methods are not present in the selected declaration inputs; retain an opaque table contract instead of inventing a dynamic field surface.",
+      "evidence": [
+        "https://github.com/Gethe/wow-ui-source/blob/4e3cbb8c5609e4bfc332c0aebbfa4d79731fab59/Interface/AddOns/Blizzard_SharedXMLBase/AnchorUtil.lua#L2",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/FrameXML/Blizzard_Menu/Proxies/MenuManagerProxy.lua#L25"
+      ]
+    },
+    "DiscordID": {
+      "representation": "opaque-native-value",
+      "reason": "The native docs name DiscordID but neither selected input defines its Lua representation. Preserve it as an opaque static marker until primary-source evidence establishes the carrier. This marker makes no runtime userdata assertion and does not classify the identifier as a WoW secret.",
+      "evidence": [
+        "https://github.com/Gethe/wow-ui-source/blob/15881d522c44cd106d3d8660106ec9f9d2f44167/Interface/AddOns/Blizzard_APIDocumentationGenerated/DiscordConstantsDocumentation.lua#L46",
+        "https://github.com/Gethe/wow-ui-source/blob/15881d522c44cd106d3d8660106ec9f9d2f44167/Interface/AddOns/Blizzard_APIDocumentationGenerated/DiscordDocumentation.lua#L39"
+      ]
+    }
+  },
+  "abi_tuples": {
+    "uiRect": [
+      "number",
+      "number",
+      "number",
+      "number"
+    ]
+  },
+  "abi_tuple_evidence": {
+    "uiRect": {
+      "reason": "Expand uiRect to four positional arguments or returns: left, right, top, bottom. It is neither one Lua table nor a native handle.",
+      "evidence": [
+        "references/wow-api/blizzard/FrameAPIModelSceneFrameDocumentation.lua:302",
+        "references/wow-api/blizzard/FrameAPIModelSceneFrameDocumentation.lua:573",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/Frame/ModelScene.lua#L114",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/Frame/ModelScene.lua#L239",
+        "https://github.com/Questie/Questie/blob/30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374/.types/Annotations/Core/Widget/UIType/UIType.lua#L126"
+      ]
+    }
+  },
+  "secret_effects": [
+    {
+      "symbols": [
+        "CurveObject.Evaluate",
+        "ColorCurveObject.Evaluate",
+        "ColorCurveObject.EvaluateUnpacked"
+      ],
+      "reason": "Confirmed receiver-state propagation: curves containing secret values always produce secret evaluation results. Public handles and Copies retain their methods.",
+      "evidence": [
+        "references/wow-api/blizzard/LuaCurveObjectBaseAPIDocumentation.lua:28",
+        "references/wow-api/blizzard/LuaCurveObjectAPIDocumentation.lua:48",
+        "references/wow-api/blizzard/LuaColorCurveObjectAPIDocumentation.lua:47"
+      ]
+    },
+    {
+      "symbols": [
+        "C_CurveUtil.EvaluateColorFromBoolean",
+        "C_CurveUtil.EvaluateColorValueFromBoolean"
+      ],
+      "reason": "Argument-derived results: native descriptions explicitly evaluate potentially-secret booleans; Teal cannot express conditional output effects, so results are conservatively secret-capable.",
+      "evidence": [
+        "references/wow-api/blizzard/CurveUtilDocumentation.lua:34",
+        "references/wow-api/blizzard/CurveUtilDocumentation.lua:52"
+      ]
+    },
+    {
+      "symbols": [
+        "DurationObject.GetElapsedDuration",
+        "DurationObject.GetElapsedPercent",
+        "DurationObject.GetEndTime",
+        "DurationObject.GetModRate",
+        "DurationObject.GetRemainingDuration",
+        "DurationObject.GetRemainingPercent",
+        "DurationObject.GetStartTime",
+        "DurationObject.GetTotalDuration",
+        "DurationObject.HasExpired",
+        "DurationObject.HasStarted",
+        "DurationObject.IsActive",
+        "DurationObject.IsZero"
+      ],
+      "reason": "Conservative receiver-state policy: duration objects can contain secret state. Treat stored-span calculations/predicates as secret-capable. Native metadata does not individually confirm propagation for these getters; HasSecretValues and Copy remain public.",
+      "evidence": [
+        "references/wow-api/blizzard/LuaDurationObjectAPIDocumentation.lua:209",
+        "references/wow-api/blizzard/LuaDurationObjectAPIDocumentation.lua:351"
+      ]
+    },
+    {
+      "symbols": [
+        "CurveObject.GetPoint",
+        "CurveObject.GetPoints",
+        "ColorCurveObject.GetPoint",
+        "ColorCurveObject.GetPoints"
+      ],
+      "reason": "Conservative receiver-state policy: point extraction can expose configured secret curve coordinates. Exact per-accessor propagation is not individually documented. Counts and HasSecretValues retain their native contracts.",
+      "evidence": [
+        "references/wow-api/blizzard/LuaCurveObjectAPIDocumentation.lua:65",
+        "references/wow-api/blizzard/LuaCurveObjectBaseAPIDocumentation.lua:28"
+      ]
+    },
+    {
+      "symbols": [
+        "secretwrap"
+      ],
+      "reason": "The native description explicitly converts every supplied value into a secret. Project each variadic return as opaque despite the absent SecretReturns flag; native argument permissions remain unchanged. Identified by the pinned TSM cross-check.",
+      "evidence": [
+        "references/wow-api/blizzard/FrameScriptDocumentation.lua:430",
+        "https://github.com/TradeSkillMaster/wowlua-ls/blob/529512363cfdf9d21af3c097d652a347d4bca2b4/stubs/overrides/SecretValues.lua"
+      ]
+    }
+  ],
+  "native_contracts": [
+    {
+      "symbols": [
+        "GetCursorInfo"
+      ],
+      "signature": "function(): string | nil, OpaqueValue...",
+      "reason": "Correct absent native return metadata from Blizzard callers and TSM cursor tuples: the first result is a possibly-absent string discriminator. Dependent payload positions remain opaque rather than any or ambiguous return-only overloads. Opacity marks unavailable static precision, not a runtime secrecy assertion.",
+      "evidence": [
+        "references/wow-api/blizzard/GameCursorDocumentation.lua:74",
+        "references/wow-api/support/Blizzard_ClickBindingUI/Blizzard_ClickBindingUI.lua:426",
+        "tsm:overrides/GetCursorInfo.lua:13"
+      ]
+    },
+    {
+      "symbols": [
+        "ModelScene.CreateActor",
+        "ModelScene.GetActorAtIndex"
+      ],
+      "returns": [
+        {
+          "Name": "actor",
+          "Type": "ModelSceneFrameActor",
+          "Nilable": true
+        }
+      ],
+      "reason": "Correct omitted actor return metadata using Blizzard actor-pool creation and actor method consumers, corroborated by TSM. Return the canonical native actor interface; nil is a conservative failure allowance. Preserve documented positional inputs and secret argument permissions.",
+      "evidence": [
+        "references/wow-api/blizzard/FrameAPIModelSceneFrameDocumentation.lua:18",
+        "references/wow-api/support/Blizzard_SharedXMLBase/Pools.lua:570",
+        "references/wow-api/support/Blizzard_EncounterJournal/Mainline/Blizzard_EncounterJournal.lua:1483",
+        "tsm:vendor/Annotations/Core/Widget/Frame/ModelScene.lua:16"
+      ]
+    },
+    {
+      "symbols": [
+        "Frame.GetAttribute"
+      ],
+      "returns": [
+        {
+          "Name": "value",
+          "Type": "Secret",
+          "Nilable": true
+        }
+      ],
+      "reason": "Native cstring return metadata is contradicted by Blizzard storing and reading frame-valued attributes. Preserve an opaque dynamic result, not any or a scalar claim. Nil is possible for missing attributes; the native Attributes aspect, key type and argument permissions remain unchanged.",
+      "evidence": [
+        "references/wow-api/blizzard/SimpleFrameAPIDocumentation.lua:290",
+        "references/wow-api/support/Blizzard_RestrictedAddOnEnvironment/SecureHandlers.lua:445",
+        "references/wow-api/support/Blizzard_RestrictedAddOnEnvironment/SecureHandlers.lua:462"
+      ]
+    },
+    {
+      "symbols": [
+        "Button.SetNormalFontObject",
+        "Button.SetHighlightFontObject",
+        "Button.SetDisabledFontObject"
+      ],
+      "argument_types": {
+        "font": "FontObject"
+      },
+      "reason": "Blizzard passes named-font strings to these Button setters. Use the existing string|Font carrier, preserving native arity and secret permissions.",
+      "evidence": [
+        "references/wow-api/support/Blizzard_GlueXML/Shared/CharacterServicesTemplates.lua:196",
+        "references/wow-api/support/Blizzard_GlueXML/Mainline/RealmList.lua:211",
+        "references/questie-annotations/Core/Widget/UIType/Font.lua:24"
+      ]
+    },
+    {
+      "symbols": [
+        "C_CVar.SetCVar"
+      ],
+      "argument_types": {
+        "value": "CVarValue"
+      },
+      "reason": "Blizzard passes public numeric 1/0 CVar values. Correct the value carrier to string|number; retain NotAllowed secret inputs, public/non-read-only/non-secure CVar preconditions and optional value position.",
+      "evidence": [
+        "references/wow-api/support/Blizzard_SettingsDefinitions_Frame/Social.lua:251",
+        "references/wow-api/support/Blizzard_SettingsDefinitions_Frame/Social.lua:256",
+        "references/wow-api/blizzard/CVarDocumentation.lua:118"
+      ]
+    }
+  ],
+  "supplemental_method_exclusions": [
+    {
+      "owner": "FrameScriptObject",
+      "method": "SetPreventSecretValues",
+      "source": "questie:Widget/Base/FrameScriptObject.lua",
+      "source_sha256": "656d889dbb71a3789da78735ac0ff0b2f26f34bca27ed0b46df6d02a68b89458",
+      "signature": "function(self, boolean)",
+      "build": "12.1.5.70575",
+      "negative_cases": [
+        "RadialProgress.parent.Animation.SetPreventSecretValues",
+        "VectorGraphics.parent.Region.SetPreventSecretValues"
+      ],
+      "reason": "Not a common FrameScriptObject guarantee: absent on both owned RadialProgress and VectorGraphics. This does not prove global absence on every receiver.",
+      "evidence": [
+        "scripts/wow_api/native_observations.json",
+        "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json",
+        "references/wow-api/blizzard/SimpleFrameScriptObjectAPIDocumentation.lua"
+      ]
+    }
+  ],
+  "receiver_hierarchy": [
+    {
+      "owner": "Region",
+      "expected_bases": [
+        "ScriptRegion",
+        "ScriptRegionResizing",
+        "AnimatableObject"
+      ],
+      "bases": [
+        "ScriptRegion",
+        "ScriptRegionResizing"
+      ],
+      "reason": "Build-matched native capability capture separates Region layout/script/color from AnimatableObject; preserve animation capabilities only on supported receiver interfaces.",
+      "evidence": [
+        "scripts/wow_api/native_observations.json",
+        "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json"
+      ]
+    },
+    {
+      "owner": "Frame",
+      "expected_bases": [
+        "Region",
+        "ScriptObject"
+      ],
+      "bases": [
+        "Region",
+        "ScriptObject",
+        "AnimatableObject"
+      ],
+      "reason": "Build-matched native capability capture separates Region layout/script/color from AnimatableObject; preserve animation capabilities only on supported receiver interfaces.",
+      "evidence": [
+        "scripts/wow_api/native_observations.json",
+        "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json"
+      ]
+    },
+    {
+      "owner": "TextureBase",
+      "expected_bases": [
+        "Region"
+      ],
+      "bases": [
+        "Region",
+        "AnimatableObject"
+      ],
+      "reason": "Build-matched native capability capture separates Region layout/script/color from AnimatableObject; preserve animation capabilities only on supported receiver interfaces.",
+      "evidence": [
+        "scripts/wow_api/native_observations.json",
+        "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json"
+      ]
+    },
+    {
+      "owner": "FontString",
+      "expected_bases": [
+        "Region"
+      ],
+      "bases": [
+        "Region",
+        "AnimatableObject"
+      ],
+      "reason": "Build-matched native capability capture separates Region layout/script/color from AnimatableObject; preserve animation capabilities only on supported receiver interfaces.",
+      "evidence": [
+        "scripts/wow_api/native_observations.json",
+        "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json"
+      ]
+    },
+    {
+      "owner": "RadialProgress",
+      "expected_bases": [],
+      "bases": [
+        "Animation"
+      ],
+      "reason": "Build-matched native capability capture separates Region layout/script/color from AnimatableObject; preserve animation capabilities only on supported receiver interfaces.",
+      "evidence": [
+        "scripts/wow_api/native_observations.json",
+        "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json"
+      ]
+    },
+    {
+      "owner": "VectorGraphics",
+      "expected_bases": [],
+      "bases": [
+        "Region"
+      ],
+      "reason": "Build-matched native capability capture separates Region layout/script/color from AnimatableObject; preserve animation capabilities only on supported receiver interfaces.",
+      "evidence": [
+        "scripts/wow_api/native_observations.json",
+        "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json"
+      ]
+    }
+  ]
+}

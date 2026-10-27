@@ -1,0 +1,31 @@
+{
+  "acquisition": "Installed verified generated artifact; actual build-matched client launched through native UI; loaded addon, manual /api-probe capture then /reload; parsed SavedVariables without executing Lua",
+  "capture_kind": "manual native presence/type queries",
+  "client_build": "12.1.5.70575",
+  "files": {
+    "capture.lua": {
+      "sha256": "7cdb61a9e70629d0eefca61b38220ccdd32182fc346112065ebc30127d69cabf",
+      "size": 13673
+    },
+    "installed-receipt.json": {
+      "sha256": "7f4074dc465c8874f6c72b050a6de884fa9d283cc75b3f1a085c0e47cc86718c",
+      "size": 614
+    },
+    "probe-build.json": {
+      "sha256": "faf30c0fbbb58299f074b4909489fd967aa7a41b635566d3b29b7fb147527377",
+      "size": 3872
+    },
+    "report.json": {
+      "sha256": "806dac87172d0d4c2f6f3426ae176b43cf8871dfb102f6a8831be84c3a789326",
+      "size": 17087
+    }
+  },
+  "limitations": [
+    "No method invocation or secrecy-permission certification",
+    "Native type names are not mappings for Wowless virtual capability facets",
+    "Inherited method inventories were not collected by version1.0.0"
+  ],
+  "producer": "WoWAPIProbe 1.0.0 compiled Teal0.24.8",
+  "recorded_on": "2026-10-26",
+  "schema_version": 1
+}

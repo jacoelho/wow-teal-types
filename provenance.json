@@ -1,0 +1,82 @@
+{
+  "client": {
+    "build": 70575,
+    "flavor": "retail",
+    "interface": 120105,
+    "version": "12.1.5"
+  },
+  "compiler": {
+    "compatibility": "off",
+    "lua_target": "5.1",
+    "name": "teal",
+    "strict_arity": true,
+    "version": "0.24.8"
+  },
+  "export": {
+    "checker_policy": "unchanged opaque-operation policy; portable paths and compiler-loaded module identity guard added",
+    "declaration_bytes": "identical to reviewed catalogue",
+    "generation": "self-contained producer in scripts/wow_api; consumer ZIP excludes generator and source evidence"
+  },
+  "limits": [
+    "Declarations do not establish runtime availability for legacy APIs or optional libraries.",
+    "The checker does not track values erased through any.",
+    "Public fixture observations do not certify secret-context permissions or complete signatures."
+  ],
+  "package_name": "wow-teal-types",
+  "package_version": "0.1.0",
+  "schema_version": 1,
+  "source_lock_sha256": {
+    "client_sources.json": "ca77bae8f83a643106a15db1506d2502648a449d69f30940a9b89ceac1cef23b",
+    "native_backup_sources.json": "192823ae49cb214afa4728d7fc5a0678a06110fbcec4e6d8d56456086fd054c6",
+    "native_crosscheck_sources.json": "472dca40727096202f9ea5cf54ec2a7f3be126b3245ab30bfaf1e7b4610968dc",
+    "sources.json": "e43ea910c84ac8c7ce933e337a85b81396d187f32811a2744b7ce8dd643a6141",
+    "tsm_sources.json": "65089f851b10bd6dc1aef5e76a873d9b65424d8390cf297cacf51aee70efc407"
+  },
+  "sources": {
+    "blizzard": {
+      "commit": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+      "ref": "live",
+      "repository": "Gethe/wow-ui-source"
+    },
+    "blizzard_support": {
+      "commit": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+      "ref": "live",
+      "repository": "Gethe/wow-ui-source"
+    },
+    "blizzard_version": {
+      "commit": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+      "ref": "live",
+      "repository": "Gethe/wow-ui-source"
+    },
+    "client_casc": {
+      "build": 70575,
+      "build_config": "d718abcc42604d8efbd35aecfa5bb75b",
+      "cdn_config": "c13b476a09cb3262797a6fdc88103036",
+      "extractor": {
+        "implementation": "wow-teal-types/tools/cdn",
+        "source_sha256": "665de26c40a6963f73443a95c337bc59210723a1d7612d169e5eda3b251fe045"
+      },
+      "locale": "enUS",
+      "manifests": {
+        "Interface/ui-code-list.txt": 6067012,
+        "Interface/ui-gen-addon-list.txt": 6076661,
+        "Interface/ui-toc-list.txt": 6067013
+      },
+      "product": "wow",
+      "product_config": "53020d32e1a25648c8e1eafd5771935f",
+      "region": "eu",
+      "schema": 1,
+      "version": "12.1.5.70575"
+    },
+    "questie": {
+      "commit": "30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374",
+      "ref": "master",
+      "repository": "Questie/Questie"
+    },
+    "questie_runtime": {
+      "commit": "30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374",
+      "ref": "master",
+      "repository": "Questie/Questie"
+    }
+  }
+}

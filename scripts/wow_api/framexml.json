@@ -1,0 +1,620 @@
+{
+  "description": "Reviewed public FrameXML contracts missing from generated API metadata and Questie Core; consumed native surfaces only, not a claim of complete FrameXML coverage. Implementation evidence is locked at the selected Blizzard commit.",
+  "classes": [
+    {
+      "name": "UiMapPointFactory",
+      "bases": [],
+      "fields": {
+        "CreateFromCoordinates": "fun(mapID:number, x:number, y:number, z?:number):UiMapPoint",
+        "CreateFromVector2D": "fun(mapID:number, position:Vector2DMixin, z?:number):UiMapPoint",
+        "CreateFromVector3D": "fun(mapID:number, position:Vector3DType):UiMapPoint"
+      },
+      "methods": {}
+    },
+    {
+      "name": "ChatTypeColor",
+      "bases": [],
+      "fields": {
+        "r": "number",
+        "g": "number",
+        "b": "number"
+      },
+      "methods": {}
+    },
+    {
+      "name": "ScrollingMessageFrame",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {},
+      "methods": {
+        "AddMessage": "fun(self:ScrollingMessageFrame, message:string, r?:number, g?:number, b?:number, ...:any)"
+      }
+    },
+    {
+      "name": "MapCanvasPinMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "OnLoad": "fun(self:MapCanvasPinMixin)",
+        "OnAcquired": "fun(self:MapCanvasPinMixin, ...:any)",
+        "OnReleased": "fun(self:MapCanvasPinMixin)",
+        "OnMouseEnter": "fun(self:MapCanvasPinMixin)",
+        "OnMouseLeave": "fun(self:MapCanvasPinMixin)",
+        "SetPosition": "fun(self:MapCanvasPinMixin, normalizedX:number, normalizedY:number, insetIndex?:number)",
+        "SetScalingLimits": "fun(self:MapCanvasPinMixin, scaleFactor:number, startScale?:number, endScale?:number)",
+        "UseFrameLevelType": "fun(self:MapCanvasPinMixin, pinFrameLevelType:string, index?:number)",
+        "CheckMouseButtonPassthrough": "fun(self:MapCanvasPinMixin, ...:string)"
+      }
+    },
+    {
+      "name": "MapCanvasPin",
+      "bases": [
+        "Frame",
+        "MapCanvasPinMixin"
+      ],
+      "fields": {},
+      "methods": {}
+    },
+    {
+      "name": "MapCanvasDataProviderMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "OnAdded": "fun(self:MapCanvasDataProviderMixin, owningMap:MapCanvasMixin)",
+        "OnRemoved": "fun(self:MapCanvasDataProviderMixin, owningMap:MapCanvasMixin)",
+        "RemoveAllData": "fun(self:MapCanvasDataProviderMixin)",
+        "RefreshAllData": "fun(self:MapCanvasDataProviderMixin, fromOnShow?:boolean)",
+        "OnShow": "fun(self:MapCanvasDataProviderMixin)",
+        "OnHide": "fun(self:MapCanvasDataProviderMixin)",
+        "GetMap": "fun(self:MapCanvasDataProviderMixin):MapCanvasMixin?"
+      }
+    },
+    {
+      "name": "MapCanvasMixin",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {},
+      "methods": {
+        "GetMapID": "fun(self:MapCanvasMixin):number?",
+        "AddDataProvider": "fun(self:MapCanvasMixin, dataProvider:MapCanvasDataProviderMixin)",
+        "RemoveDataProvider": "fun(self:MapCanvasMixin, dataProvider:MapCanvasDataProviderMixin)",
+        "RemoveAllPinsByTemplate": "fun(self:MapCanvasMixin, pinTemplate:string)",
+        "AcquirePin": "fun(self:MapCanvasMixin, pinTemplate:string, ...:any):MapCanvasPin"
+      }
+    },
+    {
+      "name": "EditModeManagerFrame",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {
+        "SaveChangesButton": "Button",
+        "RevertAllChangesButton": "Button"
+      },
+      "methods": {
+        "IsEditModeActive": "fun(self:EditModeManagerFrame):boolean",
+        "IsActiveLayoutPreset": "fun(self:EditModeManagerFrame):boolean?",
+        "GetActiveLayoutInfo": "fun(self:EditModeManagerFrame):EditModeLayoutInfo?",
+        "GetLayouts": "fun(self:EditModeManagerFrame):EditModeLayoutInfo[]",
+        "SetHasActiveChanges": "fun(self:EditModeManagerFrame, hasActiveChanges:boolean)",
+        "CheckForSystemActiveChanges": "fun(self:EditModeManagerFrame)"
+      }
+    },
+    {
+      "name": "EditModeLayoutDialog",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {
+        "modes": "table<string,EditModeDialogMode>"
+      },
+      "methods": {
+        "GetModeData": "fun(self:EditModeLayoutDialog):EditModeDialogMode?",
+        "GetLayoutInfo": "fun(self:EditModeLayoutDialog):EditModeLayoutInfo?",
+        "GetEditBoxText": "fun(self:EditModeLayoutDialog):string?",
+        "GetDesiredLayoutType": "fun(self:EditModeLayoutDialog):number"
+      }
+    },
+    {
+      "name": "EditModeUnsavedChangesDialog",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {
+        "SaveAndProceedButton": "Button"
+      },
+      "methods": {}
+    },
+    {
+      "name": "SettingsCategoryMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "GetID": "fun(self:SettingsCategoryMixin):number",
+        "GetName": "fun(self:SettingsCategoryMixin):string"
+      }
+    },
+    {
+      "name": "SettingsCanvasLayoutMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "GetFrame": "fun(self:SettingsCanvasLayoutMixin):Frame"
+      }
+    },
+    {
+      "name": "SettingsNamespace",
+      "bases": [],
+      "fields": {
+        "RegisterCanvasLayoutCategory": "fun(frame:Frame, name:string):SettingsCategoryMixin, SettingsCanvasLayoutMixin",
+        "RegisterCanvasLayoutSubcategory": "fun(parentCategory:SettingsCategoryMixin, frame:Frame, name:string):SettingsCategoryMixin, SettingsCanvasLayoutMixin",
+        "RegisterAddOnCategory": "fun(category:SettingsCategoryMixin)",
+        "OpenToCategory": "fun(categoryID:number, scrollToElementName?:string)"
+      },
+      "methods": {}
+    },
+    {
+      "name": "AuraContainerCandidateFilters",
+      "bases": [],
+      "fields": {
+        "includeSpellIDs": "table<number,boolean>?",
+        "excludeSpellIDs": "table<number,boolean>?",
+        "includeDispelTypes": "table<string,boolean>?",
+        "excludeDispelTypes": "table<string,boolean>?",
+        "maxDuration": "number?",
+        "processedAuraType": "number?",
+        "isFromPlayerOrPlayerPet": "boolean?",
+        "isRoleAura": "boolean?",
+        "isPriorityAura": "boolean?",
+        "isStealable": "boolean?",
+        "nameplateShowAll": "boolean?",
+        "nameplateShowPersonal": "boolean?",
+        "canApplyAura": "boolean?",
+        "isBossAura": "boolean?",
+        "isBossOrRoleAura": "boolean?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "AuraContainerLayout",
+      "bases": [],
+      "fields": {
+        "elementWidth": "number?",
+        "elementHeight": "number?",
+        "elementSpacing": "number?",
+        "lineSpacing": "number?",
+        "groupSpacing": "number?",
+        "groupLineSpacing": "number?",
+        "forceNewLine": "boolean?",
+        "layoutIndex": "number?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "AuraContainerGroupOptions",
+      "bases": [],
+      "fields": {
+        "maxFrameCount": "number?",
+        "candidateFilters": "AuraContainerCandidateFilters?",
+        "initializeFrame": "(fun(frame:Frame))?",
+        "templateNames": "string[]?",
+        "sortMethod": "number?",
+        "sortDirection": "number?",
+        "layout": "AuraContainerLayout?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "CustomAuraContainer",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {},
+      "methods": {
+        "AddAuraGroup": "fun(self:CustomAuraContainer, groupKey:string, filterString:string, options?:AuraContainerGroupOptions)",
+        "SetUnit": "fun(self:CustomAuraContainer, unitToken:string)",
+        "GetUnit": "fun(self:CustomAuraContainer):string",
+        "SetEnabled": "fun(self:CustomAuraContainer, enabled:boolean)",
+        "IsEnabled": "fun(self:CustomAuraContainer):boolean",
+        "UpdateAllAuras": "fun(self:CustomAuraContainer)"
+      }
+    },
+    {
+      "name": "NamePlateUnitFrame",
+      "bases": [
+        "Button"
+      ],
+      "fields": {
+        "unitExists": "boolean?",
+        "displayedUnit": "string?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "NamePlateBaseMixin",
+      "bases": [],
+      "fields": {
+        "UnitFrame": "NamePlateUnitFrame?"
+      },
+      "methods": {}
+    }
+  ],
+  "aliases": {
+    "EditModeDialogMode": "table<string,any>"
+  },
+  "globals": {
+    "UiMapPoint": "UiMapPointFactory",
+    "ChatTypeInfo": "table<string,ChatTypeColor>",
+    "SOUNDKIT": "table<string,number>",
+    "RaidWarningFrame": "Frame",
+    "RaidNotice_AddMessage": "fun(noticeFrame:Frame, textString:string, colorInfo:ChatTypeColor, displayTime?:number)",
+    "DEFAULT_CHAT_FRAME": "ScrollingMessageFrame",
+    "MapCanvasPinMixin": "MapCanvasPinMixin",
+    "MapCanvasDataProviderMixin": "MapCanvasDataProviderMixin",
+    "WorldMapFrame": "MapCanvasMixin",
+    "EditModeManagerFrame": "EditModeManagerFrame",
+    "EditModeLayoutDialog": "EditModeLayoutDialog",
+    "EditModeUnsavedChangesDialog": "EditModeUnsavedChangesDialog",
+    "RegisterStateDriver": "fun(frame:Frame, state:string, values:string)",
+    "RunNextFrame": "fun(callback:fun(...:any))",
+    "SecureHandlerSetFrameRef": "fun(frame:Frame, label:string, refFrame:Frame)",
+    "SecureHandlerWrapScript": "fun(frame:Frame, script:string, header:Frame, preBody:string, postBody?:string)",
+    "Settings": "SettingsNamespace",
+    "SlashCmdList": "table<string,fun(msg:string, editBox?:EditBox)>",
+    "UISpecialFrames": "string[]"
+  },
+  "evidence": [
+    {
+      "path": "Blizzard_ObjectAPI/Mainline/UiMapPoint.lua",
+      "symbols": [
+        "UiMapPointFactory",
+        "UiMapPoint"
+      ],
+      "reason": "Factory returns uiMapID, Vector2D position and optional z; all three constructors retained."
+    },
+    {
+      "path": "Blizzard_ChatFrameBase/Shared/ChatTypeInfoColors.lua",
+      "symbols": [
+        "ChatTypeInfo",
+        "ChatTypeColor"
+      ],
+      "reason": "Initialization gives each ChatTypeInfo entry public numeric r/g/b fields; other chat configuration fields remain outside the consumed color contract."
+    },
+    {
+      "path": "Blizzard_ChatFrameBase/Shared/ChatTypeInfoConstants.lua",
+      "symbols": [
+        "ChatTypeInfo"
+      ],
+      "reason": "Defines the string-keyed chat-type table including RAID_WARNING before color initialization."
+    },
+    {
+      "path": "Blizzard_SharedXML/Mainline/SoundKitConstants.lua",
+      "symbols": [
+        "SOUNDKIT"
+      ],
+      "reason": "SOUNDKIT is a string-keyed table of numeric sound kit IDs."
+    },
+    {
+      "path": "Blizzard_DeprecatedRaidWarning/Deprecated_RaidWarning.lua",
+      "symbols": [
+        "RaidNotice_AddMessage"
+      ],
+      "reason": "Legacy wrapper forwards text/color/displayTime to RaidWarningUtil; only exists when loadDeprecationFallbacks is enabled, so consumers retain runtime presence checks."
+    },
+    {
+      "path": "Blizzard_RaidWarning/RaidWarningUtil.lua",
+      "symbols": [
+        "RaidNotice_AddMessage"
+      ],
+      "reason": "Forwarded warning text, color and optional display time are passed to the warning frame."
+    },
+    {
+      "path": "Blizzard_RaidWarning/RaidWarning.xml",
+      "symbols": [
+        "RaidWarningFrame"
+      ],
+      "reason": "Declares the global frame instance."
+    },
+    {
+      "path": "Blizzard_ChatFrameBase/Shared/ChatFrameUtil.lua",
+      "symbols": [
+        "DEFAULT_CHAT_FRAME"
+      ],
+      "reason": "Sets DEFAULT_CHAT_FRAME to ChatFrame1."
+    },
+    {
+      "path": "Blizzard_ChatFrameBase/Mainline/ChatFrame.xml",
+      "symbols": [
+        "ScrollingMessageFrame"
+      ],
+      "reason": "ChatFrameTemplate is a ScrollingMessageFrame mixed with ChatFrameMixin."
+    },
+    {
+      "path": "Blizzard_ChatFrameBase/Shared/ChatFrame.lua",
+      "symbols": [
+        "ScrollingMessageFrame"
+      ],
+      "reason": "ChatFrameMixin.AddMessage forwards arguments through ScrollingMessageFrameSecureMixin."
+    },
+    {
+      "path": "Blizzard_SharedXML/ScrollingMessageFrame.lua",
+      "symbols": [
+        "ScrollingMessageFrame"
+      ],
+      "reason": "AddMessage accepts message and optional RGB, then any additional caller-owned message data."
+    },
+    {
+      "path": "Blizzard_MapCanvas/MapCanvas_DataProviderBase.lua",
+      "symbols": [
+        "MapCanvasDataProviderMixin",
+        "MapCanvasPinMixin",
+        "MapCanvasPin"
+      ],
+      "reason": "Mixin lifecycle, optional scaling bounds, position/inset, frame-level index and passthrough button callbacks; GetMap can be nil before OnAdded or after OnRemoved."
+    },
+    {
+      "path": "Blizzard_MapCanvas/Blizzard_MapCanvas.lua",
+      "symbols": [
+        "MapCanvasMixin"
+      ],
+      "reason": "Adds providers with OnAdded; acquires template-dependent native pins, invokes OnAcquired with arbitrary arguments and returns the common pin surface."
+    },
+    {
+      "path": "Blizzard_WorldMap/Blizzard_WorldMap.xml",
+      "symbols": [
+        "WorldMapFrame"
+      ],
+      "reason": "WorldMapFrame inherits WorldMapFrameTemplate, itself based on MapCanvasFrameTemplate."
+    },
+    {
+      "path": "Blizzard_EditMode/Shared/EditModeManager.lua",
+      "symbols": [
+        "EditModeManagerFrame"
+      ],
+      "reason": "Manager exposes native layout records/arrays and dirty-state methods; active layout/preset may be absent."
+    },
+    {
+      "path": "Blizzard_EditMode/Shared/EditModeManager.xml",
+      "symbols": [
+        "EditModeManagerFrame"
+      ],
+      "reason": "Declares manager Frame and its SaveChangesButton/RevertAllChangesButton native buttons."
+    },
+    {
+      "path": "Blizzard_EditMode/Shared/EditModeDialogs.lua",
+      "symbols": [
+        "EditModeLayoutDialog",
+        "EditModeUnsavedChangesDialog",
+        "EditModeDialogMode"
+      ],
+      "reason": "Base dialog getters and open caller-defined mode tables; returned layout reuses native EditModeLayoutInfo."
+    },
+    {
+      "path": "Blizzard_EditMode/Shared/EditModeDialogs.xml",
+      "symbols": [
+        "EditModeLayoutDialog",
+        "EditModeUnsavedChangesDialog"
+      ],
+      "reason": "Declares named dialog Frames and SaveAndProceedButton."
+    },
+    {
+      "path": "Blizzard_RestrictedAddOnEnvironment/SecureStateDriver.lua",
+      "symbols": [
+        "RegisterStateDriver"
+      ],
+      "reason": "Wrapper delegates frame/state-expression to RegisterAttributeDriver; permission remains a runtime obligation."
+    },
+    {
+      "path": "Blizzard_RestrictedAddOnEnvironment/SecureHandlers.lua",
+      "symbols": [
+        "SecureHandlerSetFrameRef",
+        "SecureHandlerWrapScript"
+      ],
+      "reason": "Validates native frames and snippets; rejects forbidden receivers, requires explicit protection for wrap header, optional post-body; no return values."
+    },
+    {
+      "path": "Blizzard_SharedXMLBase/FunctionUtil.lua",
+      "symbols": [
+        "RunNextFrame"
+      ],
+      "reason": "RunNextFrame schedules C_Timer.After(0, callback) and returns no values."
+    },
+    {
+      "path": "Blizzard_UIParentPanelManager/Shared/UIParentPanelManager.lua",
+      "symbols": [
+        "UISpecialFrames"
+      ],
+      "reason": "String-name array resolves global frames for Escape dismissal."
+    },
+    {
+      "path": "Blizzard_ChatFrameBase/Shared/SlashCommandsRegistry.lua",
+      "symbols": [
+        "SlashCmdList"
+      ],
+      "reason": "General user-addon slash command callback registry is intentionally global and string-keyed."
+    },
+    {
+      "path": "Blizzard_ChatFrameBase/Shared/ChatFrameEditBox.lua",
+      "symbols": [
+        "SlashCmdList"
+      ],
+      "reason": "Invokes registered callbacks with trimmed message and the edit-box receiver; second argument remains optional for addon direct invocation."
+    },
+    {
+      "path": "Blizzard_Settings_Shared/Blizzard_Settings.lua",
+      "symbols": [
+        "Settings"
+      ],
+      "reason": "Settings delegates canvas category/subcategory registration, addon registration and opening to native inbound/settings utility boundaries."
+    },
+    {
+      "path": "Blizzard_Settings_Shared/Blizzard_SettingsInbound.lua",
+      "symbols": [
+        "Settings",
+        "SettingsCategoryMixin",
+        "SettingsCanvasLayoutMixin"
+      ],
+      "reason": "Canvas registration returns the category and created canvas layout through secure attribute results."
+    },
+    {
+      "path": "Blizzard_Settings_Shared/Blizzard_Category.lua",
+      "symbols": [
+        "SettingsCategoryMixin"
+      ],
+      "reason": "Category IDs come from an incrementing numeric counter; GetID and GetName return owned fields."
+    },
+    {
+      "path": "Blizzard_Settings_Shared/Blizzard_SettingsLayouts.lua",
+      "symbols": [
+        "SettingsCanvasLayoutMixin"
+      ],
+      "reason": "Canvas layout stores and returns the supplied native frame."
+    },
+    {
+      "path": "Blizzard_SharedXML/Shared/FrameTemplate/RingedFrameTemplate.lua",
+      "symbols": [
+        "C_Timer.NewTimer"
+      ],
+      "reason": "StartFlash stores C_Timer.NewTimer result in FlashTimer; ClearFlashTimer calls its Cancel method."
+    },
+    {
+      "path": "Blizzard_SharedXML/LoopingSoundEffect.lua",
+      "symbols": [
+        "C_Timer.NewTicker"
+      ],
+      "reason": "Start/FinishLoopingSound store NewTicker results and CancelLoopingSound calls their Cancel methods."
+    },
+    {
+      "path": "Blizzard_Menu/Menu.lua",
+      "symbols": [
+        "SharedMenuDescriptionProxy.AddMenuReleasedCallback",
+        "RootMenuDescriptionProxy.AddMenuReleasedCallback"
+      ],
+      "reason": "At1981-1982 menu release executes each callback with the menu proxy and closeReason; stale supplemental annotation omits second argument."
+    },
+    {
+      "path": "Blizzard_Menu/Compositor.lua",
+      "symbols": [
+        "Font.SetFontObject",
+        "FontString.SetFontObject",
+        "EditBox.SetFontObject"
+      ],
+      "reason": "At69 and98 Blizzard passes the string GameFontHighlight to fontString/EditBox SetFontObject. Questie Widget/UIType/Font.lua independently defines FontObject as string|Font; native SimpleFont-only argument metadata underdescribes that carrier."
+    },
+    {
+      "path": "blizzard:StringUtilDocumentation.lua",
+      "symbols": [
+        "SecondsFormatter",
+        "NumericFormatter"
+      ],
+      "reason": "CreateSecondsFormatter documentation explicitly calls its result a numeric formatter. Together with DurationObject.FormatRemainingDuration accepting NumericFormatter this supports the intended native subtype; no runtime call site was found in the bounded inspected sources. This is metadata-based inference, not a verified caller observation."
+    },
+    {
+      "path": "blizzard:DurationUtilDocumentation.lua",
+      "symbols": [
+        "LuaDurationManualClock",
+        "LuaDurationClockObject"
+      ],
+      "reason": "CreateManualClock documentation explicitly calls its result a time source for use with duration objects. DurationObject.SetClock accepts LuaDurationClock, resolved to LuaDurationClockObject; this supports the intended native subtype. No runtime call site was found in the bounded inspected sources; this is metadata-based inference."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_AuraContainer.toc",
+      "symbols": [
+        "CustomAuraContainer"
+      ],
+      "reason": "Aura container Lua runs in a secure environment, while intrinsic/template XML and the explicit inbound facade load globally. The type describes public native instance methods, not access to private addon implementation globals."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_AuraContainer.xml",
+      "symbols": [
+        "CustomAuraContainer"
+      ],
+      "reason": "AuraContainer intrinsic derives Frame; public AuraContainerInboundMixin delegates through its forbidden partition and owns enabled/unit defaults."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_CustomAuraContainer.xml",
+      "symbols": [
+        "CustomAuraContainer"
+      ],
+      "reason": "CustomAuraContainerTemplate instantiates AuraContainer with CustomAuraContainerInboundMixin on the public partition and private implementation separately."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_CustomAuraContainer.lua",
+      "symbols": [
+        "AuraContainerCandidateFilters",
+        "AuraContainerLayout",
+        "AuraContainerGroupOptions",
+        "CustomAuraContainer"
+      ],
+      "reason": "Validates and copies optional caller group options, candidates and group layout; AddAuraGroup accepts unique nonempty key and native filter string and returns no values. maxFrameCount uses its numeric Lua carrier, but native validation requires a nonnegative integer or positive infinity. Candidate/geometry values remain native validated. Adding a group introduces the UntrustedLayoutScriptExecution forbidden aspect."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_AuraContainer.lua",
+      "symbols": [
+        "CustomAuraContainer"
+      ],
+      "reason": "Public shared methods SetUnit validates a string, SetEnabled updates registrations and aura state, IsEnabled normalizes to boolean, and UpdateAllAuras is overridable."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_ManagedAuraContainer.lua",
+      "symbols": [
+        "CustomAuraContainer"
+      ],
+      "reason": "ManagedAuraContainerSharedMixin provides the concrete UpdateAllAuras implementation inherited by CustomAuraContainerSharedMixin."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_AuraContainerShared.lua",
+      "symbols": [
+        "AuraContainerGroupOptions",
+        "AuraContainerLayout"
+      ],
+      "reason": "Default group options make candidate filters, initializer and layout optional; default maxFrameCount is infinity and frame initialization batches are ten."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_AuraContainerFrameProviders.lua",
+      "symbols": [
+        "AuraContainerGroupOptions.initializeFrame"
+      ],
+      "reason": "Initializer receives the created aura frame public object table before access restrictions are applied; callbacks do not grant permission to inspect later secret aura state."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_AuraContainerFlowLayout.lua",
+      "symbols": [
+        "AuraContainerLayout"
+      ],
+      "reason": "Public/native flow layout API owns spacing and geometry; group layout field validation is in CustomAuraContainer."
+    },
+    {
+      "path": "Blizzard_AuraContainer/Blizzard_AuraButton.xml",
+      "symbols": [
+        "AuraContainerGroupOptions.initializeFrame"
+      ],
+      "reason": "AuraButton intrinsic is a Button, hence a Frame. Frame provider creates this intrinsic and passes its public object table to the initialization callback before applying access restrictions."
+    },
+    {
+      "path": "Blizzard_NamePlates/Blizzard_NamePlateBase.lua",
+      "symbols": [
+        "NamePlateBaseMixin.UnitFrame",
+        "NamePlateUnitFrame"
+      ],
+      "reason": "AcquireUnitFrame creates the child via the driver and assigns UnitFrame; ReleaseUnitFrame clears it to nil. The header identifies the child as NamePlateUnitFrameMixin."
+    },
+    {
+      "path": "Blizzard_NamePlates/Blizzard_NamePlates.xml",
+      "symbols": [
+        "NamePlateUnitFrame"
+      ],
+      "reason": "BaseNamePlateUnitFrameTemplate is a Button with NamePlateUnitFrameMixin; ordinary and forbidden NamePlateUnitFrame templates inherit it. The static shape does not grant permission to read a forbidden instance."
+    },
+    {
+      "path": "Blizzard_UnitFrame/Shared/CompactUnitFrame.lua",
+      "symbols": [
+        "NamePlateUnitFrame.unitExists",
+        "NamePlateUnitFrame.displayedUnit"
+      ],
+      "reason": "CompactUnitFrame_SetUnit assigns displayedUnit from the supplied unit token and clears it on release; visibility updates assign unitExists literal true/false. Fields are optional for recycled/unbound child state."
+    }
+  ]
+}

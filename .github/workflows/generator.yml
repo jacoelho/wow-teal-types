@@ -1,0 +1,54 @@
+name: Check catalogue generator
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: generator-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generator:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Install maintainer tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks luajit zstd
+          luarocks --lua-version=5.1 --tree="$RUNNER_TEMP/rocks" install tl 0.24.8-1
+          echo "$RUNNER_TEMP/rocks/bin" >> "$GITHUB_PATH"
+          rustup toolchain install 1.99.0 --profile minimal
+      - name: Acquire immutable inputs
+        run: make bootstrap
+      - name: Build and verify pinned reader
+        run: |
+          cargo +1.99.0 build --locked --manifest-path scripts/wow_api/tsm_resolved_export/Cargo.toml
+          cargo +1.99.0 test --locked --manifest-path scripts/wow_api/tsm_resolved_export/Cargo.toml
+      - name: Check regeneration and maintainer contracts
+        run: |
+          GOTOOLCHAIN=local go test -C tools/cdn -race ./...
+          GOTOOLCHAIN=local go vet -C tools/cdn ./...
+          make check-generator
+          make test
+          GOTOOLCHAIN=local GOWORK=off go test -race ./internal/release ./tools/wow-types
+          GOTOOLCHAIN=local GOWORK=off go vet ./...
+      - name: Check one-command generation
+        run: |
+          make generate
+          git diff --exit-code
+      - name: Check consumer boundary
+        run: bash check-all.sh

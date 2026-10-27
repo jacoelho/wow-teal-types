@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "acquisition": "Following installation and manual capture instructions, user requested another check; newly persisted SavedVariables identifies installed probe1.3.0 and validates against exact manifest and receipt.",
+  "client_build": "12.1.5.70575",
+  "probe_version": "1.3.0",
+  "context": "out_of_combat_public_owned_objects",
+  "bundle": "public-invocations-1.3.0",
+  "bundle_index_sha256": "2a609daa5f883d704f5bf5230c57072d0e5d3be6c94c9ee936d7607bf80c0232",
+  "installed_files_verified_against_retained_receipt": true,
+  "successful_method_invocations": 73,
+  "property_checks_passed": 72,
+  "property_mismatches": [
+    "DurationTextBindingObject.UpdateFontString"
+  ],
+  "cleanup_complete": true,
+  "limits": [
+    "public owned out-of-combat objects only",
+    "clock-reference identity mismatch does not establish clock-source behavior failure",
+    "setup, stable public text and font sentinel control observed; update equality still mismatched",
+    "secret permissions and protected contexts not certified"
+  ]
+}

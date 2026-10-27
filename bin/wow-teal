@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -eu
+project_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+caller_directory=$(pwd)
+GOFLAGS= GOTOOLCHAIN=local GOWORK=off exec go -C "$project_root" run -mod=readonly ./tools/wow-teal --root "$project_root" --cwd "$caller_directory" "$@"

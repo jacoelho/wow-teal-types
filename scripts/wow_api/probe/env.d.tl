@@ -1,0 +1,3 @@
+global WoWAPIProbeDB: any
+global SLASH_WOWAPIPROBE1: string
+global unpack: function({any}, ? integer, ? integer): any...

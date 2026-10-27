@@ -1,0 +1,36 @@
+rockspec_format = "3.0"
+package = "wow-tl-type"
+version = "0.1.0-1"
+
+source = {
+   url = "git+https://github.com/@REPOSITORY@",
+   tag = "v0.1.0",
+}
+
+description = {
+   summary = "Retail World of Warcraft declaration files for Teal",
+   detailed = [[
+      Declaration-only snapshot for Retail 12.1.5.70575.
+      The matching wow-teal command supplies additional secret-operation checks.
+   ]],
+   homepage = "https://github.com/@REPOSITORY@",
+   license = "MIT",
+}
+
+dependencies = {
+   "lua >= 5.1",
+   "tl == 0.24.8",
+}
+
+build = {
+   type = "builtin",
+   modules = {},
+   install = {
+      lua = {
+         "types/wow/native_values.d.tl",
+         "types/wow/wow.d.tl",
+         "types/wow/wow_env.d.tl",
+         "types/wow/wow_secure_env.d.tl",
+      },
+   },
+}

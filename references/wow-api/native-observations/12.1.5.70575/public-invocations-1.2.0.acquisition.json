@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "acquisition": "User reported manually executing the installed addon; the SavedVariables capture was read and validated against the retained installed manifest and receipt.",
+  "client_build": "12.1.5.70575",
+  "probe_version": "1.2.0",
+  "context": "out_of_combat_public_owned_objects",
+  "bundle": "public-invocations-1.2.0",
+  "bundle_index_sha256": "2db9a94494f18be6df43bc42746d55fc96a2d1dd8e86943a5eb8a3c9cc2736df",
+  "installed_files_verified_against_retained_receipt": true,
+  "successful_method_invocations": 73,
+  "property_checks_passed": 72,
+  "property_mismatches": [
+    "DurationTextBindingObject.UpdateFontString"
+  ],
+  "cleanup_complete": true,
+  "limits": [
+    "public owned out-of-combat objects only",
+    "presence does not establish inherited method signatures",
+    "enabled-first fixture still reports a text mismatch; reason unresolved",
+    "secret permissions and protected contexts not certified"
+  ]
+}

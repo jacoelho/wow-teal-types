@@ -1,0 +1,53 @@
+name: Check declarations and consumers
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00
+        with:
+          go-version-file: go.mod
+          cache: false
+      - name: Install pinned compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
+          luarocks --lua-version=5.1 --tree="$RUNNER_TEMP/rocks" install tl 0.24.8-1
+          echo "$RUNNER_TEMP/rocks/bin" >> "$GITHUB_PATH"
+      - name: Check and test
+        run: |
+          tl --version
+          bash check-all.sh
+          GOTOOLCHAIN=local GOWORK=off go test ./internal/consumer
+          bin/wow-teal build examples/minimal --output build/WowTealExample
+          scripts/check-consumer-archive.sh
+          bin/wow-teal rockspecs --check
+          bin/wow-teal rockspecs --repository "$GITHUB_REPOSITORY"
+          bin/wow-teal rockspecs --repository "$GITHUB_REPOSITORY" --check
+          for recipe in build/rockspecs/*.rockspec; do
+            luarocks lint "$recipe"
+          done
+      - name: Retain consumer and recipe artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: wow-teal-types-candidates
+          if-no-files-found: error
+          path: |
+            dist/*.zip
+            dist/*.sha256
+            build/rockspecs/*.rockspec

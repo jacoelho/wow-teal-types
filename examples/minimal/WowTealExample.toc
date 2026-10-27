@@ -1,0 +1,5 @@
+## Interface: 120105
+## Title: WoW Teal Example
+## Notes: Development example for the pinned WoW Teal declaration snapshot.
+## Version: 0.1.0
+WowTealExample.lua

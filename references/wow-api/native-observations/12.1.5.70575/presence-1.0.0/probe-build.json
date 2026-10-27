@@ -1,0 +1,148 @@
+{
+  "files": {
+    "WoWAPIProbe/Plan.lua": "32e9fe1e78c83ea6f9c5ea7cf21b50ffb227d012ee021156c4a6519bbef09268",
+    "WoWAPIProbe/Runtime.lua": "386378ef2eac5d50245a6a3adb92d422c49ba2330cb364cae90400798f9b9807",
+    "WoWAPIProbe/WoWAPIProbe.toc": "cb1aa9121186d08a70f85e457d6cae317639ad33e91b72950498bd3e0d209b8f"
+  },
+  "plan": {
+    "declarationFingerprint": "3f4d79c8b5e98aa2d452e0de377a3135373d4c9fb524f79376fb6a522217ad0e",
+    "expectedBuild": "12.1.5.70575",
+    "expectedInterface": 120105,
+    "expectedMethods": 73,
+    "expectedProjectID": 1,
+    "families": [
+      {
+        "canonical": "DurationTextBindingObject",
+        "methods": [
+          "Assign",
+          "CanFormatText",
+          "CanUpdateFontString",
+          "ClearTextColorCurve",
+          "Copy",
+          "Disable",
+          "Enable",
+          "GetDuration",
+          "GetExpiredText",
+          "GetFontString",
+          "GetFormattedText",
+          "GetFormattedTextColor",
+          "GetTextColorCurve",
+          "GetTimeModifier",
+          "GetUpdateInterval",
+          "GetZeroDurationText",
+          "HasSecretValues",
+          "IsEnabled",
+          "SetDuration",
+          "SetEnabled",
+          "SetExpiredText",
+          "SetFontString",
+          "SetFormatter",
+          "SetTextColorCurve",
+          "SetTextFormat",
+          "SetTimeModifier",
+          "SetToDefaults",
+          "SetUpdateInterval",
+          "SetZeroDurationText",
+          "UpdateFontString"
+        ],
+        "name": "DurationTextBindingObjectAPI"
+      },
+      {
+        "canonical": "LuaDurationClockObject",
+        "methods": [
+          "GetTime"
+        ],
+        "name": "LuaDurationClockObjectAPI"
+      },
+      {
+        "canonical": "LuaDurationManualClock",
+        "methods": [
+          "AdvanceTime",
+          "ResetTime",
+          "RewindTime",
+          "SetTime"
+        ],
+        "name": "LuaDurationManualClockAPI"
+      },
+      {
+        "canonical": "LuaLocaleContext",
+        "methods": [
+          "CompareStrings",
+          "FindBreaks",
+          "FindStringMatches",
+          "FoldCase",
+          "FormatCurrency",
+          "FormatDate",
+          "FormatDateTime",
+          "FormatNumber",
+          "FormatTime",
+          "GetCurrencyName",
+          "GetDisplayName",
+          "GetLocale",
+          "GetSortKey",
+          "Length",
+          "ParseCurrency",
+          "ParseNumber",
+          "SelectPlural",
+          "SetLocale",
+          "ToLower",
+          "ToTitle",
+          "ToUpper",
+          "TransformLocale"
+        ],
+        "name": "LuaLocaleContextAPI"
+      },
+      {
+        "canonical": "RadialProgress",
+        "methods": [
+          "GetFromPercent",
+          "GetToPercent",
+          "SetFromPercent",
+          "SetToPercent"
+        ],
+        "name": "SimpleAnimRadialProgressAPI"
+      },
+      {
+        "canonical": "VectorGraphics",
+        "methods": [
+          "ClearSVG",
+          "GetSVGFileID",
+          "HasSVG",
+          "SetSVG"
+        ],
+        "name": "SimpleVectorGraphicsAPI"
+      },
+      {
+        "canonical": "TimedSignalMap",
+        "methods": [
+          "CancelAllSignals",
+          "CancelSignal",
+          "GetNextSignal",
+          "GetSignalCount",
+          "GetSignalTime",
+          "HasSignal",
+          "SignalAfter",
+          "SignalAt"
+        ],
+        "name": "TimedSignalMapAPI"
+      }
+    ],
+    "limits": {
+      "animationGroup": 1,
+      "durationBinding": 1,
+      "families": 7,
+      "frame": 1,
+      "localeContext": 1,
+      "manualClock": 1,
+      "methods": 73,
+      "queryCases": 56,
+      "radialProgress": 1,
+      "savedCaptures": 1,
+      "timedSignalMap": 1,
+      "vectorGraphics": 1
+    },
+    "sourceFingerprint": "6a15dca9fed3247b9907b7e59842b7cb046767bb91812cc3208e427d1f284e16",
+    "version": "1.0.0"
+  },
+  "probe": "1.0.0"
+}

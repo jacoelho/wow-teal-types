@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "scope": "Frozen installed program for historical native observations; not a maintained addon runtime or alternate implementation.",
+  "observation_bundle": "../public-invocations-1.2.0",
+  "probe_manifest_sha256": "3a7839735aba983ea68f52eefbfe3322b63bb4af46ac073009f4c95b87b8e21f",
+  "files": {
+    "WoWAPIProbe/Fixture.svg": "e933cd46074a01a9c4c718886bbb62fda666843449b6d8730b66c115a2ee219c",
+    "WoWAPIProbe/Invocations.lua": "25076fc234ac05440d3f106d6fdd281f6a6ab6640557f57192538b220546422e",
+    "WoWAPIProbe/Plan.lua": "f29e60f2f0d078c799d88709f023f88c12f3b08312573a4c83148b411881093b",
+    "WoWAPIProbe/Runtime.lua": "b4df24656b7cdc815a7a63af74288a2e4e4f3822d5df8dd8551a6f4fa0d1682b",
+    "WoWAPIProbe/WoWAPIProbe.toc": "b0e81dd77f60e2089e2c01c549a04d0ecec021446a6736eba245a7cf0ad8a743",
+    "probe-build.json": "3a7839735aba983ea68f52eefbfe3322b63bb4af46ac073009f4c95b87b8e21f"
+  }
+}

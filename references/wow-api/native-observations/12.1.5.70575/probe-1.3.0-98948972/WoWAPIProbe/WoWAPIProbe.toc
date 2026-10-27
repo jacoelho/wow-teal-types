@@ -1,0 +1,8 @@
+## Interface: 120105
+## Title: WoW API Capability Probe
+## Version: 1.3.0
+## LoadOnDemand: 1
+## SavedVariables: WoWAPIProbeDB
+Plan.lua
+Runtime.lua
+Invocations.lua

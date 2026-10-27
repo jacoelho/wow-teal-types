@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "observation": {
+    "acquisition": "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.4.0.acquisition.json",
+    "acquisition_sha256": "0723b5180f24bb1323f2fe6bd119a683c37d3f5be0330f2e509bc36213f2acc7",
+    "build": "12.1.5.70575",
+    "bundle": "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.4.0",
+    "evidence_sha256": "e3f309e3f67b0752d8a8e73bd9fc810b1397bd14d9e93f8800d10aaf7f9a32e9",
+    "schema_version": 1,
+    "source_inputs_sha256": "b2e308aaa7b09e7a59c89dfcc5993d83ee0d63f6b18f919b909d4bdf9b3e1589"
+  },
+  "review": {
+    "symbol": "DurationTextBindingObject.UpdateFontString",
+    "recorded_check": "font_text_matches",
+    "corrected_check": "font_matches_native_projection",
+    "disposition": "verified-through-native-font-projection",
+    "raw_sample": "baseline.expected",
+    "binding_sample": "baseline.font",
+    "projection_sample": "projection.font",
+    "reason": "GetFormattedText returns language-rule markup; the owned native font interprets it. The binding output matches direct native SetText projection byte for byte. Original raw mismatch remains unchanged."
+  }
+}
