@@ -1,11 +1,73 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 )
+
+func TestRecoveryDoesNotRequireSelectedVersion(t *testing.T) {
+	for _, version := range []string{"", "invalid\n"} {
+		t.Run(version, func(t *testing.T) {
+			root := t.TempDir()
+			if version != "" {
+				writeCommandFixture(t, filepath.Join(root, ".wow-version"), []byte(version))
+			}
+			if err := run(t.Context(), []string{"--root", root, "recover"}); err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
+
+func TestExplicitSnapshotVerificationDoesNotRequireSelectedVersion(t *testing.T) {
+	for _, version := range []string{"", "invalid\n"} {
+		for _, option := range []string{"", "--snapshot", "--client-source"} {
+			t.Run(version+option, func(t *testing.T) {
+				root := t.TempDir()
+				if version != "" {
+					writeCommandFixture(t, filepath.Join(root, ".wow-version"), []byte(version))
+				}
+				snapshot := filepath.Join(t.TempDir(), "missing-snapshot")
+				args := []string{"--root", root, "verify-client"}
+				if option != "" {
+					args = append(args, option)
+				}
+				args = append(args, snapshot)
+				err := run(t.Context(), args)
+				var pathError *os.PathError
+				if !errors.As(err, &pathError) || !os.IsNotExist(err) || pathError.Path != filepath.Join(snapshot, "snapshot.json") {
+					t.Fatalf("expected missing snapshot.json error, got %v", err)
+				}
+			})
+		}
+	}
+}
+
+func TestDefaultSnapshotRequiresSelectedVersion(t *testing.T) {
+	for _, command := range []string{"bootstrap", "acquire-client", "stage-client", "verify-client", "check-generator", "stage-release"} {
+		t.Run(command, func(t *testing.T) {
+			err := run(t.Context(), []string{"--root", t.TempDir(), command})
+			if err == nil || !strings.Contains(err.Error(), "missing or invalid .wow-version") {
+				t.Fatalf("expected version prerequisite, got %v", err)
+			}
+		})
+	}
+}
+
+func TestExtractorBuildDoesNotRequireSelectedVersion(t *testing.T) {
+	root := t.TempDir()
+	writeCommandFixture(t, filepath.Join(root, "tools/cdn/go.mod"), []byte("module wow-teal-types/tools/cdn\n\ngo 1.27\n"))
+	writeCommandFixture(t, filepath.Join(root, "tools/cdn/main.go"), []byte("package main\nfunc main() {}\n"))
+	if err := run(t.Context(), []string{"--root", root, "build-extractor"}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(root, "build/direct-source-tools/wow-cdn")); err != nil {
+		t.Fatal(err)
+	}
+}
 
 func TestMutatingCommandsRejectIgnoredOptions(t *testing.T) {
 	for _, command := range []string{"generate", "recover", "acquire-client", "bootstrap", "stage-release"} {

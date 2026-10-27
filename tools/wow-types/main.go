@@ -63,21 +63,6 @@ func run(ctx context.Context, args []string) error {
 	if e = resolvePaths(command, options, positionals); e != nil {
 		return e
 	}
-	selected, e := consumer.ReadVersion(root)
-	if e != nil {
-		return e
-	}
-	snapshot := options["client-source"]
-	if snapshot == "" {
-		snapshot = options["snapshot"]
-	}
-	if snapshot == "" {
-		snapshot = filepath.Join(root, "build/wow-client", strconv.Itoa(selected.Build))
-	}
-	snapshot, e = filepath.Abs(snapshot)
-	if e != nil {
-		return e
-	}
 	switch command {
 	case "generate":
 		return writeResult(release.Update(ctx, root))
@@ -90,6 +75,32 @@ func run(ctx context.Context, args []string) error {
 		}
 		fmt.Println(manifest.Version)
 		return nil
+	case "build-extractor":
+		binary, receipt, err := release.BuildExtractor(ctx, root)
+		return writeResult(struct {
+			Entry          string `json:"entry"`
+			Implementation string `json:"implementation"`
+			SourceSHA256   string `json:"source_sha256"`
+		}{binary, receipt.Implementation, receipt.SourceSHA256}, err)
+	}
+	snapshot := options["client-source"]
+	if snapshot == "" {
+		snapshot = options["snapshot"]
+	}
+	if command == "verify-client" && len(positionals) > 0 {
+		snapshot = positionals[0]
+	}
+	var selected consumer.Version
+	if snapshot == "" || command == "stage-release" && options["output"] == "" {
+		selected, e = consumer.ReadVersion(root)
+		if e != nil {
+			return e
+		}
+	}
+	if snapshot == "" {
+		snapshot = filepath.Join(root, "build/wow-client", strconv.Itoa(selected.Build))
+	}
+	switch command {
 	case "bootstrap":
 		_, err := release.Bootstrap(ctx, root, snapshot)
 		return writeResult(struct {
@@ -101,17 +112,7 @@ func run(ctx context.Context, args []string) error {
 	case "stage-client":
 		return writeResult(release.StageSelected(ctx, root, snapshot, options["cache"], options["region"]))
 	case "verify-client":
-		if len(positionals) > 0 {
-			snapshot = positionals[0]
-		}
 		return writeResult(release.VerifySnapshot(snapshot, nil))
-	case "build-extractor":
-		binary, receipt, err := release.BuildExtractor(ctx, root)
-		return writeResult(struct {
-			Entry          string `json:"entry"`
-			Implementation string `json:"implementation"`
-			SourceSHA256   string `json:"source_sha256"`
-		}{binary, receipt.Implementation, receipt.SourceSHA256}, err)
 	case "check-generator":
 		return writeResult(release.CheckGenerator(ctx, root, snapshot))
 	case "stage-release":
