@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
 )
 
@@ -24,10 +25,10 @@ func readBounded(r io.Reader, limit int64) ([]byte, error) {
 	}
 	return b, nil
 }
-func parallel[T any](ctx context.Context, items []T, fn func(context.Context, T) error) error {
+func parallel(ctx context.Context, items []sourceJob, fn func(context.Context, sourceJob) error) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	work := make(chan T)
+	work := make(chan sourceJob)
 	var once sync.Once
 	var first error
 	var wg sync.WaitGroup
@@ -59,64 +60,60 @@ func parallel[T any](ctx context.Context, items []T, fn func(context.Context, T)
 	}
 	return ctx.Err()
 }
-func matches(b []byte, row M) bool {
-	if len(b) > maxPayload {
-		return false
-	}
-	if n, ok := row["size"]; ok && len(b) != i(n) {
-		return false
-	}
-	if sha(b) != s(row["sha256"]) {
-		return false
-	}
-	for _, k := range []string{"git_blob_sha1", "sha"} {
-		if v, ok := row[k]; ok && blob(b) != s(v) {
-			return false
-		}
-	}
-	return true
+
+type sourceDigest struct {
+	size         *int
+	sha256, blob string
+}
+
+func matches(b []byte, digest sourceDigest) bool {
+	return len(b) <= maxPayload && (digest.size == nil || len(b) == *digest.size) && (digest.sha256 == "" || sha(b) == digest.sha256) && (digest.blob == "" || blob(b) == digest.blob)
 }
 
 type sourceJob struct {
 	group, repo, commit, upstream, name string
-	row                                 M
+	digest                              sourceDigest
 }
 
+func lockedDigest(row sourcelock.LockedFile) sourceDigest {
+	git := row.SHA
+	if row.GitBlobSHA1 != "" {
+		git = row.GitBlobSHA1
+	}
+	return sourceDigest{&row.Size, row.SHA256, git}
+}
 func secondaryJobs(root string) ([]sourceJob, error) {
 	var jobs []sourceJob
-	tsm, e := readObject(filepath.Join(root, "scripts/wow_api/tsm_sources.json"))
-	if e != nil {
-		return nil, e
+	tsm, err := sourcelock.ReadTSM(filepath.Join(root, "scripts/wow_api/tsm_sources.json"))
+	if err != nil {
+		return nil, err
 	}
-	for _, v := range arr(tsm["files"]) {
-		r := obj(v)
-		up := s(r["path"])
-		if up == "" {
-			prefix := "https://raw.githubusercontent.com/" + s(tsm["repository"]) + "/" + s(tsm["commit"]) + "/"
-			if !strings.HasPrefix(s(r["url"]), prefix) {
+	for _, row := range tsm.Files {
+		upstream := row.Path
+		if upstream == "" {
+			prefix := "https://raw.githubusercontent.com/" + tsm.Repository + "/" + tsm.Commit + "/"
+			if !strings.HasPrefix(row.URL, prefix) {
 				return nil, fmt.Errorf("TSM source URL is not pinned")
 			}
-			up = strings.TrimPrefix(s(r["url"]), prefix)
+			upstream = strings.TrimPrefix(row.URL, prefix)
 		}
-		jobs = append(jobs, sourceJob{"tsm", s(tsm["repository"]), s(tsm["commit"]), up, s(r["name"]), r})
+		jobs = append(jobs, sourceJob{"tsm", tsm.Repository, tsm.Commit, upstream, row.Name, lockedDigest(row)})
 	}
-	b := obj(tsm["blizzard"])
-	jobs = append(jobs, sourceJob{"tsm", s(b["repository"]), s(b["commit"]), "version.txt", "blizzard-version.txt", M{"sha256": b["version_sha256"]}})
-	native, e := readObject(filepath.Join(root, "scripts/wow_api/native_crosscheck_sources.json"))
-	if e != nil {
-		return nil, e
+	b := tsm.Blizzard
+	jobs = append(jobs, sourceJob{"tsm", b.Repository, b.Commit, "version.txt", "blizzard-version.txt", sourceDigest{sha256: b.VersionSHA256}})
+	crosscheck, err := sourcelock.ReadCrosscheck(filepath.Join(root, "scripts/wow_api/native_crosscheck_sources.json"))
+	if err != nil {
+		return nil, err
 	}
-	for _, v := range arr(native["files"]) {
-		r := obj(v)
-		jobs = append(jobs, sourceJob{"native-crosscheck", s(r["repository"]), s(r["commit"]), s(r["upstream_path"]), s(r["name"]), r})
+	for _, row := range crosscheck.Files {
+		jobs = append(jobs, sourceJob{"native-crosscheck", row.Repository, row.Commit, row.UpstreamPath, row.Name, lockedDigest(row)})
 	}
-	backup, e := readObject(filepath.Join(root, "scripts/wow_api/native_backup_sources.json"))
-	if e != nil {
-		return nil, e
+	backup, err := sourcelock.ReadBackup(filepath.Join(root, "scripts/wow_api/native_backup_sources.json"))
+	if err != nil {
+		return nil, err
 	}
-	for _, v := range arr(backup["files"]) {
-		r := obj(v)
-		jobs = append(jobs, sourceJob{"native-backup", s(backup["repository"]), s(backup["commit"]), s(backup["path"]) + "/" + s(r["name"]), s(r["name"]), r})
+	for _, row := range backup.Files {
+		jobs = append(jobs, sourceJob{"native-backup", backup.Repository, backup.Commit, backup.Path + "/" + row.Name, row.Name, lockedDigest(row)})
 	}
 	return jobs, nil
 }
@@ -128,8 +125,8 @@ func syncSecondary(ctx context.Context, root string, online bool) error {
 	total := 0
 	for _, j := range jobs {
 		size := maxPayload
-		if n, ok := j.row["size"]; ok {
-			size = i(n)
+		if j.digest.size != nil {
+			size = *j.digest.size
 		}
 		total += size
 	}
@@ -153,7 +150,7 @@ func syncSecondary(ctx context.Context, root string, online bool) error {
 			if e != nil {
 				return e
 			}
-			if !matches(local, j.row) {
+			if !matches(local, j.digest) {
 				return fmt.Errorf("modified pinned input: %s", path)
 			}
 		}
@@ -181,7 +178,7 @@ func syncSecondary(ctx context.Context, root string, online bool) error {
 					return fmt.Errorf("Git LFS identity mismatch: %s", j.name)
 				}
 			}
-			if !matches(b, j.row) {
+			if !matches(b, j.digest) {
 				return fmt.Errorf("locked input identity mismatch: %s", address)
 			}
 			if local != nil && !bytes.Equal(local, b) {
@@ -202,16 +199,15 @@ func escapePath(path string) string {
 	return strings.Join(parts, "/")
 }
 func syncPrimary(ctx context.Context, p wowapi.Project) error {
-	lock, e := p.Lock("sources.json")
+	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "scripts/wow_api/sources.json"))
 	if e != nil {
 		return e
 	}
 	var jobs []sourceJob
 	for _, group := range keys(lock) {
-		source := obj(lock[group])
-		for _, v := range arr(source["files"]) {
-			r := obj(v)
-			jobs = append(jobs, sourceJob{group, s(source["repository"]), s(source["commit"]), strings.Trim(s(source["path"])+"/"+s(r["name"]), "/"), s(r["name"]), r})
+		source := lock[group]
+		for _, r := range source.Files {
+			jobs = append(jobs, sourceJob{group, source.Repository, source.Commit, strings.Trim(source.Path+"/"+r.Name, "/"), r.Name, sourceDigest{size: &r.Size, blob: r.SHA}})
 		}
 	}
 	return parallel(ctx, jobs, func(ctx context.Context, j sourceJob) error {
@@ -224,7 +220,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 			if e != nil {
 				return e
 			}
-			if len(b) != i(j.row["size"]) || blob(b) != s(j.row["sha"]) {
+			if len(b) != *j.digest.size || blob(b) != j.digest.blob {
 				return fmt.Errorf("modified pinned source: %s", path)
 			}
 			return nil
@@ -239,7 +235,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 		if e != nil {
 			return e
 		}
-		if len(b) != i(j.row["size"]) || blob(b) != s(j.row["sha"]) {
+		if len(b) != *j.digest.size || blob(b) != j.digest.blob {
 			return fmt.Errorf("community blob identity mismatch: %s", j.name)
 		}
 		return atomicWrite(path, b, 0644)
@@ -256,15 +252,14 @@ func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, erro
 		return p, e
 	}
 	ordinary := wowapi.NewProject(root)
-	lock, e := p.Lock("sources.json")
+	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "scripts/wow_api/sources.json"))
 	if e != nil {
 		return p, e
 	}
 	pending := map[string][]byte{}
 	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
-		for _, value := range arr(obj(lock[group])["files"]) {
-			row := obj(value)
-			name := s(row["name"])
+		for _, row := range lock[group].Files {
+			name := row.Name
 			b, e := readFile(p.InputPath(group, name), maxFile)
 			if e != nil {
 				return p, e
@@ -297,7 +292,7 @@ func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, erro
 // Cache files remain optional, integrity-checked projections rather than authorities.
 func seedCaches(origin, target string) error {
 	p := wowapi.NewProject(origin)
-	lock, e := p.Lock("sources.json")
+	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "scripts/wow_api/sources.json"))
 	if e != nil {
 		return e
 	}
@@ -305,9 +300,8 @@ func seedCaches(origin, target string) error {
 		if group == "blizzard" || group == "blizzard_support" || group == "blizzard_version" {
 			continue
 		}
-		for _, value := range arr(obj(lock[group])["files"]) {
-			row := obj(value)
-			name := s(row["name"])
+		for _, row := range lock[group].Files {
+			name := row.Name
 			src := p.InputPath(group, name)
 			if !exists(src) {
 				continue
@@ -316,7 +310,7 @@ func seedCaches(origin, target string) error {
 			if e != nil {
 				return e
 			}
-			if len(b) != i(row["size"]) || blob(b) != s(row["sha"]) {
+			if len(b) != row.Size || blob(b) != row.SHA {
 				return fmt.Errorf("modified pinned community cache: %s", name)
 			}
 			dst := wowapi.NewProject(target).InputPath(group, name)
@@ -342,7 +336,7 @@ func seedCaches(origin, target string) error {
 		if e != nil {
 			return e
 		}
-		if !matches(b, j.row) {
+		if !matches(b, j.digest) {
 			return fmt.Errorf("modified pinned cross-check cache: %s", j.name)
 		}
 		dst, e := safeJoin(target, relative)

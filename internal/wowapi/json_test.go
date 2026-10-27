@@ -3,10 +3,17 @@ package wowapi
 import (
 	"math"
 	"testing"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 func TestReviewJSONByteContracts(t *testing.T) {
-	value := M{"empty": []any{}, "float": float64(1), "negative_zero": math.Copysign(0, -1), "text": "©😀<\x7f", "none": nil}
+	value := struct {
+		Empty        []string      `json:"empty"`
+		Float        literal.Float `json:"float"`
+		NegativeZero literal.Float `json:"negative_zero"`
+		Text         string        `json:"text"`
+		None         *string       `json:"none"`
+	}{[]string{}, 1, literal.Float(math.Copysign(0, -1)), "©😀<\x7f", nil}
 	compact, e := jsonCompact(value)
 	if e != nil {
 		t.Fatal(e)
@@ -15,14 +22,17 @@ func TestReviewJSONByteContracts(t *testing.T) {
 	if string(compact) != expected {
 		t.Fatalf("compact = %s; want %s", compact, expected)
 	}
-	spaced, e := jsonDefault([]any{"a,b:c", float64(1000000), float64(0.00001), float64(1e16)})
+	spaced, e := jsonDefault(literal.List([]literal.Value{literal.Text("a,b:c"), mustLiteral(literal.Number(1000000)), mustLiteral(literal.Number(0.00001)), mustLiteral(literal.Number(1e16))}))
 	if e != nil {
 		t.Fatal(e)
 	}
 	if string(spaced) != `["a,b:c", 1000000.0, 1e-05, 1e+16]` {
 		t.Fatalf("interning JSON: %s", spaced)
 	}
-	pretty, e := jsonPretty(M{"a": false, "b": []any{}})
+	pretty, e := jsonPretty(struct {
+		A bool     `json:"a"`
+		B []string `json:"b"`
+	}{false, []string{}})
 	if e != nil {
 		t.Fatal(e)
 	}

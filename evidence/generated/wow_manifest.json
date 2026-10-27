@@ -219313,7 +219313,7 @@
           "variadic": false
         }
       ],
-      "selected_source": "reviewed conservative factory",
+      "selected_source": "reviewed native frame factory",
       "source": "questie:Data/Wiki.lua"
     },
     {
@@ -243062,12 +243062,12 @@
       "name": "securecall",
       "parameters": [
         {
-          "description": ":R",
+          "description": "",
           "line": 9070,
           "name": "funcOrKey",
           "optional": false,
           "raw": "---@param funcOrKey S|fun(...: A): ...:R",
-          "type": "S|fun(...: A): ...",
+          "type": "S|fun(...: A): ...:R",
           "variadic": false,
           "visibility": null
         },
@@ -243100,12 +243100,12 @@
       "name": "securecallfunction",
       "parameters": [
         {
-          "description": ":R",
+          "description": "",
           "line": 9077,
           "name": "func",
           "optional": false,
           "raw": "---@param func fun(...: A): ...:R",
-          "type": "fun(...: A): ...",
+          "type": "fun(...: A): ...:R",
           "variadic": false,
           "visibility": null
         },
@@ -303207,9 +303207,79 @@
       "symbol": "Frame.SetAttribute/SetAttributeNoHandler"
     },
     {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.contains"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.count"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.freeze"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.getcountinfo"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.indexof"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.isempty"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.isfrozen"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.keys"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.removeunordered"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.removevalue"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.values"
+    },
+    {
       "evidence": "native LuaCurveEvaluatedResult documentation distinguishes supplied-curve result carriers",
       "rule": "numeric curves retain a number-like result; general base/color curves retain the opaque native variant",
       "symbol": "UnitHealthPercent/UnitPowerPercent/DurationObject.Evaluate*"
+    },
+    {
+      "evidence": "pinned wowless/data/products/wow/docs.yaml uiobject_method_reassignments.Region and uiobjects.yaml LayeredRegion/Frame/ModelScene",
+      "rule": "route five layer/color methods from the SimpleRegionAPI documentation group to their distinct receiver; Frame retains common Region",
+      "symbol": "LayeredRegion"
+    },
+    {
+      "evidence": "questie:Data/Wiki.lua:3602 and Blizzard_Menu/Compositor.lua:191",
+      "rule": "literal StatusBar construction retains its native subtype; other frame names return the common Frame surface, and template composition is not inferred",
+      "symbol": "CreateFrame"
+    },
+    {
+      "evidence": "recorded public RadialProgress native fixture",
+      "rule": "literal RadialProgress construction retains the native receiver subtype",
+      "symbol": "AnimationGroup.CreateAnimation"
     },
     {
       "evidence": [
@@ -303639,17 +303709,12 @@
     },
     {
       "expression": "fun(self, name: string, ...: string): table|AceAddon",
-      "representation": "{any: any}",
+      "representation": "{unknown: unknown}",
       "rule": "common table surface of source union"
     },
     {
       "expression": "table|AceAddon",
-      "representation": "{any: any}",
-      "rule": "common table surface of source union"
-    },
-    {
-      "expression": "table|function|AceConfig.OptionsTable",
-      "representation": "{any: any}",
+      "representation": "{unknown: unknown}",
       "rule": "common table surface of source union"
     },
     {
@@ -308701,6 +308766,10 @@
       "symbol": "MenuUtil.CreateEnumRadioMenu"
     },
     {
+      "rule": "function-name lookup has opaque results; only a supplied callback establishes its result relation",
+      "symbol": "securecall"
+    },
+    {
       "rule": "inherit canonical native ancestor contract",
       "symbol": "Animation.GetParent"
     },
@@ -308971,10 +309040,6 @@
     {
       "rule": "retain documented native call shorthands from Questie and Blizzard FrameXML call sites",
       "symbol": "ScriptRegionResizing.SetPoint"
-    },
-    {
-      "rule": "return common Frame; template composition requires reviewed assertion",
-      "symbol": "CreateFrame"
     },
     {
       "rule": "single optional arbitrary callback argument, not a variadic type pack",
@@ -316302,7 +316367,7 @@
     "native_events": 1784,
     "native_functions": 6440,
     "questie_declarations": 9083,
-    "type_exports": 5562
+    "type_exports": 5564
   },
   "supplemental_method_exclusions": {
     "FrameScriptObject.SetPreventSecretValues": {
@@ -531655,7 +531720,7 @@
         ],
         "Type": "Function"
       },
-      "name": "Region.GetDrawLayer",
+      "name": "LayeredRegion.GetDrawLayer",
       "restrictions": {
         "Environment": "All"
       },
@@ -531788,7 +531853,7 @@
         ],
         "Type": "Function"
       },
-      "name": "Region.GetVertexColor",
+      "name": "LayeredRegion.GetVertexColor",
       "restrictions": {
         "Environment": "All",
         "SecretReturnsForAspect": [
@@ -532043,7 +532108,7 @@
         "SecretArguments": "AllowedWhenUntainted",
         "Type": "Function"
       },
-      "name": "Region.SetDrawLayer",
+      "name": "LayeredRegion.SetDrawLayer",
       "restrictions": {
         "Environment": "All",
         "SecretArguments": "AllowedWhenUntainted"
@@ -532211,7 +532276,7 @@
         ],
         "Type": "Function"
       },
-      "name": "Region.SetVertexColor",
+      "name": "LayeredRegion.SetVertexColor",
       "restrictions": {
         "Environment": "All",
         "SecretArguments": "AllowedWhenTainted",
@@ -532280,7 +532345,7 @@
         ],
         "Type": "Function"
       },
-      "name": "Region.SetVertexColorFromBoolean",
+      "name": "LayeredRegion.SetVertexColorFromBoolean",
       "restrictions": {
         "Environment": "All",
         "SecretArguments": "AllowedWhenTainted",
@@ -605664,6 +605729,13 @@
     },
     {
       "bases": [],
+      "export": "Callable_CreateFrame",
+      "kind": "record",
+      "name": "Callable_CreateFrame",
+      "source": "reviewed native frame factory"
+    },
+    {
+      "bases": [],
       "export": "Callable_GetAchievementInfo",
       "kind": "record",
       "name": "Callable_GetAchievementInfo",
@@ -605741,6 +605813,13 @@
     },
     {
       "bases": [],
+      "export": "Callable_securecall",
+      "kind": "record",
+      "name": "Callable_securecall",
+      "source": "questie:Data/Wiki.lua"
+    },
+    {
+      "bases": [],
       "export": "CallbackHandler_1_0",
       "kind": "interface",
       "name": "CallbackHandler-1.0",
@@ -605762,16 +605841,16 @@
     },
     {
       "bases": [],
-      "export": "Callback_01413e4a5d73",
+      "export": "Callback_002b93f3b4d5",
       "kind": "callback",
-      "name": "Callback_01413e4a5d73",
+      "name": "Callback_002b93f3b4d5",
       "source": "named LuaLS callback"
     },
     {
       "bases": [],
-      "export": "Callback_046096dae265",
+      "export": "Callback_01413e4a5d73",
       "kind": "callback",
-      "name": "Callback_046096dae265",
+      "name": "Callback_01413e4a5d73",
       "source": "named LuaLS callback"
     },
     {
@@ -605790,20 +605869,6 @@
     },
     {
       "bases": [],
-      "export": "Callback_0d24bde78c61",
-      "kind": "callback",
-      "name": "Callback_0d24bde78c61",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_144052c7af00",
-      "kind": "callback",
-      "name": "Callback_144052c7af00",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
       "export": "Callback_148d90de31f3",
       "kind": "callback",
       "name": "Callback_148d90de31f3",
@@ -605818,6 +605883,13 @@
     },
     {
       "bases": [],
+      "export": "Callback_1618319ec62a",
+      "kind": "callback",
+      "name": "Callback_1618319ec62a",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
       "export": "Callback_18e17c792cdd",
       "kind": "callback",
       "name": "Callback_18e17c792cdd",
@@ -605825,16 +605897,23 @@
     },
     {
       "bases": [],
-      "export": "Callback_1f24faab15fc",
+      "export": "Callback_1bafafac8988",
       "kind": "callback",
-      "name": "Callback_1f24faab15fc",
+      "name": "Callback_1bafafac8988",
       "source": "named LuaLS callback"
     },
     {
       "bases": [],
-      "export": "Callback_220e4a3fa810",
+      "export": "Callback_1bf5d38b4c3b",
       "kind": "callback",
-      "name": "Callback_220e4a3fa810",
+      "name": "Callback_1bf5d38b4c3b",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
+      "export": "Callback_1f24faab15fc",
+      "kind": "callback",
+      "name": "Callback_1f24faab15fc",
       "source": "named LuaLS callback"
     },
     {
@@ -605853,6 +605932,13 @@
     },
     {
       "bases": [],
+      "export": "Callback_27fceb362db7",
+      "kind": "callback",
+      "name": "Callback_27fceb362db7",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
       "export": "Callback_284ef80ec2bc",
       "kind": "callback",
       "name": "Callback_284ef80ec2bc",
@@ -605867,13 +605953,6 @@
     },
     {
       "bases": [],
-      "export": "Callback_293d31e0fcd5",
-      "kind": "callback",
-      "name": "Callback_293d31e0fcd5",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
       "export": "Callback_2b2d9a7f4d1a",
       "kind": "callback",
       "name": "Callback_2b2d9a7f4d1a",
@@ -605881,9 +605960,9 @@
     },
     {
       "bases": [],
-      "export": "Callback_2b4bff2ad2a6",
+      "export": "Callback_2b9e3773470a",
       "kind": "callback",
-      "name": "Callback_2b4bff2ad2a6",
+      "name": "Callback_2b9e3773470a",
       "source": "named LuaLS callback"
     },
     {
@@ -605895,20 +605974,6 @@
     },
     {
       "bases": [],
-      "export": "Callback_31f63beac5c5",
-      "kind": "callback",
-      "name": "Callback_31f63beac5c5",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_322b8fcde795",
-      "kind": "callback",
-      "name": "Callback_322b8fcde795",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
       "export": "Callback_373ba55346b1",
       "kind": "callback",
       "name": "Callback_373ba55346b1",
@@ -605916,23 +605981,16 @@
     },
     {
       "bases": [],
-      "export": "Callback_3917e9068121",
-      "kind": "callback",
-      "name": "Callback_3917e9068121",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_3c005cb9052e",
-      "kind": "callback",
-      "name": "Callback_3c005cb9052e",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
       "export": "Callback_3e59a5f74001",
       "kind": "callback",
       "name": "Callback_3e59a5f74001",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
+      "export": "Callback_423bae1d5dde",
+      "kind": "callback",
+      "name": "Callback_423bae1d5dde",
       "source": "named LuaLS callback"
     },
     {
@@ -605958,6 +606016,13 @@
     },
     {
       "bases": [],
+      "export": "Callback_49bbf91b6c33",
+      "kind": "callback",
+      "name": "Callback_49bbf91b6c33",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
       "export": "Callback_4af858cf56d4",
       "kind": "callback",
       "name": "Callback_4af858cf56d4",
@@ -605979,13 +606044,6 @@
     },
     {
       "bases": [],
-      "export": "Callback_55043f4f4e7b",
-      "kind": "callback",
-      "name": "Callback_55043f4f4e7b",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
       "export": "Callback_5799dfecc20d",
       "kind": "callback",
       "name": "Callback_5799dfecc20d",
@@ -605993,16 +606051,9 @@
     },
     {
       "bases": [],
-      "export": "Callback_5920e7182d42",
+      "export": "Callback_5aa27264011e",
       "kind": "callback",
-      "name": "Callback_5920e7182d42",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_5b97b4ced89f",
-      "kind": "callback",
-      "name": "Callback_5b97b4ced89f",
+      "name": "Callback_5aa27264011e",
       "source": "named LuaLS callback"
     },
     {
@@ -606024,13 +606075,6 @@
       "export": "Callback_60307e2f4821",
       "kind": "callback",
       "name": "Callback_60307e2f4821",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_61ca26dc46f9",
-      "kind": "callback",
-      "name": "Callback_61ca26dc46f9",
       "source": "named LuaLS callback"
     },
     {
@@ -606063,13 +606107,6 @@
     },
     {
       "bases": [],
-      "export": "Callback_71b82e9336d7",
-      "kind": "callback",
-      "name": "Callback_71b82e9336d7",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
       "export": "Callback_756a10786a51",
       "kind": "callback",
       "name": "Callback_756a10786a51",
@@ -606087,6 +606124,13 @@
       "export": "Callback_7788fec2c014",
       "kind": "callback",
       "name": "Callback_7788fec2c014",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
+      "export": "Callback_78161532ce55",
+      "kind": "callback",
+      "name": "Callback_78161532ce55",
       "source": "named LuaLS callback"
     },
     {
@@ -606133,6 +606177,13 @@
     },
     {
       "bases": [],
+      "export": "Callback_8a559613c27f",
+      "kind": "callback",
+      "name": "Callback_8a559613c27f",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
       "export": "Callback_8c7a74399e4b",
       "kind": "callback",
       "name": "Callback_8c7a74399e4b",
@@ -606143,13 +606194,6 @@
       "export": "Callback_8f2a72c76334",
       "kind": "callback",
       "name": "Callback_8f2a72c76334",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_8fef7d81680a",
-      "kind": "callback",
-      "name": "Callback_8fef7d81680a",
       "source": "named LuaLS callback"
     },
     {
@@ -606168,9 +606212,9 @@
     },
     {
       "bases": [],
-      "export": "Callback_9b0b308d94f7",
+      "export": "Callback_99f8f84f0549",
       "kind": "callback",
-      "name": "Callback_9b0b308d94f7",
+      "name": "Callback_99f8f84f0549",
       "source": "named LuaLS callback"
     },
     {
@@ -606182,6 +606226,20 @@
     },
     {
       "bases": [],
+      "export": "Callback_a24eb8d23ee5",
+      "kind": "callback",
+      "name": "Callback_a24eb8d23ee5",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
+      "export": "Callback_a2b263498345",
+      "kind": "callback",
+      "name": "Callback_a2b263498345",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
       "export": "Callback_a3063ef31ab4",
       "kind": "callback",
       "name": "Callback_a3063ef31ab4",
@@ -606189,9 +606247,9 @@
     },
     {
       "bases": [],
-      "export": "Callback_a66c31075b7b",
+      "export": "Callback_a5a7c0e58978",
       "kind": "callback",
-      "name": "Callback_a66c31075b7b",
+      "name": "Callback_a5a7c0e58978",
       "source": "named LuaLS callback"
     },
     {
@@ -606231,16 +606289,23 @@
     },
     {
       "bases": [],
-      "export": "Callback_bcb28754c1a2",
+      "export": "Callback_b40b7f5ec6ca",
       "kind": "callback",
-      "name": "Callback_bcb28754c1a2",
+      "name": "Callback_b40b7f5ec6ca",
       "source": "named LuaLS callback"
     },
     {
       "bases": [],
-      "export": "Callback_bdc1b5e10f81",
+      "export": "Callback_bb19ad1a5e48",
       "kind": "callback",
-      "name": "Callback_bdc1b5e10f81",
+      "name": "Callback_bb19ad1a5e48",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
+      "export": "Callback_bcb28754c1a2",
+      "kind": "callback",
+      "name": "Callback_bcb28754c1a2",
       "source": "named LuaLS callback"
     },
     {
@@ -606259,9 +606324,16 @@
     },
     {
       "bases": [],
-      "export": "Callback_c0e69240ad2b",
+      "export": "Callback_c44077c9ed13",
       "kind": "callback",
-      "name": "Callback_c0e69240ad2b",
+      "name": "Callback_c44077c9ed13",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
+      "export": "Callback_c86d5b4121b0",
+      "kind": "callback",
+      "name": "Callback_c86d5b4121b0",
       "source": "named LuaLS callback"
     },
     {
@@ -606287,9 +606359,9 @@
     },
     {
       "bases": [],
-      "export": "Callback_ce3b9ac116e8",
+      "export": "Callback_cf87fb3060b1",
       "kind": "callback",
-      "name": "Callback_ce3b9ac116e8",
+      "name": "Callback_cf87fb3060b1",
       "source": "named LuaLS callback"
     },
     {
@@ -606304,20 +606376,6 @@
       "export": "Callback_d2bebbbcf9c0",
       "kind": "callback",
       "name": "Callback_d2bebbbcf9c0",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_d799ed34c008",
-      "kind": "callback",
-      "name": "Callback_d799ed34c008",
-      "source": "named LuaLS callback"
-    },
-    {
-      "bases": [],
-      "export": "Callback_d82d71a5fd2e",
-      "kind": "callback",
-      "name": "Callback_d82d71a5fd2e",
       "source": "named LuaLS callback"
     },
     {
@@ -606392,6 +606450,13 @@
     },
     {
       "bases": [],
+      "export": "Callback_f19159e08ff2",
+      "kind": "callback",
+      "name": "Callback_f19159e08ff2",
+      "source": "named LuaLS callback"
+    },
+    {
+      "bases": [],
       "export": "Callback_f4d6b3f85a43",
       "kind": "callback",
       "name": "Callback_f4d6b3f85a43",
@@ -606399,16 +606464,16 @@
     },
     {
       "bases": [],
-      "export": "Callback_fa07745fedba",
+      "export": "Callback_f551087c4418",
       "kind": "callback",
-      "name": "Callback_fa07745fedba",
+      "name": "Callback_f551087c4418",
       "source": "named LuaLS callback"
     },
     {
       "bases": [],
-      "export": "Callback_fa550466c43c",
+      "export": "Callback_fa07745fedba",
       "kind": "callback",
-      "name": "Callback_fa550466c43c",
+      "name": "Callback_fa07745fedba",
       "source": "named LuaLS callback"
     },
     {
@@ -629786,7 +629851,7 @@
     },
     {
       "bases": [
-        "Region",
+        "LayeredRegion",
         "AnimatableObject"
       ],
       "export": "FontString",
@@ -632126,6 +632191,15 @@
       "source": "blizzard:ChatConstantsDocumentation.lua"
     },
     {
+      "bases": [
+        "Region"
+      ],
+      "export": "LayeredRegion",
+      "kind": "interface",
+      "name": "LayeredRegion",
+      "source": "questie:Widget/Base/Region.lua"
+    },
+    {
       "bases": [],
       "export": "LeavePartyConfirmReason",
       "kind": "alias",
@@ -632546,6 +632620,13 @@
     },
     {
       "bases": [],
+      "export": "Literal_1969a2b6f35c",
+      "kind": "enum",
+      "name": "Literal_1969a2b6f35c",
+      "source": "interned LuaLS string literals"
+    },
+    {
+      "bases": [],
       "export": "Literal_1aefd35d9a61",
       "kind": "enum",
       "name": "Literal_1aefd35d9a61",
@@ -632878,6 +632959,13 @@
       "export": "Literal_c024aadc65e4",
       "kind": "enum",
       "name": "Literal_c024aadc65e4",
+      "source": "interned LuaLS string literals"
+    },
+    {
+      "bases": [],
+      "export": "Literal_ca705345ef52",
+      "kind": "enum",
+      "name": "Literal_ca705345ef52",
       "source": "interned LuaLS string literals"
     },
     {
@@ -636674,9 +636762,9 @@
     },
     {
       "bases": [],
-      "export": "Shape_ca0c4b227666",
+      "export": "Shape_d7ca860ff637",
       "kind": "converted_record",
-      "name": "Shape_ca0c4b227666",
+      "name": "Shape_d7ca860ff637",
       "source": "interned LuaLS record"
     },
     {
@@ -637850,7 +637938,7 @@
     },
     {
       "bases": [
-        "Region",
+        "LayeredRegion",
         "AnimatableObject"
       ],
       "export": "TextureBase",
@@ -639726,7 +639814,7 @@
     },
     {
       "bases": [
-        "Region"
+        "LayeredRegion"
       ],
       "export": "VectorGraphics",
       "kind": "interface",
@@ -640817,13 +640905,6 @@
       "kind": "interface",
       "name": "unitpositionframe",
       "source": "questie:Widget/Frame/UnitPositionFrame.lua"
-    },
-    {
-      "bases": [],
-      "export": "unknown",
-      "kind": "alias",
-      "name": "unknown",
-      "source": "LuaLS unknown: opaque until explicitly narrowed"
     },
     {
       "bases": [],

@@ -306,7 +306,7 @@
     },
     "Animation.GetScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "ca42d6b005648cc528cfbf6a7267fa73978beb61e4bb011e84c11dc3daf3d817",
+      "fingerprint": "39b368ac84aecad96f5236147467a61a917a91ebaa33e3907fd6da1dcf2e6291",
       "native_source": "blizzard:SimpleAnimAPIDocumentation.lua",
       "policies": [
         "native-secret-permissions",
@@ -413,7 +413,7 @@
     },
     "Animation.HookScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "21bb3ea9059d744639bc25f4f91276d3878b234913c212af4e1906914e93f600",
+      "fingerprint": "05e95b4f36c816a0275b13a975d6ccdf88a65c397f117226fea6ab6b65ae1d86",
       "native_source": "blizzard:SimpleAnimAPIDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -554,7 +554,7 @@
     },
     "Animation.SetScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "f0260f46051ebd97380140cb2cca6f1e5dd63b3923d4ee389063b95325e3ae93",
+      "fingerprint": "e1859599c7a6648b7592d6c9dfb907cebe196317c10438891233d0f9420f013f",
       "native_source": "blizzard:SimpleAnimAPIDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -631,7 +631,7 @@
     },
     "AnimationGroup.CreateAnimation": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "565dee7b7d84c76ec7a92004bc7a4016e43427f8ce487ded412fe9f6433f468e",
+      "fingerprint": "c46840372c39637e5e15cf1ac5eb737ed63c957ff0a20f90639e3bb530370fcb",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "policies": [
         "native-structural-contract",
@@ -882,7 +882,7 @@
     },
     "AnimationGroup.GetScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "e660e1c16214f1e5e170e36d4c73ab7549ebe84ea41a7c2cba29cc1a7d3fe445",
+      "fingerprint": "e374d7946a91c4e3afe08c9b0b42da45de4de478ba15e381542b1a75004316c0",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "policies": [
         "native-secret-permissions",
@@ -973,7 +973,7 @@
     },
     "AnimationGroup.HookScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "2d852a711dff690d06014c714a5ff5e4e80142b6dcf2a33f23d907a5b0edd9e1",
+      "fingerprint": "9db4a183b10ee5b86ac32ebf80fbd5f627920a740f28451bae193c8728c68544",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -1107,7 +1107,7 @@
     },
     "AnimationGroup.SetScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "042655ebff1bb27c7c621924044d6552b68f1b789f2ace0e6d73c17ca823418b",
+      "fingerprint": "e836e17a85494b79af10792cfebc3580125a6dfb4e6f7ac48ff7e0a65299ee2e",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -3083,7 +3083,7 @@
     },
     "C_AddOnProfiler.MeasureCall": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "62e271db52a9fc54a2b7443b49b13ef2346cbbfc02bb3cc48556dcfb168ebd4f",
+      "fingerprint": "94976a919c5be50a667a546a63ed4109085eeada048a72d822211631072fcfb8",
       "native_source": "blizzard:AddOnProfilerDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -3196,7 +3196,7 @@
     },
     "C_AddOns.GetAddOnLocalTable": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "2d64c1f7d399cf975db2b90af617aeb6bc485be334f96f5dd7ddebc40eadd4c5",
+      "fingerprint": "1bfd505c648148c53559c871d1677d1f1f996f6738bd0dae5dbfd989a817dc21",
       "native_source": "blizzard:AddOnsDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -11814,7 +11814,7 @@
     },
     "C_CombatLog.ApplyFilterSettings": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "812850136844f8a2069385513cfc174088cbcf1d4db8c390884bc1eee29adb2a",
+      "fingerprint": "fbcb93c9f2e6ad71e73d52ebe859786e4b6e7140a203edd308ae167805028b77",
       "native_source": "blizzard:CombatLogDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -17465,7 +17465,7 @@
     },
     "C_EncodingUtil.DeserializeCBOR": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "809d49c63c82461ae14d412e0012b85507e0454f796a56621864132c929da7ef",
+      "fingerprint": "ae83675ae511fdf6c3cc09b954822f8995bd9459025fe0d4e43580a5ba753698",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -17486,7 +17486,7 @@
     },
     "C_EncodingUtil.DeserializeJSON": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "4501991faad60cd125a06236386ada9a855668513a085ae36d655ea93e4e2788",
+      "fingerprint": "fdcd6ccb6d85c208822c4fcdb4fee104e81c4c9de43851ab62dfe621ac7e9d06",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -17549,7 +17549,7 @@
     },
     "C_EncodingUtil.SerializeCBOR": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "1464b8b3a60b2ab08ce4310a0f9ccffbe93a9acff0621ceaa089e1c454a32f44",
+      "fingerprint": "37765beb035fb29fdc6b587a055eb3c7b4433fcf225e9fa84981a0e10bec9264",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -17570,7 +17570,7 @@
     },
     "C_EncodingUtil.SerializeJSON": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "d52222486072d27c45de6297085d7da481c4740478c2649385410fcd10129916",
+      "fingerprint": "921f021587a8cf34d26179281555d0c398b7f715a21993f6cc71e672a7badba7",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -25070,7 +25070,7 @@
     },
     "C_Item.GetItemStatDelta": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "4e0e3b4a0b5d2e3bba814b13a6567347f7188b3f25473f332490e32d55b59589",
+      "fingerprint": "d36868f543097a1e034b99f67d64f54a4fe5d7dca9e51a8997dc4e2c6375fc6b",
       "native_source": "blizzard:ItemDocumentation.lua",
       "policies": [
         "nominal-or-refined-type",
@@ -25103,7 +25103,7 @@
     },
     "C_Item.GetItemStats": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "ad0886c9bb3ad3adbc5ad069ac0d79e0605065b1a03e7731c9904cc320dbf92d",
+      "fingerprint": "c0d392b16039812265cd15e01da2946cb2a1d54f32e50a4bf5d84059387de069",
       "native_source": "blizzard:ItemDocumentation.lua",
       "policies": [
         "nominal-or-refined-type",
@@ -51986,7 +51986,7 @@
     },
     "CreateFromMixins": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "494c3932766349885434215318c89ebd1a144279c746076923017e3823146e43",
+      "fingerprint": "7d90e4e2f7e17a828e21c538bb3685c3df957f0d9594a498eb71efa5744ac47d",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions",
@@ -52149,7 +52149,7 @@
     },
     "CreateSecureDelegate": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "5b68febca44d4b192527f8ae2598d58aca96ffeffd82353733b56170d62bcad8",
+      "fingerprint": "1e5ad3726eda29f5748cd77a8902fc9313f57fc54c2ff482f441c0e120498ce9",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -52188,7 +52188,7 @@
     },
     "CreateWindow": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "5d5ea317e88e9707fbac9605adfd3633f0e94cdd0557935f192247d4425f6e3b",
+      "fingerprint": "e808d665269fd5ff86000ad5b52d43c1562ed4dfc09140a7cd680451a625b1aa",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [],
       "resolutions": []
@@ -55346,7 +55346,7 @@
     },
     "Frame.GetAttribute": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "16115714575cd58272d4e9a288315a08d072dc6aa88025f6e8ab09a26c27dd1a",
+      "fingerprint": "44183339454521d343ae7dae7bb3e74fa664cb2a0a98d4b316c5023ead94bfbd",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "policies": [
         "native-secret-permissions",
@@ -55582,7 +55582,7 @@
     },
     "Frame.GetWindow": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "7ae838135b2ca87083c929de5ebd4034308a3b8d4ccb5593ecc7e19a1d67d752",
+      "fingerprint": "81dbbc627627cc3c869ac08fbfed0accd87624e34e1e3b15b459af2e8854901e",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "policies": [],
       "resolutions": []
@@ -56148,7 +56148,7 @@
     },
     "Frame.SetAttribute": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "c91978a51dee2e0210772f903ba33e25da9839d239afe7fb62912af7325bba91",
+      "fingerprint": "3a545e3362f8e4c0d10827f1a681f152e8b673afac3a8bac437378b659180305",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -56169,7 +56169,7 @@
     },
     "Frame.SetAttributeNoHandler": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "6183d5b738d40fc87561c622cce0c2d09a036781d4c53a71e0abbb3d238d4532",
+      "fingerprint": "acd9969b202638849994823ec5a341b80158e53ced6eb7d518d3ee984fca8a65",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -56460,7 +56460,7 @@
     },
     "Frame.SetWindow": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "d1d96104ab42df5cf5e712db245624d6d7584e1a3f67b7c66eea33c003b1d1a2",
+      "fingerprint": "725ed81deb645874de1e288df315f2a96686e7fd1cabefcbb16cd0d16d878136",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "policies": [],
       "resolutions": []
@@ -60517,6 +60517,113 @@
       "policies": [],
       "resolutions": []
     },
+    "LayeredRegion.GetDrawLayer": {
+      "coverage": "tsm-source-comparison",
+      "fingerprint": "bd463293925e7ad8dbcf9cc57a034b38050e9fc5d87d2b40a6eb8c576a224d09",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "policies": [],
+      "resolutions": []
+    },
+    "LayeredRegion.GetVertexColor": {
+      "coverage": "tsm-source-comparison",
+      "fingerprint": "3d2c4ef84ddcb6c0dbb26dc55e04c5b7fe9609500f407b7727a42e8773aa5e12",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "policies": [
+        "preserve-native-absence"
+      ],
+      "resolutions": [
+        {
+          "difference_sha256": "3dff18836a2168dc8c9aab64e6c75f1c95bbbb8770dcea0c52d9d6b2e6e67098",
+          "facts": {
+            "kind": "return-nilable",
+            "native": true,
+            "position": 4,
+            "tsm": false,
+            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+          },
+          "policy": "preserve-native-absence"
+        },
+        {
+          "difference_sha256": "89ae1c8148c3a04d88e2732170847fd25aa0836e311e8200da47b9d12e48232d",
+          "facts": {
+            "kind": "return-nilable",
+            "native": true,
+            "position": 2,
+            "tsm": false,
+            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+          },
+          "policy": "preserve-native-absence"
+        },
+        {
+          "difference_sha256": "e1d40421a2454ecbf0ea05804c9e79429adedf3b2be6ea24ea497e6a7a9a7563",
+          "facts": {
+            "kind": "return-nilable",
+            "native": true,
+            "position": 3,
+            "tsm": false,
+            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+          },
+          "policy": "preserve-native-absence"
+        },
+        {
+          "difference_sha256": "e5f46d9761fa29e5b73396c38c28760cbcff6d95980b0caf2accebf54178f7c8",
+          "facts": {
+            "kind": "return-nilable",
+            "native": true,
+            "position": 1,
+            "tsm": false,
+            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+          },
+          "policy": "preserve-native-absence"
+        }
+      ]
+    },
+    "LayeredRegion.SetDrawLayer": {
+      "coverage": "tsm-source-comparison",
+      "fingerprint": "e9a97456b943c8d26f3ea2edc4f260e55a8ac8dba2819c3340bf41abe7fe6491",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "policies": [],
+      "resolutions": []
+    },
+    "LayeredRegion.SetVertexColor": {
+      "coverage": "tsm-source-comparison",
+      "fingerprint": "c000fcf03201364e53b1f17b7061ce2de3861d59813386b35fdd0177c608ceeb",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "policies": [],
+      "resolutions": []
+    },
+    "LayeredRegion.SetVertexColorFromBoolean": {
+      "coverage": "tsm-source-comparison",
+      "fingerprint": "2e46a1200e79314606a9d57332b555a88c1fe3e542512a9a31455667fd8f35ee",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "policies": [
+        "nominal-or-refined-type"
+      ],
+      "resolutions": [
+        {
+          "difference_sha256": "59b7390070ca9e50174b3ea39d67ef4862e4a23e69f9017d5a7018e31bf3f5ae",
+          "facts": {
+            "kind": "argument-type",
+            "native": "ColorMixin",
+            "position": 2,
+            "tsm": "colorRGBA",
+            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
+          },
+          "policy": "nominal-or-refined-type"
+        },
+        {
+          "difference_sha256": "d2e10ef80171d53bf95b89541cb35f5ceebf9944f870aeeb060ee1e27627ddf0",
+          "facts": {
+            "kind": "argument-type",
+            "native": "ColorMixin",
+            "position": 3,
+            "tsm": "colorRGBA",
+            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
+          },
+          "policy": "nominal-or-refined-type"
+        }
+      ]
+    },
     "Line.ClearAllPoints": {
       "coverage": "tsm-source-comparison",
       "fingerprint": "063bd3e3e92362ed43a0690b4c066a614fe34d6b0a280fb9d8e36a9209f135a4",
@@ -60617,7 +60724,7 @@
     },
     "LocalizedClassList": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "54fd2e7b585dc9b9a79d0d23a2f2aca72a568b7c61800daad63f3da535df9af7",
+      "fingerprint": "6e63f946b6c9b2d90a683ad36207c83569109f448d66aba813264551299ff3d5",
       "native_source": "blizzard:LocalizationDocumentation.lua",
       "policies": [
         "native-secret-permissions",
@@ -61954,7 +62061,7 @@
     },
     "Mixin": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "fd7e177ec8cf42509d59139e13fdc10249d8422017c9cdb07a62310b0efb8125",
+      "fingerprint": "4b32782fd7c29fc231932a7852dd6ca678d2e275082a5b5f5b9276451877537b",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions",
@@ -64462,13 +64569,6 @@
       "policies": [],
       "resolutions": []
     },
-    "Region.GetDrawLayer": {
-      "coverage": "tsm-source-comparison",
-      "fingerprint": "db96f211b4e79271d899b94d784d238edccab6c40fc438c7d3289759496c2715",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "policies": [],
-      "resolutions": []
-    },
     "Region.GetEffectiveScale": {
       "coverage": "tsm-source-comparison",
       "fingerprint": "cb9dd22c3c384c3d3952b9fe083e5e66a5cbb043826e7904c593d1b883913bf6",
@@ -64482,60 +64582,6 @@
       "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "policies": [],
       "resolutions": []
-    },
-    "Region.GetVertexColor": {
-      "coverage": "tsm-source-comparison",
-      "fingerprint": "1f996d76934a21732141496bcb1c121e54a09b5b77c5e084ad72eab2fcce9780",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "policies": [
-        "preserve-native-absence"
-      ],
-      "resolutions": [
-        {
-          "difference_sha256": "3dff18836a2168dc8c9aab64e6c75f1c95bbbb8770dcea0c52d9d6b2e6e67098",
-          "facts": {
-            "kind": "return-nilable",
-            "native": true,
-            "position": 4,
-            "tsm": false,
-            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-          },
-          "policy": "preserve-native-absence"
-        },
-        {
-          "difference_sha256": "89ae1c8148c3a04d88e2732170847fd25aa0836e311e8200da47b9d12e48232d",
-          "facts": {
-            "kind": "return-nilable",
-            "native": true,
-            "position": 2,
-            "tsm": false,
-            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-          },
-          "policy": "preserve-native-absence"
-        },
-        {
-          "difference_sha256": "e1d40421a2454ecbf0ea05804c9e79429adedf3b2be6ea24ea497e6a7a9a7563",
-          "facts": {
-            "kind": "return-nilable",
-            "native": true,
-            "position": 3,
-            "tsm": false,
-            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-          },
-          "policy": "preserve-native-absence"
-        },
-        {
-          "difference_sha256": "e5f46d9761fa29e5b73396c38c28760cbcff6d95980b0caf2accebf54178f7c8",
-          "facts": {
-            "kind": "return-nilable",
-            "native": true,
-            "position": 1,
-            "tsm": false,
-            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-          },
-          "policy": "preserve-native-absence"
-        }
-      ]
     },
     "Region.IsIgnoringParentAlpha": {
       "coverage": "tsm-source-comparison",
@@ -64568,13 +64614,6 @@
     "Region.SetAlphaFromBoolean": {
       "coverage": "tsm-source-comparison",
       "fingerprint": "7afc3ef2fff7a3c9c64176dbc60d79624c9a99286c09e2fe0791f2672746deed",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "policies": [],
-      "resolutions": []
-    },
-    "Region.SetDrawLayer": {
-      "coverage": "tsm-source-comparison",
-      "fingerprint": "68102b96f97b7368e5c0555ed97f4806282f84a470cbb681d48a40a0467f4dbd",
       "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "policies": [],
       "resolutions": []
@@ -64612,45 +64651,6 @@
             "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:82"
           },
           "policy": "native-secret-permissions"
-        }
-      ]
-    },
-    "Region.SetVertexColor": {
-      "coverage": "tsm-source-comparison",
-      "fingerprint": "6138a9021aa30428c854a54e25b53db154c141a9c4238226e35662d0d7d1a1cb",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "policies": [],
-      "resolutions": []
-    },
-    "Region.SetVertexColorFromBoolean": {
-      "coverage": "tsm-source-comparison",
-      "fingerprint": "21a510a0eb6f1a5d99b929fffc4ff6d073b6e909c68a924b1fa103ea2e14f955",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "policies": [
-        "nominal-or-refined-type"
-      ],
-      "resolutions": [
-        {
-          "difference_sha256": "59b7390070ca9e50174b3ea39d67ef4862e4a23e69f9017d5a7018e31bf3f5ae",
-          "facts": {
-            "kind": "argument-type",
-            "native": "ColorMixin",
-            "position": 2,
-            "tsm": "colorRGBA",
-            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
-          },
-          "policy": "nominal-or-refined-type"
-        },
-        {
-          "difference_sha256": "d2e10ef80171d53bf95b89541cb35f5ceebf9944f870aeeb060ee1e27627ddf0",
-          "facts": {
-            "kind": "argument-type",
-            "native": "ColorMixin",
-            "position": 3,
-            "tsm": "colorRGBA",
-            "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
-          },
-          "policy": "nominal-or-refined-type"
         }
       ]
     },
@@ -65377,7 +65377,7 @@
     },
     "ScriptRegion.GetScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "f0e9327dcf8252833c026d1d678e57fa703a62fcb4b21e6dda28e1533e2b1e87",
+      "fingerprint": "4e5c9e7e7a08cba1c99b192b86c0cb3f4a258d00b60933048664bd6138e7e14f",
       "native_source": "blizzard:SimpleScriptRegionAPIDocumentation.lua",
       "policies": [
         "native-secret-permissions",
@@ -65536,7 +65536,7 @@
     },
     "ScriptRegion.HookScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "7bdeb0b35d669e0b3140823afdc0fd705429a59bc3b48d04f1e5279c6a4b4946",
+      "fingerprint": "ea7668df449c6fe8091f4e4024b6d19dd5a68fafe15817a4bc95ebdcc1214736",
       "native_source": "blizzard:SimpleScriptRegionAPIDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -65744,7 +65744,7 @@
     },
     "ScriptRegion.SetScript": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "86033b2385929b6056ac75ff69bacf2fd0d358c2a579404fa5ff65943ff7f292",
+      "fingerprint": "db6fb06c03f2cc8830edcbc859692842ac065149892c7e925eb30bb87b947d89",
       "native_source": "blizzard:SimpleScriptRegionAPIDocumentation.lua",
       "policies": [],
       "resolutions": []
@@ -71557,7 +71557,7 @@
     },
     "VectorGraphics.ClearSVG": {
       "coverage": "secondary-source-comparison",
-      "fingerprint": "94aafa246eb0d6d31baf90f50da2d2377f51bab062498c6728fa425d7545bff7",
+      "fingerprint": "8859e1c8e482bc7de428e01a0f9a4127da4db35f8ca17a523df568f30f27cb22",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "policies": [
         "native-object-omission",
@@ -71574,14 +71574,14 @@
           "policy": "native-object-omission"
         },
         {
-          "difference_sha256": "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
+          "difference_sha256": "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a",
           "facts": {
             "kind": "secondary-receiver-hierarchy",
             "native": {
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -71596,7 +71596,7 @@
     },
     "VectorGraphics.GetSVGFileID": {
       "coverage": "secondary-source-comparison",
-      "fingerprint": "51b300b2f812f0f1ea00276dd5891600ba79959e7d5ed4c31ac12e51b21f8575",
+      "fingerprint": "82bb0e33eeabfc8f1b51160426569be9dc517050ab9db75a72894cfa3c0eeec7",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "policies": [
         "native-object-omission",
@@ -71613,14 +71613,14 @@
           "policy": "native-object-omission"
         },
         {
-          "difference_sha256": "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
+          "difference_sha256": "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a",
           "facts": {
             "kind": "secondary-receiver-hierarchy",
             "native": {
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -71635,7 +71635,7 @@
     },
     "VectorGraphics.HasSVG": {
       "coverage": "secondary-source-comparison",
-      "fingerprint": "3cb14cd2c092c3a3b9150de1e9cb4221029c5fb3ac49b0291ab196dc7b3eed12",
+      "fingerprint": "dec2bd62481f9b17a1a98bc69b46539a5cec1c9f461d97d280507006d7abafa4",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "policies": [
         "native-object-omission",
@@ -71652,14 +71652,14 @@
           "policy": "native-object-omission"
         },
         {
-          "difference_sha256": "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
+          "difference_sha256": "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a",
           "facts": {
             "kind": "secondary-receiver-hierarchy",
             "native": {
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -71674,7 +71674,7 @@
     },
     "VectorGraphics.SetSVG": {
       "coverage": "secondary-source-comparison",
-      "fingerprint": "09324de2545a6f1c45fdca28efb6ac68bf37cd682ec249f3e34efa7be4ac7073",
+      "fingerprint": "4a913df898ad5066e5ec42802b60a9f988ee7e3bd0b25c8e15f0609808b7a0b4",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "policies": [
         "native-object-omission",
@@ -71691,14 +71691,14 @@
           "policy": "native-object-omission"
         },
         {
-          "difference_sha256": "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
+          "difference_sha256": "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a",
           "facts": {
             "kind": "secondary-receiver-hierarchy",
             "native": {
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -71804,7 +71804,7 @@
     },
     "canaccessallvalues": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "e73b0face56039113fffcd7c8dae6cfffa6e8262ff90e754e69edae8ce282a6d",
+      "fingerprint": "e83c6aaebd71f49244dddf949f4746db41f9b0bcbac16c025882b8df5876132a",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -71831,7 +71831,7 @@
     },
     "canaccesstable": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "6d3a95b54aac73e0c590f935cf90b1d193eb14e447b3e17f8cc61e501fcb742a",
+      "fingerprint": "b4b91977241717908c34d7555f11a14d7aef27b9c3ca6dcc31534880757cd5ca",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -71851,7 +71851,7 @@
     },
     "canaccessvalue": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "430fb28eedde0625404592d08c7cf4ee939bbed78711bf25bd4ce34c84922127",
+      "fingerprint": "667aea3efdc8d6060ae16db0c55637b69ba73105149c035b9da68ef74c610f2f",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -71892,7 +71892,7 @@
     },
     "dumpobject": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "6b0862e0dd2ffa07a11be85829e5811475b5c8dd59600bcf2400e941942e4676",
+      "fingerprint": "591a518877b06371c1a0b7d47405dceafb091a513924f1ca601e03d6253500e5",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -71912,7 +71912,7 @@
     },
     "hasanysecretvalues": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "d26daffd1e35173d140d4d0a7df6fc3baba5b6ababb421f4c4c83cc89fe68283",
+      "fingerprint": "04602da862e9cfa9ed2694e622edd32e220f8f011e07afa03c46ae92698d5181",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -71932,7 +71932,7 @@
     },
     "issecrettable": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "a221f577477f9967bf59764e738aad0bf305a7f0a796028cd7932b4f4505da3d",
+      "fingerprint": "9d4d0844bbfa822a8e71ee4eb8abcfddd33c64de6bda49f8e955606b55bd037a",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -71952,7 +71952,7 @@
     },
     "issecretvalue": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "dac14c0f26794bf90dd18a8aeb32783db6ec066c68b1eeb7015250bfbc584636",
+      "fingerprint": "c52787a86d5d7eb0922f13fa9a22bca78eb7bab3b29f1ad8646a234ac5b47320",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -71972,7 +71972,7 @@
     },
     "mapvalues": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "50211aa192f497bff1e899ca256189014fbc3dac6abc4fe9b8a565fda430da9c",
+      "fingerprint": "dcc94ae459af2230a56df32b2be5fee9a4c5316d26e9e329b704c52c86300192",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -72241,7 +72241,7 @@
     },
     "scrub": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "6de0281695f3ea382907c7e4992361a109cdde21d947fb390cc26bcc147fd383",
+      "fingerprint": "4a7ec0ecd1e012c18652d55a6e7336f79cfdd42cc690656bd4ee115e2ed0592f",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -72261,7 +72261,7 @@
     },
     "scrubsecretvalues": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "68559c9f7a18667651251776ba65b364b4b42fbc4f11fe78e7c4c74ef96d67ba",
+      "fingerprint": "2cb9b3aa339ffdc3475fbe67689e3ed5a03061d827f5e0632e3e3913544a85b6",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -72281,7 +72281,7 @@
     },
     "secretunwrap": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "f31b1ee5cc76e80158ddde44eb7ff5b57a08b5ba975a387632b251fb9e1d5296",
+      "fingerprint": "9b2ee7e0ccd94f4b1c5d7661b2be039649680647182b39f794f8f81f8be4e609",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -72478,7 +72478,7 @@
     },
     "secretwrap": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "9d0dab32011c9fa5bd491f01d5d7ea534d89040bd3e3e7b8e69d079e4ecef14c",
+      "fingerprint": "ff064e93e67d430200b53d324715f3166628d0dc91a16fc56e06f3ae7030241c",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -72665,7 +72665,7 @@
     },
     "securecallmethod": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "7bf19f731647e994bc8a305c5ff185672430dd3b6dd5b579ecf1b4dfd69f046a",
+      "fingerprint": "f7f0406d42ef0c090bd80a5f693245041e3ac02003bd1270feff311798ab1b26",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "native-secret-permissions"
@@ -72685,14 +72685,14 @@
     },
     "securecopy": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "33ef6dc8b8f2fe98661387065d9ed2a2dfd2ea71c02c7eeaf09e6862679e151a",
+      "fingerprint": "6622f9d014a1e5b78ae8f4ae7bb77f1100a41de915d4e0e5904e6230ad6c7a9c",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [],
       "resolutions": []
     },
     "settablesecurity": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "9dc3439ee01bbf784cd5d54ada29b54fd0e361bd9784c5e22747cf97d9fa36b8",
+      "fingerprint": "b8f8ec97d5255214b069dc5634c74384129951e358a5ad24ee42e9434b397415",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -72783,7 +72783,7 @@
     },
     "table.contains": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "0e0b1507d929ea7d0ace1257dcc5558c472fd35dfe170c2bac2cf4b0e087921a",
+      "fingerprint": "d1f47ee2a1b1bf42a4546411aad37b9369ad1d7fec2a8adef915ce56f39fa7d5",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -72826,7 +72826,7 @@
     },
     "table.count": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "017130118a8e549d2e0dcef253899e1f4fb843a1d92d4b320c6c0520543858cf",
+      "fingerprint": "ed84e8d8bea7b7f6d0b5d83b24280dd35714ac8f4aab109e1c3c5cd4baffcd96",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -72881,14 +72881,14 @@
     },
     "table.create": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "9438c48f3f248f78792a44ddd5c2068538b23ca0ac87a0cee36b58e64687478d",
+      "fingerprint": "cc6e4779103a3e00b3c17914731f3003f7add4c07913f2aea84a6d352bbf6390",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [],
       "resolutions": []
     },
     "table.freeze": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "7fa88720ad1b5de20cd7c588b95e06cdddbf330bc10b4d9e1caa2ca509bd12b2",
+      "fingerprint": "66979d54cc7d6d565faaacf978dc56384f7977f57480be2fb83bee59378df0e6",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -72920,14 +72920,14 @@
     },
     "table.getcountinfo": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "bec33afabb75d0a3ec8d523d73aea10b6a221ba00f90157761158f83cdfc87ee",
+      "fingerprint": "d6e2df0c89a292544d25b1b630591c170f998fe59159a662676f6f619280b67e",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [],
       "resolutions": []
     },
     "table.indexof": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "ab007cbe810954b2d15ce8ae57bbdb604e7aa440005d1cd39bf0b5678f3dd132",
+      "fingerprint": "a4c8efa2a974ede0fe73f340e00a19bbb39014e3949793f559461c6091a1372c",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -72982,7 +72982,7 @@
     },
     "table.isempty": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "cbbc7a479e1fca2b605253b097fdb7abda24b1f6d347412e92c9276b00b6c8df",
+      "fingerprint": "3ee6156114c4ce2571a8edf3f2fe95adab119e8134f3016313669dc82532d29d",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -73015,7 +73015,7 @@
     },
     "table.isfrozen": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "0dfb85d86f2a78ed3c575b753c39554bfa2752a6d501d8bb21a418943357876d",
+      "fingerprint": "95919427e9b8438649cc52dfbfb33869638141a0bbb90f2597d9d32bb4e91672",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "nominal-or-refined-type"
@@ -73036,7 +73036,7 @@
     },
     "table.keys": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "a86eccc24b1eb135ae8c3f4195871cd9dacdc8b38cb1b0ff6437fe9103c63b7a",
+      "fingerprint": "d194e82103a0017b4b63db2c648265d8d9efd363f203f837d2563bf92ca287a4",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -73069,7 +73069,7 @@
     },
     "table.removeunordered": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "10c2f2d8ed3ded05361d04d0e75bd766ee602c090b261f500970e378115eaf0c",
+      "fingerprint": "220a4d3eac5f467557150bba7f929362c4f43aa8a1e9cc0ec1db0af364fd9e40",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -73124,7 +73124,7 @@
     },
     "table.removevalue": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "d9d62c84071e10732493b8a47139eaa5879e618893d2126343e2aad3470f1f80",
+      "fingerprint": "b1c9dcc079c820e8b47e7e3b1fd70a16362bc0dc03da982bbe1e7d78a06cb720",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -73167,7 +73167,7 @@
     },
     "table.values": {
       "coverage": "tsm-source-comparison",
-      "fingerprint": "5c4c5bb00b6c17dfaa335e28effff1656fb7e734b34c24d5c1050b6003483f69",
+      "fingerprint": "73461c474ffb6ee74842a792ddea8aab218054cfb8cdc269b29c1d300b4f953a",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "policies": [
         "native-positional-contract",
@@ -73199,7 +73199,7 @@
       ]
     }
   },
-  "declaration_graph_sha256": "1404d739bf2f679dc1c7b4f5762c4bae11fe786ca775c1fd31a4939aecf67db4",
+  "declaration_graph_sha256": "329173cee649f25a5a77e8459d80ceb4c847605eba16838c5bbbf7bd80bf75a1",
   "policies": {
     "native-input-presence": {
       "decision": "Preserve native input presence/defaults and existing source-reviewed call shorthands.",
@@ -73314,17 +73314,20 @@
       "reason": "These exact vendor annotations add absence without native absence metadata. They do not justify a new runtime availability guarantee. Existing runtime absence/accessibility checks remain required; Teal itself admits nil."
     },
     "verified-native-capability-composition": {
-      "decision": "Use corrected Region composition for VectorGraphics; native lookup corroborates its exact106-method capability set and the complete Wowless LayeredRegion+ScriptObject composition.",
+      "decision": "Use source-backed LayeredRegion composition for VectorGraphics; native lookup corroborates its exact 106-method capability set and the complete Wowless LayeredRegion+ScriptObject composition.",
       "evidence": [
         "scripts/wow_api/native_observations.json",
         "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json",
-        "docs/api/teal-catalogue.md"
+        "docs/api/teal-catalogue.md",
+        "references/wow-api/native-crosscheck/wowless/data/products/wow/docs.yaml",
+        "references/wow-api/native-crosscheck/wowless/data/products/wow/uiobjects.yaml",
+        "internal/wowapi/native_routing.go"
       ],
       "reason": "Build-matched owned native observations establish method availability despite different virtual and native type names. Existing native signatures and secret restrictions remain authoritative; presence does not certify complete inherited signatures."
     }
   },
-  "review_date": "2026-10-26",
-  "review_scope": "Exact pinned source contracts, all candidate overloads, source-backed corrections and conservative workspace secrecy. This is not a live runtime or full TSM resolver certification.",
+  "review_date": "2026-10-27",
+  "review_scope": "Exact pinned source contracts; intentional no-any/compiler migration newly reviewed in evidence/reviews/no-any-2026-10-27/review.json (sha256 50a99de3b8778216c28ffab5ca5f00c3cd81c45de4bc27228498ae6b38a97023). Unchanged approvals retained; five owners and four hierarchy resolutions explicitly reviewed; original ledger archived verbatim. Final verification and limitations: evidence/reviews/no-any-2026-10-27/REVIEW.md. No live runtime certification.",
   "schema_version": 1,
   "source_locks_sha256": "47c8762a0ff3584deb81dd742f2fe728922cd79123f355ce7e34ad3e604de50f"
 }

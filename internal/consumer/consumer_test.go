@@ -2,10 +2,10 @@ package consumer
 
 import (
 	"archive/zip"
+	"maps"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"reflect"
 	"strings"
 	"syscall"
 	"testing"
@@ -19,11 +19,11 @@ func newAddon(t *testing.T) addonFixture {
 	project := filepath.Join(t.TempDir(), "external addon with spaces")
 	root := filepath.Join(project, "vendor/wow-teal-types")
 	source := filepath.Join(project, "src")
-	manifest, err := readJSON(filepath.Join(repo, "package.json"))
+	manifest, err := readManifest(filepath.Join(repo, "package.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	files := map[string]any{}
+	files := map[string]string{}
 	for _, name := range RequiredFiles() {
 		data, err := os.ReadFile(filepath.Join(repo, filepath.FromSlash(name)))
 		if err != nil {
@@ -32,8 +32,8 @@ func newAddon(t *testing.T) addonFixture {
 		writeTest(t, filepath.Join(root, filepath.FromSlash(name)), string(data))
 		files[name] = fingerprint(data)
 	}
-	manifest["files"] = files
-	data, err := jsonBytes(manifest)
+	manifest.Files = files
+	data, err := manifestBytes(manifest)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -98,6 +98,25 @@ func TestVersionCommandUsesVerifiedPackageWithoutCompiler(t *testing.T) {
 	f.run(t, []string{"version"}, "package integrity mismatch")
 }
 
+func TestNativeFrameFactoryContracts(t *testing.T) {
+	f := newAddon(t)
+	f.write(t, "Main.tl", `local type W = require("wow")
+local frame:W.Frame = CreateFrame("Frame")
+local bar:W.StatusBar = CreateFrame("StatusBar", nil, frame)
+bar:SetValue(1)
+`)
+	f.run(t, []string{"check", f.source}, "")
+	for _, source := range []string{
+		`local type W = require("wow")
+local bar:W.StatusBar = CreateFrame("Frame")`,
+		`local type W = require("wow")
+local function construct(kind:string):W.StatusBar return CreateFrame(kind) end`,
+	} {
+		f.write(t, "Main.tl", source)
+		f.run(t, []string{"check", f.source}, "StatusBar")
+	}
+}
+
 func TestRelocatedAddonBuildAndRepeat(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "WowTealExample.tl", fileText(t, filepath.Join(repositoryRoot(t), "examples/minimal/WowTealExample.tl")))
@@ -118,13 +137,13 @@ func TestRelocatedAddonBuildAndRepeat(t *testing.T) {
 	}
 	before := outputBytes(t, f.output)
 	f.run(t, []string{"build", f.source, "-o", f.output}, "")
-	if !reflect.DeepEqual(before, outputBytes(t, f.output)) {
+	if !maps.Equal(before, outputBytes(t, f.output)) {
 		t.Fatal("repeat changed checked build")
 	}
 }
 func TestSelectedImportedBodiesReceiveSecretChecks(t *testing.T) {
 	f := newAddon(t)
-	f.write(t, "Entry.tl", "local helpers = require(\"Helpers\")\nhelpers.inspect(UnitHealth(\"player\"))\n")
+	f.write(t, "Entry.tl", "local helpers = require(\"Helpers\")\nhelpers.inspect(1)\n")
 	f.write(t, "Helpers.tl", `local type W = require("wow")
 local record Helpers
    inspect: function(W.NumberLike)
@@ -192,7 +211,7 @@ func TestFailedBuildPreservesOutputAndRejectsForeignDirectory(t *testing.T) {
 	before := outputBytes(t, f.output)
 	f.write(t, "Bad.tl", "local type W = require(\"wow\")\nlocal function f(v: W.NumberLike) if v == 0 then print(v) end end\n")
 	f.run(t, []string{"build", f.source, "-o", f.output}, "secret-value comparison")
-	if !reflect.DeepEqual(before, outputBytes(t, f.output)) {
+	if !maps.Equal(before, outputBytes(t, f.output)) {
 		t.Fatal("failed build changed previous output")
 	}
 	f.run(t, []string{"build", f.source, "-o", f.source}, "output must not overlap")
@@ -274,7 +293,7 @@ func TestNonregularSourcesAndDependenciesRejectBeforeReading(t *testing.T) {
 		t.Fatal(err)
 	}
 	f.run(t, []string{"build", f.source, "-I", deps, "-o", f.output}, "regular file")
-	if !reflect.DeepEqual(before, outputBytes(t, f.output)) {
+	if !maps.Equal(before, outputBytes(t, f.output)) {
 		t.Fatal("nonregular input changed previous output")
 	}
 }
@@ -285,17 +304,17 @@ func TestRuntimeImportsRejectWithoutConfusingCommentsOrStrings(t *testing.T) {
 	before := outputBytes(t, f.output)
 	for _, expression := range []string{`require("wow")`, `require [[wow]]`, `require([=[wow]=])`, `_G.require("\119\111\119")`, `require("native_values")`, `(require)("wow")`, `(_G.require)("wow")`, `_G["require"]("wow")`, `require(("wow"))`} {
 		t.Run(expression, func(t *testing.T) {
-			f.write(t, "Main.tl", "local imported = "+expression+"\nprint(imported)\n")
+			f.write(t, "Main.tl", "local imported = "+expression+"\n")
 			reject := "runtime declaration/compatibility import"
 			if strings.Contains(expression, `\119`) {
 				reject = "module not found"
 			}
 			f.run(t, []string{"build", f.source, "-o", f.output}, reject)
-			if !reflect.DeepEqual(before, outputBytes(t, f.output)) {
+			if !maps.Equal(before, outputBytes(t, f.output)) {
 				t.Fatal("runtime import changed previous output")
 			}
 			literal := filepath.Join(f.project, "Literal.lua")
-			writeTest(t, literal, "local imported = "+expression+"\nprint(imported)\n")
+			writeTest(t, literal, "local imported = "+expression+"\n")
 			command := exec.CommandContext(t.Context(), teal(t), "run", filepath.Join(f.root, "tools/check_runtime_imports.lua"), "--", literal)
 			command.Dir = f.project
 			data, err := command.CombinedOutput()
@@ -355,28 +374,28 @@ func TestConsumerCLIUsesAddonWorkingDirectory(t *testing.T) {
 func TestConsumerPackageIsReproducibleAndExcludesProducer(t *testing.T) {
 	f := newAddon(t)
 	repo := repositoryRoot(t)
-	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
+	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "docs/no-any-types.md", "tools/teal/tests/compiler.lua", "tools/teal/README.md", "tools/teal/provenance.json", "tools/teal/unknown.patch", "tools/teal/rebuild.py", "tools/teal/upstream/tl.lua", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
 		writeTest(t, filepath.Join(f.root, name), fileText(t, filepath.Join(repo, name)))
 	}
 	first, err := Package(f.root)
 	if err != nil {
 		t.Fatal(err)
 	}
-	before := fileText(t, str(first["archive"]))
+	before := fileText(t, first.Archive)
 	second, err := Package(f.root)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if first["sha256"] != second["sha256"] || before != fileText(t, str(second["archive"])) {
+	if first.SHA256 != second.SHA256 || before != fileText(t, second.Archive) {
 		t.Fatal("consumer package is not repeatable")
 	}
-	archive, err := zip.OpenReader(str(first["archive"]))
+	archive, err := zip.OpenReader(first.Archive)
 	if err != nil {
 		t.Fatal(err)
 	}
 	defer archive.Close()
 	for _, member := range archive.File {
-		if strings.HasSuffix(member.Name, ".py") || strings.Contains(member.Name, "/scripts/") || strings.Contains(member.Name, "/tools/cdn/") {
+		if (strings.HasSuffix(member.Name, ".py") && member.Name != "wow-teal-types/tools/teal/rebuild.py") || strings.Contains(member.Name, "/scripts/") || strings.Contains(member.Name, "/tools/cdn/") {
 			t.Fatalf("producer or Python in consumer archive: %s", member.Name)
 		}
 	}

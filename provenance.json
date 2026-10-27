@@ -10,7 +10,7 @@
     "lua_target": "5.1",
     "name": "teal",
     "strict_arity": true,
-    "version": "0.24.8"
+    "version": "0.24.8-wow.1"
   },
   "export": {
     "checker_policy": "unchanged opaque-operation policy; portable paths and compiler-loaded module identity guard added",

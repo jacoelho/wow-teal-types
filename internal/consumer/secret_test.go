@@ -29,11 +29,11 @@ func teal(t *testing.T) string {
 	t.Helper()
 	name := os.Getenv("TL")
 	if name == "" {
-		name = "tl"
+		name = filepath.Join(repositoryRoot(t), "tools/teal/tl")
 	}
 	path, err := exec.LookPath(name)
 	if err != nil {
-		t.Fatal("Teal 0.24.8 required:", err)
+		t.Fatal("bundled Teal compiler required:", err)
 	}
 	return path
 }
@@ -47,8 +47,9 @@ func writeTest(t *testing.T, path, source string) {
 	}
 }
 
-// These source snippets and expected diagnostics were frozen from the authored
-// Python tests before the port. They are independent of Go command internals.
+// These authored cases exercise language and secrecy contracts independently of
+// Go command internals. Unknown-type cases reject at the compiler boundary;
+// precise marker cases separately exercise the secret checker.
 func TestSecretOperationContracts(t *testing.T) {
 	root := repositoryRoot(t)
 	data, err := os.ReadFile(filepath.Join(root, "internal/consumer/testdata/secret_cases.json"))

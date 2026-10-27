@@ -1,14 +1,13 @@
 package consumer
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
-	"reflect"
+	"slices"
 	"strings"
 	"syscall"
 )
@@ -20,7 +19,7 @@ const maxInputBytes = 16 << 20
 type buildInputs struct {
 	directory    string
 	packageRoot  string
-	manifest     map[string]any
+	manifest     PackageManifest
 	manifestHash string
 	search       []string
 }
@@ -116,17 +115,12 @@ func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
 	if err != nil {
 		return err
 	}
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.UseNumber()
-	if err = decoder.Decode(&b.manifest); err != nil {
-		return fmt.Errorf("package manifest: %w", err)
+	b.manifest, err = ParsePackageManifest(data)
+	if err != nil {
+		return err
 	}
-	var tail any
-	if err = decoder.Decode(&tail); err != io.EOF {
-		return fmt.Errorf("package manifest: trailing JSON input")
-	}
-	files := object(b.manifest["files"])
-	if !reflect.DeepEqual(sortedKeys(files), RequiredFiles()) {
+	files := b.manifest.Files
+	if !slices.Equal(slices.Sorted(maps.Keys(files)), RequiredFiles()) {
 		return fmt.Errorf("package manifest inventory mismatch")
 	}
 	b.manifestHash = fingerprint(data)
@@ -150,7 +144,7 @@ func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
 			return fmt.Errorf("package integrity mismatch: %s", name)
 		}
 		total += len(data)
-		if err = atomicWrite(filepath.Join(b.packageRoot, name), data, 0644); err != nil {
+		if err = atomicWrite(filepath.Join(b.packageRoot, name), data, consumerFileMode(name)); err != nil {
 			return err
 		}
 	}
@@ -158,7 +152,7 @@ func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
 	if err != nil {
 		return err
 	}
-	if b.manifest["wow_build"] != selected.Full {
+	if b.manifest.WoWBuild != selected.Full {
 		return fmt.Errorf("package WoW version differs from .wow-version")
 	}
 	return nil

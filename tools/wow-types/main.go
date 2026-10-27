@@ -79,41 +79,42 @@ func run(ctx context.Context, args []string) error {
 	if e != nil {
 		return e
 	}
-	var result any
 	switch command {
 	case "generate":
-		result, e = release.Update(ctx, root)
+		return writeResult(release.Update(ctx, root))
 	case "recover":
-		result, e = release.Recover(root)
+		return writeResult(release.Recover(root))
 	case "version":
 		manifest, err := consumer.Verify(root)
 		if err != nil {
 			return err
 		}
-		fmt.Println(manifest["version"])
+		fmt.Println(manifest.Version)
 		return nil
 	case "bootstrap":
-		_, e = release.Bootstrap(ctx, root, snapshot)
-		result = map[string]any{"status": "verified", "snapshot": snapshot}
+		_, err := release.Bootstrap(ctx, root, snapshot)
+		return writeResult(struct {
+			Snapshot string `json:"snapshot"`
+			Status   string `json:"status"`
+		}{snapshot, "verified"}, err)
 	case "acquire-client":
-		result, e = release.Acquire(ctx, root, snapshot, options["cache"])
+		return writeResult(release.Acquire(ctx, root, snapshot, options["cache"]))
 	case "stage-client":
-		result, e = release.StageSelected(ctx, root, snapshot, options["cache"], options["region"])
+		return writeResult(release.StageSelected(ctx, root, snapshot, options["cache"], options["region"]))
 	case "verify-client":
 		if len(positionals) > 0 {
 			snapshot = positionals[0]
 		}
-		result, e = release.VerifySnapshot(snapshot, nil)
+		return writeResult(release.VerifySnapshot(snapshot, nil))
 	case "build-extractor":
-		var binary string
-		var receipt map[string]any
-		binary, receipt, e = release.BuildExtractor(ctx, root)
-		if e == nil {
-			receipt["entry"] = binary
-			result = receipt
-		}
+		binary, receipt, err := release.BuildExtractor(ctx, root)
+		return writeResult(struct {
+			Entry          string `json:"entry"`
+			Implementation string `json:"implementation"`
+			SourceSHA256   string `json:"source_sha256"`
+		}{binary, receipt.Implementation, receipt.SourceSHA256}, err)
 	case "check-generator":
-		result, e = release.CheckGenerator(ctx, root, snapshot)
+		return writeResult(release.CheckGenerator(ctx, root, snapshot))
 	case "stage-release":
 		output := options["output"]
 		if output == "" {
@@ -123,32 +124,37 @@ func run(ctx context.Context, args []string) error {
 		for _, name := range []string{"blizzard", "questie", "tsm", "wowless", "backup"} {
 			refs[name] = options[name+"-ref"]
 		}
-		result, e = release.StageRelease(ctx, root, output, snapshot, refs)
+		return writeResult(release.StageRelease(ctx, root, output, snapshot, refs))
 	case "capture":
-		if len(positionals) != 1 {
-			return fmt.Errorf("capture requires one SavedVariables/JSON file")
-		}
-		for _, n := range []string{"manifest", "receipt", "output"} {
-			if options[n] == "" {
-				return fmt.Errorf("capture requires --%s", n)
+		for _, name := range []string{"manifest", "receipt", "output"} {
+			if options[name] == "" {
+				return fmt.Errorf("capture requires --%s", name)
 			}
 		}
-		result, e = wowapi.IngestCapture(positionals[0], options["manifest"], options["receipt"], options["output"])
+		return writeResult(wowapi.IngestCapture(positionals[0], options["manifest"], options["receipt"], options["output"]))
 	case "probe":
-		if len(positionals) == 0 {
-			return fmt.Errorf("probe requires plan or build")
+		project := wowapi.NewProject(root)
+		switch positionals[0] {
+		case "plan":
+			return writeResult(project.ProbePlan(ctx))
+		case "build":
+			return writeResult(project.BuildProbe(ctx, options["output"], ""))
+		default:
+			return fmt.Errorf("unknown probe command %q", positionals[0])
 		}
-		result, e = release.Probe(ctx, root, positionals[0], options["output"])
 	default:
 		return fmt.Errorf("unknown command %q", command)
 	}
-	if e != nil {
-		return e
+}
+
+func writeResult[T any](result T, err error) error {
+	if err != nil {
+		return err
 	}
-	enc := json.NewEncoder(os.Stdout)
-	enc.SetEscapeHTML(false)
-	enc.SetIndent("", "  ")
-	return enc.Encode(result)
+	encoder := json.NewEncoder(os.Stdout)
+	encoder.SetEscapeHTML(false)
+	encoder.SetIndent("", "  ")
+	return encoder.Encode(result)
 }
 func parseOptions(args []string) (map[string]string, []string, error) {
 	options := map[string]string{}

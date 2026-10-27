@@ -5,50 +5,49 @@ import (
 	"sort"
 )
 
-func (p Project) reconcile(report, ledger, closure M) (M, error) {
-	policies, approvals := asMap(ledger["policies"]), asMap(ledger["contracts"])
-	actual := M{}
-	for _, v := range asList(report["contracts"]) {
-		row := asMap(v)
-		symbol := asString(row["symbol"])
-		if actual[symbol] != nil {
-			return nil, fmt.Errorf("duplicate native symbols in TSM reconciliation")
+func (p Project) reconcile(report CrosscheckReport, ledger ReconciliationLedger, closure *sourceClosure) (ReconciliationReport, error) {
+	actual := map[string]reconciledContract{}
+	for _, row := range report.Contracts {
+		if _, ok := actual[row.Symbol]; ok {
+			return ReconciliationReport{}, fmt.Errorf("duplicate native symbols in TSM reconciliation")
 		}
-		actual[symbol] = row
+		actual[row.Symbol] = row
 	}
-	results := []any{}
+	results := []reconciliationDecision{}
 	unresolved := 0
 	for _, name := range sortedKeys(actual) {
-		contract, approval := asMap(actual[name]), asMap(approvals[name])
+		contract := actual[name]
+		approval, ok := ledger.Contracts[name]
 		state := "reviewed"
-		if approval == nil {
+		if !ok {
 			state = "unreviewed-contract"
-		} else if approval["fingerprint"] != contract["fingerprint"] {
+		} else if approval.Fingerprint != contract.Fingerprint {
 			state = "changed-contract"
 		} else {
 			unknown := false
-			for _, rule := range evStrings(approval["policies"]) {
-				unknown = unknown || policies[rule] == nil
+			for _, rule := range approval.Policies {
+				_, present := ledger.Policies[rule]
+				unknown = unknown || !present
 			}
-			for _, v := range asList(approval["resolutions"]) {
-				unknown = unknown || policies[asString(asMap(v)["policy"])] == nil
+			for _, row := range approval.Resolutions {
+				_, present := ledger.Policies[row.Policy]
+				unknown = unknown || !present
 			}
 			if unknown {
 				state = "unknown-resolution-policy"
 			} else {
 				deltas := []string{}
 				altered := false
-				for _, v := range asList(approval["resolutions"]) {
-					row := asMap(v)
-					deltas = append(deltas, asString(row["difference_sha256"]))
-					altered = altered || evDigest(row["facts"]) != row["difference_sha256"]
+				for _, row := range approval.Resolutions {
+					deltas = append(deltas, row.DifferenceSHA256)
+					altered = altered || evDigest(row.Facts) != row.DifferenceSHA256
 				}
 				sort.Strings(deltas)
-				if !evEqual(evList(deltas), contract["discrepancies"]) {
+				if !evEqual(deltas, contract.Discrepancies) {
 					state = "missing-position-resolution"
 				} else if altered {
 					state = "altered-resolution-facts"
-				} else if truth(contract["requires_resolution"]) && !truth(approval["policies"]) {
+				} else if contract.RequiresResolution && len(approval.Policies) == 0 {
 					state = "missing-resolution"
 				}
 			}
@@ -56,27 +55,27 @@ func (p Project) reconcile(report, ledger, closure M) (M, error) {
 		if state != "reviewed" {
 			unresolved++
 		}
-		results = append(results, M{"symbol": name, "state": state, "policies": evGet(approval, "policies", []any{})})
+		policies := approval.Policies
+		if !ok {
+			policies = []string{}
+		}
+		results = append(results, reconciliationDecision{Symbol: name, State: state, Policies: policies})
 	}
-	orphans := []any{}
-	for _, name := range sortedKeys(approvals) {
-		if actual[name] == nil {
+	orphans := []string{}
+	for _, name := range sortedKeys(ledger.Contracts) {
+		if _, ok := actual[name]; !ok {
 			orphans = append(orphans, name)
 		}
 	}
-	graphMatches := ledger["declaration_graph_sha256"] == report["declaration_graph_sha256"]
-	sourceMatches := ledger["source_locks_sha256"] == report["source_locks_sha256"]
-	var equivalence M
-	var e error
+	graphMatches := ledger.DeclarationGraphSHA256 == report.DeclarationGraphSHA256
+	sourceMatches := ledger.SourceLocksSHA256 == report.SourceLocksSHA256
+	var equivalence *EquivalenceProof
+	var err error
 	if !sourceMatches && closure != nil {
-		equivalence, e = p.validateEquivalence(report, ledger, closure)
-		if e != nil {
-			return nil, e
+		equivalence, err = p.validateEquivalence(report, ledger, *closure)
+		if err != nil {
+			return ReconciliationReport{}, err
 		}
 	}
-	r := M{"decisions": results, "orphaned_resolutions": orphans, "declaration_graph_matches": graphMatches, "source_locks_match": sourceMatches, "unresolved_contracts": unresolved, "passed": unresolved == 0 && len(orphans) == 0 && graphMatches && (sourceMatches || equivalence != nil), "policies": policies}
-	if equivalence != nil {
-		r["source_equivalence"] = equivalence
-	}
-	return r, nil
+	return ReconciliationReport{Decisions: results, OrphanedResolutions: orphans, DeclarationGraphMatches: graphMatches, SourceLocksMatch: sourceMatches, UnresolvedContracts: unresolved, Passed: unresolved == 0 && len(orphans) == 0 && graphMatches && (sourceMatches || equivalence != nil), Policies: ledger.Policies, SourceEquivalence: equivalence}, nil
 }

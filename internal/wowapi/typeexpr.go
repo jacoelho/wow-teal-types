@@ -1,6 +1,7 @@
 package wowapi
 
 import (
+	"fmt"
 	"regexp"
 	"sort"
 	"strconv"
@@ -13,7 +14,7 @@ var numericTypePattern = regexp.MustCompile(`^-?(?:0x[0-9A-Fa-f]+|\d+(?:\.\d+)?)
 var genericTypePattern = regexp.MustCompile(`^([A-Za-z_][A-Za-z_0-9.\-]*)\s*<(.*)>$`)
 var simpleFieldPattern = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9]*\??$`)
 
-func unsupported(raw, reason string) { reject("%q: %s", raw, reason) }
+func unsupported(raw, reason string) { reject(fmt.Sprintf("%q: %s", raw, reason)) }
 func SplitTopLevel(text string, delimiter byte) (parts []string, err error) {
 	defer captureError(&err)
 	return splitTop(text, delimiter), nil
@@ -190,25 +191,6 @@ func containsString(values []string, value string) bool {
 	}
 	return false
 }
-func toAnyStrings(values []string) []any {
-	out := make([]any, len(values))
-	for i, s := range values {
-		out[i] = s
-	}
-	return out
-}
-func stringsOf(v any) []string {
-	out := []string{}
-	switch x := v.(type) {
-	case []string:
-		return x
-	case []any:
-		for _, s := range x {
-			out = append(out, asString(s))
-		}
-	}
-	return out
-}
 
 type recordField struct {
 	name, typeName string
@@ -334,16 +316,15 @@ func (c typeConverter) walk(text string, depth int) string {
 	switch text {
 	case "true", "false":
 		return "boolean"
-	case "number", "integer", "string", "boolean", "nil", "any":
+	case "any":
+		return "unknown"
+	case "number", "integer", "string", "boolean", "nil", "unknown":
 		return text
 	case "table":
-		return "{any: any}"
+		return "{unknown: unknown}"
 	case "function":
-		s := "function(any...): any..."
-		if c.callback != nil {
-			return c.callback(s)
-		}
-		return s
+		// Callable identity alone establishes neither arguments nor results.
+		return "unknown"
 	case "self":
 		if c.self == "" {
 			unsupported(c.raw, "self type requires an owning receiver")
@@ -390,7 +371,7 @@ func (c typeConverter) function(text string, depth int) string {
 			pair := splitTop(part, ':')
 			if len(pair) == 1 {
 				if part == "..." {
-					params = append(params, "any...")
+					params = append(params, "unknown...")
 				} else if part == "self" && c.self != "" {
 					params = append(params, c.self)
 				} else {
@@ -414,15 +395,26 @@ func (c typeConverter) function(text string, depth int) string {
 	signature := "function(" + strings.Join(params, ", ") + ")"
 	if strings.HasPrefix(suffix, ":") {
 		ret := strings.TrimSpace(suffix[1:])
-		if ret == "..." {
-			signature += ": any..."
-		} else {
-			values := []string{}
-			for _, part := range splitTop(ret, ',') {
-				values = append(values, c.walk(part, depth+1))
+		values := []string{}
+		parts := splitTop(ret, ',')
+		for index, part := range parts {
+			pair := splitTop(part, ':')
+			variadic := pair[0] == "..."
+			if variadic && index != len(parts)-1 {
+				unsupported(c.raw, "variadic callback return must be last")
 			}
-			signature += ": " + strings.Join(values, ", ")
+			switch {
+			case variadic && len(pair) == 1:
+				values = append(values, "unknown...")
+			case variadic && len(pair) == 2:
+				values = append(values, c.walk(pair[1], depth+1)+"...")
+			case len(pair) == 1:
+				values = append(values, c.walk(part, depth+1))
+			default:
+				unsupported(c.raw, "invalid callback return")
+			}
 		}
+		signature += ": " + strings.Join(values, ", ")
 	}
 	if c.callback != nil {
 		signature = c.callback(signature)

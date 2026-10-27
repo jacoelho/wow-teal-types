@@ -10,6 +10,7 @@ import (
 	"strings"
 	"syscall"
 	"testing"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 func captureTestRoot(t *testing.T) string {
@@ -24,7 +25,7 @@ func captureTestRoot(t *testing.T) string {
 	}
 	return root
 }
-func captureTestJSON(t *testing.T, v any) []byte {
+func captureTestJSON[T any](t *testing.T, v T) []byte {
 	t.Helper()
 	data, err := jsonPretty(v)
 	if err != nil {
@@ -32,23 +33,13 @@ func captureTestJSON(t *testing.T, v any) []byte {
 	}
 	return data
 }
-func captureTestObject(t *testing.T, v any) M {
-	t.Helper()
-	data := captureTestJSON(t, v)
-	result, err := readCaptureData(data, false)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return result
-}
-
 func TestCaptureClassificationMatchesFrozenTransportCases(t *testing.T) {
 	data, err := os.ReadFile(filepath.Join(captureTestRoot(t), "internal/wowapi/testdata/capture_cases.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
 	var cases []struct {
-		Report, Manifest, Receipt, Classification M
+		Report, Manifest, Receipt, Classification json.RawMessage
 		ManifestBytes                             string `json:"manifest_bytes"`
 		Reject                                    string
 	}
@@ -59,8 +50,34 @@ func TestCaptureClassificationMatchesFrozenTransportCases(t *testing.T) {
 	}
 	for index, tc := range cases {
 		t.Run(fmt.Sprintf("case_%03d", index), func(t *testing.T) {
-			before := captureTestJSON(t, tc.Report)
-			result, err := validateCapture(tc.Report, tc.Manifest, tc.Receipt, []byte(tc.ManifestBytes))
+			before := bytes.Clone(tc.Report)
+			result, err := func() (CaptureResult, error) {
+				reportRaw, e := readCaptureData(tc.Report, false)
+				if e != nil {
+					return CaptureResult{}, e
+				}
+				report, e := decodeCaptureReport(reportRaw)
+				if e != nil {
+					return CaptureResult{}, e
+				}
+				manifestRaw, e := readCaptureData(tc.Manifest, false)
+				if e != nil {
+					return CaptureResult{}, e
+				}
+				manifest, e := decodeProbeManifest(manifestRaw)
+				if e != nil {
+					return CaptureResult{}, e
+				}
+				receiptRaw, e := readCaptureData(tc.Receipt, false)
+				if e != nil {
+					return CaptureResult{}, e
+				}
+				receipt, e := decodeProbeReceipt(receiptRaw)
+				if e != nil {
+					return CaptureResult{}, e
+				}
+				return validateCapture(report, manifest, receipt, []byte(tc.ManifestBytes))
+			}()
 			if tc.Reject != "" {
 				if err == nil {
 					t.Fatalf("accepted capture rejected by baseline: %s", tc.Reject)
@@ -69,11 +86,15 @@ func TestCaptureClassificationMatchesFrozenTransportCases(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				if !evEqual(result, tc.Classification) {
-					t.Fatalf("classification changed: got %v want %v", result, tc.Classification)
+				expected, e := readCaptureData(tc.Classification, false)
+				if e != nil {
+					t.Fatal(e)
+				}
+				if !captureMatches(expected, result) {
+					t.Fatalf("classification changed: got %v want %s", result, tc.Classification)
 				}
 			}
-			if !bytes.Equal(before, captureTestJSON(t, tc.Report)) {
+			if !bytes.Equal(before, tc.Report) {
 				t.Fatal("capture validation rewrote source observations")
 			}
 		})
@@ -97,7 +118,7 @@ func TestCaptureLiteralAndJSONBoundaries(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if parsed["first"] != false || asInt(parsed["second"]) != -17 || parsed["third"] != "A\x00B" || !evEqual(parsed["values"], []any{true, false}) {
+	if !parsed["first"].Equal(literal.Bool(false)) || !parsed["second"].Equal(literal.Int(-17)) || !parsed["third"].Equal(literal.Text("A\x00B")) || !parsed["values"].Equal(literal.List([]literal.Value{literal.Bool(true), literal.Bool(false)})) {
 		t.Fatalf("literal values changed: %v", parsed)
 	}
 }
@@ -116,7 +137,7 @@ func TestHistoricalCapturesRemainImmutableAndIngestionIsIdempotent(t *testing.T)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !evEqual(first, second) {
+	if !bytes.Equal(captureTestJSON(t, first), captureTestJSON(t, second)) {
 		t.Fatal("idempotent import changed classification")
 	}
 	path := filepath.Join(output, "report.json")

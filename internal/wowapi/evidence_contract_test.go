@@ -2,10 +2,15 @@ package wowapi
 
 import (
 	"bytes"
+	"encoding/json"
+	"maps"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
+	"wow-teal-types/internal/sourcelock"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 func TestEvidenceYAMLRejectsAmbiguousAndUnsafeShapes(t *testing.T) {
@@ -20,32 +25,43 @@ func TestEvidenceYAMLRejectsAmbiguousAndUnsafeShapes(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	m := asMap(value)
-	if m["flag"] != false || m["number"] != int64(0) || m["text"] != "false" {
+	raw, e := yamlRaw(value)
+	if e != nil {
+		t.Fatal(e)
+	}
+	m, ok := raw.Object()
+	if !ok {
+		t.Fatal("expected YAML object")
+	}
+	if !m["flag"].Equal(literal.Bool(false)) || !m["number"].Equal(literal.Int(0)) || !m["text"].Equal(literal.Text("false")) {
 		t.Fatalf("YAML scalar distinctions lost: %#v", m)
 	}
-	if _, exists := m["empty"]; !exists || m["empty"] != nil {
+	if _, exists := m["empty"]; !exists || m["empty"].Kind() != literal.Null {
 		t.Fatal("explicit null lost")
 	}
-	if _, e := secondaryType(M{"unknown": "number"}); e == nil {
+	bad, e := safeYAML([]byte("unknown: number"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, e := parseSecondaryType(bad); e == nil {
 		t.Fatal("unrecognized secondary type silently broadened")
 	}
 }
 func TestTypeFactsKeepSecretLocationOptionalsAndVariadicRelations(t *testing.T) {
 	facts := newTypeFacts(map[string]string{}, nil)
-	fact := func(text string) M { return facts.fact(text, "tsm", nil) }
+	fact := func(text string) typeFact { return facts.fact(text, "tsm", nil) }
 	element, container := fact("secret<number>[]?"), fact("secret<number[]>?")
-	if element["carrier_type"] != "number[]" || element["nilable"] != true {
+	if element.CarrierType != "number[]" || element.Nilable != true {
 		t.Fatalf("array fact: %#v", element)
 	}
 	if facts.equivalent(element, container) {
 		t.Fatal("element secrecy collapsed into container secrecy")
 	}
-	if !evEqual(element["secret_wrappers"], []any{M{"path": []any{"union", 1, "element"}, "type": "number"}}) {
-		t.Fatalf("secret path lost: %#v", element["secret_wrappers"])
+	if string(testEvidenceJSON(t, element.SecretWrappers)) != `[{"path":["union",1,"element"],"type":"number"}]` {
+		t.Fatalf("secret path lost: %#v", element.SecretWrappers)
 	}
-	if !evEqual(container["secret_wrappers"], []any{M{"path": []any{"union", 1}, "type": "number[]"}}) {
-		t.Fatalf("secret container path lost: %#v", container["secret_wrappers"])
+	if string(testEvidenceJSON(t, container.SecretWrappers)) != `[{"path":["union",1],"type":"number[]"}]` {
+		t.Fatalf("secret container path lost: %#v", container.SecretWrappers)
 	}
 	if facts.equivalent(fact("number?"), fact("number")) {
 		t.Fatal("nilability erased")
@@ -63,51 +79,51 @@ func TestTypeFactsKeepSecretLocationOptionalsAndVariadicRelations(t *testing.T) 
 			t.Errorf("changed callback contract considered equivalent: %s", changed)
 		}
 	}
-	if fact("fun(): number | nil")["nilable"] != false || fact("(fun(): number) | nil")["nilable"] != true {
+	if fact("fun(): number | nil").Nilable != false || fact("(fun(): number) | nil").Nilable != true {
 		t.Fatal("inner result absence and outer callback absence collapsed")
 	}
 }
 func TestTypeFactsResolveAliasesWithoutInventingInheritance(t *testing.T) {
 	native := newCatalogue(NewProject(t.TempDir()))
-	native.aliases["Seconds"] = M{"expression": "number", "source": "native primitive"}
+	native.aliases["Seconds"] = &catalogueAlias{Expression: "number", Source: "native primitive"}
 	facts := newTypeFacts(map[string]string{"vendor/aliases.lua": "---@alias Span Seconds\n---@alias Seconds number\n---@class Child : Parent\n"}, native)
-	if facts.fact("Span", "tsm", nil)["carrier_type"] != "number" || facts.fact("Seconds", "native", nil)["carrier_type"] != "number" {
+	if facts.fact("Span", "tsm", nil).CarrierType != "number" || facts.fact("Seconds", "native", nil).CarrierType != "number" {
 		t.Fatal("carrier alias resolution lost")
 	}
 	if facts.equivalent(facts.fact("Child", "tsm", nil), facts.fact("Parent", "tsm", nil)) {
 		t.Fatal("inheritance was treated as type equality")
 	}
-	if facts.fact("table<string,Span>", "tsm", nil)["carrier_type"] != "table<string,number>" {
+	if facts.fact("table<string,Span>", "tsm", nil).CarrierType != "table<string,number>" {
 		t.Fatal("nested alias not resolved")
 	}
 	conflicts := newTypeFacts(map[string]string{"vendor/a.lua": "---@alias Broken number\n", "vendor/b.lua": "---@alias Broken string\n"}, nil)
 	for _, expression := range []string{"Broken", "fun(x: number", "& number", "`T`", "table<number", "keyof T"} {
 		result := conflicts.fact(expression, "tsm", nil)
-		if result["type"] != nil || result["unsupported"] == nil {
+		if result.Type != "" || result.Unsupported == "" {
 			t.Errorf("unsupported fact broadened: %s %#v", expression, result)
 		}
 	}
-	if conflicts.fact("any", "tsm", nil)["type"] != "any" {
+	if conflicts.fact("any", "tsm", nil).Type != "any" {
 		t.Fatal("source-explicit any is not distinguished from unresolved evidence")
 	}
 }
 func TestScopedPolicyRetainsExactParameterIdentity(t *testing.T) {
-	expected := M{"raw": "untainted i j", "policy": "untainted", "scope": "named", "positions": []any{3, 4}, "unknown_names": []any{}}
-	if got := scopedPolicy("untainted i j", []any{"list", "separator", "i", "j"}); !evEqual(got, expected) {
+	expected := policyScope{Raw: "untainted i j", Policy: "untainted", Scope: "named", Positions: []int{3, 4}, UnknownNames: []string{}}
+	if got := scopedPolicy("untainted i j", []string{"list", "separator", "i", "j"}); !evEqual(got, expected) {
 		t.Fatalf("policy positions: %#v", got)
 	}
-	if evEqual(scopedPolicy("untainted i", []any{"list", "i", "j"}), scopedPolicy("untainted j", []any{"list", "i", "j"})) {
+	if evEqual(scopedPolicy("untainted i", []string{"list", "i", "j"}), scopedPolicy("untainted j", []string{"list", "i", "j"})) {
 		t.Fatal("policy scope identities collapsed")
 	}
-	if scopedPolicy("maybe", []any{"value"})["unsupported"] == nil {
+	if scopedPolicy("maybe", []string{"value"}).Unsupported == "" {
 		t.Fatal("unknown policy accepted")
 	}
 }
-func reconciliationFixture() (M, M) {
-	facts := M{"kind": "arguments-type", "position": 1, "native": "number", "tsm": "string"}
+func reconciliationFixture() (CrosscheckReport, ReconciliationLedger) {
+	facts := literal.Object{"kind": literal.Text("arguments-type"), "position": literal.Int(1), "native": literal.Text("number"), "tsm": literal.Text("string")}
 	difference := evDigest(facts)
-	report := M{"declaration_graph_sha256": "unchanged-graph", "source_locks_sha256": "unchanged-source", "contracts": []any{M{"symbol": "Read", "fingerprint": "reviewed-fingerprint", "requires_resolution": true, "discrepancies": []any{difference}}}}
-	ledger := M{"declaration_graph_sha256": "unchanged-graph", "source_locks_sha256": "unchanged-source", "policies": M{"reviewed": M{"reason": "retain precise native argument"}}, "contracts": M{"Read": M{"fingerprint": "reviewed-fingerprint", "policies": []any{"reviewed"}, "resolutions": []any{M{"policy": "reviewed", "difference_sha256": difference, "facts": facts}}}}}
+	report := CrosscheckReport{DeclarationGraphSHA256: "unchanged-graph", SourceLocksSHA256: "unchanged-source", Contracts: []reconciledContract{{symbolContext: symbolContext{Symbol: "Read"}, Fingerprint: "reviewed-fingerprint", RequiresResolution: true, Discrepancies: []string{difference}}}}
+	ledger := ReconciliationLedger{DeclarationGraphSHA256: "unchanged-graph", SourceLocksSHA256: "unchanged-source", Policies: map[string]resolutionPolicy{"reviewed": {Reason: "retain precise native argument"}}, Contracts: map[string]contractApproval{"Read": {Fingerprint: "reviewed-fingerprint", Policies: []string{"reviewed"}, Resolutions: []positionResolution{{Policy: "reviewed", DifferenceSHA256: difference, Facts: facts}}}}}
 	return report, ledger
 }
 func TestReconciliationCannotSelfApproveChangedFactsOrGraph(t *testing.T) {
@@ -115,32 +131,34 @@ func TestReconciliationCannotSelfApproveChangedFactsOrGraph(t *testing.T) {
 	report, ledger := reconciliationFixture()
 	before, _ := jsonPretty(ledger)
 	result, e := project.reconcile(report, ledger, nil)
-	if e != nil || result["passed"] != true {
+	if e != nil || !result.Passed {
 		t.Fatalf("reviewed contract rejected: %#v %v", result, e)
 	}
 	for _, mode := range []string{"fingerprint", "facts", "policy", "missing-resolution", "graph", "source", "orphan", "duplicate"} {
 		t.Run(mode, func(t *testing.T) {
-			r, l := mapCopy(report), mapCopy(ledger)
+			r, l := reconciliationFixture()
 			switch mode {
 			case "fingerprint":
-				asMap(asList(r["contracts"])[0])["fingerprint"] = "changed-permission"
+				r.Contracts[0].Fingerprint = "changed-permission"
 			case "facts":
-				asMap(asMap(asList(asMap(asMap(l["contracts"])["Read"])["resolutions"])[0])["facts"])["position"] = 2
+				l.Contracts["Read"].Resolutions[0].Facts["position"] = literal.Int(2)
 			case "policy":
-				delete(asMap(l["policies"]), "reviewed")
+				delete(l.Policies, "reviewed")
 			case "missing-resolution":
-				asMap(asMap(l["contracts"])["Read"])["resolutions"] = []any{}
+				approval := l.Contracts["Read"]
+				approval.Resolutions = nil
+				l.Contracts["Read"] = approval
 			case "graph":
-				r["declaration_graph_sha256"] = "weakened-types"
+				r.DeclarationGraphSHA256 = "weakened-types"
 			case "source":
-				r["source_locks_sha256"] = "changed-source"
+				r.SourceLocksSHA256 = "changed-source"
 			case "orphan":
-				asMap(l["contracts"])["Removed"] = M{"fingerprint": "unused"}
+				l.Contracts["Removed"] = contractApproval{Fingerprint: "unused"}
 			case "duplicate":
-				r["contracts"] = append(asList(r["contracts"]), asList(r["contracts"])[0])
+				r.Contracts = append(r.Contracts, r.Contracts[0])
 			}
 			result, e := project.reconcile(r, l, nil)
-			if e == nil && result["passed"] == true {
+			if e == nil && result.Passed {
 				t.Fatal("changed contract or approval facts were accepted")
 			}
 		})
@@ -150,7 +168,7 @@ func TestReconciliationCannotSelfApproveChangedFactsOrGraph(t *testing.T) {
 		t.Fatal("reconciliation rewrote original ledger")
 	}
 }
-func equivalenceFixture(t *testing.T) (string, string, M, M, M) {
+func equivalenceFixture(t *testing.T) (string, string, ReconciliationLedger, sourceClosure, CrosscheckReport) {
 	t.Helper()
 	directory := t.TempDir()
 	baseline, target := filepath.Join(directory, "baseline"), filepath.Join(directory, "candidate")
@@ -169,14 +187,6 @@ func equivalenceFixture(t *testing.T) (string, string, M, M, M) {
 			t.Fatal(e)
 		}
 	}
-	writeJSON := func(root, name string, value any) {
-		t.Helper()
-		b, e := jsonPretty(value)
-		if e != nil {
-			t.Fatal(e)
-		}
-		write(root, name, b)
-	}
 	policyData := map[string][]byte{}
 	for name := range policies {
 		data, e := os.ReadFile(filepath.Join(root, filepath.FromSlash(name)))
@@ -185,10 +195,11 @@ func equivalenceFixture(t *testing.T) (string, string, M, M, M) {
 		}
 		policyData[name] = data
 	}
-	sources := map[string]M{}
+	sources := map[string]sourcelock.Sources{}
+	tsm := sourcelock.TSM{Commit: strings.Repeat("a", 40), Repository: "fixture/tsm", Files: []sourcelock.LockedFile{}, Blizzard: sourcelock.TSMBlizzard{Repository: "fixture/native", Commit: strings.Repeat("b", 40), VersionSHA256: strings.Repeat("c", 64)}}
 	for _, item := range []struct{ root, version string }{{baseline, "12.1.5.70575"}, {target, "13.0.0.80001"}} {
 		write(item.root, ".wow-version", []byte(item.version+"\n"))
-		for _, directory := range []string{"internal/wowapi", "internal/release", "internal/consumer", "tools/wow-types", "tools/wow-teal"} {
+		for _, directory := range []string{"internal/wowapi", "internal/release", "internal/consumer", "internal/sourcelock", "tools/wow-types", "tools/wow-teal"} {
 			if e := os.MkdirAll(filepath.Join(item.root, directory), 0755); e != nil {
 				t.Fatal(e)
 			}
@@ -201,7 +212,7 @@ func equivalenceFixture(t *testing.T) (string, string, M, M, M) {
 			name string
 			data []byte
 		}{"blizzard": {"Example.lua", []byte("local Example={Name=\"Example\",Functions={{Name=\"Read\",SecretReturns=false,RequiresAccess=true}}}\n")}, "blizzard_support": {"Access.lua", []byte("local function CanRead(value) return not issecretvalue(value) end\n")}, "blizzard_version": {"version.txt", []byte(item.version + "\n")}, "questie": {"Annotations.lua", []byte("---@param value boolean\nfunction Read(value) end\n")}, "questie_runtime": {"Runtime.lua", []byte("local Library = {}\n")}}
-		groups := M{}
+		groups := sourcelock.Sources{}
 		for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version", "questie", "questie_runtime"} {
 			file := files[group]
 			data := file.data
@@ -214,26 +225,35 @@ func equivalenceFixture(t *testing.T) (string, string, M, M, M) {
 				t.Fatal(e)
 			}
 			write(item.root, relative, data)
-			identity := M{"repository": "fixture/" + group, "commit": strings.Repeat("a", 40)}
-			if item.root == target && containsString([]string{"blizzard", "blizzard_support", "blizzard_version"}, group) {
-				identity = M{"kind": "casc", "client_lock_sha256": strings.Repeat("c", 64), "normalization": "lf-final-newline"}
+			identity := sourcelock.SourceGroup{Repository: "fixture/" + group, Commit: strings.Repeat("a", 40), Path: group, Files: []sourcelock.SourceFile{{Name: file.name, Size: len(data), SHA: blobSHA(data)}}}
+			if item.root == target && slices.Contains([]string{"blizzard", "blizzard_support", "blizzard_version"}, group) {
+				identity.Repository = ""
+				identity.Commit = ""
+				identity.Kind = "casc"
+				identity.ClientLockSHA256 = strings.Repeat("c", 64)
+				identity.Normalization = "lf-final-newline"
+				clientPath := "Interface/AddOns/" + group + "/" + file.name
+				if group == "blizzard_version" {
+					clientPath = ""
+				}
+				identity.Files[0].ClientPath = sourcelock.ClientPath(clientPath)
 			}
-			identity["path"] = group
-			identity["files"] = []any{M{"name": file.name, "size": len(data), "sha": blobSHA(data)}}
 			groups[group] = identity
 		}
 		sources[item.root] = groups
-		writeJSON(item.root, "scripts/wow_api/sources.json", groups)
-		writeJSON(item.root, "scripts/wow_api/tsm_sources.json", M{"commit": "tsm-reviewed"})
+		writeEvidenceJSON(t, item.root, "scripts/wow_api/sources.json", groups)
+		writeEvidenceJSON(t, item.root, "scripts/wow_api/tsm_sources.json", tsm)
 	}
-	oldClosure := M{"native": sources[baseline], "tsm": M{"commit": "tsm-reviewed"}, "secondary": M{"native_capture_build": "12.1.5.70575"}, "resolved": M{"blob_sha256": strings.Repeat("r", 64)}}
-	ledger := M{"source_locks_sha256": evDigest(oldClosure), "declaration_graph_sha256": strings.Repeat("g", 64), "policies": M{}, "contracts": M{"Read": M{"fingerprint": strings.Repeat("f", 64), "policies": []any{}, "resolutions": []any{}}}}
-	report := M{"source_locks_sha256": evDigest(oldClosure), "declaration_graph_sha256": strings.Repeat("g", 64), "native_secondary_evidence": M{"sources": oldClosure["secondary"]}, "tsm_resolved_sources": oldClosure["resolved"], "contracts": []any{M{"symbol": "Read", "fingerprint": strings.Repeat("f", 64), "requires_resolution": false, "discrepancies": []any{}}}}
-	writeJSON(baseline, "evidence/generated/wow_tsm_crosscheck.json", report)
-	writeJSON(baseline, "scripts/wow_api/tsm_reconciliation.json", ledger)
-	writeJSON(target, "scripts/wow_api/tsm_reconciliation.json", ledger)
-	closure := evMerge(oldClosure, M{"native": sources[target]})
-	currentReport := evMerge(report, M{"source_locks_sha256": evDigest(closure)})
+	oldClosure := sourceClosure{Native: sources[baseline], TSM: tsm, Secondary: NativeEvidenceSources{NativeObservations: ObservationLock{Build: "12.1.5.70575"}}, Resolved: resolvedSources{BlobSHA256: strings.Repeat("r", 64)}}
+	ledger := ReconciliationLedger{SourceLocksSHA256: evDigest(oldClosure), DeclarationGraphSHA256: strings.Repeat("g", 64), Policies: map[string]resolutionPolicy{}, Contracts: map[string]contractApproval{"Read": {Fingerprint: strings.Repeat("f", 64), Policies: []string{}, Resolutions: []positionResolution{}}}}
+	report := CrosscheckReport{SourceLocksSHA256: evDigest(oldClosure), DeclarationGraphSHA256: strings.Repeat("g", 64), NativeSecondaryEvidence: NativeEvidence{Sources: oldClosure.Secondary}, TSMResolvedSources: oldClosure.Resolved, Contracts: []reconciledContract{{symbolContext: symbolContext{Symbol: "Read"}, Fingerprint: strings.Repeat("f", 64), Discrepancies: []string{}}}}
+	writeEvidenceJSON(t, baseline, "evidence/generated/wow_tsm_crosscheck.json", report)
+	writeEvidenceJSON(t, baseline, "scripts/wow_api/tsm_reconciliation.json", ledger)
+	writeEvidenceJSON(t, target, "scripts/wow_api/tsm_reconciliation.json", ledger)
+	closure := oldClosure
+	closure.Native = sources[target]
+	currentReport := report
+	currentReport.SourceLocksSHA256 = evDigest(closure)
 	return baseline, target, ledger, closure, currentReport
 }
 func TestByteEquivalentSourcesReuseOnlyUnchangedApproval(t *testing.T) {
@@ -259,7 +279,7 @@ func TestByteEquivalentSourcesReuseOnlyUnchangedApproval(t *testing.T) {
 		t.Fatal(e)
 	}
 	result, e := p.validateEquivalence(report, ledger, closure)
-	if e != nil || result["baseline_version"] != "12.1.5.70575" || result["target_version"] != "13.0.0.80001" || asInt(result["checked_native_files"]) != 2 {
+	if e != nil || result.BaselineVersion != "12.1.5.70575" || result.TargetVersion != "13.0.0.80001" || result.CheckedNativeFiles != 2 {
 		t.Fatalf("equivalence: %#v %v", result, e)
 	}
 	after, e := os.ReadFile(ledgerPath)
@@ -269,7 +289,7 @@ func TestByteEquivalentSourcesReuseOnlyUnchangedApproval(t *testing.T) {
 }
 func TestChangedPermissionBlocksDespiteIdenticalEmittedGraph(t *testing.T) {
 	baseline, target, ledger, closure, report := equivalenceFixture(t)
-	if report["declaration_graph_sha256"] != ledger["declaration_graph_sha256"] {
+	if report.DeclarationGraphSHA256 != ledger.DeclarationGraphSHA256 {
 		t.Fatal("fixture graph must remain unchanged")
 	}
 	p := NewProject(target)
@@ -282,9 +302,12 @@ func TestChangedPermissionBlocksDespiteIdenticalEmittedGraph(t *testing.T) {
 	if e = os.WriteFile(path, data, 0644); e != nil {
 		t.Fatal(e)
 	}
-	sources := mapCopy(asMap(closure["native"]))
-	row := asMap(asList(asMap(sources["blizzard"])["files"])[0])
-	row["size"], row["sha"] = len(data), blobSHA(data)
+	sources := maps.Clone(closure.Native)
+	group := sources["blizzard"]
+	group.Files = slices.Clone(group.Files)
+	group.Files[0].Size = len(data)
+	group.Files[0].SHA = blobSHA(data)
+	sources["blizzard"] = group
 	b, e := jsonPretty(sources)
 	if e != nil {
 		t.Fatal(e)
@@ -308,7 +331,9 @@ func TestEquivalenceCannotApproveChangedPolicyLedgerOrRuntimeFacts(t *testing.T)
 				t.Fatal(e)
 			}
 			if mode == "receipt" {
-				asMap(asMap(receipt["baseline_sources"])["blizzard"])["files"] = []any{}
+				group := receipt.BaselineSources["blizzard"]
+				group.Files = []sourcelock.SourceFile{}
+				receipt.BaselineSources["blizzard"] = group
 			}
 			b, e := jsonPretty(receipt)
 			if e != nil {
@@ -329,12 +354,12 @@ func TestEquivalenceCannotApproveChangedPolicyLedgerOrRuntimeFacts(t *testing.T)
 				}
 				e = os.WriteFile(path, append(data, '\n'), 0644)
 			case "graph":
-				report["declaration_graph_sha256"] = "changed types"
+				report.DeclarationGraphSHA256 = "changed types"
 			case "runtime":
-				asMap(asList(report["contracts"])[0])["fingerprint"] = "new build lacks matching invocation evidence"
+				report.Contracts[0].Fingerprint = "new build lacks matching invocation evidence"
 			case "closure":
-				closure["resolved"] = M{"blob_sha256": "different evidence"}
-				report["source_locks_sha256"] = evDigest(closure)
+				closure.Resolved.BlobSHA256 = "different evidence"
+				report.SourceLocksSHA256 = evDigest(closure)
 			case "annotation":
 				e = os.WriteFile(p.InputPath("questie", "Annotations.lua"), []byte("---@param value number\nfunction Read(value) end\n"), 0644)
 			}
@@ -345,5 +370,53 @@ func TestEquivalenceCannotApproveChangedPolicyLedgerOrRuntimeFacts(t *testing.T)
 				t.Fatal("changed evidence was self-approved")
 			}
 		})
+	}
+}
+
+func testEvidenceJSON[T any](t *testing.T, value T) []byte {
+	t.Helper()
+	data, err := jsonCompact(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
+func writeEvidenceJSON[T any](t *testing.T, root, name string, value T) {
+	t.Helper()
+	data, err := json.Marshal(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(root, name)
+	if err = os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err = os.WriteFile(path, data, 0644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestSecondaryBuildUsesCanonicalQuotedOrIntegerIdentity(t *testing.T) {
+	for _, raw := range []string{"70529", "'70529'"} {
+		got, err := secondaryBuild([]byte("version: 12.1.5\nbuild: " + raw + "\n"))
+		if err != nil || got != "12.1.5.70529" {
+			t.Fatalf("build %s: got %q, %v", raw, got, err)
+		}
+	}
+	for _, raw := range []string{"null", "70529.5", "'release'", "'070529'", "'+70529'", "'0'", "'999999999999999999999999999999'"} {
+		if _, err := secondaryBuild([]byte("version: 12.1.5\nbuild: " + raw + "\n")); err == nil {
+			t.Errorf("accepted invalid build %s", raw)
+		}
+	}
+}
+
+func TestSecondaryTypedefSelectionDoesNotInterpretUnreferencedContracts(t *testing.T) {
+	data := []byte("typedefs:\n  Known:\n    type: number\n  Unrelated:\n    type: unsupported-carrier\n")
+	got, err := parseSecondaryTypedefs(data, map[string]bool{"Known": true})
+	if err != nil || len(got) != 1 || got["Known"].Type.Primitive != "number" {
+		t.Fatalf("selected typedefs = %#v, %v", got, err)
+	}
+	if _, err := parseSecondaryTypedefs(data, map[string]bool{"Unrelated": true}); err == nil {
+		t.Fatal("interpreted an unsupported selected carrier")
 	}
 }

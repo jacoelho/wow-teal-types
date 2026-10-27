@@ -226092,9 +226092,79 @@
       "symbol": "Frame.SetAttribute/SetAttributeNoHandler"
     },
     {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.contains"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.count"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.freeze"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.getcountinfo"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.indexof"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.isempty"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.isfrozen"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.keys"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.removeunordered"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.removevalue"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.values"
+    },
+    {
       "evidence": "native LuaCurveEvaluatedResult documentation distinguishes supplied-curve result carriers",
       "rule": "numeric curves retain a number-like result; general base/color curves retain the opaque native variant",
       "symbol": "UnitHealthPercent/UnitPowerPercent/DurationObject.Evaluate*"
+    },
+    {
+      "evidence": "pinned wowless/data/products/wow/docs.yaml uiobject_method_reassignments.Region and uiobjects.yaml LayeredRegion/Frame/ModelScene",
+      "rule": "route five layer/color methods from the SimpleRegionAPI documentation group to their distinct receiver; Frame retains common Region",
+      "symbol": "LayeredRegion"
+    },
+    {
+      "evidence": "questie:Data/Wiki.lua:3602 and Blizzard_Menu/Compositor.lua:191",
+      "rule": "literal StatusBar construction retains its native subtype; other frame names return the common Frame surface, and template composition is not inferred",
+      "symbol": "CreateFrame"
+    },
+    {
+      "evidence": "recorded public RadialProgress native fixture",
+      "rule": "literal RadialProgress construction retains the native receiver subtype",
+      "symbol": "AnimationGroup.CreateAnimation"
     },
     {
       "evidence": [
@@ -226524,17 +226594,12 @@
     },
     {
       "expression": "fun(self, name: string, ...: string): table|AceAddon",
-      "representation": "{any: any}",
+      "representation": "{unknown: unknown}",
       "rule": "common table surface of source union"
     },
     {
       "expression": "table|AceAddon",
-      "representation": "{any: any}",
-      "rule": "common table surface of source union"
-    },
-    {
-      "expression": "table|function|AceConfig.OptionsTable",
-      "representation": "{any: any}",
+      "representation": "{unknown: unknown}",
       "rule": "common table surface of source union"
     },
     {
@@ -231586,6 +231651,10 @@
       "symbol": "MenuUtil.CreateEnumRadioMenu"
     },
     {
+      "rule": "function-name lookup has opaque results; only a supplied callback establishes its result relation",
+      "symbol": "securecall"
+    },
+    {
       "rule": "inherit canonical native ancestor contract",
       "symbol": "Animation.GetParent"
     },
@@ -231856,10 +231925,6 @@
     {
       "rule": "retain documented native call shorthands from Questie and Blizzard FrameXML call sites",
       "symbol": "ScriptRegionResizing.SetPoint"
-    },
-    {
-      "rule": "return common Frame; template composition requires reviewed assertion",
-      "symbol": "CreateFrame"
     },
     {
       "rule": "single optional arbitrary callback argument, not a variadic type pack",

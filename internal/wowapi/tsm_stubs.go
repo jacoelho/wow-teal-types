@@ -20,8 +20,8 @@ var tsmBindingPattern = regexp.MustCompile(`^(?:local\s+)?([\w.]+)\s*=\s*\{\}`)
 var tsmAnnotationPattern = regexp.MustCompile(`^---@([\w-]+)(?:\s+(.*))?$`)
 var tsmParamPattern = regexp.MustCompile(`^(\.\.\.\w*|[\w]+)(\?)?\s+(.+)`)
 
-func returnAnnotations(value string) ([]any, error) {
-	r := []any{}
+func returnAnnotations(value string) ([]tsmReturn, error) {
+	r := []tsmReturn{}
 	for value != "" {
 		raw, tail, e := splitSourceType(value)
 		if e != nil {
@@ -32,7 +32,7 @@ func returnAnnotations(value string) ([]any, error) {
 		if m != nil {
 			label = m[1]
 		}
-		r = append(r, M{"type": raw, "label": label})
+		r = append(r, tsmReturn{Type: raw, Label: label})
 		if m == nil {
 			break
 		}
@@ -119,10 +119,10 @@ func decodeTSMFiles(ctx context.Context, data []byte, version, count int) (map[s
 	}
 	return files, nil
 }
-func parseTSMStubs(files map[string]string) (map[string][]M, []any, M) {
-	functions := map[string][]M{}
-	diagnostics := []any{}
-	tags := M{}
+func parseTSMStubs(files map[string]string) (map[string][]tsmStub, []stubDiagnostic, map[string]int) {
+	functions := map[string][]tsmStub{}
+	diagnostics := []stubDiagnostic{}
+	tags := map[string]int{}
 	for _, path := range sortedKeys(files) {
 		pending := [][2]string{}
 		bindings := map[string]string{}
@@ -135,7 +135,7 @@ func parseTSMStubs(files map[string]string) (map[string][]M, []any, M) {
 			if m := tsmAnnotationPattern.FindStringSubmatch(line); m != nil {
 				pending = append(pending, [2]string{m[1], m[2]})
 				if strings.HasPrefix(m[1], "secret-") {
-					tags[m[1]] = asInt(tags[m[1]]) + 1
+					tags[m[1]] = tags[m[1]] + 1
 				}
 				continue
 			}
@@ -155,9 +155,9 @@ func parseTSMStubs(files map[string]string) (map[string][]M, []any, M) {
 					}
 					name = owner + "." + leaf
 				}
-				params, returns, unsupported := []any{}, []any{}, []any{}
-				security := M{}
-				generics, overloads := []any{}, []any{}
+				params, returns, unsupported := []tsmParameter{}, []tsmReturn{}, []unsupportedAnnotation{}
+				security := map[string][]string{}
+				generics, overloads := []string{}, []string{}
 				for _, annotation := range pending {
 					kind, value := annotation[0], annotation[1]
 					var e error
@@ -169,15 +169,15 @@ func parseTSMStubs(files map[string]string) (map[string][]M, []any, M) {
 							var raw string
 							raw, _, e = splitSourceType(m[3])
 							if e == nil {
-								params = append(params, M{"name": m[1], "type": raw, "optional": m[2] != ""})
+								params = append(params, tsmParameter{Name: m[1], Type: raw, Optional: m[2] != ""})
 							}
 						}
 					} else if kind == "return" {
-						var rows []any
+						var rows []tsmReturn
 						rows, e = returnAnnotations(value)
 						returns = append(returns, rows...)
 					} else if strings.HasPrefix(kind, "secret-") {
-						security[kind] = append(asList(security[kind]), value)
+						security[kind] = append(security[kind], value)
 					}
 					if kind == "generic" {
 						generics = append(generics, value)
@@ -186,36 +186,36 @@ func parseTSMStubs(files map[string]string) (map[string][]M, []any, M) {
 						overloads = append(overloads, value)
 					}
 					if e != nil {
-						unsupported = append(unsupported, M{"annotation": kind + " " + value, "reason": e.Error()})
+						unsupported = append(unsupported, unsupportedAnnotation{Annotation: kind + " " + value, Reason: e.Error()})
 					}
 				}
-				args := []any{}
+				args := []string{}
 				for _, s := range strings.Split(m[2], ",") {
 					if s = strings.TrimSpace(s); s != "" {
 						args = append(args, s)
 					}
 				}
-				item := M{"source": path, "line": i + 1, "method": method, "arguments": args, "parameters": params, "returns": returns, "security": security, "generics": generics, "overloads": overloads}
-				invalid := []any{}
-				varargs := []any{}
+				item := tsmStub{Source: path, Line: i + 1, Method: method, Arguments: args, Parameters: params, Returns: returns, Security: security, Generics: generics, Overloads: overloads}
+				invalid := []invalidParameter{}
+				varargs := []int{}
 				for j, v := range args {
-					s := asString(v)
+					s := v
 					if s != "..." && !regexp.MustCompile(`^[A-Za-z_]\w*$`).MatchString(s) {
-						invalid = append(invalid, M{"position": j + 1, "raw": s, "reason": "not a Lua parameter identifier or bare vararg"})
+						invalid = append(invalid, invalidParameter{Position: j + 1, Raw: s, Reason: "not a Lua parameter identifier or bare vararg"})
 					}
 					if strings.HasPrefix(s, "...") {
 						varargs = append(varargs, j+1)
 					}
 				}
-				if len(varargs) > 1 || len(varargs) > 0 && asInt(varargs[len(varargs)-1]) != len(args) {
-					invalid = append(invalid, M{"positions": varargs, "reason": "a Lua function has at most one final vararg"})
+				if len(varargs) > 1 || len(varargs) > 0 && varargs[len(varargs)-1] != len(args) {
+					invalid = append(invalid, invalidParameter{Positions: varargs, Reason: "a Lua function has at most one final vararg"})
 				}
 				if len(invalid) > 0 {
-					item["source_defect"] = M{"declaration": original, "parameters": invalid, "comparison_scope": "annotation facts only; malformed declaration is not a valid TSM function contract"}
+					item.SourceDefect = &sourceDefect{Declaration: original, Parameters: invalid, ComparisonScope: "annotation facts only; malformed declaration is not a valid TSM function contract"}
 				}
 				if len(unsupported) > 0 {
-					item["unsupported"] = unsupported
-					diagnostics = append(diagnostics, M{"symbol": name, "source": path, "line": i + 1, "annotations": unsupported})
+					item.Unsupported = unsupported
+					diagnostics = append(diagnostics, stubDiagnostic{Symbol: name, Source: path, Line: i + 1, Annotations: unsupported})
 				}
 				functions[name] = append(functions[name], item)
 			}
@@ -226,7 +226,7 @@ func parseTSMStubs(files map[string]string) (map[string][]M, []any, M) {
 	}
 	return functions, diagnostics, tags
 }
-func simpleTypeFact(expression string) (M, error) {
+func simpleTypeFact(expression string) (simpleFact, error) {
 	expression = strings.Join(strings.Fields(expression), "")
 	secret := strings.Contains(expression, "secret<")
 	for strings.Contains(expression, "secret<") {
@@ -242,19 +242,19 @@ func simpleTypeFact(expression string) (M, error) {
 			end++
 		}
 		if depth != 0 {
-			return nil, fmt.Errorf("unbalanced secret type")
+			return simpleFact{}, fmt.Errorf("unbalanced secret type")
 		}
 		expression = expression[:start] + expression[start+7:end-1] + expression[end:]
 	}
 	parts, e := SplitTopLevel(expression, '|')
 	if e != nil {
-		return nil, e
+		return simpleFact{}, e
 	}
 	nullable := strings.HasSuffix(expression, "?") || evContains(parts, "nil")
 	expression = strings.TrimSuffix(expression, "?")
 	parts, e = SplitTopLevel(expression, '|')
 	if e != nil {
-		return nil, e
+		return simpleFact{}, e
 	}
 	nonNil := []string{}
 	for _, s := range parts {
@@ -266,31 +266,34 @@ func simpleTypeFact(expression string) (M, error) {
 	expression = regexp.MustCompile(`\b(?:cstring|bool|luaIndex)\b`).ReplaceAllStringFunc(expression, func(s string) string {
 		return map[string]string{"cstring": "string", "bool": "boolean", "luaIndex": "number"}[s]
 	})
-	return M{"type": strings.TrimPrefix(expression, "Enum."), "nilable": nullable, "secret": secret}, nil
+	return simpleFact{Type: strings.TrimPrefix(expression, "Enum."), Nilable: nullable, Secret: secret}, nil
 }
-func nativeTypeFact(value M, absent bool) (M, error) {
-	expression := asString(evGet(value, "Mixin", value["Type"]))
-	if expression == "table" && truth(value["InnerType"]) {
-		expression = asString(value["InnerType"]) + "[]"
+func nativeTypeFact(value NativeParameter, absent bool) (simpleFact, error) {
+	expression := value.Type
+	if value.Mixin != "" {
+		expression = value.Mixin
 	}
-	fact, e := simpleTypeFact(expression)
-	if e != nil {
-		return nil, e
+	if expression == "table" && value.InnerType != "" {
+		expression = value.InnerType + "[]"
 	}
-	fact["nilable"] = truth(value["Nilable"]) || absent
+	fact, err := simpleTypeFact(expression)
+	if err != nil {
+		return simpleFact{}, err
+	}
+	fact.Nilable = enabled(value.Nilable) || absent
 	return fact, nil
 }
-func stubOrder(a, b M) bool {
-	at, bt := evTier(asString(a["source"])), evTier(asString(b["source"]))
+func stubOrder(a, b tsmStub) bool {
+	at, bt := evTier(a.Source), evTier(b.Source)
 	if at != bt {
 		return at < bt
 	}
-	if a["source"] != b["source"] {
-		return asString(a["source"]) < asString(b["source"])
+	if a.Source != b.Source {
+		return a.Source < b.Source
 	}
-	return asInt(a["line"]) < asInt(b["line"])
+	return a.Line < b.Line
 }
-func containsStub(rows []M, m M) bool {
+func containsStub(rows []tsmStub, m tsmStub) bool {
 	for _, x := range rows {
 		if evEqual(x, m) {
 			return true
@@ -298,33 +301,33 @@ func containsStub(rows []M, m M) bool {
 	}
 	return false
 }
-func typedStub(m M) bool {
-	if truth(m["parameters"]) {
+func typedStub(m tsmStub) bool {
+	if len(m.Parameters) > 0 {
 		return true
 	}
-	for _, v := range asList(m["returns"]) {
-		if !evContains([]string{"any", "nil", "..."}, asString(asMap(v)["type"])) {
+	for _, v := range m.Returns {
+		if !evContains([]string{"any", "nil", "..."}, v.Type) {
 			return true
 		}
 	}
 	return false
 }
-func definitionSet(name string, candidates []M, resolved M) (M, error) {
-	ordered := append([]M{}, candidates...)
+func definitionSet(name string, candidates []tsmStub, resolved *resolvedBinding) (stubDefinitions, error) {
+	ordered := append([]tsmStub{}, candidates...)
 	sort.SliceStable(ordered, func(i, j int) bool { return stubOrder(ordered[i], ordered[j]) })
-	perFile := map[string][]M{}
-	overrides := []M{}
+	perFile := map[string][]tsmStub{}
+	overrides := []tsmStub{}
 	for _, item := range ordered {
-		path := asString(item["source"])
+		path := item.Source
 		if path == "generated/InferredReturns.lua" {
-			return nil, fmt.Errorf("native comparison requires review of generated InferredReturns override precedence")
+			return stubDefinitions{}, fmt.Errorf("native comparison requires review of generated InferredReturns override precedence")
 		}
 		perFile[path] = append(perFile[path], item)
 		if strings.HasPrefix(path, "overrides/") {
 			overrides = append(overrides, item)
 		}
 	}
-	primary, active := []M{}, []M{}
+	primary, active := []tsmStub{}, []tsmStub{}
 	mode := "single-definition"
 	if len(overrides) > 0 {
 		for _, path := range sortedKeys(perFile) {
@@ -339,7 +342,7 @@ func definitionSet(name string, candidates []M, resolved M) (M, error) {
 			mode = "override-source-order-uncertain"
 		}
 	} else {
-		tier := evTier(asString(ordered[0]["source"]))
+		tier := evTier(ordered[0].Source)
 		for _, path := range sortedKeys(perFile) {
 			rows := perFile[path]
 			if evTier(path) == tier {
@@ -363,15 +366,15 @@ func definitionSet(name string, candidates []M, resolved M) (M, error) {
 		}
 	}
 	if resolved != nil {
-		selected := asMap(resolved["candidate"])
+		selected := *resolved.Candidate
 		if !containsStub(primary, selected) {
-			return nil, fmt.Errorf("resolved TSM binding contradicts source selection tiers: %s", name)
+			return stubDefinitions{}, fmt.Errorf("resolved TSM binding contradicts source selection tiers: %s", name)
 		}
-		primary = []M{selected}
+		primary = []tsmStub{selected}
 		if len(overrides) > 0 || !strings.Contains(name, ".") {
-			active = []M{selected}
+			active = []tsmStub{selected}
 		} else {
-			next := []M{}
+			next := []tsmStub{}
 			for _, item := range active {
 				if evEqual(item, selected) || typedStub(item) {
 					next = append(next, item)
@@ -380,84 +383,84 @@ func definitionSet(name string, candidates []M, resolved M) (M, error) {
 			active = next
 		}
 	}
-	policies := map[string]M{}
+	policies := map[string]*primarySecurityOption{}
 	for _, item := range primary {
-		b, e := jsonDefault(item["security"])
-		if e != nil {
-			return nil, e
+		data, err := jsonDefault(item.Security)
+		if err != nil {
+			return stubDefinitions{}, err
 		}
-		key := string(b)
+		key := string(data)
 		if policies[key] == nil {
-			policies[key] = M{"security": item["security"], "sources": []any{}}
+			policies[key] = &primarySecurityOption{Security: item.Security, Sources: []stubSource{}}
 		}
-		policies[key]["sources"] = append(asList(policies[key]["sources"]), M{"source": item["source"], "line": item["line"]})
+		policies[key].Sources = append(policies[key].Sources, stubSource{Source: item.Source, Line: item.Line})
 	}
-	options := []any{}
+	options := []primarySecurityOption{}
 	for _, key := range sortedKeys(policies) {
-		options = append(options, policies[key])
+		options = append(options, *policies[key])
 	}
-	discarded := []any{}
+	discarded := []tsmStub{}
 	for _, item := range ordered {
 		if !containsStub(active, item) {
 			discarded = append(discarded, item)
 		}
 	}
-	basis := []any{"tsm:util.rs:164", "tsm:util.rs:265", "tsm:pre_globals_mod.rs:2593", "tsm:pre_globals_mod.rs:2964"}
-	activeJSON, primaryJSON := []any{}, []any{}
-	for _, m := range active {
-		activeJSON = append(activeJSON, m)
-	}
-	for _, m := range primary {
-		primaryJSON = append(primaryJSON, m)
-	}
-	result := M{"mode": mode, "active": activeJSON, "possible_primary": primaryJSON, "order_uncertain": len(primary) > 1, "primary_security_options": options, "discarded": discarded, "basis": basis}
+	basis := []string{"tsm:util.rs:164", "tsm:util.rs:265", "tsm:pre_globals_mod.rs:2593", "tsm:pre_globals_mod.rs:2964"}
+	result := stubDefinitions{Mode: mode, Active: active, PossiblePrimary: primary, OrderUncertain: len(primary) > 1, PrimarySecurityOptions: options, Discarded: discarded, Basis: basis}
 	if resolved != nil {
-		result["resolved_binding"] = evMapWithout(resolved, "candidate")
-		result["basis"] = append(basis, "TSM pinned version-44 resolved database: reachable binding and exact source location")
+		binding := *resolved
+		binding.Candidate = nil
+		result.ResolvedBinding = &binding
+		result.Basis = append(basis, "TSM pinned version-44 resolved database: reachable binding and exact source location")
 	}
 	return result, nil
 }
-func explicitOverload(raw string, primary M) (M, error) {
+
+func explicitOverload(raw string, primary tsmStub) (tsmStub, error) {
 	m := regexp.MustCompile(`^fun\s*\(`).FindString(raw)
 	if m == "" {
-		return nil, fmt.Errorf("unsupported explicit overload prefix")
+		return tsmStub{}, fmt.Errorf("unsupported explicit overload prefix")
 	}
 	opening := strings.Index(raw, "(")
 	end, e := evidenceBalancedEnd(raw, opening)
 	if e != nil {
-		return nil, e
+		return tsmStub{}, e
 	}
 	parts, e := SplitTopLevel(raw[opening+1:end-1], ',')
 	if e != nil {
-		return nil, e
+		return tsmStub{}, e
 	}
-	args, params := []any{}, []any{}
+	args, params := []string{}, []tsmParameter{}
 	for _, param := range parts {
-		if param == "" || param == "self" && truth(primary["method"]) {
+		if param == "" || param == "self" && primary.Method {
 			continue
 		}
 		m := regexp.MustCompile(`^(\.\.\.|\w+)(\?)?\s*:\s*(.+)$`).FindStringSubmatch(param)
 		if m == nil {
-			return nil, fmt.Errorf("unsupported explicit overload parameter: %s", param)
+			return tsmStub{}, fmt.Errorf("unsupported explicit overload parameter: %s", param)
 		}
-		if m[1] == "self" && truth(primary["method"]) {
+		if m[1] == "self" && primary.Method {
 			continue
 		}
 		args = append(args, m[1])
-		params = append(params, M{"name": m[1], "optional": m[2] != "", "type": m[3]})
+		params = append(params, tsmParameter{Name: m[1], Optional: m[2] != "", Type: m[3]})
 	}
 	tail := strings.TrimSpace(raw[end:])
 	if tail != "" && !strings.HasPrefix(tail, ":") {
-		return nil, fmt.Errorf("unsupported explicit overload result")
+		return tsmStub{}, fmt.Errorf("unsupported explicit overload result")
 	}
-	returns := []any{}
+	returns := []tsmReturn{}
 	if tail != "" {
 		returns, e = returnAnnotations(strings.TrimSpace(tail[1:]))
 		if e != nil {
-			return nil, e
+			return tsmStub{}, e
 		}
 	}
-	return evMerge(primary, M{"arguments": args, "parameters": params, "returns": returns, "overloads": []any{}}), nil
+	primary.Arguments = args
+	primary.Parameters = params
+	primary.Returns = returns
+	primary.Overloads = []string{}
+	return primary, nil
 }
 func evidenceBalancedEnd(text string, start int) (int, error) {
 	pairs := map[byte]byte{'(': ')', '[': ']', '{': '}', '<': '>'}
@@ -496,4 +499,4 @@ func evidenceBalancedEnd(text string, start int) (int, error) {
 	}
 	return 0, fmt.Errorf("unterminated type expression")
 }
-func stubID(m M) string { return asString(m["source"]) + ":" + strconv.Itoa(asInt(m["line"])) }
+func stubID(m tsmStub) string { return m.Source + ":" + strconv.Itoa(m.Line) }

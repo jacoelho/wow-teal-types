@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"wow-teal-types/internal/sourcelock"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 const preservedFixture = `local Example = {
@@ -17,7 +19,7 @@ const preservedFixture = `local Example = {
  Predicates={{Name="RequireAccess",Type="Predicate",FailureMode="Error"}}
 };APIDocumentation:AddDocumentationTable(Example);`
 
-func preservationFixture(t *testing.T, text string) (Project, M) {
+func preservationFixture(t *testing.T, text string) (Project, Manifest) {
 	t.Helper()
 	root := t.TempDir()
 	write := func(name string, data []byte) {
@@ -31,7 +33,7 @@ func preservationFixture(t *testing.T, text string) (Project, M) {
 		}
 	}
 	write("references/wow-api/blizzard/Example.lua", []byte(text))
-	lock := M{"blizzard": M{"repository": "fixture/native", "commit": strings.Repeat("a", 40), "files": []any{M{"name": "Example.lua", "sha": blobSHA([]byte(text)), "size": len(text)}}}}
+	lock := sourcelock.Sources{"blizzard": {Repository: "fixture/native", Commit: strings.Repeat("a", 40), Path: "", Files: []sourcelock.SourceFile{{Name: "Example.lua", SHA: blobSHA([]byte(text)), Size: len(text)}}}}
 	b, e := jsonPretty(lock)
 	if e != nil {
 		t.Fatal(e)
@@ -42,46 +44,48 @@ func preservationFixture(t *testing.T, text string) (Project, M) {
 		t.Fatal(e)
 	}
 	write("scripts/wow_api/metadata_fields.json", policy)
-	inspect := M{"Name": "Inspect", "Type": "Function", "SecretReturns": false, "Arguments": []any{M{"Name": "enabled", "Type": "bool", "Default": false}}, "Returns": []any{M{"Name": "value", "Type": "number", "Nilable": false}}}
-	other := M{"Name": "Other", "Type": "Function"}
-	callback := M{"Name": "Handler", "Type": "CallbackType", "Arguments": []any{M{"Name": "item", "Type": "string", "ConditionalSecret": true}}}
-	predicate := M{"Name": "RequireAccess", "Type": "Predicate", "FailureMode": "Error"}
-	manifest := M{"symbols": []any{M{"source": "blizzard:Example.lua", "name": "Inspect", "metadata": inspect}, M{"source": "blizzard:Example.lua", "name": "Other", "metadata": other}}, "native_tables": []any{M{"source": "blizzard:Example.lua", "tables": []any{callback}, "predicates": []any{predicate}}}, "statistics": M{"native_functions": 2, "native_events": 0}, "representations": []any{M{"source": "fixture", "note": "Projection distinction remains explicit."}}}
+	manifest, e := ParseManifest([]byte(`{"symbols":[{"source":"blizzard:Example.lua","name":"Inspect","arguments":[{"Name":"enabled","Type":"bool","Default":false}],"returns":[{"Name":"value","Type":"number","Nilable":false}],"may_return_nothing":false,"restrictions":{},"metadata":{"Name":"Inspect","Type":"Function","SecretReturns":false,"Arguments":[{"Name":"enabled","Type":"bool","Default":false}],"Returns":[{"Name":"value","Type":"number","Nilable":false}]}},{"source":"blizzard:Example.lua","name":"Other","arguments":[],"returns":[],"may_return_nothing":false,"restrictions":{},"metadata":{"Name":"Other","Type":"Function"}}],"native_tables":[{"source":"blizzard:Example.lua","tables":[{"Name":"Handler","Type":"CallbackType","Arguments":[{"Name":"item","Type":"string","ConditionalSecret":true}]}],"predicates":[{"Name":"RequireAccess","Type":"Predicate","FailureMode":"Error"}]}],"statistics":{"native_functions":2,"native_events":0},"representations":[{"source":"fixture","rule":"Projection distinction remains explicit."}]}`))
+	if e != nil {
+		t.Fatal(e)
+	}
 	return NewProject(root), manifest
 }
 func TestCompleteMetadataRetainsFalseAbsenceAndNestedRestrictions(t *testing.T) {
 	p, manifest := preservationFixture(t, preservedFixture)
-	report, e := p.AuditMetadata(manifest)
+	report, e := p.AuditMetadata(&manifest)
 	if e != nil {
 		t.Fatal(e)
 	}
 	if e = RequireKnownMetadata(report); e != nil {
 		t.Fatal(e)
 	}
-	doc := asMap(asMap(asList(report["documents"])[0])["metadata"])
-	functions := asList(doc["Functions"])
-	if doc["Environment"] != "All" || asMap(functions[0])["SecretReturns"] != false {
+	doc := report.Documents[0].Metadata
+	if !doc["Environment"].Equal(literal.Text("All")) || !rawArgument(t, doc, "Functions", 0)["SecretReturns"].Equal(literal.Bool(false)) {
 		t.Fatal("header or explicit false lost")
 	}
-	if _, exists := asMap(functions[1])["SecretReturns"]; exists {
+	if _, exists := rawArgument(t, doc, "Functions", 1)["SecretReturns"]; exists {
 		t.Fatal("absence became an explicit false")
 	}
-	arg := asMap(asList(asMap(functions[0])["Arguments"])[0])
-	if arg["Default"] != false {
+	arg := rawArgument(t, rawArgument(t, doc, "Functions", 0), "Arguments", 0)
+	if !arg["Default"].Equal(literal.Bool(false)) {
 		t.Fatal("false default lost")
 	}
-	callback := asMap(asList(doc["Tables"])[0])
-	if asMap(asList(callback["Arguments"])[0])["ConditionalSecret"] != true {
+	callback := rawArgument(t, doc, "Tables", 0)
+	if !rawArgument(t, callback, "Arguments", 0)["ConditionalSecret"].Equal(literal.Bool(true)) {
 		t.Fatal("nested secrecy lost")
 	}
-	if asMap(report["statistics"])["native_functions"] != 2 || asMap(report["statistics"])["unknown_values"] != 0 {
-		t.Fatalf("counts: %#v", report["statistics"])
+	if report.Statistics.NativeFunctions != 2 || report.Statistics.UnknownValues != 0 {
+		t.Fatalf("counts: %#v", report.Statistics)
 	}
 	output := filepath.Join(p.Root, "candidate.json")
 	if e = WriteMetadata(output, report); e != nil {
 		t.Fatal(e)
 	}
-	saved, e := readJSON(output)
+	var saved MetadataReport
+	data, e := os.ReadFile(output)
+	if e == nil {
+		e = decodeJSON(data, &saved)
+	}
 	if e != nil || !metadataEqual(saved, report) {
 		t.Fatalf("retained report: %v", e)
 	}
@@ -89,26 +93,26 @@ func TestCompleteMetadataRetainsFalseAbsenceAndNestedRestrictions(t *testing.T) 
 func TestUnknownMetadataIsRetainedBeforePublicationRefusal(t *testing.T) {
 	text := strings.Replace(preservedFixture, "SecretReturns=false,", "SecretReturns=\"conditional\",NewPermission=false,", 1)
 	p, manifest := preservationFixture(t, text)
-	item := asMap(asMap(asList(manifest["symbols"])[0])["metadata"])
-	item["SecretReturns"], item["NewPermission"] = "conditional", false
-	report, e := p.AuditMetadata(manifest)
+	item := manifest.Symbols[0].Function.Raw
+	item["SecretReturns"], item["NewPermission"] = literal.Text("conditional"), literal.Bool(false)
+	report, e := p.AuditMetadata(&manifest)
 	if e != nil {
 		t.Fatal(e)
 	}
 	if e = RequireKnownMetadata(report); e == nil {
 		t.Fatal("unknown permission and changed metadata type accepted")
 	}
-	unknown := asList(report["unknown_fields"])
+	unknown := report.UnknownFields
 	paths := map[string]bool{}
 	for _, v := range unknown {
-		paths[asString(asMap(v)["path"])] = true
+		paths[v.Path] = true
 	}
 	if len(paths) != 2 || !paths["$.Functions[0].NewPermission"] || !paths["$.Functions[0].SecretReturns"] {
 		t.Fatalf("unknown values lost: %#v", unknown)
 	}
-	doc := asMap(asMap(asList(report["documents"])[0])["metadata"])
-	function := asMap(asList(doc["Functions"])[0])
-	if function["SecretReturns"] != "conditional" || function["NewPermission"] != false {
+	doc := report.Documents[0].Metadata
+	function := rawArgument(t, doc, "Functions", 0)
+	if !function["SecretReturns"].Equal(literal.Text("conditional")) || !function["NewPermission"].Equal(literal.Bool(false)) {
 		t.Fatal("rejected metadata lost from retained evidence")
 	}
 }
@@ -118,13 +122,13 @@ func TestAlteredOrOmittedManifestCannotClaimPreservation(t *testing.T) {
 			p, manifest := preservationFixture(t, preservedFixture)
 			switch mode {
 			case "omit-function":
-				manifest["symbols"] = asList(manifest["symbols"])[:1]
+				manifest.Symbols = manifest.Symbols[:1]
 			case "alter-secret":
-				asMap(asMap(asList(manifest["symbols"])[0])["metadata"])["SecretReturns"] = true
+				manifest.Symbols[0].Function.Raw["SecretReturns"] = literal.Bool(true)
 			case "omit-predicate":
-				asMap(asList(manifest["native_tables"])[0])["predicates"] = []any{}
+				manifest.NativeTables[0].Predicates = []literal.Value{}
 			}
-			if _, e := p.AuditMetadata(manifest); e == nil {
+			if _, e := p.AuditMetadata(&manifest); e == nil {
 				t.Fatal("omitted or altered metadata accepted")
 			}
 		})
@@ -139,8 +143,8 @@ func TestUnsupportedMetadataShapeIsRetainedInPreflight(t *testing.T) {
 	if e = RequireKnownMetadata(report); e == nil {
 		t.Fatal("unsupported Functions shape accepted")
 	}
-	doc := asMap(asMap(asList(report["documents"])[0])["metadata"])
-	if doc["Functions"] != false {
+	doc := report.Documents[0].Metadata
+	if !doc["Functions"].Equal(literal.Bool(false)) {
 		t.Fatal("unsupported false shape lost")
 	}
 }

@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"unicode"
@@ -40,7 +42,7 @@ func descriptionFields(encoded string) (map[string]string, error) {
 	if len(encoded) > 16384 {
 		return nil, fmt.Errorf("registry description metadata exceeds 16384 characters")
 	}
-	var values map[string]any
+	var values map[string]string
 	if err := json.Unmarshal([]byte(encoded), &values); err != nil {
 		return nil, fmt.Errorf("registry description metadata: %w", err)
 	}
@@ -55,31 +57,30 @@ func descriptionFields(encoded string) (map[string]string, error) {
 		case "summary", "detailed", "homepage", "license":
 			return nil, fmt.Errorf("registry description metadata cannot replace %s", key)
 		}
-		s, ok := value.(string)
-		if !ok || !printable(s) {
+		if !printable(value) {
 			return nil, fmt.Errorf("registry description values must be nonempty printable strings")
 		}
-		fields[key] = s
+		fields[key] = value
 	}
 	return fields, nil
 }
 
-func Recipe(root string, manifest map[string]any, repository string, description map[string]string) (string, error) {
+func Recipe(root string, manifest PackageManifest, repository string, description map[string]string) (string, error) {
 	if repository == "" {
 		repository = "@REPOSITORY@"
 	}
-	version, compiler := str(manifest["version"]), str(manifest["teal_version"])
-	license := str(manifest["license"])
+	version, compiler := manifest.Version, manifest.TealVersion
+	license := manifest.License
 	if !printable(license) {
 		return "", fmt.Errorf("package license must be a nonempty printable string")
 	}
 	if _, err := checkedPath(root, "LICENSE", false); err != nil {
 		return "", fmt.Errorf("project LICENSE file is required: %w", err)
 	}
-	if !releaseVersion.MatchString(version) || !releaseVersion.MatchString(compiler) {
-		return "", fmt.Errorf("package and compiler versions must use major.minor.patch")
+	if !releaseVersion.MatchString(version) || compiler != TealVersion {
+		return "", fmt.Errorf("package version must use major.minor.patch and compiler must match %s", TealVersion)
 	}
-	files := object(manifest["files"])
+	files := manifest.Files
 	expected := []string{}
 	for _, name := range modules {
 		expected = append(expected, "types/wow/"+name+".d.tl")
@@ -87,7 +88,7 @@ func Recipe(root string, manifest map[string]any, repository string, description
 	sort.Strings(expected)
 	declared := []string{}
 	for name := range files {
-		if strings.HasPrefix(name, "types/") {
+		if strings.HasPrefix(name, "types/") && strings.HasSuffix(name, ".d.tl") {
 			declared = append(declared, name)
 		}
 	}
@@ -111,7 +112,7 @@ func Recipe(root string, manifest map[string]any, repository string, description
 		fmt.Fprintf(&installs, "         %q,\n", name)
 	}
 	var additions strings.Builder
-	for _, key := range sortedKeys(description) {
+	for _, key := range slices.Sorted(maps.Keys(description)) {
 		fmt.Fprintf(&additions, "   [%s] = %s,\n", quoteJSON(key), quoteJSON(description[key]))
 	}
 	return fmt.Sprintf(`rockspec_format = "3.0"
@@ -127,7 +128,8 @@ description = {
    summary = "Retail World of Warcraft declaration files for Teal",
    detailed = [[
       Declaration-only snapshot for Retail %s.
-      The matching wow-teal command supplies additional secret-operation checks.
+      Requires the matching wow-teal toolkit and its bundled compiler %s.
+      The toolkit also supplies the required secret-operation checks.
    ]],
    homepage = "https://github.com/%s",
    license = %s,
@@ -135,7 +137,6 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
-   "tl == %s",
 }
 
 build = {
@@ -146,7 +147,7 @@ build = {
 %s      },
    },
 }
-`, version, repository, version, str(manifest["wow_build"]), repository, quoteJSON(license), additions.String(), compiler, installs.String()), nil
+`, version, repository, version, manifest.WoWBuild, compiler, repository, quoteJSON(license), additions.String(), installs.String()), nil
 }
 
 func Rockspecs(root string, args []string, out, errout io.Writer) error {
@@ -189,7 +190,7 @@ func Rockspecs(root string, args []string, out, errout io.Writer) error {
 			return fmt.Errorf("registry description metadata requires --repository OWNER/REPOSITORY")
 		}
 	}
-	manifest, err := readJSON(filepath.Join(root, "package.json"))
+	manifest, err := readManifest(filepath.Join(root, "package.json"))
 	if err != nil {
 		return err
 	}
@@ -197,7 +198,7 @@ func Rockspecs(root string, args []string, out, errout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	filename := "wow-tl-type-" + str(manifest["version"]) + "-1.rockspec"
+	filename := "wow-tl-type-" + manifest.Version + "-1.rockspec"
 	template := filepath.Join(root, "rockspecs", filename+".in")
 	templates, err := filepath.Glob(filepath.Join(root, "rockspecs/*.rockspec.in"))
 	if err != nil {

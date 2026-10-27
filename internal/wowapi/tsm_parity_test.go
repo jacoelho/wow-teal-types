@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 func TestTSMCrosscheckMatchesReviewedCohort(t *testing.T) {
@@ -32,7 +33,7 @@ func TestTSMCrosscheckMatchesReviewedCohort(t *testing.T) {
 	}
 	outputs := projection.render()
 	actual, e := p.crosscheck(t.Context(), c, c.manifest(), projection, outputs)
-	if actual != nil {
+	if actual.SchemaVersion != 0 {
 		data, marshalErr := jsonPretty(actual)
 		if marshalErr != nil {
 			t.Fatal(marshalErr)
@@ -59,13 +60,13 @@ func TestTSMCrosscheckMatchesReviewedCohort(t *testing.T) {
 	}
 	// Finalization owns emitted signatures, including secondary-native evidence.
 	// Changing discarded builder projection state must not change the audit.
-	methods := asMap(asMap(c.defs["DurationTextBindingObject"])["methods"])
-	originalMethod := asMap(methods["GetDuration"])
+	methods := c.defs["DurationTextBindingObject"].Methods
+	originalMethod := methods["GetDuration"]
 	if originalMethod == nil {
 		t.Fatal("recorded cohort lacks DurationTextBindingObject.GetDuration")
 	}
-	changedMethod := mapCopy(originalMethod)
-	changedMethod["resolved_signature"] = "function(self): string"
+	changedMethod := originalMethod.clone()
+	changedMethod.ResolvedSignature = new("function(self): string")
 	methods["GetDuration"] = changedMethod
 	rechecked, recheckErr := p.crosscheck(t.Context(), c, c.manifest(), projection, outputs)
 	methods["GetDuration"] = originalMethod
@@ -85,24 +86,26 @@ func TestTSMCrosscheckMatchesReviewedCohort(t *testing.T) {
 	}
 	// Permission review is independent of the emitted type graph. Change a real
 	// native contract field whose policy is retained outside Teal signatures.
-	originalGraph := actual["declaration_graph_sha256"]
+	originalGraph := actual.DeclarationGraphSHA256
 	changedSymbol := ""
-	for _, doc := range c.nativeDocs {
-		functions := asList(doc.Metadata["Functions"])
+	for index := range c.nativeDocs {
+		doc := &c.nativeDocs[index]
+		functions := doc.Metadata.Functions
 		if len(functions) == 0 {
 			continue
 		}
-		function := asMap(functions[0])
+		function := &functions[0]
 		policy := "NotAllowed"
-		if function["SecretArguments"] == policy {
+		if function.Policy.SecretArguments != nil && *function.Policy.SecretArguments == policy {
 			policy = "AllowedWhenUntainted"
 		}
-		function["SecretArguments"] = policy
-		owner := asString(doc.Metadata["Namespace"])
-		if doc.Metadata["Type"] == "ScriptObject" {
-			owner = scriptName(asString(doc.Metadata["Name"]))
+		function.Policy.SecretArguments = &policy
+		function.Raw["SecretArguments"] = literal.Text(policy)
+		owner := doc.Metadata.Namespace
+		if doc.Metadata.Type == "ScriptObject" {
+			owner = scriptName(doc.Metadata.Name)
 		}
-		changedSymbol = asString(function["Name"])
+		changedSymbol = function.Name
 		if owner != "" {
 			changedSymbol = owner + "." + changedSymbol
 		}
@@ -112,20 +115,19 @@ func TestTSMCrosscheckMatchesReviewedCohort(t *testing.T) {
 		t.Fatal("recorded cohort has no native function")
 	}
 	changed, rejection := p.crosscheck(t.Context(), c, c.manifest(), projection, outputs)
-	if rejection == nil || changed == nil {
+	if rejection == nil || changed.SchemaVersion == 0 {
 		t.Fatal("changed native permission was approved or report was lost")
 	}
-	if changed["declaration_graph_sha256"] != originalGraph {
+	if changed.DeclarationGraphSHA256 != originalGraph {
 		t.Fatal("permission-only change unexpectedly altered Teal graph")
 	}
-	decisions := asList(asMap(changed["reconciliation"])["decisions"])
+	decisions := changed.Reconciliation.Decisions
 	found := false
-	for _, v := range decisions {
-		row := asMap(v)
-		if row["symbol"] == changedSymbol {
+	for _, row := range decisions {
+		if row.Symbol == changedSymbol {
 			found = true
-			if row["state"] != "changed-contract" {
-				t.Fatalf("changed permission state = %v", row["state"])
+			if row.State != "changed-contract" {
+				t.Fatalf("changed permission state = %v", row.State)
 			}
 		}
 	}

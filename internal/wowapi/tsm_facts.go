@@ -2,87 +2,43 @@ package wowapi
 
 import (
 	"fmt"
+	"maps"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
-func evStrings(v any) []string {
-	r := []string{}
-	switch a := v.(type) {
-	case []string:
-		return append(r, a...)
-	case []any:
-		for _, x := range a {
-			r = append(r, asString(x))
-		}
+func evSortedUnique(values []string) []string {
+	set := map[string]bool{}
+	for _, value := range values {
+		set[value] = true
 	}
-	return r
+	return sortedKeys(set)
 }
-func evList(a []string) []any {
-	r := make([]any, len(a))
-	for i, v := range a {
-		r[i] = v
-	}
-	return r
-}
-func evEqual(a, b any) bool {
-	x, e := jsonCompact(a)
-	if e != nil {
-		return false
-	}
-	y, e := jsonCompact(b)
-	return e == nil && string(x) == string(y)
-}
-func evSortedUnique(a []string) []string {
-	m := map[string]bool{}
-	for _, s := range a {
-		m[s] = true
-	}
-	return sortedKeys(m)
-}
-func evContains(a []string, s string) bool {
-	for _, v := range a {
-		if v == s {
+func evContains(values []string, value string) bool {
+	for _, item := range values {
+		if item == value {
 			return true
 		}
 	}
 	return false
 }
-func evGet(m M, k string, defaultValue any) any {
-	if v, ok := m[k]; ok {
-		return v
+func evEqual[T any](a, b T) bool {
+	x, err := jsonCompact(a)
+	if err != nil {
+		return false
 	}
-	return defaultValue
+	y, err := jsonCompact(b)
+	return err == nil && string(x) == string(y)
 }
-func evMapWithout(m M, exclude ...string) M {
-	r := M{}
-	for k, v := range m {
-		if !evContains(exclude, k) {
-			r[k] = v
-		}
+func evDigest[T any](value T) string {
+	hash, err := digest(value)
+	if err != nil {
+		factFail(fmt.Sprintf("invalid evidence JSON: %s", err))
 	}
-	return r
-}
-func evMerge(a M, others ...M) M {
-	r := M{}
-	for k, v := range a {
-		r[k] = v
-	}
-	for _, b := range others {
-		for k, v := range b {
-			r[k] = v
-		}
-	}
-	return r
-}
-func evDigest(v any) string {
-	s, e := digest(v)
-	if e != nil {
-		factFail("invalid evidence JSON: %s", e)
-	}
-	return s
+	return hash
 }
 func evTier(path string) int {
 	for i, p := range []string{"vendor/", "generated/", "overrides/"} {
@@ -90,29 +46,21 @@ func evTier(path string) int {
 			return i
 		}
 	}
-	factFail("unknown alias scan tier: %s", path)
+	factFail("unknown alias scan tier: " + path)
 	return 0
 }
-func scopedPolicy(tag string, parameters []any) M {
+func scopedPolicy(tag string, names []string) policyScope {
 	words := strings.Fields(tag)
 	if len(words) == 0 || !evContains([]string{"none", "untainted", "tainted"}, words[0]) {
-		return M{"raw": tag, "unsupported": "unknown secret argument policy"}
-	}
-	names := []string{}
-	for _, v := range parameters {
-		if s, ok := v.(string); ok {
-			names = append(names, s)
-		} else {
-			names = append(names, asString(asMap(v)["name"]))
-		}
+		return policyScope{Raw: tag, Unsupported: "unknown secret argument policy"}
 	}
 	requested := words[1:]
 	unknown := []string{}
-	positions := []any{}
+	positions := []int{}
 	for _, name := range requested {
 		found := false
-		for i, v := range names {
-			if name == v {
+		for i, value := range names {
+			if name == value {
 				positions = append(positions, i+1)
 				found = true
 				break
@@ -123,213 +71,202 @@ func scopedPolicy(tag string, parameters []any) M {
 		}
 	}
 	if len(unknown) > 0 {
-		positions = []any{}
+		positions = []int{}
 	} else if len(requested) == 0 {
 		for i := range names {
 			positions = append(positions, i+1)
 		}
 	}
-	sort.Slice(positions, func(i, j int) bool { return asInt(positions[i]) < asInt(positions[j]) })
-	uniq := []any{}
-	for _, v := range positions {
-		if len(uniq) == 0 || v != uniq[len(uniq)-1] {
-			uniq = append(uniq, v)
+	sort.Ints(positions)
+	unique := []int{}
+	for _, value := range positions {
+		if len(unique) == 0 || value != unique[len(unique)-1] {
+			unique = append(unique, value)
 		}
 	}
 	scope := "named"
 	if len(requested) == 0 {
 		scope = "all"
 	}
-	return M{"raw": tag, "policy": words[0], "scope": scope, "positions": uniq, "unknown_names": evList(evSortedUnique(unknown))}
+	return policyScope{Raw: tag, Policy: words[0], Scope: scope, Positions: unique, UnknownNames: evSortedUnique(unknown)}
 }
-func renderFact(n factNode) string {
-	if len(n) == 0 {
+func renderFact(node factNode) string {
+	if node == nil {
 		factFail("empty type node")
 	}
-	parts := n[1:]
-	switch kindOf(n) {
+	switch node.kind {
 	case "name":
-		return asString(parts[0])
+		return node.text
 	case "literal":
-		b, e := encodeJSON(parts[0], false, false, false)
-		if e != nil {
+		data, err := encodeJSON(node.text, false, false, false)
+		if err != nil {
 			factFail("invalid literal")
 		}
-		return string(b)
+		return string(data)
 	case "variable", "pack", "class-name":
-		v := "$" + strconv.Itoa(asInt(parts[0]))
-		if kindOf(n) == "pack" {
-			return "..." + v
+		value := "$" + strconv.Itoa(node.index)
+		if node.kind == "pack" {
+			return "..." + value
 		}
-		if kindOf(n) == "class-name" {
-			return "`" + v + "`"
+		if node.kind == "class-name" {
+			return "`" + value + "`"
 		}
-		return v
+		return value
 	case "union", "intersection":
-		a := []string{}
-		for _, x := range parts {
-			p := childNode(x)
-			s := renderFact(p)
-			if kindOf(p) == "callable" || kindOf(p) == "union" {
-				s = "(" + s + ")"
+		parts := []string{}
+		for _, child := range node.children {
+			part := renderFact(child)
+			if child.kind == "callable" || child.kind == "union" {
+				part = "(" + part + ")"
 			}
-			a = append(a, s)
+			parts = append(parts, part)
 		}
-		op := "|"
-		prefix := ""
-		if kindOf(n) == "intersection" {
-			op = "&"
+		separator, prefix := "|", ""
+		if node.kind == "intersection" {
+			separator = "&"
 			if len(parts) == 1 {
 				prefix = "&"
 			}
 		}
-		return prefix + strings.Join(a, op)
+		return prefix + strings.Join(parts, separator)
 	case "array", "variadic":
-		p := childNode(parts[0])
-		s := renderFact(p)
-		if evContains([]string{"union", "intersection", "callable"}, kindOf(p)) {
-			s = "(" + s + ")"
+		child := node.children[0]
+		value := renderFact(child)
+		if evContains([]string{"union", "intersection", "callable"}, child.kind) {
+			value = "(" + value + ")"
 		}
-		if kindOf(n) == "array" {
-			return s + "[]"
+		if node.kind == "array" {
+			return value + "[]"
 		}
-		return "..." + s
+		return "..." + value
 	case "generic":
-		a := []string{}
-		for _, v := range parts[1:] {
-			a = append(a, renderFact(childNode(v)))
+		parts := []string{}
+		for _, child := range node.children {
+			parts = append(parts, renderFact(child))
 		}
-		return asString(parts[0]) + "<" + strings.Join(a, ",") + ">"
+		return node.text + "<" + strings.Join(parts, ",") + ">"
 	case "callable":
-		params := []string{}
-		for i, x := range asList(parts[0]) {
-			p := childNode(x)
+		parameters := []string{}
+		for i, p := range node.parameters {
 			name := "arg" + strconv.Itoa(i)
-			if truth(p[2]) {
+			if p.variadic {
 				name = "..."
-			} else if truth(p[1]) {
+			} else if p.optional {
 				name += "?"
 			}
-			params = append(params, name+":"+renderFact(childNode(p[3])))
+			parameters = append(parameters, name+":"+renderFact(p.value))
 		}
 		returns := []string{}
-		for _, v := range asList(parts[1]) {
-			returns = append(returns, renderFact(childNode(v)))
+		for _, value := range node.returns {
+			returns = append(returns, renderFact(value))
 		}
-		s := "fun(" + strings.Join(params, ",") + ")"
+		result := "fun(" + strings.Join(parameters, ",") + ")"
 		if len(returns) > 0 {
-			s += ":" + strings.Join(returns, ",")
+			result += ":" + strings.Join(returns, ",")
 		}
-		return s
+		return result
 	}
-	factFail("unknown type node: %s", kindOf(n))
+	factFail("unknown type node: " + node.kind)
 	return ""
 }
-func unionFact(nodes []any) factNode {
-	flat := []any{}
-	for _, x := range nodes {
-		n := childNode(x)
-		if kindOf(n) == "union" {
-			flat = append(flat, n[1:]...)
+func unionFact(nodes []factNode) factNode {
+	flat := []factNode{}
+	for _, node := range nodes {
+		if node.kind == "union" {
+			flat = append(flat, node.children...)
 		} else {
-			flat = append(flat, n)
+			flat = append(flat, node)
 		}
 	}
-	unique := map[string]any{}
-	for _, x := range flat {
-		unique[renderFact(childNode(x))] = x
+	unique := map[string]factNode{}
+	for _, node := range flat {
+		unique[renderFact(node)] = node
 	}
-	ordered := []any{}
-	for _, k := range sortedKeys(unique) {
-		ordered = append(ordered, unique[k])
+	ordered := []factNode{}
+	for _, key := range sortedKeys(unique) {
+		ordered = append(ordered, unique[key])
 	}
 	if len(ordered) == 1 {
-		return childNode(ordered[0])
+		return ordered[0]
 	}
-	return fn("union", ordered...)
+	return compoundFact("union", ordered...)
 }
-func nullableFact(n factNode) bool {
-	if evEqual(n, fn("name", "nil")) {
+func nullableFact(node factNode) bool {
+	if node.kind == "name" && node.text == "nil" {
 		return true
 	}
-	if kindOf(n) == "union" {
-		for _, x := range n[1:] {
-			if evEqual(x, fn("name", "nil")) {
+	if node.kind == "union" {
+		for _, child := range node.children {
+			if child.kind == "name" && child.text == "nil" {
 				return true
 			}
 		}
 	}
 	return false
 }
-func carrierFact(n factNode) factNode {
-	kind := kindOf(n)
-	switch kind {
+func carrierFact(node factNode) factNode {
+	switch node.kind {
 	case "generic":
-		if asString(n[1]) == "secret" && len(n) == 3 {
-			return carrierFact(childNode(n[2]))
+		if node.text == "secret" && len(node.children) == 1 {
+			return carrierFact(node.children[0])
 		}
-		a := []any{n[1]}
-		for _, v := range n[2:] {
-			a = append(a, carrierFact(childNode(v)))
+		children := []factNode{}
+		for _, child := range node.children {
+			children = append(children, carrierFact(child))
 		}
-		return fn(kind, a...)
-	case "union":
-		a := []any{}
-		for _, v := range n[1:] {
-			a = append(a, carrierFact(childNode(v)))
+		return genericFact(node.text, children...)
+	case "union", "array", "variadic", "intersection":
+		children := []factNode{}
+		for _, child := range node.children {
+			children = append(children, carrierFact(child))
 		}
-		return unionFact(a)
-	case "array", "variadic", "intersection":
-		a := []any{}
-		for _, v := range n[1:] {
-			a = append(a, carrierFact(childNode(v)))
+		if node.kind == "union" {
+			return unionFact(children)
 		}
-		return fn(kind, a...)
+		return compoundFact(node.kind, children...)
 	case "callable":
-		params := []any{}
-		for _, v := range asList(n[1]) {
-			p := childNode(v)
-			params = append(params, fn("parameter", p[1], p[2], carrierFact(childNode(p[3]))))
+		parameters := []factParameter{}
+		for _, p := range node.parameters {
+			parameters = append(parameters, factParameter{p.optional, p.variadic, carrierFact(p.value)})
 		}
-		returns := []any{}
-		for _, v := range asList(n[2]) {
-			returns = append(returns, carrierFact(childNode(v)))
+		returns := []factNode{}
+		for _, value := range node.returns {
+			returns = append(returns, carrierFact(value))
 		}
-		return fn(kind, params, returns)
+		return callableFact(parameters, returns)
 	}
-	return n
+	return node
 }
-func withoutNilFact(n factNode) factNode {
-	if kindOf(n) != "union" {
-		return n
+func withoutNilFact(node factNode) factNode {
+	if node.kind != "union" {
+		return node
 	}
-	a := []any{}
-	for _, v := range n[1:] {
-		if !evEqual(v, fn("name", "nil")) {
-			a = append(a, v)
+	children := []factNode{}
+	for _, child := range node.children {
+		if child.kind != "name" || child.text != "nil" {
+			children = append(children, child)
 		}
 	}
-	if len(a) == 0 {
-		return fn("name", "nil")
+	if len(children) == 0 {
+		return nameFact("nil")
 	}
-	return unionFact(a)
+	return unionFact(children)
 }
 
 type typeFacts struct {
 	catalogue *catalogue
-	aliases   map[string][]M
-	enums     M
-	callbacks map[string]M
+	aliases   map[string][]*factAlias
+	enums     map[string]factEvidence
+	callbacks map[string]nativeCallbackEvidence
 }
 
 func newTypeFacts(files map[string]string, c *catalogue) *typeFacts {
-	f := &typeFacts{catalogue: c, aliases: map[string][]M{}, enums: M{}, callbacks: map[string]M{}}
+	f := &typeFacts{catalogue: c, aliases: map[string][]*factAlias{}, enums: map[string]factEvidence{}, callbacks: map[string]nativeCallbackEvidence{}}
 	if c != nil {
 		for _, d := range c.nativeDocs {
-			for _, v := range asList(d.Metadata["Tables"]) {
-				item := asMap(v)
-				if asString(item["Type"]) == "CallbackType" {
-					f.callbacks[asString(item["Name"])] = M{"item": item, "source": "blizzard:" + d.Name}
+			for _, item := range d.Metadata.Tables {
+				if item.Type == "CallbackType" {
+					f.callbacks[item.Name] = nativeCallbackEvidence{item.Callback(), "blizzard:" + d.Name}
 				}
 			}
 		}
@@ -341,26 +278,26 @@ func newTypeFacts(files map[string]string, c *catalogue) *typeFacts {
 		for _, ix := range enumPattern.FindAllStringSubmatchIndex(text, -1) {
 			match := func(i int) string { return text[ix[i*2]:ix[i*2+1]] }
 			fields := strings.Split(match(3), ",")
-			valid, any := true, false
+			valid, hasField := true, false
 			for _, field := range fields {
 				field = strings.TrimSpace(field)
 				if field == "" {
 					continue
 				}
-				any = true
+				hasField = true
 				if !regexp.MustCompile(`^\w+\s*=\s*-?(?:0x[0-9a-fA-F]+|\d+(?:\.\d+)?)$`).MatchString(field) {
 					valid = false
 				}
 			}
-			if valid && any {
-				f.enums[match(1)] = M{"name": match(1), "source": path, "line": strings.Count(text[:ix[0]], "\n") + 1, "representation": "numeric enum carrier"}
+			if valid && hasField {
+				f.enums[match(1)] = factEvidence{Name: match(1), Source: path, Line: new(strings.Count(text[:ix[0]], "\n") + 1), Representation: "numeric enum carrier"}
 			}
 		}
-		var pending M
+		var pending *factAlias
 		for i, raw := range strings.Split(text, "\n") {
 			m := aliasPattern.FindStringSubmatch(raw)
 			if m != nil {
-				pending = M{"name": m[1], "members": []any{}, "source": path, "line": i + 1}
+				pending = &factAlias{Name: m[1], Members: []string{}, Source: path, Line: i + 1}
 				f.aliases[m[1]] = append(f.aliases[m[1]], pending)
 				if m[2] != "" {
 					aliasMember(pending, m[2])
@@ -374,26 +311,35 @@ func newTypeFacts(files map[string]string, c *catalogue) *typeFacts {
 	}
 	return f
 }
-func aliasMember(pending M, expression string) {
-	v, _, e := splitSourceType(expression)
-	if e != nil {
-		pending["unsupported"] = expression
-	} else if v != "" {
-		pending["members"] = append(asList(pending["members"]), v)
+
+type nativeCallbackEvidence struct {
+	Function NativeFunction
+	Source   string
+}
+
+func aliasMember(alias *factAlias, expression string) {
+	value, _, err := splitSourceType(expression)
+	if err != nil {
+		alias.Unsupported = expression
+	} else if value != "" {
+		alias.Members = append(alias.Members, value)
 	}
 }
-func (f *typeFacts) fact(expression, source string, generics []string) (result M) {
-	evidence := M{}
+func (f *typeFacts) fact(expression, source string, generics []string) (result typeFact) {
+	evidence := map[string]factEvidence{}
+	evidenceRows := func() []factEvidence {
+		rows := []factEvidence{}
+		for _, key := range sortedKeys(evidence) {
+			rows = append(rows, evidence[key])
+		}
+		return rows
+	}
 	defer func() {
-		if p := recover(); p != nil {
-			if e, ok := p.(factFailure); ok {
-				rows := []any{}
-				for _, k := range sortedKeys(evidence) {
-					rows = append(rows, evidence[k])
-				}
-				result = M{"raw": expression, "type": nil, "tree": nil, "unsupported": e.message, "evidence": rows}
+		if caught := recover(); caught != nil {
+			if failure, ok := caught.(factFailure); ok {
+				result = typeFact{Raw: expression, Unsupported: failure.message, Evidence: evidenceRows()}
 			} else {
-				panic(p)
+				panic(caught)
 			}
 		}
 	}()
@@ -401,40 +347,44 @@ func (f *typeFacts) fact(expression, source string, generics []string) (result M
 		factFail("type fact source must be tsm, native or effective")
 	}
 	env := map[string]factBinding{}
-	rawBinders := []M{}
+	type binderDeclaration struct {
+		pack bool
+		raw  string
+	}
+	declarations := []binderDeclaration{}
 	for _, declaration := range generics {
-		values, e := SplitTopLevel(declaration, ',')
-		if e != nil {
-			factFail("%s", e)
+		values, err := SplitTopLevel(declaration, ',')
+		if err != nil {
+			factFail(err.Error())
 		}
-		for _, v := range values {
-			m := regexp.MustCompile(`^\s*(\.\.\.[A-Za-z_]\w*|[A-Za-z_]\w*)\s*(?::\s*(.+))?$`).FindStringSubmatch(v)
-			if m == nil {
-				factFail("invalid generic constraint: %s", v)
+		for _, value := range values {
+			match := regexp.MustCompile(`^\s*(\.\.\.[A-Za-z_]\w*|[A-Za-z_]\w*)\s*(?::\s*(.+))?$`).FindStringSubmatch(value)
+			if match == nil {
+				factFail("invalid generic constraint: " + value)
 			}
-			pack := strings.HasPrefix(m[1], "...")
-			name := strings.TrimPrefix(m[1], "...")
-			if _, ok := env[name]; ok {
-				factFail("invalid or duplicate generic binder: %s", name)
+			pack := strings.HasPrefix(match[1], "...")
+			name := strings.TrimPrefix(match[1], "...")
+			if _, exists := env[name]; exists {
+				factFail("invalid or duplicate generic binder: " + name)
 			}
-			env[name] = factBinding{index: len(rawBinders), pack: pack}
-			rawBinders = append(rawBinders, M{"pack": pack, "raw": m[2]})
+			env[name] = factBinding{index: len(declarations), pack: pack}
+			declarations = append(declarations, binderDeclaration{pack, match[2]})
 		}
 	}
-	binders := []any{}
-	for _, b := range rawBinders {
-		var constraint any
-		if asString(b["raw"]) != "" {
-			constraint = f.parse(asString(b["raw"]), source, nil, evidence, 0, env)
+	binders := []genericBinder{}
+	for _, declaration := range declarations {
+		var constraint factNode
+		if declaration.raw != "" {
+			constraint = f.parse(declaration.raw, source, nil, evidence, 0, env)
 		}
-		binders = append(binders, M{"pack": b["pack"], "constraint": constraint})
+		binders = append(binders, genericBinder{Constraint: constraint, Pack: declaration.pack})
 	}
-	n := f.parse(expression, source, nil, evidence, 0, env)
-	wrappers := []any{}
+	node := f.parse(expression, source, nil, evidence, 0, env)
+	wrappers := []secretWrapper{}
 	features := map[string]bool{}
-	var visit func(factNode, []any)
-	visit = func(n factNode, path []any) {
-		kind := kindOf(n)
+	var visit func(factNode, []factPathPart)
+	visit = func(node factNode, path []factPathPart) {
+		kind := node.kind
 		if evContains([]string{"callable", "variable", "class-name", "pack", "intersection"}, kind) {
 			feature := kind
 			if feature == "variable" {
@@ -444,42 +394,38 @@ func (f *typeFacts) fact(expression, source string, generics []string) (result M
 		}
 		switch kind {
 		case "generic":
-			if asString(n[1]) == "secret" {
-				if len(n) != 3 {
+			if node.text == "secret" {
+				if len(node.children) != 1 {
 					factFail("secret wrapper requires one type")
 				}
-				wrappers = append(wrappers, M{"path": path, "type": renderFact(childNode(n[2]))})
+				wrappers = append(wrappers, secretWrapper{path, renderFact(node.children[0])})
 			}
-			for i, v := range n[2:] {
-				visit(childNode(v), append(append([]any{}, path...), "argument", i))
+			for i, child := range node.children {
+				visit(child, factPath(path, "argument", &i))
 			}
 		case "array", "variadic":
 			label := "element"
 			if kind == "variadic" {
 				label = "tail"
 			}
-			visit(childNode(n[1]), append(append([]any{}, path...), label))
+			visit(node.children[0], factPath(path, label, nil))
 		case "union", "intersection":
-			for i, v := range n[1:] {
-				visit(childNode(v), append(append([]any{}, path...), kind, i))
+			for i, child := range node.children {
+				visit(child, factPath(path, kind, &i))
 			}
 		case "callable":
-			for i, v := range asList(n[1]) {
-				visit(childNode(childNode(v)[3]), append(append([]any{}, path...), "callback-argument", i))
+			for i, p := range node.parameters {
+				visit(p.value, factPath(path, "callback-argument", &i))
 			}
-			for i, v := range asList(n[2]) {
-				visit(childNode(v), append(append([]any{}, path...), "callback-return", i))
+			for i, child := range node.returns {
+				visit(child, factPath(path, "callback-return", &i))
 			}
 		}
 	}
-	visit(n, []any{})
-	rows := []any{}
-	for _, k := range sortedKeys(evidence) {
-		rows = append(rows, evidence[k])
-	}
-	result = M{"raw": expression, "type": renderFact(n), "tree": n, "carrier_type": renderFact(withoutNilFact(carrierFact(n))), "nilable": nullableFact(n), "variadic": kindOf(n) == "variadic" || kindOf(n) == "pack", "secret": len(wrappers) > 0, "secret_wrappers": wrappers, "evidence": rows, "features": evList(sortedKeys(features))}
+	visit(node, []factPathPart{})
+	result = typeFact{Raw: expression, Type: renderFact(node), Tree: node, CarrierType: renderFact(withoutNilFact(carrierFact(node))), Nilable: nullableFact(node), Variadic: node.kind == "variadic" || node.kind == "pack", Secret: len(wrappers) > 0, SecretWrappers: wrappers, Evidence: evidenceRows(), Features: sortedKeys(features)}
 	if len(binders) > 0 {
-		result["binders"] = binders
+		result.Binders = binders
 	}
 	return result
 }
@@ -489,185 +435,186 @@ type factBinding struct {
 	pack  bool
 }
 
-func (f *typeFacts) parse(expression, source string, seen []string, evidence M, depth int, env map[string]factBinding) factNode {
+func (f *typeFacts) parse(expression, source string, seen []string, evidence map[string]factEvidence, depth int, env map[string]factBinding) factNode {
 	if depth > 48 {
 		factFail("type fact nesting exceeds 48 levels")
 	}
-	n, _, e := readSourceType(expression, false)
-	if e != nil {
-		factFail("%s", e)
+	node, _, err := readSourceType(expression, false)
+	if err != nil {
+		factFail(err.Error())
 	}
-	return f.resolve(n, source, seen, evidence, depth, env)
+	return f.resolve(node, source, seen, evidence, depth, env)
 }
-func (f *typeFacts) resolve(n factNode, source string, seen []string, evidence M, depth int, env map[string]factBinding) factNode {
+func (f *typeFacts) resolve(node factNode, source string, seen []string, evidence map[string]factEvidence, depth int, env map[string]factBinding) factNode {
 	if depth > 48 {
 		factFail("type fact nesting exceeds 48 levels")
 	}
-	walk := func(v any) factNode { return f.resolve(childNode(v), source, seen, evidence, depth+1, env) }
-	kind := kindOf(n)
-	switch kind {
-	case "union":
-		a := []any{}
-		for _, v := range n[1:] {
-			a = append(a, walk(v))
+	walk := func(value factNode) factNode { return f.resolve(value, source, seen, evidence, depth+1, env) }
+	switch node.kind {
+	case "union", "array", "intersection":
+		children := []factNode{}
+		for _, child := range node.children {
+			children = append(children, walk(child))
 		}
-		return unionFact(a)
+		if node.kind == "union" {
+			return unionFact(children)
+		}
+		return compoundFact(node.kind, children...)
 	case "class-name":
-		b, ok := env[asString(n[1])]
-		if !ok || b.pack {
-			factFail("unbound class-name generic: %s", n[1])
+		binding, exists := env[node.text]
+		if !exists || binding.pack {
+			factFail("unbound class-name generic: " + node.text)
 		}
-		return fn(kind, b.index)
+		return indexedFact(node.kind, binding.index)
 	case "variadic":
-		child := childNode(n[1])
-		if kindOf(child) == "name" {
-			if b, ok := env[asString(child[1])]; ok && b.pack {
-				return fn("pack", b.index)
+		child := node.children[0]
+		if child.kind == "name" {
+			if binding, exists := env[child.text]; exists && binding.pack {
+				return indexedFact("pack", binding.index)
 			}
 		}
-		return fn(kind, walk(n[1]))
-	case "array", "intersection":
-		a := []any{}
-		for _, v := range n[1:] {
-			a = append(a, walk(v))
-		}
-		return fn(kind, a...)
+		return compoundFact(node.kind, walk(child))
 	case "generic":
-		if asString(n[1]) == "secret" && len(n) != 3 {
+		if node.text == "secret" && len(node.children) != 1 {
 			factFail("secret wrapper requires one type")
 		}
-		a := []any{n[1]}
-		for _, v := range n[2:] {
-			a = append(a, walk(v))
+		children := []factNode{}
+		for _, child := range node.children {
+			children = append(children, walk(child))
 		}
-		return fn(kind, a...)
+		return genericFact(node.text, children...)
 	case "callable":
-		params := []any{}
-		for _, v := range asList(n[1]) {
-			p := childNode(v)
-			params = append(params, fn("parameter", p[1], p[2], walk(p[3])))
+		parameters := []factParameter{}
+		for _, p := range node.parameters {
+			parameters = append(parameters, factParameter{p.optional, p.variadic, walk(p.value)})
 		}
-		returns := []any{}
-		for _, v := range asList(n[2]) {
-			returns = append(returns, walk(v))
+		returns := []factNode{}
+		for _, value := range node.returns {
+			returns = append(returns, walk(value))
 		}
-		return fn(kind, params, returns)
+		return callableFact(parameters, returns)
 	}
-	if kind != "name" {
-		return n
+	if node.kind != "name" {
+		return node
 	}
-	text := asString(n[1])
-	if mapped, ok := map[string]string{"integer": "number", "cstring": "string", "bool": "boolean", "luaIndex": "number"}[text]; ok {
+	text := node.text
+	if mapped, exists := map[string]string{"integer": "number", "cstring": "string", "bool": "boolean", "luaIndex": "number"}[text]; exists {
 		text = mapped
 	}
-	if b, ok := env[text]; ok {
-		if b.pack {
-			factFail("generic pack requires expansion: %s", text)
+	if binding, exists := env[text]; exists {
+		if binding.pack {
+			factFail("generic pack requires expansion: " + text)
 		}
-		return fn("variable", b.index)
+		return indexedFact("variable", binding.index)
 	}
 	if evContains(seen, text) {
-		factFail("cyclic alias: %s", strings.Join(append(append([]string{}, seen...), text), " -> "))
+		factFail("cyclic alias: " + strings.Join(append(append([]string{}, seen...), text), " -> "))
 	}
+	nextSeen := append(append([]string{}, seen...), text)
 	if source == "native" {
-		if entry := f.callbacks[text]; entry != nil {
-			item := asMap(entry["item"])
-			evidence["native-callback:"+text] = M{"name": text, "source": entry["source"], "metadata": item}
-			return f.nativeCallback(item, source, append(append([]string{}, seen...), text), evidence, depth+1, env)
+		if entry, exists := f.callbacks[text]; exists {
+			evidence["native-callback:"+text] = factEvidence{Name: text, Source: entry.Source, Metadata: entry.Function.Raw}
+			return f.nativeCallback(entry.Function, source, nextSeen, evidence, depth+1, env)
 		}
 	}
 	if (source == "native" || source == "effective") && f.catalogue != nil && f.catalogue.defs[text] == nil {
-		alias := asMap(f.catalogue.aliases[text])
-		if sig := asMap(alias["signature"]); sig != nil {
-			evidence["native:"+text] = M{"name": text, "source": alias["source"], "metadata": sig}
-			return f.nativeCallback(sig, source, append(append([]string{}, seen...), text), evidence, depth+1, env)
+		alias := f.catalogue.aliases[text]
+		if alias != nil && alias.Signature != nil {
+			native := alias.Signature.Native
+			if native == nil {
+				factFail("native callback alias lacks native contract: " + text)
+			}
+			// Persisted callback evidence includes its interpretation provenance;
+			// keep those annotations outside the immutable native source record.
+			metadata := maps.Clone(native.Raw)
+			if metadata == nil {
+				metadata = literal.Object{}
+			}
+			metadata["native"] = literal.Bool(true)
+			metadata["source"] = literal.Text(alias.Source)
+			evidence["native:"+text] = factEvidence{Name: text, Source: alias.Source, Metadata: metadata}
+			return f.nativeCallback(*native, source, nextSeen, evidence, depth+1, env)
 		}
-		if s, ok := alias["expression"].(string); ok {
-			evidence["native:"+text] = M{"name": text, "source": alias["source"], "expression": s}
-			return f.parse(s, source, append(append([]string{}, seen...), text), evidence, depth+1, env)
+		if alias != nil && alias.Expression != "" {
+			evidence["native:"+text] = factEvidence{Name: text, Source: alias.Source, Expression: &alias.Expression}
+			return f.parse(alias.Expression, source, nextSeen, evidence, depth+1, env)
 		}
 	}
 	if source == "tsm" && len(f.aliases[text]) > 0 {
 		aliases := f.aliases[text]
 		tier := -1
-		for _, a := range aliases {
-			tier = max(tier, evTier(asString(a["source"])))
+		for _, alias := range aliases {
+			tier = max(tier, evTier(alias.Source))
 		}
-		perFile := map[string]M{}
-		for _, a := range aliases {
-			path := asString(a["source"])
-			if evTier(path) == tier && (perFile[path] == nil || asInt(perFile[path]["line"]) < asInt(a["line"])) {
-				perFile[path] = a
+		perFile := map[string]*factAlias{}
+		for _, alias := range aliases {
+			if evTier(alias.Source) == tier && (perFile[alias.Source] == nil || perFile[alias.Source].Line < alias.Line) {
+				perFile[alias.Source] = alias
 			}
 		}
 		expressions := map[string]bool{}
 		unsupported := false
-		for _, a := range perFile {
-			if truth(a["unsupported"]) {
+		for _, alias := range perFile {
+			if alias.Unsupported != "" {
 				unsupported = true
 			} else {
-				expressions[strings.Join(evStrings(a["members"]), "|")] = true
+				expressions[strings.Join(alias.Members, "|")] = true
 			}
 		}
-		for _, a := range aliases {
-			fact := evMapWithout(a, "members")
+		for _, alias := range aliases {
+			row := factEvidence{Name: alias.Name, Source: alias.Source, Line: &alias.Line, Unsupported: alias.Unsupported}
 			if len(aliases) > 1 {
-				selected := evEqual(perFile[asString(a["source"])], a)
-				fact["expression"] = strings.Join(evStrings(a["members"]), "|")
-				fact["selected"] = selected
-				fact["selection_basis"] = "last-wins by known scan tier and within-file order; cross-file order unavailable"
+				row.Expression = new(strings.Join(alias.Members, "|"))
+				row.Selected = new(perFile[alias.Source] == alias)
+				row.SelectionBasis = "last-wins by known scan tier and within-file order; cross-file order unavailable"
 			}
-			evidence[asString(a["source"])+":"+strconv.Itoa(asInt(a["line"]))] = fact
+			evidence[alias.Source+":"+strconv.Itoa(alias.Line)] = row
 		}
 		if len(expressions) != 1 || unsupported {
-			factFail("conflicting same-tier or unsupported alias: %s", text)
+			factFail("conflicting same-tier or unsupported alias: " + text)
 		}
-		return f.parse(sortedKeys(expressions)[0], source, append(append([]string{}, seen...), text), evidence, depth+1, env)
+		return f.parse(sortedKeys(expressions)[0], source, nextSeen, evidence, depth+1, env)
 	}
-	if source == "tsm" && f.enums[text] != nil {
-		item := asMap(f.enums[text])
-		evidence[asString(item["source"])+":"+strconv.Itoa(asInt(item["line"]))] = item
-		return fn("name", "number")
+	if source == "tsm" {
+		if item, exists := f.enums[text]; exists {
+			evidence[item.Source+":"+strconv.Itoa(*item.Line)] = item
+			return nameFact("number")
+		}
 	}
-	return fn("name", text)
+	return nameFact(text)
 }
-func (f *typeFacts) nativeCallback(item M, source string, seen []string, evidence M, depth int, env map[string]factBinding) factNode {
-	valueType := func(value M, returned bool) factNode {
-		expression := asString(evGet(value, "Mixin", value["Type"]))
-		if asString(value["Type"]) == "table" && truth(value["InnerType"]) {
-			expression = asString(value["InnerType"]) + "[]"
+func (f *typeFacts) nativeCallback(item NativeFunction, source string, seen []string, evidence map[string]factEvidence, depth int, env map[string]factBinding) factNode {
+	valueType := func(value NativeParameter, returned bool) factNode {
+		expression := value.Type
+		if value.Mixin != "" {
+			expression = value.Mixin
 		}
-		n := f.parse(expression, source, seen, evidence, depth+1, env)
-		secret := truth(value["ConditionalSecret"]) || truth(value["SecretValue"]) || (returned && truth(item["SecretReturns"]))
-		if secret && !truth(value["NeverSecret"]) && !(returned && truth(item["ReturnsNeverSecret"])) {
-			n = fn("generic", "secret", n)
+		if value.Type == "table" && value.InnerType != "" {
+			expression = value.InnerType + "[]"
 		}
-		if returned && truth(value["Nilable"]) {
-			n = unionFact([]any{n, fn("name", "nil")})
+		node := f.parse(expression, source, seen, evidence, depth+1, env)
+		secret := enabled(value.ConditionalSecret) || enabled(value.SecretValue) || (returned && enabled(item.Policy.SecretReturns))
+		if secret && !enabled(value.NeverSecret) && !(returned && enabled(item.Policy.ReturnsNeverSecret)) {
+			node = genericFact("secret", node)
 		}
-		if returned && truth(value["StrideIndex"]) {
-			n = fn("variadic", n)
+		if returned && enabled(value.Nilable) {
+			node = unionFact([]factNode{node, nameFact("nil")})
 		}
-		return n
+		if returned && value.StrideIndex != nil && *value.StrideIndex != 0 {
+			node = compoundFact("variadic", node)
+		}
+		return node
 	}
-	params := []any{}
-	for _, v := range asList(item["Arguments"]) {
-		m := asMap(v)
-		_, def := m["Default"]
-		params = append(params, fn("parameter", truth(m["Nilable"]) || def, truth(m["StrideIndex"]), valueType(m, false)))
+	parameters := []factParameter{}
+	for _, value := range item.Arguments {
+		parameters = append(parameters, factParameter{enabled(value.Nilable) || value.HasDefault, value.StrideIndex != nil && *value.StrideIndex != 0, valueType(value, false)})
 	}
-	returns := []any{}
-	for _, v := range asList(item["Returns"]) {
-		returns = append(returns, valueType(asMap(v), true))
+	returns := []factNode{}
+	for _, value := range item.Returns {
+		returns = append(returns, valueType(value, true))
 	}
-	return fn("callable", params, returns)
+	return callableFact(parameters, returns)
 }
-func (f *typeFacts) equivalent(a, b M) bool {
-	return a["unsupported"] == nil && b["unsupported"] == nil && evEqual(a["tree"], b["tree"]) && evEqual(evGet(a, "binders", []any{}), evGet(b, "binders", []any{}))
-}
-func evError(p any) error {
-	if e, ok := p.(factFailure); ok {
-		return fmt.Errorf("%s", e.message)
-	}
-	panic(p)
+func (f *typeFacts) equivalent(a, b typeFact) bool {
+	return a.Unsupported == "" && b.Unsupported == "" && evEqual(a.Tree, b.Tree) && evEqual(a.Binders, b.Binders)
 }

@@ -4,17 +4,21 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
+	"go.yaml.in/yaml/v3"
+	"io"
 	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"wow-teal-types/internal/consumer"
+	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
 )
 
-var maintainedDirs = []string{"internal", "tools", "scripts/wow_api", "types/wow", "bin", "tests", "docs", "examples", "rockspecs", ".github/workflows", "evidence/generated", "references/wow-api/native-observations"}
+var maintainedDirs = []string{"internal", "tools", "scripts/wow_api", "types/wow", "bin", "tests", "docs", "examples", "rockspecs", ".github/workflows", "evidence/generated", "evidence/reviews", "references/wow-api/native-observations"}
 var maintainedFiles = []string{".wow-version", "go.mod", "go.sum", "tlconfig.lua", "LICENSE", "README.md", "UPDATING.md", "package.json", "provenance.json", "Makefile", "check-all.sh", "references/wow-api/tsm/resolved-bindings.json"}
 
 func copyMaintained(root, target string) error {
@@ -50,9 +54,9 @@ func copyMaintained(root, target string) error {
 	return nil
 }
 func sourcePaths(p wowapi.Project, group, name string) string { return p.InputPath(group, name) }
-func stageNative(root, snapshot string) (M, error) {
+func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 	p := wowapi.NewProject(root)
-	lock, e := p.Lock("sources.json")
+	lock, e := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
 	if e != nil {
 		return nil, e
 	}
@@ -60,7 +64,7 @@ func stageNative(root, snapshot string) (M, error) {
 	if e != nil {
 		return nil, e
 	}
-	if e = projectVersion(root, record); e != nil {
+	if e = projectVersion(root, record.Identity()); e != nil {
 		return nil, e
 	}
 	receipt, e := readFile(filepath.Join(snapshot, "snapshot.json"), maxFile)
@@ -70,8 +74,8 @@ func stageNative(root, snapshot string) (M, error) {
 	files := map[string]bool{}
 	var names []string
 	prefix := "Interface/AddOns/Blizzard_APIDocumentationGenerated/"
-	for _, v := range arr(record["files"]) {
-		n := s(obj(v)["path"])
+	for _, row := range record.Files {
+		n := row.Path
 		files[n] = true
 		if strings.HasPrefix(n, prefix) {
 			names = append(names, strings.TrimPrefix(n, prefix))
@@ -88,16 +92,15 @@ func stageNative(root, snapshot string) (M, error) {
 	acquired := map[string][]selected{}
 	preserved := true
 	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
-		source := obj(lock[group])
-		if s(source["kind"]) == "casc" {
+		source := lock[group]
+		if source.Kind == "casc" {
 			preserved = false
 		}
-		old := map[string]M{}
+		old := map[string]sourcelock.SourceFile{}
 		selectedNames := []string{}
-		for _, v := range arr(source["files"]) {
-			r := obj(v)
-			old[s(r["name"])] = r
-			selectedNames = append(selectedNames, s(r["name"]))
+		for _, r := range source.Files {
+			old[r.Name] = r
+			selectedNames = append(selectedNames, r.Name)
 		}
 		if group == "blizzard" {
 			selectedNames = names
@@ -109,7 +112,7 @@ func stageNative(root, snapshot string) (M, error) {
 			var packaged string
 			var raw []byte
 			if group == "blizzard_version" {
-				raw = []byte(s(record["version"]) + "\n")
+				raw = []byte(record.Version + "\n")
 			} else {
 				relative := name
 				if group == "blizzard" {
@@ -128,8 +131,8 @@ func stageNative(root, snapshot string) (M, error) {
 				}
 			}
 			var legacy []byte
-			if r := old[name]; r != nil {
-				if len(raw) == i(r["size"]) && blob(raw) == s(r["sha"]) {
+			if r, ok := old[name]; ok {
+				if len(raw) == r.Size && blob(raw) == r.SHA {
 					legacy = raw
 				} else {
 					legacy = reviewedBytes(raw, r)
@@ -142,24 +145,21 @@ func stageNative(root, snapshot string) (M, error) {
 		}
 	}
 	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
-		old := obj(lock[group])
-		rows := []any{}
+		old := lock[group]
+		rows := []sourcelock.SourceFile{}
 		for _, r := range acquired[group] {
 			data := r.normalized
 			if preserved {
 				data = r.legacy
 			}
-			var origin any
-			if r.path != "" {
-				origin = r.path
-			}
-			rows = append(rows, M{"name": r.name, "client_path": origin, "sha": blob(data), "size": len(data)})
+			origin := sourcelock.ClientPath(r.path)
+			rows = append(rows, sourcelock.SourceFile{ClientPath: origin, Name: r.name, SHA: blob(data), Size: len(data)})
 			if e = atomicWrite(p.InputPath(group, r.name), data, 0644); e != nil {
 				return nil, e
 			}
 		}
 		if !preserved {
-			lock[group] = M{"kind": "casc", "client_lock_sha256": sha(receipt), "path": old["path"], "normalization": "lf-final-newline", "files": rows}
+			lock[group] = sourcelock.SourceGroup{Kind: "casc", ClientLockSHA256: sha(receipt), Path: old.Path, Normalization: "lf-final-newline", Files: rows}
 		}
 	}
 	if e = atomicWrite(filepath.Join(root, "scripts/wow_api/client_sources.json"), receipt, 0644); e != nil {
@@ -178,41 +178,61 @@ func sortStrings(v []string) {
 	}
 }
 
-type github struct{ trees map[string]map[string]M }
-
-func (g *github) api(ctx context.Context, path string) (M, error) {
-	b, e := fetch(ctx, "https://api.github.com"+path, 16<<20)
-	if e != nil {
-		return nil, e
-	}
-	return decodeObject(b)
+type githubEntry struct {
+	Mode string `json:"mode"`
+	Path string `json:"path"`
+	SHA  string `json:"sha"`
+	Size *int   `json:"size,omitempty"`
+	Type string `json:"type"`
+	URL  string `json:"url"`
 }
-func decodeObject(b []byte) (M, error) {
-	var m M
-	d := newJSONDecoder(b)
-	if e := d.Decode(&m); e != nil {
-		return nil, e
+type githubResponse struct {
+	SHA       string        `json:"sha"`
+	TagName   string        `json:"tag_name"`
+	Tree      []githubEntry `json:"tree"`
+	Truncated *bool         `json:"truncated"`
+}
+type github struct {
+	trees map[string]map[string]githubEntry
+}
+
+func (g *github) api(ctx context.Context, path string) (githubResponse, error) {
+	data, err := fetch(ctx, "https://api.github.com"+path, 16<<20)
+	if err != nil {
+		return githubResponse{}, err
 	}
-	return m, nil
+	// GitHub owns extra response fields; only this typed projection enters acquisition.
+	var response *githubResponse
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	if err = decoder.Decode(&response); err != nil {
+		return githubResponse{}, err
+	}
+	if err = decoder.Decode(new(json.RawMessage)); err != io.EOF {
+		return githubResponse{}, fmt.Errorf("trailing GitHub JSON")
+	}
+	if response == nil {
+		return githubResponse{}, fmt.Errorf("expected GitHub response object")
+	}
+	return *response, nil
 }
 func (g *github) resolve(ctx context.Context, repo, ref string) (string, error) {
 	m, e := g.api(ctx, "/repos/"+repo+"/commits/"+url.PathEscape(ref))
 	if e != nil {
 		return "", e
 	}
-	revision := s(m["sha"])
+	revision := m.SHA
 	if !hex40.MatchString(revision) {
 		return "", fmt.Errorf("invalid resolved commit: %s", repo)
 	}
 	return revision, nil
 }
-func (g *github) tree(ctx context.Context, repo, revision string) (map[string]M, error) {
+func (g *github) tree(ctx context.Context, repo, revision string) (map[string]githubEntry, error) {
 	if !hex40.MatchString(revision) {
 		return nil, fmt.Errorf("inventory requires immutable revision")
 	}
 	key := repo + "@" + revision
 	if g.trees == nil {
-		g.trees = map[string]map[string]M{}
+		g.trees = map[string]map[string]githubEntry{}
 	}
 	if rows := g.trees[key]; rows != nil {
 		return rows, nil
@@ -221,17 +241,16 @@ func (g *github) tree(ctx context.Context, repo, revision string) (map[string]M,
 	if e != nil {
 		return nil, e
 	}
-	if m["truncated"] != false || len(arr(m["tree"])) > 20000 {
+	if m.Truncated == nil || *m.Truncated || m.Tree == nil || len(m.Tree) > 20000 {
 		return nil, fmt.Errorf("incomplete or oversized recursive tree: %s", repo)
 	}
-	rows := map[string]M{}
-	for _, v := range arr(m["tree"]) {
-		r := obj(v)
-		name := s(r["path"])
+	rows := map[string]githubEntry{}
+	for _, r := range m.Tree {
+		name := r.Path
 		if _, e = safeJoin("/", name); e != nil {
 			return nil, e
 		}
-		if rows[name] != nil || !hex40.MatchString(s(r["sha"])) {
+		if _, duplicate := rows[name]; duplicate || !hex40.MatchString(r.SHA) || (r.Type == "blob" && (r.Size == nil || *r.Size < 0)) {
 			return nil, fmt.Errorf("invalid recursive tree row: %s", name)
 		}
 		rows[name] = r
@@ -244,35 +263,35 @@ func (g *github) file(ctx context.Context, repo, revision, name string, limit in
 	if e != nil {
 		return nil, e
 	}
-	row := tree[name]
-	if row == nil || row["type"] != "blob" || (row["mode"] != "100644" && row["mode"] != "100755") || i(row["size"]) > limit {
+	row, found := tree[name]
+	if !found || row.Type != "blob" || (row.Mode != "100644" && row.Mode != "100755") || row.Size == nil || *row.Size > limit {
 		return nil, fmt.Errorf("missing or unsupported source entry: %s", name)
 	}
 	b, e := fetch(ctx, "https://raw.githubusercontent.com/"+repo+"/"+revision+"/"+escapePath(name), int64(limit))
 	if e != nil {
 		return nil, e
 	}
-	if len(b) != i(row["size"]) || blob(b) != s(row["sha"]) {
+	if len(b) != *row.Size || blob(b) != row.SHA {
 		return nil, fmt.Errorf("Git blob identity mismatch: %s", name)
 	}
 	return b, nil
 }
-func (g *github) inventory(ctx context.Context, repo, revision, prefix string) ([]any, error) {
+func (g *github) inventory(ctx context.Context, repo, revision, prefix string) ([]sourcelock.SourceFile, error) {
 	tree, e := g.tree(ctx, repo, revision)
 	if e != nil {
 		return nil, e
 	}
 	prefix = strings.TrimSuffix(prefix, "/") + "/"
-	rows := []any{}
+	rows := []sourcelock.SourceFile{}
 	for _, name := range keys(tree) {
 		r := tree[name]
-		if !strings.HasPrefix(name, prefix) || r["type"] == "tree" {
+		if !strings.HasPrefix(name, prefix) || r.Type == "tree" {
 			continue
 		}
-		if r["type"] != "blob" || (r["mode"] != "100644" && r["mode"] != "100755") {
+		if r.Type != "blob" || (r.Mode != "100644" && r.Mode != "100755") {
 			return nil, fmt.Errorf("unsupported source inventory entry: %s", name)
 		}
-		rows = append(rows, M{"name": strings.TrimPrefix(name, prefix), "sha": r["sha"], "size": r["size"]})
+		rows = append(rows, sourcelock.SourceFile{Name: strings.TrimPrefix(name, prefix), SHA: r.SHA, Size: *r.Size})
 	}
 	if len(rows) == 0 {
 		return nil, fmt.Errorf("empty upstream source inventory")
@@ -281,7 +300,7 @@ func (g *github) inventory(ctx context.Context, repo, revision, prefix string) (
 }
 func refreshCommunity(ctx context.Context, root string, g *github, refs map[string]string) error {
 	p := wowapi.NewProject(root)
-	lock, e := p.Lock("sources.json")
+	lock, e := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
 	if e != nil {
 		return e
 	}
@@ -290,27 +309,27 @@ func refreshCommunity(ctx context.Context, root string, g *github, refs map[stri
 		if group == "blizzard" || group == "blizzard_support" || group == "blizzard_version" {
 			continue
 		}
-		source := obj(lock[group])
-		repo := s(source["repository"])
+		source := lock[group]
+		repo := source.Repository
 		revision := revisionByRepo[repo]
 		if revision == "" {
 			ref := refs["questie"]
 			if ref == "" {
-				ref = s(source["ref"])
+				ref = source.Ref
 			}
 			if ref == "" {
-				ref = s(source["commit"])
+				ref = source.Commit
 			}
 			revision, e = g.resolve(ctx, repo, ref)
 			if e != nil {
 				return e
 			}
 			revisionByRepo[repo] = revision
-			source["ref"] = ref
+			source.Ref = ref
 		}
-		source["commit"] = revision
+		source.Commit = revision
 		if group == "questie" {
-			source["files"], e = g.inventory(ctx, repo, revision, s(source["path"]))
+			source.Files, e = g.inventory(ctx, repo, revision, source.Path)
 			if e != nil {
 				return e
 			}
@@ -319,22 +338,20 @@ func refreshCommunity(ctx context.Context, root string, g *github, refs map[stri
 			if err != nil {
 				return err
 			}
-			rows := []any{}
-			for _, v := range arr(source["files"]) {
-				old := obj(v)
-				name := s(old["name"])
-				entry := tree[strings.Trim(s(source["path"])+"/"+name, "/")]
-				if entry == nil {
+			rows := []sourcelock.SourceFile{}
+			for _, old := range source.Files {
+				name := old.Name
+				entry, found := tree[strings.Trim(source.Path+"/"+name, "/")]
+				if !found || entry.Size == nil {
 					return fmt.Errorf("required supporting source removed: %s", name)
 				}
-				rows = append(rows, M{"name": name, "sha": entry["sha"], "size": entry["size"]})
+				rows = append(rows, sourcelock.SourceFile{Name: name, SHA: entry.SHA, Size: *entry.Size})
 			}
-			source["files"] = rows
+			source.Files = rows
 		}
-		for _, v := range arr(source["files"]) {
-			row := obj(v)
-			name := s(row["name"])
-			b, e := g.file(ctx, repo, revision, strings.Trim(s(source["path"])+"/"+name, "/"), maxFile)
+		for _, row := range source.Files {
+			name := row.Name
+			b, e := g.file(ctx, repo, revision, strings.Trim(source.Path+"/"+name, "/"), maxFile)
 			if e != nil {
 				return e
 			}
@@ -342,85 +359,86 @@ func refreshCommunity(ctx context.Context, root string, g *github, refs map[stri
 				return e
 			}
 		}
+		lock[group] = source
 	}
 	return writeObject(filepath.Join(root, "scripts/wow_api/sources.json"), lock)
 }
 
 // StageRelease acquires an immutable candidate, including explicit third-party revisions.
 // It never updates approval ledgers or active outputs.
-func StageRelease(ctx context.Context, root, output, snapshot string, refs map[string]string) (M, error) {
+func StageRelease(ctx context.Context, root, output, snapshot string, refs map[string]string) (StageResult, error) {
 	before, e := captureInputs(root)
 	if e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	if exists(output) {
-		return nil, fmt.Errorf("candidate destination already exists")
+		return StageResult{}, fmt.Errorf("candidate destination already exists")
 	}
 	workspace := filepath.Join(output, "workspace")
 	if e = copyMaintained(root, workspace); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	failed := true
 	defer func() {
 		if failed {
-			_ = writeObject(filepath.Join(output, "failure.json"), M{"status": "failed", "workspace": workspace})
+			_ = writeObject(filepath.Join(output, "failure.json"), stageFailure{Status: "failed", Workspace: workspace})
 		}
 	}()
 	if e = seedCaches(root, workspace); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	native, e := stageNative(workspace, snapshot)
 	if e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	g := &github{}
 	if e = refreshCommunity(ctx, workspace, g, refs); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
-	blockers := []any{}
+	blockers := []string{}
 	if e = refreshTSM(ctx, workspace, g, refs["tsm"], &blockers); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	if e = refreshSecondary(ctx, workspace, g, refs, &blockers); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	if e = refreshBackup(ctx, workspace, g, refs["backup"], native, &blockers); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	if e = requireUnchanged(root, before); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
-	report := M{"status": "acquired-review-required", "workspace": workspace, "nativeBuild": s(obj(native["blizzard_version"])["version"]), "reviewRequired": true, "blockers": blockers, "validationRequired": []any{"schema-matched reader build", "resolved binding regeneration when changed", "exact reconciliation review", "deterministic generation and compiler checks", "maintainer and external consumer checks", "build-matched native evidence"}}
+	report := StageResult{Status: "acquired-review-required", Workspace: workspace, ReviewRequired: true, Blockers: blockers, ValidationRequired: []string{"schema-matched reader build", "resolved binding regeneration when changed", "exact reconciliation review", "deterministic generation and compiler checks", "maintainer and external consumer checks", "build-matched native evidence"}}
 	v, e := consumerVersion(workspace)
 	if e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
-	report["nativeBuild"] = v
+	report.NativeBuild = v
 	for key, tree := range g.trees {
 		if e = writeObject(filepath.Join(output, "upstream-inventories", strings.ReplaceAll(strings.ReplaceAll(key, "/", "--"), "@", "-")+".json"), tree); e != nil {
-			return nil, e
+			return StageResult{}, e
 		}
 	}
 	if e = writeObject(filepath.Join(output, "release-report.json"), report); e != nil {
-		return nil, e
+		return StageResult{}, e
 	}
 	failed = false
 	return report, nil
 }
-func refreshTSM(ctx context.Context, root string, g *github, ref string, blockers *[]any) error {
+func refreshTSM(ctx context.Context, root string, g *github, ref string, blockers *[]string) error {
 	path := filepath.Join(root, "scripts/wow_api/tsm_sources.json")
-	lock, e := readObject(path)
+	lock, e := sourcelock.ReadTSM(path)
 	if e != nil {
 		return e
 	}
-	old := s(lock["commit"])
-	repo := s(lock["repository"])
+	old := lock.Commit
+	repo := lock.Repository
 	if ref == "" {
 		r, e := g.api(ctx, "/repos/"+repo+"/releases/latest")
 		if e != nil {
 			return e
 		}
-		ref = s(r["tag_name"])
+		ref = r.TagName
 		if ref == "" {
 			return fmt.Errorf("TSM latest release lacks tag")
 		}
@@ -430,11 +448,11 @@ func refreshTSM(ctx context.Context, root string, g *github, ref string, blocker
 		return e
 	}
 	payloads := map[string][]byte{}
-	for _, v := range arr(lock["files"]) {
-		row := obj(v)
-		up := s(row["path"])
+	for index := range lock.Files {
+		row := &lock.Files[index]
+		up := row.Path
 		if up == "" {
-			u, e := url.Parse(s(row["url"]))
+			u, e := url.Parse(row.URL)
 			if e != nil {
 				return e
 			}
@@ -462,12 +480,12 @@ func refreshTSM(ctx context.Context, root string, g *github, ref string, blocker
 				return fmt.Errorf("TSM LFS identity mismatch")
 			}
 		}
-		row["path"] = up
-		delete(row, "url")
-		row["sha256"] = sha(b)
-		row["size"] = len(b)
-		payloads[s(row["name"])] = b
-		if e = atomicWrite(filepath.Join(root, "references/wow-api/tsm", s(row["name"])), b, 0644); e != nil {
+		row.Path = up
+		row.URL = ""
+		row.SHA256 = sha(b)
+		row.Size = len(b)
+		payloads[row.Name] = b
+		if e = atomicWrite(filepath.Join(root, "references/wow-api/tsm", row.Name), b, 0644); e != nil {
 			return e
 		}
 	}
@@ -477,18 +495,18 @@ func refreshTSM(ctx context.Context, root string, g *github, ref string, blocker
 	if len(match) != 1 || len(counts) != 1 {
 		return fmt.Errorf("TSM provenance lacks Retail revision/file count")
 	}
-	baseline := obj(lock["blizzard"])
-	baseline["commit"], e = g.resolve(ctx, s(baseline["repository"]), match[0][1])
+	baseline := &lock.Blizzard
+	baseline.Commit, e = g.resolve(ctx, baseline.Repository, match[0][1])
 	if e != nil {
 		return e
 	}
-	version, e := g.file(ctx, s(baseline["repository"]), s(baseline["commit"]), "version.txt", maxFile)
+	version, e := g.file(ctx, baseline.Repository, baseline.Commit, "version.txt", maxFile)
 	if e != nil {
 		return e
 	}
-	baseline["build"] = strings.TrimSpace(string(version))
-	baseline["version_sha256"] = sha(version)
-	baseline["files"], e = g.inventory(ctx, s(baseline["repository"]), s(baseline["commit"]), s(baseline["path"]))
+	baseline.Build = strings.TrimSpace(string(version))
+	baseline.VersionSHA256 = sha(version)
+	baseline.Files, e = g.inventory(ctx, baseline.Repository, baseline.Commit, baseline.Path)
 	if e != nil {
 		return e
 	}
@@ -499,12 +517,12 @@ func refreshTSM(ctx context.Context, root string, g *github, ref string, blocker
 	if len(files) < 4 || len(resolved) < 8 || string(resolved[:4]) != "_WOW" || binary.LittleEndian.Uint32(files) != 44 || binary.LittleEndian.Uint32(resolved[4:]) != 44 {
 		return fmt.Errorf("unsupported TSM serialized schema; review reader")
 	}
-	lock["blob_version"] = 44
+	lock.BlobVersion = 44
 	var count int
 	fmt.Sscanf(counts[0][1], "%d", &count)
-	lock["embedded_files"] = count
-	lock["commit"] = rev
-	lock["release"] = ref
+	lock.EmbeddedFiles = count
+	lock.Commit = rev
+	lock.Release = ref
 	if rev != old {
 		cargo := filepath.Join(root, "scripts/wow_api/tsm_resolved_export/Cargo.toml")
 		b, e := readFile(cargo, maxFile)
@@ -522,25 +540,25 @@ func refreshTSM(ctx context.Context, root string, g *github, ref string, blocker
 	}
 	return writeObject(path, lock)
 }
-func refreshSecondary(ctx context.Context, root string, g *github, refs map[string]string, blockers *[]any) error {
+func refreshSecondary(ctx context.Context, root string, g *github, refs map[string]string, blockers *[]string) error {
 	path := filepath.Join(root, "scripts/wow_api/native_crosscheck_sources.json")
-	lock, e := readObject(path)
+	lock, e := sourcelock.ReadCrosscheck(path)
 	if e != nil {
 		return e
 	}
 	revisions := map[string]string{}
-	for _, name := range keys(lock) {
-		cohort := obj(lock[name])
-		repo := s(cohort["repository"])
-		if repo == "" || s(cohort["commit"]) == "" {
-			continue
+	for _, name := range []string{"blizzard", "wowless"} {
+		cohort := &lock.Blizzard
+		if name == "wowless" {
+			cohort = &lock.Wowless
 		}
+		repo := cohort.Repository
 		ref := refs[name]
 		if ref == "" {
-			ref = s(cohort["ref"])
+			ref = cohort.Ref
 		}
 		if ref == "" {
-			ref = s(cohort["commit"])
+			ref = cohort.Commit
 		}
 		rev := revisions[repo]
 		if rev == "" {
@@ -550,87 +568,96 @@ func refreshSecondary(ctx context.Context, root string, g *github, refs map[stri
 			}
 			revisions[repo] = rev
 		}
-		cohort["commit"] = rev
+		cohort.Commit = rev
 		if name == "blizzard" {
 			b, e := g.file(ctx, repo, rev, "version.txt", maxFile)
 			if e != nil {
 				return e
 			}
-			cohort["build"] = strings.TrimSpace(string(b))
+			cohort.Build = strings.TrimSpace(string(b))
 			v, e := consumerVersion(root)
 			if e != nil {
 				return e
 			}
-			if s(cohort["build"]) != v {
+			if cohort.Build != v {
 				*blockers = append(*blockers, "Gethe secondary build differs from selected client")
 			}
 		}
 	}
-	for _, v := range arr(lock["files"]) {
-		row := obj(v)
-		repo := s(row["repository"])
+	for index := range lock.Files {
+		row := &lock.Files[index]
+		repo := row.Repository
 		rev := revisions[repo]
-		b, e := g.file(ctx, repo, rev, s(row["upstream_path"]), maxFile)
+		b, e := g.file(ctx, repo, rev, row.UpstreamPath, maxFile)
 		if e != nil {
 			return e
 		}
-		row["commit"] = rev
-		row["size"] = len(b)
-		row["sha256"] = sha(b)
-		row["git_blob_sha1"] = blob(b)
-		row["url"] = "https://raw.githubusercontent.com/" + repo + "/" + rev + "/" + s(row["upstream_path"])
-		if e = atomicWrite(filepath.Join(root, "references/wow-api/native-crosscheck", s(row["name"])), b, 0644); e != nil {
+		row.Commit = rev
+		row.Size = len(b)
+		row.SHA256 = sha(b)
+		row.GitBlobSHA1 = blob(b)
+		row.URL = "https://raw.githubusercontent.com/" + repo + "/" + rev + "/" + row.UpstreamPath
+		if e = atomicWrite(filepath.Join(root, "references/wow-api/native-crosscheck", row.Name), b, 0644); e != nil {
 			return e
 		}
 	}
-	if cohort := obj(lock["wowless"]); cohort != nil {
-		data, err := readFile(filepath.Join(root, "references/wow-api/native-crosscheck/wowless/data/products/wow/build.yaml"), maxFile)
-		if err != nil {
-			return err
-		}
-		value, err := wowapi.ParseEvidenceYAML(string(data))
-		if err != nil {
-			return err
-		}
-		build := obj(value)
-		cohort["build"] = fmt.Sprint(build["version"]) + "." + fmt.Sprint(build["build"])
+	data, err := readFile(filepath.Join(root, "references/wow-api/native-crosscheck/wowless/data/products/wow/build.yaml"), maxFile)
+	if err != nil {
+		return err
 	}
+	var build struct {
+		Build      string `yaml:"build"`
+		Date       string `yaml:"date"`
+		Hash       string `yaml:"hash"`
+		Test       bool   `yaml:"test"`
+		TOCVersion int    `yaml:"tocversion"`
+		Version    string `yaml:"version"`
+	}
+	decoder := yaml.NewDecoder(bytes.NewReader(data))
+	decoder.KnownFields(true)
+	if err = decoder.Decode(&build); err != nil {
+		return err
+	}
+	if build.Version == "" || build.Build == "" {
+		return fmt.Errorf("wowless build lacks version identity")
+	}
+	lock.Wowless.Build = build.Version + "." + build.Build
 	return writeObject(path, lock)
 }
-func refreshBackup(ctx context.Context, root string, g *github, ref string, native M, blockers *[]any) error {
+func refreshBackup(ctx context.Context, root string, g *github, ref string, native sourcelock.Sources, blockers *[]string) error {
 	path := filepath.Join(root, "scripts/wow_api/native_backup_sources.json")
-	lock, e := readObject(path)
+	lock, e := sourcelock.ReadBackup(path)
 	if e != nil {
 		return e
 	}
 	if ref == "" {
-		ref = s(lock["commit"])
+		ref = lock.Commit
 	}
-	rev, e := g.resolve(ctx, s(lock["repository"]), ref)
+	rev, e := g.resolve(ctx, lock.Repository, ref)
 	if e != nil {
 		return e
 	}
-	changed := rev != s(lock["commit"])
-	lock["commit"] = rev
-	lock["inventory"], e = g.inventory(ctx, s(lock["repository"]), rev, s(lock["path"]))
+	changed := rev != lock.Commit
+	lock.Commit = rev
+	lock.Inventory, e = g.inventory(ctx, lock.Repository, rev, lock.Path)
 	if e != nil {
 		return e
 	}
 	if changed {
-		lock["build_evidence"] = M{"state": "requires-build-review", "previous_build": lock["claimed_build"]}
-		lock["claimed_build"] = nil
+		lock.BuildEvidence = sourcelock.BuildEvidence{State: "requires-build-review", PreviousBuild: lock.ClaimedBuild}
+		lock.ClaimedBuild = nil
 		*blockers = append(*blockers, "review changed backup build provenance")
 	}
-	for _, v := range arr(lock["files"]) {
-		row := obj(v)
-		b, e := g.file(ctx, s(lock["repository"]), rev, s(lock["path"])+"/"+s(row["name"]), maxFile)
+	for index := range lock.Files {
+		row := &lock.Files[index]
+		b, e := g.file(ctx, lock.Repository, rev, lock.Path+"/"+row.Name, maxFile)
 		if e != nil {
 			return e
 		}
-		row["sha"] = blob(b)
-		row["sha256"] = sha(b)
-		row["size"] = len(b)
-		if e = atomicWrite(filepath.Join(root, "references/wow-api/native-backup", s(row["name"])), b, 0644); e != nil {
+		row.SHA = blob(b)
+		row.SHA256 = sha(b)
+		row.Size = len(b)
+		if e = atomicWrite(filepath.Join(root, "references/wow-api/native-backup", row.Name), b, 0644); e != nil {
 			return e
 		}
 	}

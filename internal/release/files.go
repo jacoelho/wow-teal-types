@@ -16,33 +16,15 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"reflect"
 	"sort"
 	"strings"
 	"time"
 )
 
-type M = map[string]any
-
 const maxFile = 8 << 20
 const maxPayload = 64 << 20
 const maxTotal = 384 << 20
 
-func s(v any) string { x, _ := v.(string); return x }
-func i(v any) int {
-	switch n := v.(type) {
-	case json.Number:
-		k, _ := n.Int64()
-		return int(k)
-	case int:
-		return n
-	case float64:
-		return int(n)
-	}
-	return 0
-}
-func obj(v any) M     { x, _ := v.(map[string]any); return x }
-func arr(v any) []any { x, _ := v.([]any); return x }
 func keys[V any](m map[string]V) []string {
 	r := make([]string, 0, len(m))
 	for k := range m {
@@ -59,7 +41,7 @@ func blob(b []byte) string {
 	h.Write(b)
 	return hex.EncodeToString(h.Sum(nil))
 }
-func jsonBytes(v any) ([]byte, error) {
+func jsonBytes[T any](v T) ([]byte, error) {
 	var b bytes.Buffer
 	e := json.NewEncoder(&b)
 	e.SetEscapeHTML(false)
@@ -69,25 +51,32 @@ func jsonBytes(v any) ([]byte, error) {
 	}
 	return b.Bytes(), nil
 }
-func readObject(path string) (M, error) {
-	b, e := readFile(path, 128<<20)
-	if e != nil {
-		return nil, e
+func decodeJSON[T any](data []byte) (T, error) {
+	var value T
+	if len(bytes.TrimSpace(data)) == 0 || bytes.TrimSpace(data)[0] != '{' {
+		return value, fmt.Errorf("expected JSON object")
 	}
-	d := json.NewDecoder(bytes.NewReader(b))
-	d.UseNumber()
-	var m M
-	if e = d.Decode(&m); e != nil {
-		return nil, fmt.Errorf("%s: %w", path, e)
+	d := json.NewDecoder(bytes.NewReader(data))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&value); err != nil {
+		return value, err
 	}
-	var rest any
-	if e = d.Decode(&rest); e != io.EOF {
-		return nil, fmt.Errorf("%s: trailing JSON", path)
+	if err := d.Decode(new(json.RawMessage)); err != io.EOF {
+		return value, fmt.Errorf("trailing JSON input")
 	}
-	if m == nil {
-		return nil, fmt.Errorf("%s: expected object", path)
+	return value, nil
+}
+func readJSON[T any](path string) (T, error) {
+	var value T
+	data, err := readFile(path, 128<<20)
+	if err != nil {
+		return value, err
 	}
-	return m, nil
+	value, err = decodeJSON[T](data)
+	if err != nil {
+		return value, fmt.Errorf("%s: %w", path, err)
+	}
+	return value, nil
 }
 func safeJoin(root, name string) (string, error) {
 	if name == "" || filepath.IsAbs(name) || strings.ContainsAny(name, "\\\x00") || strings.Contains(name, ":") {
@@ -158,14 +147,13 @@ func atomicWrite(path string, b []byte, mode fs.FileMode) error {
 	}
 	return os.Rename(name, path)
 }
-func writeObject(path string, v any) error {
+func writeObject[T any](path string, v T) error {
 	b, e := jsonBytes(v)
 	if e != nil {
 		return e
 	}
 	return atomicWrite(path, b, 0644)
 }
-func equal(a, b any) bool { return reflect.DeepEqual(a, b) }
 func command(ctx context.Context, root, log string, timeout time.Duration, args ...string) error {
 	child, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
@@ -236,10 +224,4 @@ func copyDirectory(src, dst string) error {
 		}
 		return copyFile(path, filepath.Join(dst, r))
 	})
-}
-
-func newJSONDecoder(b []byte) *json.Decoder {
-	d := json.NewDecoder(bytes.NewReader(b))
-	d.UseNumber()
-	return d
 }

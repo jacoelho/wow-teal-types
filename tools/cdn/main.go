@@ -463,7 +463,7 @@ func run(ctx context.Context, args []string) error {
 	if err := dec.Decode(&config); err != nil {
 		return err
 	}
-	if err := dec.Decode(new(any)); err != io.EOF {
+	if err := dec.Decode(new(json.RawMessage)); err != io.EOF {
 		return fmt.Errorf("unexpected configuration suffix")
 	}
 	if err := validateConfig(config); err != nil {

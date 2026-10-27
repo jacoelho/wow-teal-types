@@ -17,7 +17,10 @@ const (
 	declarationInterface
 )
 
-type projectedSignature string
+type projectedSignature struct {
+	expression string
+	policy     *callPolicy
+}
 
 type projectedField struct {
 	name, expression string
@@ -37,6 +40,7 @@ type projectedDeclaration struct {
 }
 type projectedGlobal struct {
 	name, expression, ambientExpression string
+	policy                              *callPolicy
 	public                              bool
 }
 
@@ -56,18 +60,21 @@ func (p declarationProjection) signatures(symbol string) ([]string, error) {
 	}
 	out := make([]string, len(values))
 	for i, value := range values {
-		out[i] = string(value)
+		out[i] = value.expression
 	}
 	return out, nil
 }
 
-func emittedSignatures(c *catalogue, item M, owner string) ([]string, error) {
-	if item["type_name"] == nil {
+func emittedSignatures(c *catalogue, item *catalogueFunction, owner string) ([]string, error) {
+	if item.TypeName == "" {
 		return c.signatures(item, owner)
 	}
-	typeName := asString(item["type_name"])
-	record := asMap(c.defs[typeName])
-	call := asMap(asMap(record["methods"])["metamethod __call"])
+	typeName := item.TypeName
+	record := c.defs[typeName]
+	var call *catalogueFunction
+	if record != nil {
+		call = record.Methods["metamethod __call"]
+	}
 	if call == nil {
 		return nil, fmt.Errorf("native function binding is not callable: %s", typeName)
 	}
@@ -85,7 +92,7 @@ func emittedSignatures(c *catalogue, item M, owner string) ([]string, error) {
 func projectSignatures(values []string) []projectedSignature {
 	out := make([]projectedSignature, len(values))
 	for i, value := range values {
-		out[i] = projectedSignature(value)
+		out[i] = projectedSignature{expression: value}
 	}
 	return out
 }
@@ -115,7 +122,12 @@ func (c *catalogue) finalize(ctx context.Context) (projection declarationProject
 }
 
 func (c *catalogue) projectionState() string {
-	return evDigest(M{"definitions": c.defs, "aliases": c.aliases, "globals": c.globals, "secret_structs": c.secretStructs})
+	return evDigest(struct {
+		Definitions   map[string]*catalogueDefinition
+		Aliases       map[string]*catalogueAlias
+		Globals       map[string]*catalogueFunction
+		SecretStructs map[string]bool
+	}{c.defs, c.aliases, c.globals, c.secretStructs})
 }
 
 func (c *catalogue) projectAttempt(label string, fn func()) {
@@ -134,19 +146,22 @@ func (c *catalogue) projectAttempt(label string, fn func()) {
 func (c *catalogue) projectDeclarations() declarationProjection {
 	projection := declarationProjection{contracts: map[string][]projectedSignature{}, secureGlobals: sortedSet(c.secureGlobals)}
 	for _, name := range append([]string{}, c.globalOrder...) {
-		item := asMap(c.globals[name])
-		if item["type_name"] == nil {
+		item := c.globals[name]
+		if item.TypeName == "" {
 			c.projectAttempt("global "+name, func() { c.signatureValue(item, "") })
 		}
 	}
 	seen := map[string]bool{}
 	for {
 		pending := map[string]bool{}
-		for _, inventory := range []M{c.defs, c.aliases} {
-			for name := range inventory {
-				if !seen[name] {
-					pending[name] = true
-				}
+		for name := range c.defs {
+			if !seen[name] {
+				pending[name] = true
+			}
+		}
+		for name := range c.aliases {
+			if !seen[name] {
+				pending[name] = true
 			}
 		}
 		if len(pending) == 0 {
@@ -173,38 +188,46 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 		}
 	}
 	exports := map[string]bool{"OpaqueNumber": true, "OpaqueText": true, "NumberLike": true, "TextLike": true}
-	for _, inventory := range []M{c.defs, c.aliases} {
-		for name := range inventory {
+	for name := range c.defs {
+		if name != "unknown" && name != "any" {
+			exports[ident(name)] = true
+		}
+	}
+	for name := range c.aliases {
+		if name != "unknown" && name != "any" {
 			exports[ident(name)] = true
 		}
 	}
 	for _, name := range sortedKeys(c.globals) {
 		c.projectAttempt("global "+name, func() {
 			if strings.Contains(name, ".") || !plainIdentifier.MatchString(name) {
-				reject("unrepresentable global %s", name)
+				reject(fmt.Sprintf("unrepresentable global %s", name))
 			}
-			item := asMap(c.globals[name])
-			value := asString(item["type_name"])
+			item := c.globals[name]
+			value := item.TypeName
 			if value != "" {
 				value = ident(value)
 			} else {
 				value = c.signatureValue(item, "")
 			}
-			global := projectedGlobal{name: name, expression: value, public: !containsString([]string{"math", "string", "table"}, name) && !c.secureGlobals[name] && !strings.HasPrefix(asString(item["source"]), "questie:Libraries/")}
+			global := projectedGlobal{name: name, expression: value, public: !containsString([]string{"math", "string", "table"}, name) && !c.secureGlobals[name] && !strings.HasPrefix(item.Source, "questie:Libraries/")}
 			direct := value
-			if def := asMap(c.defs[value]); def["signature"] != nil {
-				direct = asString(def["signature"])
+			if def := c.defs[value]; def != nil && def.Signature != "" {
+				direct = def.Signature
 			}
 			if strings.HasPrefix(direct, "function") {
 				global.ambientExpression = qualifyExports(direct, exports)
 			} else {
 				global.ambientExpression = "W.Global_" + ident(name)
 			}
+			if item.TypeName == "" {
+				global.policy = c.signaturePolicy(item, name, value)
+			}
 			projection.globals = append(projection.globals, global)
-			if item["type_name"] == nil || item["callable_contract"] != nil {
+			if item.TypeName == "" || item.CallableContract != nil {
 				signatures, e := emittedSignatures(c, item, "")
 				if e != nil {
-					reject("%s", e)
+					reject(fmt.Sprintf("%s", e))
 				}
 				projection.contracts[name] = projectSignatures(signatures)
 			}
@@ -219,20 +242,20 @@ func (c *catalogue) orderDeclarations(pending map[string]bool) []string {
 	var visit func(string, int)
 	visit = func(name string, depth int) {
 		if visiting[name] || depth > 256 {
-			reject("cyclic or unbounded declaration inheritance: %s", name)
+			reject(fmt.Sprintf("cyclic or unbounded declaration inheritance: %s", name))
 		}
 		if visited[name] {
 			return
 		}
 		visiting[name] = true
-		for _, base := range stringsOf(asMap(c.defs[name])["bases"]) {
+		for _, base := range definitionBases(c.defs[name]) {
 			aliases := map[string]bool{}
 			for c.defs[base] == nil && c.aliases[base] != nil {
 				if aliases[base] {
-					reject("cyclic base alias: %s", base)
+					reject(fmt.Sprintf("cyclic base alias: %s", base))
 				}
 				aliases[base] = true
-				base = asString(getOr(asMap(c.aliases[base]), "expression", base))
+				base = c.aliases[base].Expression
 			}
 			if pending[base] {
 				visit(base, depth+1)
@@ -250,65 +273,65 @@ func (c *catalogue) orderDeclarations(pending map[string]bool) []string {
 
 func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool) {
 	declaration := projectedDeclaration{name: ident(name)}
-	item := asMap(c.defs[name])
+	item := c.defs[name]
 	if item == nil {
-		alias := asMap(c.aliases[name])
-		if asString(alias["expression"]) == name {
+		alias := c.aliases[name]
+		if alias.Expression == name {
 			return declaration, false
 		}
-		declaration.kind, declaration.source = declarationAlias, asString(alias["source"])
-		if value := asMap(alias["signature"]); value != nil {
+		declaration.kind, declaration.source = declarationAlias, alias.Source
+		if value := alias.Signature; value != nil {
 			declaration.expression = c.signatureValue(value, "")
 		} else {
-			declaration.expression = c.tealValue(asString(alias["expression"]), "", nil)
+			declaration.expression = c.tealValue(alias.Expression, "", nil)
 		}
 		return declaration, true
 	}
-	declaration.source = asString(item["source"])
-	kind := asString(item["kind"])
+	declaration.source = item.Source
+	kind := item.Kind
 	switch kind {
 	case "external":
 		declaration.kind = declarationExternal
 	case "enum":
 		declaration.kind = declarationEnum
-		for _, value := range asList(item["values"]) {
+		for _, value := range item.Values {
 			declaration.values = append(declaration.values, requireStringJSON(value))
 		}
 	case "callback":
 		declaration.kind = declarationCallback
 		declaration.name = name
-		declaration.generics = stringsOf(item["generics"])
-		declaration.expression = asString(item["signature"])
+		declaration.generics = item.Generics
+		declaration.expression = item.Signature
 	case "record", "interface", "converted_record":
 		declaration.kind = declarationRecord
 		if kind == "interface" {
 			declaration.kind = declarationInterface
 		}
-		if truth(item["opaque"]) {
+		if item.Opaque {
 			declaration.bases = append(declaration.bases, "userdata")
 		}
-		for _, base := range stringsOf(item["bases"]) {
+		for _, base := range item.Bases {
 			declaration.bases = append(declaration.bases, c.resolve(base))
 		}
-		fields, methods := asMap(item["fields"]), asMap(item["methods"])
+		fields, methods := item.Fields, item.Methods
 		for _, nameOfField := range sortedKeys(fields) {
 			value := fields[nameOfField]
-			field := asMap(value)
-			if methods[nameOfField] != nil && !truth(field["native"]) {
+			field := value
+			if methods[nameOfField] != nil && field.Native == nil {
 				continue
 			}
 			expression := ""
 			switch {
 			case kind == "converted_record":
-				expression = asString(value)
-			case field["resolved"] != nil:
-				expression = asString(field["resolved"])
-			case truth(field["native"]):
-				expression = c.nativeTypeValue(field, c.secretStructs[name])
+				expression = field.Type
+			case field.Resolved != nil:
+				expression = *field.Resolved
+			case field.Native != nil:
+				expression = c.nativeTypeValue(*field.Native, c.secretStructs[name])
 			default:
-				expression = c.tealValue(asString(field["type"]), name, nil)
+				expression = c.tealValue(field.Type, name, nil)
 			}
-			if c.secretStructs[name] && !(truth(field["NeverSecret"]) || truth(field["NeverSecretContents"])) {
+			if c.secretStructs[name] && !(field.Native != nil && (enabled(field.Native.NeverSecret) || enabled(field.Native.NeverSecretContents))) {
 				expression = c.projectSecret(expression)
 			}
 			if !plainIdentifier.MatchString(nameOfField) || tealKeywords[nameOfField] {
@@ -317,15 +340,18 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 			declaration.fields = append(declaration.fields, projectedField{name: nameOfField, expression: expression})
 		}
 		for _, nameOfMethod := range sortedKeys(methods) {
-			method := asMap(methods[nameOfMethod])
-			projected := projectedMethod{name: nameOfMethod, signatures: projectSignatures(c.signaturesValue(method, name))}
-			if restricted := restrictions(method); len(restricted) > 0 {
-				projected.restrictions = requireStringJSON(restricted)
+			method := methods[nameOfMethod]
+			projected := projectedMethod{name: nameOfMethod, signatures: c.projectCallable(method, name, name+"."+nameOfMethod)}
+			if method.Native != nil {
+				restricted := requireStringJSON(method.Native.Policy.restrictions())
+				if restricted != "{}" {
+					projected.restrictions = restricted
+				}
 			}
 			declaration.methods = append(declaration.methods, projected)
 		}
 	default:
-		reject("unsupported declaration kind %q for %s", kind, name)
+		reject(fmt.Sprintf("unsupported declaration kind %q for %s", kind, name))
 	}
 	return declaration, true
 }

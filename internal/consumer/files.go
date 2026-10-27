@@ -1,16 +1,12 @@
 package consumer
 
 import (
-	"bytes"
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 )
 
@@ -25,58 +21,6 @@ func fileHash(path string) (string, error) {
 func blobSHA(data []byte) string {
 	sum := sha1.Sum(append(fmt.Appendf(nil, "blob %d%c", len(data), 0), data...))
 	return hex.EncodeToString(sum[:])
-}
-func intValue(value any) int {
-	switch x := value.(type) {
-	case json.Number:
-		n, _ := x.Int64()
-		return int(n)
-	case int:
-		return x
-	case float64:
-		return int(x)
-	}
-	return -1
-}
-func object(value any) map[string]any { m, _ := value.(map[string]any); return m }
-func str(value any) string            { s, _ := value.(string); return s }
-func sortedKeys[V any](m map[string]V) []string {
-	keys := make([]string, 0, len(m))
-	for key := range m {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	return keys
-}
-func readJSON(path string) (map[string]any, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var value map[string]any
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.UseNumber()
-	if err = decoder.Decode(&value); err != nil {
-		return nil, fmt.Errorf("%s: %w", path, err)
-	}
-	var tail any
-	if err = decoder.Decode(&tail); err != io.EOF {
-		return nil, fmt.Errorf("%s: trailing JSON input", path)
-	}
-	if value == nil {
-		return nil, fmt.Errorf("%s: expected JSON object", path)
-	}
-	return value, nil
-}
-func jsonBytes(value any) ([]byte, error) {
-	var buffer bytes.Buffer
-	encoder := json.NewEncoder(&buffer)
-	encoder.SetEscapeHTML(false)
-	encoder.SetIndent("", "  ")
-	if err := encoder.Encode(value); err != nil {
-		return nil, err
-	}
-	return buffer.Bytes(), nil
 }
 func validRelative(name string) bool {
 	if name == "" || filepath.IsAbs(name) || strings.ContainsAny(name, "\\\x00") {
@@ -216,4 +160,11 @@ func copyTree(source, target string) error {
 		}
 		return os.WriteFile(dest, data, info.Mode().Perm())
 	})
+}
+
+func consumerFileMode(name string) os.FileMode {
+	if name == "bin/wow-teal" || name == "tools/teal/tl" || name == "check-all.sh" {
+		return 0755
+	}
+	return 0644
 }

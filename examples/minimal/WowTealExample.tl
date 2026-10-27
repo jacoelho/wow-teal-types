@@ -10,7 +10,7 @@ label:SetText("WoW Teal example")
 
 -- Forward the possibly secret result to a native sink without inspecting it.
 local health: W.NumberLike = UnitHealth("player")
-local bar = CreateFrame("StatusBar", nil, panel) as W.StatusBar
+local bar = CreateFrame("StatusBar", nil, panel)
 bar:SetSize(220, 8)
 bar:SetPoint("TOP", panel, "BOTTOM")
 bar:SetStatusBarTexture("Interface\\Buttons\\WHITE8X8")

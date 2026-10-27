@@ -3,15 +3,17 @@ package release
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
 )
 
-func snapshotFixture(t *testing.T) (string, string, M) {
+func snapshotFixture(t *testing.T) (string, string, sourcelock.Snapshot) {
 	t.Helper()
 	root := t.TempDir()
 	fixtureFile(t, root, ".wow-version", []byte("12.1.5.70575\n"))
@@ -24,17 +26,17 @@ func snapshotFixture(t *testing.T) (string, string, M) {
 	for name := range manifests {
 		files[name] = []byte(body)
 	}
-	rows := []any{}
+	rows := []sourcelock.ClientFile{}
 	for _, name := range keys(files) {
 		b := files[name]
 		fixtureFile(t, snapshot, "raw/"+name, b)
-		rows = append(rows, M{"path": name, "size": len(b), "sha256": sha(b), "content_key": contentKey(b)})
+		rows = append(rows, sourcelock.ClientFile{Path: name, Size: len(b), SHA256: sha(b), ContentKey: contentKey(b)})
 	}
-	record := M{"schema": 1, "product": "wow", "region": "eu", "locale": "enUS", "build": 70575, "version": "12.1.5.70575", "build_config": strings.Repeat("a", 32), "cdn_config": strings.Repeat("b", 32), "product_config": strings.Repeat("c", 32), "manifests": manifests, "extractor": M{"source_sha256": "pinned"}, "files": rows}
+	record := sourcelock.NewSnapshot(sourcelock.ClientIdentity{Product: "wow", Region: "eu", Locale: "enUS", Build: 70575, Version: "12.1.5.70575", BuildConfig: strings.Repeat("a", 32), CDNConfig: strings.Repeat("b", 32), ProductConfig: strings.Repeat("c", 32)}, sourcelock.Extractor{Implementation: "fixture", SourceSHA256: strings.Repeat("d", 64)}, rows, manifests)
 	if e := writeObject(filepath.Join(snapshot, "snapshot.json"), record); e != nil {
 		t.Fatal(e)
 	}
-	lock, e := readObject(filepath.Join(snapshot, "snapshot.json"))
+	lock, e := sourcelock.ReadSnapshot(filepath.Join(snapshot, "snapshot.json"))
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -56,7 +58,7 @@ func TestCompleteSnapshotRejectsMissingChangedExtraAndSymlinkInputs(t *testing.T
 				os.Remove(path)
 				os.Symlink(filepath.Join(snapshot, "snapshot.json"), path)
 			case "wrong_manifest":
-				lock["manifests"] = M{"Interface/ui-code-list.txt": 0}
+				lock.Manifests = map[string]int{"Interface/ui-code-list.txt": 0}
 				writeObject(filepath.Join(snapshot, "snapshot.json"), lock)
 			}
 			_, e := VerifySnapshot(snapshot, nil)
@@ -77,8 +79,7 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 	doc := []byte("local A = {}\nAPIDocumentation:AddDocumentationTable(A)\n")
 	support := []byte("schema\n")
 	version := []byte("12.1.5.70575\n")
-	row := func(n string, b []byte) M { return M{"name": n, "sha": blob(b), "size": len(b)} }
-	source := M{"blizzard": M{"files": []any{row("A.lua", doc)}}, "blizzard_support": M{"files": []any{row("Blizzard_SharedXML/UI.xsd", support)}}, "blizzard_version": M{"files": []any{row("version.txt", version)}}}
+	source := sourcelock.Sources{"blizzard": sourceFixture("A.lua", doc), "blizzard_support": sourceFixture("Blizzard_SharedXML/UI.xsd", support), "blizzard_version": sourceFixture("version.txt", version)}
 	if e := writeObject(filepath.Join(root, "scripts/wow_api/sources.json"), source); e != nil {
 		t.Fatal(e)
 	}
@@ -109,7 +110,7 @@ func TestBoundedResponsesAndCancelledWorkerPool(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
 	called := 0
-	e := parallel(ctx, []int{1, 2, 3}, func(context.Context, int) error { called++; return nil })
+	e := parallel(ctx, []sourceJob{{}, {}, {}}, func(context.Context, sourceJob) error { called++; return nil })
 	if e == nil || called != 0 {
 		t.Fatalf("cancelled pool: %d %v", called, e)
 	}
@@ -125,56 +126,73 @@ func TestRejectedNewMetadataIsRetainedBeforeEquivalence(t *testing.T) {
 	root := t.TempDir()
 	literal := []byte("local A = {Name = \"A\", NewPermission = false}\nAPIDocumentation:AddDocumentationTable(A)\n")
 	fixtureFile(t, root, "references/wow-api/blizzard/A.lua", literal)
-	source := M{"blizzard": M{"files": []any{M{"name": "A.lua", "sha": blob(literal), "size": len(literal)}}}}
+	source := sourcelock.Sources{"blizzard": sourceFixture("A.lua", literal)}
 	if e := writeObject(filepath.Join(root, "scripts/wow_api/sources.json"), source); e != nil {
 		t.Fatal(e)
 	}
-	if e := writeObject(filepath.Join(root, "scripts/wow_api/metadata_fields.json"), M{"schema_version": 1, "value_types": M{"$": []any{"object"}, "$.Name": []any{"string"}}}); e != nil {
-		t.Fatal(e)
-	}
+	fixtureFile(t, root, "scripts/wow_api/metadata_fields.json", []byte(`{"schema_version":1,"value_types":{"$":["object"],"$.Name":["string"]}}`))
 	fixtureFile(t, root, "evidence/generated/wow_native_metadata.json", []byte(`{"copied_old_build":true}`))
 	e := prepareContractReview(wowapi.NewProject(root), filepath.Join(root, "missing-baseline"), true)
 	if e == nil || !strings.Contains(e.Error(), "unreviewed native metadata") {
 		t.Fatalf("unreviewed metadata accepted: %v", e)
 	}
-	report, e := readObject(filepath.Join(root, "evidence/generated/wow_native_metadata.json"))
+	data, e := os.ReadFile(filepath.Join(root, "evidence/generated/wow_native_metadata.json"))
 	if e != nil {
 		t.Fatal(e)
 	}
-	docs := arr(report["documents"])
-	if len(docs) != 1 || obj(obj(docs[0])["metadata"])["NewPermission"] != false || len(arr(report["unknown_fields"])) != 1 {
-		t.Fatalf("rejected metadata was lost: %v", report)
+	var report struct {
+		Documents []struct {
+			Metadata struct {
+				NewPermission *bool `json:"NewPermission"`
+			} `json:"metadata"`
+		} `json:"documents"`
+		UnknownFields []struct {
+			Path string `json:"path"`
+		} `json:"unknown_fields"`
 	}
+	if e = json.Unmarshal(data, &report); e != nil {
+		t.Fatal(e)
+	}
+	if len(report.Documents) != 1 || report.Documents[0].Metadata.NewPermission == nil || *report.Documents[0].Metadata.NewPermission || len(report.UnknownFields) != 1 {
+		t.Fatalf("rejected metadata was lost: %s", data)
+	}
+
 }
 
 func TestConcurrentPinnedSecondaryAcquisitionIsIndependent(t *testing.T) {
 	root := t.TempDir()
 	commit := strings.Repeat("a", 40)
-	rows := []any{}
+	rows := []sourcelock.LockedFile{}
 	for n := range 8 {
 		name := fmt.Sprintf("input-%d.lua", n)
 		b := []byte(name)
 		fixtureFile(t, root, "references/wow-api/tsm/"+name, b)
-		rows = append(rows, M{"name": name, "path": name, "sha256": sha(b), "size": len(b)})
+		rows = append(rows, sourcelock.LockedFile{Name: name, Path: name, SHA256: sha(b), Size: len(b)})
 	}
 	version := []byte("12.1.5.70575\n")
 	fixtureFile(t, root, "references/wow-api/tsm/blizzard-version.txt", version)
-	if e := writeObject(filepath.Join(root, "scripts/wow_api/tsm_sources.json"), M{"repository": "test/repo", "commit": commit, "files": rows, "blizzard": M{"repository": "test/repo", "commit": commit, "version_sha256": sha(version)}}); e != nil {
+	if e := writeObject(filepath.Join(root, "scripts/wow_api/tsm_sources.json"), sourcelock.TSM{Repository: "test/repo", Commit: commit, Files: rows, Blizzard: sourcelock.TSMBlizzard{Repository: "test/repo", Commit: commit, VersionSHA256: sha(version)}}); e != nil {
 		t.Fatal(e)
 	}
-	for _, name := range []string{"native_crosscheck_sources.json", "native_backup_sources.json"} {
-		if e := writeObject(filepath.Join(root, "scripts/wow_api", name), M{"files": []any{}}); e != nil {
-			t.Fatal(e)
-		}
+	cohort := sourcelock.Cohort{Repository: "test/repo", Commit: commit}
+	if e := writeObject(filepath.Join(root, "scripts/wow_api/native_crosscheck_sources.json"), sourcelock.Crosscheck{SchemaVersion: 1, Blizzard: cohort, Wowless: cohort, Files: []sourcelock.LockedFile{}}); e != nil {
+		t.Fatal(e)
+	}
+	if e := writeObject(filepath.Join(root, "scripts/wow_api/native_backup_sources.json"), sourcelock.Backup{SchemaVersion: 1, Repository: "test/repo", Commit: commit, Files: []sourcelock.LockedFile{}, Inventory: []sourcelock.SourceFile{}}); e != nil {
+		t.Fatal(e)
 	}
 	if e := syncSecondary(t.Context(), root, false); e != nil {
 		t.Fatal(e)
 	}
-	obj(rows[3])["path"] = "../escape"
-	if e := writeObject(filepath.Join(root, "scripts/wow_api/tsm_sources.json"), M{"repository": "test/repo", "commit": commit, "files": rows, "blizzard": M{"repository": "test/repo", "commit": commit, "version_sha256": sha(version)}}); e != nil {
+	rows[3].Path = "../escape"
+	if e := writeObject(filepath.Join(root, "scripts/wow_api/tsm_sources.json"), sourcelock.TSM{Repository: "test/repo", Commit: commit, Files: rows, Blizzard: sourcelock.TSMBlizzard{Repository: "test/repo", Commit: commit, VersionSHA256: sha(version)}}); e != nil {
 		t.Fatal(e)
 	}
 	if e := syncSecondary(t.Context(), root, false); e == nil {
 		t.Fatal("invalid concurrent source path was accepted")
 	}
+}
+
+func sourceFixture(name string, data []byte) sourcelock.SourceGroup {
+	return sourcelock.SourceGroup{Repository: "fixture/source", Commit: strings.Repeat("a", 40), Files: []sourcelock.SourceFile{{Name: name, SHA: blob(data), Size: len(data)}}}
 }

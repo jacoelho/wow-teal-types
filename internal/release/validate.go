@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"wow-teal-types/internal/consumer"
 )
 
 // Validate the newly emitted declarations rather than resolving an older checked
@@ -37,7 +38,7 @@ func validateDeclarations(ctx context.Context, root string, files map[string][]b
 	}
 	compiler := os.Getenv("TL")
 	if compiler == "" {
-		compiler = "tl"
+		compiler = filepath.Join(root, "tools/teal/tl")
 	}
 	compiler, e = exec.LookPath(compiler)
 	if e != nil {
@@ -59,12 +60,15 @@ func validateDeclarations(ctx context.Context, root string, files map[string][]b
 		if e != nil {
 			return fmt.Errorf("generated declaration check: %w: %s", e, strings.TrimSpace(string(b)))
 		}
-		if len(args) == 1 && args[0] == "--version" && strings.TrimSpace(string(b)) != "0.24.8" {
-			return fmt.Errorf("catalogue requires Teal 0.24.8")
+		if len(args) == 1 && args[0] == "--version" && strings.TrimSpace(string(b)) != consumer.TealVersion {
+			return fmt.Errorf("catalogue requires Teal %s", consumer.TealVersion)
 		}
 		return nil
 	}
 	if e = run("--version"); e != nil {
+		return e
+	}
+	if e = run("run", filepath.Join(root, "tools/teal/check_capabilities.lua")); e != nil {
 		return e
 	}
 	for _, name := range []string{"native_values.d.tl", "wow.d.tl", "wow_env.d.tl", "wow_secure_env.d.tl"} {

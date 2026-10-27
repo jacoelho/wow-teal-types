@@ -14,7 +14,8 @@ independent Rust reader. `bin/wow-types` is the maintainer command;
 path interpretation. Input roots are explicit per generation, with no shared
 process-global source selection.
 The full source and comparison reports live in [`evidence/generated`](../../evidence/generated);
-the consumer ZIP contains declarations and checks only.
+the consumer ZIP contains declarations, the paired compiler/checker and consumer
+tools, without producer packages or acquisition caches.
 
 [`.wow-version`](../../.wow-version) owns the manually selected WoW release.
 Acquisition, staging, generated metadata and the probe derive the version, build
@@ -55,26 +56,52 @@ Packaged Lua/XML does not determine every parameter type, result tuple, optional
 position, generic relation or secrecy effect. Third-party libraries, legacy
 supplements, reviewed FrameXML assertions and opaque-value policy remain explicit
 inputs. Accounting for all current exports does not claim that every client
-global or mixin has been inferred. No missing contract is converted to `any` merely
-to reach a coverage count.
+global or mixin has been inferred. Full symbol coverage means retaining the
+accounted-for surface of the selected source cohort, including signatures whose
+precision remains limited by the evidence. An unresolved position uses `unknown`;
+it does not justify dropping the symbol, emitting `any`, or inventing a concrete
+result or generic relationship.
+
+Checks and builds require the bundled Teal `0.24.8-wow.1` compiler together with
+the secrecy checker and generated `call_policy.lua`. The consumer command selects
+the bundled compiler by default; an override must satisfy the same version and
+capability contract. Stock Teal does not provide this public `unknown` contract.
+The [compiler reference](../../tools/teal/README.md) defines the supported
+operations, variance rules, Lua 5.1 target and reproduction procedure.
+
+`unknown` transports a value without granting indexing, invocation, arithmetic,
+truthiness or conversion to a concrete type. A known function can transport
+unknown arguments or results; an unknown value itself is not callable. Primitive
+narrowing can establish a number, string, boolean or nil, subject to native
+accessibility and secrecy checks. A runtime type tag cannot establish a record or
+callable shape. Casts cannot recover an unsupported contract.
 
 Opaque markers describe a static restriction rather than a runtime userdata
 carrier. Inspect a value only after same-caller native accessibility checks.
 Returning an ordinary scalar additionally requires negative secrecy and a valid
 scalar shape. Outer-table access does not declassify its fields; public handles
-can retain secret state. Forward supported opaque values to native sinks.
-Never use a cast or a runtime userdata test to remove these obligations.
+can retain secret state. Forward opaque values only where the native argument
+policy permits them. Permission for an opaque root does not authorize its nested
+contents; the current source cohort supplies no independent permission to forward
+potentially secret input contents. Never use a cast or a runtime userdata test to
+remove these obligations.
 
-The checker follows canonical marker identities through aliases and unions.
-It rejects inspections lacking the required proof and validates the actual loaded
-`wow`, `native_values` and native environment files against the packaged paths.
-The full historical operation policy remains in the checker. Values erased
-through `any`, arbitrary Lua, unselected source bodies and runtime permissions
-remain outside that static claim.
+The checker follows canonical marker and unknown identities through aliases,
+unions and generic bounds. It rejects inspections lacking the required proof and
+validates the loaded `wow`, `native_values` and native environment files against
+the packaged paths. The finalized declaration projection owns native call
+permissions in `call_policy.lua`; the checker uses each originating function's
+identity and argument positions, including receivers and expanded tuples. Names
+alone confer no guard or sink authority. Missing policy or compiler capabilities
+fail closed. Arbitrary Lua, unselected source bodies and runtime permissions
+remain outside this static claim.
 
-Teal permits nil for every type; retain runtime absence checks. Source-untyped
-boundaries retain explicit `any`. Some unions, factories and repeated tuples have
-representation limits. Optional libraries and legacy supplements are not a
+Teal permits nil for every type; retain runtime absence checks. Source-supported
+generics preserve key, value and element relationships. Mutable containers remain
+invariant: a container of unknown values is not a universal replacement for a
+concrete container. Exact heterogeneous variadic forwarding and repeated-tuple
+relationships remain precision limits; known fixed argument and result positions
+must still be retained. Optional libraries and legacy supplements are not a
 runtime availability guarantee. Secure declarations grant no protected access.
 
 See [addon usage](../../README.md) and the
@@ -94,13 +121,19 @@ lexical spelling and registration statements. Source-equivalence receipts may
 transfer only byte-equivalent source approval; every contract, emitted graph and
 build-specific evidence gate remains in force.
 
-The Python-to-Go tooling migration preserves the reviewed declarations and all
-four generated reports byte for byte. Generated headers retain their historical
-generator path because those bytes belong to the approved declaration graph.
-The original TSM ledger and captured runtime evidence are unchanged. Canonical
-review JSON, default-spaced interning JSON, float spelling and native metadata's
-UTF-8 representation remain separate serialization contracts. Parser tests cover
-wide integers, invalid UTF-8, duplicate keys and unsupported statements; complete
-cohort and negative permission checks exercise the actual Go converter and reader.
-The source-only consumer archive carries its complete Go source/module closure;
-it requires neither producer packages nor Rust or acquisition caches.
+Representation-only Go changes are checked against the frozen declarations and
+reports byte for byte. The `unknown` transition deliberately changes declaration
+contracts and requires separate graph review and verification; an earlier parity
+checkpoint does not approve those changes. Historical generator labels, TSM
+ledgers and runtime captures retain their original identities. Canonical review
+JSON, default-spaced interning JSON, float spelling and native metadata's UTF-8
+representation remain separate serialization contracts. Parser tests cover wide
+integers, invalid UTF-8, duplicate keys and unsupported statements; cohort and
+negative permission checks exercise the actual Go converter and reader.
+
+The consumer archive carries its Go source/module closure and the paired compiler
+runtime. It requires neither producer packages nor Rust or acquisition caches.
+The [architecture entry point](../architecture.md) links the owning contracts;
+[the erased-type migration requirements](../no-any-types.md) record the remaining
+completion gates. This declaration contract does not replace their verification
+evidence.

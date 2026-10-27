@@ -15,35 +15,13 @@ import (
 	"strings"
 	"time"
 	"wow-teal-types/internal/consumer"
+	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
 )
 
 var manifests = map[string]int{"Interface/ui-code-list.txt": 6067012, "Interface/ui-toc-list.txt": 6067013, "Interface/ui-gen-addon-list.txt": 6076661}
-var identityKeys = []string{"product", "region", "locale", "build", "version", "build_config", "cdn_config", "product_config"}
-var hex32 = regexp.MustCompile(`^[0-9a-f]{32}$`)
 var hex40 = regexp.MustCompile(`^[0-9a-f]{40}$`)
 
-func validIdentity(lock M) (M, error) {
-	if s(lock["product"]) != "wow" || s(lock["locale"]) != "enUS" {
-		return nil, fmt.Errorf("unsupported client product/locale")
-	}
-	if !strings.Contains("|eu|us|kr|cn|tw|", "|"+s(lock["region"])+"|") {
-		return nil, fmt.Errorf("unsupported client region")
-	}
-	if !regexp.MustCompile(fmt.Sprintf(`^\d+\.\d+\.\d+\.%d$`, i(lock["build"]))).MatchString(s(lock["version"])) {
-		return nil, fmt.Errorf("client build/version disagree")
-	}
-	for _, k := range []string{"build_config", "cdn_config", "product_config"} {
-		if !hex32.MatchString(s(lock[k])) {
-			return nil, fmt.Errorf("invalid client configuration: %s", k)
-		}
-	}
-	r := M{}
-	for _, k := range identityKeys {
-		r[k] = lock[k]
-	}
-	return r, nil
-}
 func clientPath(name string, files map[string]bool) (string, error) {
 	exact := "Interface/AddOns/" + name
 	if files[exact] {
@@ -121,66 +99,65 @@ func manifestPaths(raw string) ([]string, error) {
 }
 
 // VerifySnapshot validates all raw bytes and the complete manifest-selected inventory.
-func VerifySnapshot(snapshot string, expected M) (M, error) {
-	recorded, e := readObject(filepath.Join(snapshot, "snapshot.json"))
+func VerifySnapshot(snapshot string, expected *sourcelock.Snapshot) (sourcelock.Snapshot, error) {
+	recorded, e := sourcelock.ReadSnapshot(filepath.Join(snapshot, "snapshot.json"))
 	if e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
-	if expected != nil && !equal(recorded, expected) {
-		return nil, fmt.Errorf("client snapshot differs from selected source lock")
+	if expected != nil && !recorded.Equal(*expected) {
+		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot differs from selected source lock")
 	}
-	if _, e = validIdentity(recorded); e != nil {
-		return nil, e
+	if e = recorded.Identity().Validate(); e != nil {
+		return sourcelock.Snapshot{}, e
 	}
-	recordedManifests := obj(recorded["manifests"])
+	recordedManifests := recorded.Manifests
 	if len(recordedManifests) != len(manifests) {
-		return nil, fmt.Errorf("unsupported manifest identities")
+		return sourcelock.Snapshot{}, fmt.Errorf("unsupported manifest identities")
 	}
 	for name, id := range manifests {
-		if i(recordedManifests[name]) != id {
-			return nil, fmt.Errorf("unsupported manifest identities")
+		if recordedManifests[name] != id {
+			return sourcelock.Snapshot{}, fmt.Errorf("unsupported manifest identities")
 		}
 	}
-	if i(recorded["schema"]) != 1 {
-		return nil, fmt.Errorf("unsupported client snapshot schema")
+	if recorded.Schema != 1 {
+		return sourcelock.Snapshot{}, fmt.Errorf("unsupported client snapshot schema")
 	}
 	raw := filepath.Join(snapshot, "raw")
 	names, e := manifestPaths(raw)
 	if e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
-	rows := arr(recorded["files"])
+	rows := recorded.Files
 	if len(rows) != len(names) {
-		return nil, fmt.Errorf("client snapshot inventory does not match manifests")
+		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot inventory does not match manifests")
 	}
 	inventory := map[string]bool{}
 	total := 0
-	for _, value := range rows {
-		row := obj(value)
-		name := s(row["path"])
+	for _, row := range rows {
+		name := row.Path
 		if inventory[name] {
-			return nil, fmt.Errorf("duplicate client snapshot entry: %s", name)
+			return sourcelock.Snapshot{}, fmt.Errorf("duplicate client snapshot entry: %s", name)
 		}
 		p, e := safeJoin(raw, name)
 		if e != nil {
-			return nil, e
+			return sourcelock.Snapshot{}, e
 		}
 		b, e := readFile(p, maxFile)
 		if e != nil {
-			return nil, e
+			return sourcelock.Snapshot{}, e
 		}
 		total += len(b)
 		if total > maxTotal {
-			return nil, fmt.Errorf("client snapshot exceeds aggregate size")
+			return sourcelock.Snapshot{}, fmt.Errorf("client snapshot exceeds aggregate size")
 		}
-		if len(b) != i(row["size"]) || sha(b) != s(row["sha256"]) || contentKey(b) != s(row["content_key"]) {
-			return nil, fmt.Errorf("client content identity mismatch: %s", name)
+		if len(b) != row.Size || sha(b) != row.SHA256 || contentKey(b) != row.ContentKey {
+			return sourcelock.Snapshot{}, fmt.Errorf("client content identity mismatch: %s", name)
 		}
 		inventory[name] = true
 	}
 	for _, name := range names {
 		if !inventory[name] {
-			return nil, fmt.Errorf("missing manifest-selected input: %s", name)
+			return sourcelock.Snapshot{}, fmt.Errorf("missing manifest-selected input: %s", name)
 		}
 	}
 	disk := 0
@@ -209,27 +186,27 @@ func VerifySnapshot(snapshot string, expected M) (M, error) {
 		return nil
 	})
 	if e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	if disk != len(names) {
-		return nil, fmt.Errorf("client snapshot inventory incomplete")
+		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot inventory incomplete")
 	}
 	return recorded, nil
 }
-func projectVersion(root string, identity M) error {
+func projectVersion(root string, identity sourcelock.ClientIdentity) error {
 	v, e := consumer.ReadVersion(root)
 	if e != nil {
 		return e
 	}
-	if v.Full != s(identity["version"]) || v.Build != i(identity["build"]) {
-		return fmt.Errorf(".wow-version selects %s; source cohort is %s", v.Full, s(identity["version"]))
+	if v.Full != identity.Version || v.Build != identity.Build {
+		return fmt.Errorf(".wow-version selects %s; source cohort is %s", v.Full, identity.Version)
 	}
 	return nil
 }
-func ResolveBuild(ctx context.Context, region string, build int) (M, error) {
+func ResolveBuild(ctx context.Context, region string, build int) (sourcelock.ClientIdentity, error) {
 	b, e := fetch(ctx, "https://us.version.battle.net/wow/versions", 64<<10)
 	if e != nil {
-		return nil, e
+		return sourcelock.ClientIdentity{}, e
 	}
 	var matches []string
 	for line := range strings.SplitSeq(string(b), "\n") {
@@ -238,24 +215,25 @@ func ResolveBuild(ctx context.Context, region string, build int) (M, error) {
 		}
 	}
 	if len(matches) != 1 {
-		return nil, fmt.Errorf("missing or ambiguous Battle.net region: %s", region)
+		return sourcelock.ClientIdentity{}, fmt.Errorf("missing or ambiguous Battle.net region: %s", region)
 	}
 	parts := strings.Split(strings.TrimSpace(matches[0]), "|")
 	if len(parts) != 7 {
-		return nil, fmt.Errorf("invalid Battle.net version row")
+		return sourcelock.ClientIdentity{}, fmt.Errorf("invalid Battle.net version row")
 	}
 	var offered int
 	fmt.Sscanf(parts[4], "%d", &offered)
 	if build != 0 && offered != build {
-		return nil, fmt.Errorf("requested build %d is not currently offered (%d); supply exact-build lock", build, offered)
+		return sourcelock.ClientIdentity{}, fmt.Errorf("requested build %d is not currently offered (%d); supply exact-build lock", build, offered)
 	}
-	return validIdentity(M{"product": "wow", "region": region, "locale": "enUS", "build": offered, "version": parts[5], "build_config": parts[1], "cdn_config": parts[2], "product_config": parts[6]})
+	identity := sourcelock.ClientIdentity{Product: "wow", Region: region, Locale: "enUS", Build: offered, Version: parts[5], BuildConfig: parts[1], CDNConfig: parts[2], ProductConfig: parts[6]}
+	return identity, identity.Validate()
 }
-func BuildExtractor(ctx context.Context, root string) (string, M, error) {
+func BuildExtractor(ctx context.Context, root string) (string, sourcelock.Extractor, error) {
 	dir := filepath.Join(root, "tools/cdn")
 	files, e := os.ReadDir(dir)
 	if e != nil {
-		return "", nil, e
+		return "", sourcelock.Extractor{}, e
 	}
 	var source []byte
 	for _, f := range files {
@@ -265,14 +243,14 @@ func BuildExtractor(ctx context.Context, root string) (string, M, error) {
 		}
 		b, e := readFile(filepath.Join(dir, n), maxFile)
 		if e != nil {
-			return "", nil, e
+			return "", sourcelock.Extractor{}, e
 		}
 		source = append(source, []byte(n)...)
 		source = append(source, 0)
 		source = append(source, b...)
 	}
 	if len(source) == 0 {
-		return "", nil, fmt.Errorf("invalid extractor source inventory")
+		return "", sourcelock.Extractor{}, fmt.Errorf("invalid extractor source inventory")
 	}
 	moduleCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
@@ -281,36 +259,36 @@ func BuildExtractor(ctx context.Context, root string) (string, M, error) {
 	list.Env = append(os.Environ(), "GOTOOLCHAIN=local", "GOWORK=off", "GOFLAGS=")
 	modules, err := list.Output()
 	if err != nil {
-		return "", nil, fmt.Errorf("extractor module audit: %w", err)
+		return "", sourcelock.Extractor{}, fmt.Errorf("extractor module audit: %w", err)
 	}
 	if string(bytes.TrimSpace(modules)) != "wow-teal-types/tools/cdn" {
-		return "", nil, fmt.Errorf("CDN extractor must have no external module dependencies")
+		return "", sourcelock.Extractor{}, fmt.Errorf("CDN extractor must have no external module dependencies")
 	}
 	binary := filepath.Join(root, "build/direct-source-tools/wow-cdn")
 	e = command(ctx, dir, filepath.Join(root, "build/direct-source-tools/build.log"), 3*time.Minute, "go", "build", "-mod=readonly", "-trimpath", "-buildvcs=false", "-o", binary, ".")
 	if e != nil {
-		return "", nil, e
+		return "", sourcelock.Extractor{}, e
 	}
-	return binary, M{"implementation": "wow-teal-types/tools/cdn", "source_sha256": sha(source)}, nil
+	return binary, sourcelock.Extractor{Implementation: "wow-teal-types/tools/cdn", SourceSHA256: sha(source)}, nil
 }
-func Stage(ctx context.Context, root, output, cache string, identity, expected M) (M, error) {
+func Stage(ctx context.Context, root, output, cache string, identity sourcelock.ClientIdentity, expected *sourcelock.Snapshot) (sourcelock.Snapshot, error) {
 	if exists(output) {
-		return nil, fmt.Errorf("client snapshot destination already exists: %s", output)
+		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot destination already exists: %s", output)
 	}
-	id, e := validIdentity(identity)
-	if e != nil {
-		return nil, e
+	id := identity
+	if e := id.Validate(); e != nil {
+		return sourcelock.Snapshot{}, e
 	}
 	binary, tool, e := BuildExtractor(ctx, root)
 	if e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	if e = os.MkdirAll(filepath.Dir(output), 0755); e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	stage, e := os.MkdirTemp(filepath.Dir(output), ".client-source-")
 	if e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	success := false
 	defer func() {
@@ -322,67 +300,52 @@ func Stage(ctx context.Context, root, output, cache string, identity, expected M
 		}
 	}()
 	if e = writeObject(filepath.Join(stage, "config.json"), id); e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	if cache == "" {
 		cache = filepath.Join(root, "build/direct-source-tools/cache")
 	}
 	raw := filepath.Join(stage, "raw")
 	if e = command(ctx, stage, filepath.Join(stage, "extraction.log"), 20*time.Minute, binary, filepath.Join(stage, "config.json"), raw, cache); e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
-	receipt, e := readObject(filepath.Join(raw, "extractor-result.json"))
+	receipt, e := readJSON[extractorReceipt](filepath.Join(raw, "extractor-result.json"))
 	if e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
-	actual, e := validIdentity(receipt)
-	if e != nil || !equalIdentity(actual, id) {
-		return nil, fmt.Errorf("extractor returned different client identity")
+	actual := receipt.ClientIdentity
+	if e = actual.Validate(); e != nil || actual != id {
+		return sourcelock.Snapshot{}, fmt.Errorf("extractor returned different client identity")
 	}
-	record := M{"schema": 1, "extractor": tool, "manifests": manifests, "files": receipt["files"]}
-	for k, v := range id {
-		record[k] = v
-	}
+	record := sourcelock.NewSnapshot(id, tool, receipt.Files, manifests)
 	if e = writeObject(filepath.Join(stage, "snapshot.json"), record); e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	if _, e = VerifySnapshot(stage, expected); e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	if e = os.Rename(stage, output); e != nil {
-		return nil, e
+		return sourcelock.Snapshot{}, e
 	}
 	success = true
-	return readObject(filepath.Join(output, "snapshot.json"))
-}
-func equalIdentity(a, b M) bool {
-	for _, key := range identityKeys {
-		if key == "build" {
-			if i(a[key]) != i(b[key]) {
-				return false
-			}
-		} else if s(a[key]) != s(b[key]) {
-			return false
-		}
-	}
-	return true
+	return sourcelock.ReadSnapshot(filepath.Join(output, "snapshot.json"))
 }
 
 // Projection bridges packaged bytes to the precise reviewed source representation.
 func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 	p := wowapi.NewProject(root)
-	lock, e := readObject(lockPath)
+	lock, e := sourcelock.ReadSnapshot(lockPath)
 	if e != nil {
 		return p, e
 	}
-	record, e := VerifySnapshot(snapshot, lock)
+	record, e := VerifySnapshot(snapshot, &lock)
 	if e != nil {
 		return p, e
 	}
-	if e = projectVersion(root, record); e != nil {
+	if e = projectVersion(root, record.Identity()); e != nil {
 		return p, e
 	}
-	sources, e := p.Lock("sources.json")
+	sources, e := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
 	if e != nil {
 		return p, e
 	}
@@ -393,21 +356,20 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 	identity := sha(lockBytes)
 	dest := filepath.Join(root, "build/wow-api-client-projection", identity)
 	files := map[string]bool{}
-	for _, row := range arr(record["files"]) {
-		files[s(obj(row)["path"])] = true
+	for _, row := range record.Files {
+		files[row.Path] = true
 	}
 	pending := map[string][]byte{}
-	evidence := []any{}
+	evidence := []projectionFile{}
 	paths := map[string]string{}
 	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
-		source := obj(sources[group])
-		casc := s(source["kind"]) == "casc"
-		if casc && (s(source["client_lock_sha256"]) != identity || s(source["normalization"]) != "lf-final-newline") {
+		source := sources[group]
+		casc := source.Kind == "casc"
+		if casc && (source.ClientLockSHA256 != identity || source.Normalization != "lf-final-newline") {
 			return p, fmt.Errorf("native source selection differs from client lock: %s", group)
 		}
-		for _, value := range arr(source["files"]) {
-			row := obj(value)
-			name := s(row["name"])
+		for _, row := range source.Files {
+			name := row.Name
 			if _, e = safeJoin(dest, group+"/"+name); e != nil {
 				return p, e
 			}
@@ -415,10 +377,10 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 			if group == "blizzard" {
 				relative = "Blizzard_APIDocumentationGenerated/" + name
 			}
-			var origin any
+			origin := sourcelock.ClientPath("")
 			var b []byte
 			if group == "blizzard_version" {
-				b = []byte(s(record["version"]) + "\n")
+				b = []byte(record.Version + "\n")
 			} else {
 				path, err := clientPath(relative, files)
 				if err != nil {
@@ -427,21 +389,21 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 				if path == "" {
 					return p, fmt.Errorf("reviewed source absent from client: %s", relative)
 				}
-				origin = path
+				origin = sourcelock.ClientPath(path)
 				b, e = readFile(filepath.Join(snapshot, "raw", filepath.FromSlash(path)), maxFile)
 				if e != nil {
 					return p, e
 				}
 			}
 			if casc {
-				if row["client_path"] != origin {
+				if !row.ClientPath.Equal(origin) {
 					return p, fmt.Errorf("native source path differs from client selection: %s", name)
 				}
 				b = normalized(b, 1)
-			} else if blob(b) != s(row["sha"]) {
+			} else if blob(b) != row.SHA {
 				b = reviewedBytes(b, row)
 			}
-			if len(b) != i(row["size"]) || blob(b) != s(row["sha"]) {
+			if len(b) != row.Size || blob(b) != row.SHA {
 				return p, fmt.Errorf("client source differs from reviewed contract: %s", relative)
 			}
 			pending[group+"/"+name] = b
@@ -449,11 +411,11 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 			if group == "blizzard_version" {
 				kind = "version"
 			}
-			evidence = append(evidence, M{"group": group, "name": name, "client_path": origin, "source": kind})
+			evidence = append(evidence, projectionFile{ClientPath: origin.Value, Group: group, Name: name, Source: kind})
 		}
 		paths[group] = filepath.Join(dest, group)
 	}
-	report, e := jsonBytes(M{"snapshot_sha256": identity, "files": evidence})
+	report, e := jsonBytes(projectionReceipt{Files: evidence, SnapshotSHA256: identity})
 	if e != nil {
 		return p, e
 	}
@@ -523,10 +485,10 @@ func normalized(b []byte, count int) []byte {
 	base := bytes.TrimRight(bytes.ReplaceAll(b, []byte("\r\n"), []byte("\n")), "\n")
 	return append(append([]byte{}, base...), bytes.Repeat([]byte("\n"), count)...)
 }
-func reviewedBytes(b []byte, row M) []byte {
+func reviewedBytes(b []byte, row sourcelock.SourceFile) []byte {
 	for n := range 16 {
 		v := normalized(b, n)
-		if len(v) == i(row["size"]) && blob(v) == s(row["sha"]) {
+		if len(v) == row.Size && blob(v) == row.SHA {
 			return v
 		}
 	}

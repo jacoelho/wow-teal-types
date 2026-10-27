@@ -2,9 +2,9 @@ package consumer
 
 import (
 	"errors"
+	"maps"
 	"os"
 	"path/filepath"
-	"reflect"
 	"strings"
 	"testing"
 )
@@ -43,17 +43,17 @@ done
 	if got := fileText(t, filepath.Join(f.output, "Main.lua")); !strings.Contains(got, `print("captured")`) {
 		t.Fatalf("generation did not use checked source: %s", got)
 	}
-	receipt, err := readJSON(filepath.Join(f.output, "wow-teal-build.json"))
+	receipt, err := readBuildReceipt(filepath.Join(f.output, "wow-teal-build.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	if receipt["package_manifest_sha256"] != fingerprint([]byte(before)) {
+	if receipt.PackageManifestSHA256 != fingerprint([]byte(before)) {
 		t.Fatal("receipt did not bind captured manifest")
 	}
 	t.Setenv("TL", actualTL)
 	previous := outputBytes(t, f.output)
 	f.run(t, []string{"build", f.source, "-I", declarations, "--global-env-def", "addon_env", "-o", f.output}, "expected number")
-	if !reflect.DeepEqual(previous, outputBytes(t, f.output)) {
+	if !maps.Equal(previous, outputBytes(t, f.output)) {
 		t.Fatal("failed later invocation changed output")
 	}
 }
@@ -66,7 +66,7 @@ func TestBuildRejectsChangedPackageBeforeCompiler(t *testing.T) {
 	writeTest(t, filepath.Join(f.root, "tools/check_secrets.lua"), "error('modified checker')\n")
 	t.Setenv("TL", "/must-not-run-compiler")
 	f.run(t, []string{"build", f.source, "-o", f.output}, "package integrity mismatch: tools/check_secrets.lua")
-	if !reflect.DeepEqual(before, outputBytes(t, f.output)) {
+	if !maps.Equal(before, outputBytes(t, f.output)) {
 		t.Fatal("invalid package changed output")
 	}
 }
@@ -127,7 +127,7 @@ func TestPublicationFailureRetainsRecoverableBackup(t *testing.T) {
 			parent := t.TempDir()
 			destination, generated := filepath.Join(parent, "output"), filepath.Join(parent, "generated")
 			writeTest(t, filepath.Join(destination, "Main.lua"), "previous")
-			receipt, err := jsonBytes(map[string]any{"files": map[string]string{"Main.lua": fingerprint([]byte("previous"))}})
+			receipt, err := receiptBytes(BuildReceipt{Files: map[string]string{"Main.lua": fingerprint([]byte("previous"))}})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -157,11 +157,11 @@ func TestPublicationFailureRetainsRecoverableBackup(t *testing.T) {
 				if !errors.Is(err, restoreErr) || !strings.Contains(err.Error(), backup) {
 					t.Fatalf("missing recovery evidence: %v", err)
 				}
-				if !reflect.DeepEqual(before, outputBytes(t, backup)) {
+				if !maps.Equal(before, outputBytes(t, backup)) {
 					t.Fatal("backup was lost")
 				}
 			} else {
-				if !reflect.DeepEqual(before, outputBytes(t, destination)) {
+				if !maps.Equal(before, outputBytes(t, destination)) {
 					t.Fatal("previous output not restored")
 				}
 				matches, err := filepath.Glob(filepath.Join(parent, ".wow-teal-publish-*"))

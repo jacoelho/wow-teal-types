@@ -8,13 +8,14 @@ import (
 	"path/filepath"
 	"time"
 	"wow-teal-types/internal/consumer"
+	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
 )
 
-func ensureSnapshot(ctx context.Context, root string, lock M) (string, error) {
-	snapshot := filepath.Join(root, "build/wow-client", fmt.Sprint(i(lock["build"])))
+func ensureSnapshot(ctx context.Context, root string, lock sourcelock.Snapshot) (string, error) {
+	snapshot := filepath.Join(root, "build/wow-client", fmt.Sprint(lock.Build))
 	if exists(snapshot) {
-		_, e := VerifySnapshot(snapshot, lock)
+		_, e := VerifySnapshot(snapshot, &lock)
 		return snapshot, e
 	}
 	lockData, e := jsonBytes(lock)
@@ -23,10 +24,10 @@ func ensureSnapshot(ctx context.Context, root string, lock M) (string, error) {
 	}
 	snapshot = filepath.Join(root, "build/wow-update/snapshots", sha(lockData))
 	if exists(snapshot) {
-		_, e = VerifySnapshot(snapshot, lock)
+		_, e = VerifySnapshot(snapshot, &lock)
 		return snapshot, e
 	}
-	_, e = Stage(ctx, root, snapshot, "", lock, lock)
+	_, e = Stage(ctx, root, snapshot, "", lock.Identity(), &lock)
 	return snapshot, e
 }
 
@@ -85,7 +86,7 @@ func auditBeforeConversion(p wowapi.Project) error {
 	return wowapi.RequireKnownMetadata(report)
 }
 func generateCandidate(ctx context.Context, root, runDir string, selected consumer.Version) (string, error) {
-	lock, e := readObject(filepath.Join(root, "scripts/wow_api/client_sources.json"))
+	lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "scripts/wow_api/client_sources.json"))
 	if e != nil {
 		return "", e
 	}
@@ -93,7 +94,7 @@ func generateCandidate(ctx context.Context, root, runDir string, selected consum
 	if e = copyMaintained(root, baseline); e != nil {
 		return "", e
 	}
-	if e = atomicWrite(filepath.Join(baseline, ".wow-version"), []byte(s(lock["version"])+"\n"), 0644); e != nil {
+	if e = atomicWrite(filepath.Join(baseline, ".wow-version"), []byte(lock.Version+"\n"), 0644); e != nil {
 		return "", e
 	}
 	if e = seedCaches(root, baseline); e != nil {
@@ -111,14 +112,14 @@ func generateCandidate(ctx context.Context, root, runDir string, selected consum
 		return "", e
 	}
 	target := baseline
-	if selected.Full != s(lock["version"]) {
+	if selected.Full != lock.Version {
 		targetSnapshot := filepath.Join(root, "build/wow-client", fmt.Sprint(selected.Build))
 		if exists(targetSnapshot) {
 			record, e := VerifySnapshot(targetSnapshot, nil)
 			if e != nil {
 				return "", e
 			}
-			if e = selected.Require(record); e != nil {
+			if e = selected.Require(record.Version, record.Build); e != nil {
 				return "", e
 			}
 		} else {
@@ -128,15 +129,15 @@ func generateCandidate(ctx context.Context, root, runDir string, selected consum
 				if e != nil {
 					return "", e
 				}
-				if e = selected.Require(record); e != nil {
+				if e = selected.Require(record.Version, record.Build); e != nil {
 					return "", e
 				}
 			} else {
-				identity, e := ResolveBuild(ctx, s(lock["region"]), selected.Build)
+				identity, e := ResolveBuild(ctx, lock.Region, selected.Build)
 				if e != nil {
 					return "", e
 				}
-				if e = selected.Require(identity); e != nil {
+				if e = selected.Require(identity.Version, identity.Build); e != nil {
 					return "", e
 				}
 				if _, e = Stage(ctx, root, targetSnapshot, "", identity, nil); e != nil {
@@ -177,7 +178,7 @@ func generateCandidate(ctx context.Context, root, runDir string, selected consum
 		return "", e
 	}
 	p = p.WithReader(reader)
-	if e = prepareContractReview(p, baseline, selected.Full != s(lock["version"])); e != nil {
+	if e = prepareContractReview(p, baseline, selected.Full != lock.Version); e != nil {
 		return "", e
 	}
 
@@ -191,7 +192,7 @@ func generateCandidate(ctx context.Context, root, runDir string, selected consum
 	if e = writeCandidateArtifacts(target, artifacts.Files); e != nil {
 		return "", e
 	}
-	manifest, e := readObject(filepath.Join(target, "evidence/generated/wow_manifest.json"))
+	manifest, e := wowapi.ReadManifest(filepath.Join(target, "evidence/generated/wow_manifest.json"))
 	if e != nil {
 		return "", e
 	}
@@ -248,90 +249,90 @@ func generateCandidate(ctx context.Context, root, runDir string, selected consum
 }
 
 // Update acquires and validates a private candidate before changing active outputs.
-func Update(ctx context.Context, root string) (M, error) {
+func Update(ctx context.Context, root string) (UpdateResult, error) {
 	root, e := filepath.Abs(root)
 	if e != nil {
-		return nil, e
+		return UpdateResult{}, e
 	}
 	unlock, e := updateLock(root)
 	if e != nil {
-		return nil, e
+		return UpdateResult{}, e
 	}
 	defer unlock()
 	if exists(filepath.Join(root, "build/wow-update/pending.json")) {
-		return nil, fmt.Errorf("incomplete publication journal retained; inspect or run wow-types recover")
+		return UpdateResult{}, fmt.Errorf("incomplete publication journal retained; inspect or run wow-types recover")
 	}
 	selected, e := consumer.ReadVersion(root)
 	if e != nil {
-		return nil, e
+		return UpdateResult{}, e
 	}
 	expected, e := captureInputs(root)
 	if e != nil {
-		return nil, e
+		return UpdateResult{}, e
 	}
 	runDir, e := os.MkdirTemp(filepath.Join(root, "build/wow-update"), selected.Full+"-go-")
 	if e != nil {
-		return nil, e
+		return UpdateResult{}, e
 	}
 	workspace, e := generateCandidate(ctx, root, runDir, selected)
 	if e != nil {
-		_ = writeObject(filepath.Join(runDir, "failure.json"), M{"status": "failed", "wow_version": selected.Full, "error": e.Error(), "candidate": runDir, "active_outputs": "not published"})
-		return nil, fmt.Errorf("catalogue update stopped; candidate retained at %s: %w", runDir, e)
+		_ = writeObject(filepath.Join(runDir, "failure.json"), updateFailure{Status: "failed", WoWVersion: selected.Full, Error: e.Error(), Candidate: runDir, ActiveOutputs: "not published"})
+		return UpdateResult{}, fmt.Errorf("catalogue update stopped; candidate retained at %s: %w", runDir, e)
 	}
 	changed, e := publish(ctx, root, workspace, runDir, expected, os.Rename)
 	if e != nil {
-		_ = writeObject(filepath.Join(runDir, "failure.json"), M{"status": "failed", "error": e.Error(), "candidate": runDir})
-		return nil, e
+		_ = writeObject(filepath.Join(runDir, "failure.json"), updateFailure{Status: "failed", Error: e.Error(), Candidate: runDir})
+		return UpdateResult{}, e
 	}
 	status := "unchanged"
 	if len(changed) > 0 {
 		status = "updated"
 	}
-	result := M{"status": status, "wow_version": selected.Full, "changed_files": changed, "candidate": workspace, "checks": "type, secret, metadata, source and determinism checks passed"}
+	result := UpdateResult{Status: status, WoWVersion: selected.Full, ChangedFiles: changed, Candidate: workspace, Checks: "type, secret, metadata, source and determinism checks passed"}
 	if e = writeObject(filepath.Join(runDir, "result.json"), result); e != nil {
-		return nil, e
+		return UpdateResult{}, e
 	}
 	return result, nil
 }
 
 // CheckGenerator compares regenerated artifacts with the active cohort without publishing.
-func CheckGenerator(ctx context.Context, root, snapshot string) (M, error) {
+func CheckGenerator(ctx context.Context, root, snapshot string) (wowapi.CatalogueStatistics, error) {
 	p, err := Bootstrap(ctx, root, snapshot)
 	if err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	reader, err := buildReader(ctx, root, root, filepath.Join(root, "build/wow-generate"))
 	if err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	p = p.WithReader(reader)
 	artifacts, err := p.Generate(ctx)
 	if err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	if err = validateDeclarations(ctx, root, artifacts.Files); err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	if err = compareArtifacts(root, artifacts.Files); err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
-	manifest, err := readObject(filepath.Join(root, "evidence/generated/wow_manifest.json"))
+	manifest, err := wowapi.ReadManifest(filepath.Join(root, "evidence/generated/wow_manifest.json"))
 	if err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	coverage, err := p.Coverage(ctx, snapshot, manifest)
 	if err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	if err = compareArtifacts(root, coverage); err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	metadata, err := prepareMetadata(root)
 	if err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	if err = compareArtifacts(root, metadata); err != nil {
-		return nil, err
+		return wowapi.CatalogueStatistics{}, err
 	}
 	return artifacts.Statistics, nil
 }

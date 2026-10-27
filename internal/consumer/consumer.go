@@ -7,11 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"reflect"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 	"time"
@@ -21,6 +22,9 @@ const maxSources = 512
 const maxEntries = 10000
 const maxSourceBytes = 2 << 20
 
+// TealVersion identifies the bundled compiler/checker contract, not stock Teal.
+const TealVersion = "0.24.8-wow.1"
+
 var modules = []string{"native_values", "wow", "wow_env", "wow_secure_env"}
 var excluded = map[string]bool{".git": true, ".venv": true, "__pycache__": true, "build": true, "dist": true, "vendor": true, "node_modules": true}
 var moduleName = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9]*(\.[A-Za-z_][A-Za-z_0-9]*)*$`)
@@ -29,7 +33,8 @@ var moduleName = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9]*(\.[A-Za-z_][A-Za-z_
 // producer, CDN extractor, Rust reader and test fixtures are not runtime inputs.
 func RequiredFiles() []string {
 	names := []string{".wow-version", "bin/wow-teal", "go.mod", "go.sum", "provenance.json", "tools/check_secrets.lua", "tools/check_runtime_imports.lua", "tools/wow-teal/main.go",
-		"internal/consumer/consumer.go", "internal/consumer/files.go", "internal/consumer/version.go", "internal/consumer/snapshot.go", "internal/consumer/rockspec.go", "internal/consumer/package.go"}
+		"tools/teal/tl", "tools/teal/cli.lua", "tools/teal/tl.lua", "tools/teal/argparse.lua", "tools/teal/contract.lua", "tools/teal/check_capabilities.lua", "tools/teal/LICENSE", "types/wow/call_policy.lua",
+		"internal/consumer/consumer.go", "internal/consumer/schema.go", "internal/consumer/files.go", "internal/consumer/version.go", "internal/consumer/snapshot.go", "internal/consumer/rockspec.go", "internal/consumer/package.go"}
 	for _, name := range modules {
 		names = append(names, "types/wow/"+name+".d.tl")
 	}
@@ -37,38 +42,34 @@ func RequiredFiles() []string {
 	return names
 }
 
-func Verify(root string) (map[string]any, error) {
-	manifest, err := readJSON(filepath.Join(root, "package.json"))
+func Verify(root string) (PackageManifest, error) {
+	manifest, err := readManifest(filepath.Join(root, "package.json"))
 	if err != nil {
-		return nil, err
+		return PackageManifest{}, err
 	}
-	files := object(manifest["files"])
-	if files == nil {
-		return nil, fmt.Errorf("package manifest inventory mismatch")
+	files := manifest.Files
+	if !slices.Equal(slices.Sorted(maps.Keys(files)), RequiredFiles()) {
+		return PackageManifest{}, fmt.Errorf("package manifest inventory mismatch")
 	}
-	if !reflect.DeepEqual(sortedKeys(files), RequiredFiles()) {
-		return nil, fmt.Errorf("package manifest inventory mismatch")
-	}
-	for _, name := range sortedKeys(files) {
+	for _, name := range slices.Sorted(maps.Keys(files)) {
 		path, err := checkedPath(root, name, false)
 		if err != nil {
-			return nil, fmt.Errorf("package integrity mismatch: %s: %w", name, err)
+			return PackageManifest{}, fmt.Errorf("package integrity mismatch: %s: %w", name, err)
 		}
 		actual, err := fileHash(path)
 		if err != nil {
-			return nil, err
+			return PackageManifest{}, err
 		}
-		expected, ok := files[name].(string)
-		if !ok || actual != expected {
-			return nil, fmt.Errorf("package integrity mismatch: %s", name)
+		if actual != files[name] {
+			return PackageManifest{}, fmt.Errorf("package integrity mismatch: %s", name)
 		}
 	}
 	selected, err := ReadVersion(root)
 	if err != nil {
-		return nil, err
+		return PackageManifest{}, err
 	}
-	if manifest["wow_build"] != selected.Full {
-		return nil, fmt.Errorf("package WoW version differs from .wow-version")
+	if manifest.WoWBuild != selected.Full {
+		return PackageManifest{}, fmt.Errorf("package WoW version differs from .wow-version")
 	}
 	return manifest, nil
 }
@@ -144,7 +145,7 @@ func Run(ctx context.Context, root string, args []string, out, errout io.Writer)
 			if err != nil {
 				return err
 			}
-			_, err = fmt.Fprintln(out, str(manifest["version"]))
+			_, err = fmt.Fprintln(out, manifest.Version)
 			return err
 		case "package":
 			if len(args) != 1 {
@@ -154,7 +155,7 @@ func Run(ctx context.Context, root string, args []string, out, errout io.Writer)
 			if err != nil {
 				return err
 			}
-			return printJSON(out, value)
+			return writePackageResult(out, value)
 		case "rockspecs":
 			return Rockspecs(root, args[1:], out, errout)
 		}
@@ -164,14 +165,6 @@ func Run(ctx context.Context, root string, args []string, out, errout io.Writer)
 		return err
 	}
 	return execute(ctx, root, selected, out, errout)
-}
-func printJSON(out io.Writer, value any) error {
-	data, err := jsonBytes(value)
-	if err != nil {
-		return err
-	}
-	_, err = out.Write(data)
-	return err
 }
 
 func sourcesFor(arguments []string) ([]string, error) {
@@ -252,7 +245,7 @@ func sourcesFor(arguments []string) ([]string, error) {
 			return nil, fmt.Errorf("source exceeds 2 MiB: %s", path)
 		}
 	}
-	return sortedKeys(sources), nil
+	return slices.Sorted(maps.Keys(sources)), nil
 }
 
 func ownedOutput(destination string) error {
@@ -271,14 +264,11 @@ func ownedOutput(destination string) error {
 	if err != nil || !info.Mode().IsRegular() {
 		return fmt.Errorf("existing output has no wow-teal ownership receipt")
 	}
-	value, err := readJSON(receipt)
+	value, err := readBuildReceipt(receipt)
 	if err != nil {
 		return err
 	}
-	files := object(value["files"])
-	if files == nil {
-		return fmt.Errorf("invalid wow-teal ownership receipt")
-	}
+	files := value.Files
 	actual := map[string]bool{}
 	entries := 0
 	err = filepath.WalkDir(destination, func(path string, entry os.DirEntry, e error) error {
@@ -364,7 +354,7 @@ func execute(ctx context.Context, root string, args selection, out, errout io.Wr
 		if err != nil {
 			return err
 		}
-		_, err = fmt.Fprintf(out, "Verified wow-teal %s / Retail %s\n", str(manifest["version"]), str(manifest["wow_build"]))
+		_, err = fmt.Fprintf(out, "Verified wow-teal %s / Retail %s\n", manifest.Version, manifest.WoWBuild)
 		return err
 	}
 	declarationCheck := args.command == "check-types"
@@ -442,7 +432,7 @@ func execute(ctx context.Context, root string, args selection, out, errout io.Wr
 	for _, source := range sources {
 		parents[filepath.Dir(source)] = true
 	}
-	include = append(include, sortedKeys(parents)...)
+	include = append(include, slices.Sorted(maps.Keys(parents))...)
 	callerSources := sources
 	if declarationCheck {
 		callerSources = nil
@@ -465,11 +455,11 @@ func execute(ctx context.Context, root string, args selection, out, errout io.Wr
 	}
 	compiler := os.Getenv("TL")
 	if compiler == "" {
-		compiler = "tl"
+		compiler = filepath.Join(inputs.packageRoot, "tools/teal/tl")
 	}
 	compiler, err = exec.LookPath(compiler)
 	if err != nil {
-		return fmt.Errorf("Teal 0.24.8 is required; install tl or set TL to its executable")
+		return fmt.Errorf("locate bundled Teal compiler: %w", err)
 	}
 	compiler, err = filepath.Abs(compiler)
 	if err != nil {
@@ -518,8 +508,11 @@ func execute(ctx context.Context, root string, args selection, out, errout io.Wr
 	if err != nil {
 		return err
 	}
-	if strings.TrimSpace(version) != manifest["teal_version"] {
-		return fmt.Errorf("unsupported Teal version: %s; expected %v", strings.TrimSpace(version), manifest["teal_version"])
+	if strings.TrimSpace(version) != manifest.TealVersion {
+		return fmt.Errorf("unsupported Teal version: %s; expected %v", strings.TrimSpace(version), manifest.TealVersion)
+	}
+	if _, err = run([]string{compiler, "run", filepath.Join(inputs.packageRoot, "tools/teal/check_capabilities.lua")}); err != nil {
+		return err
 	}
 	flags := []string{compiler, "--feat-arity", "on", "--gen-target", "5.1", "--gen-compat", "off"}
 	for _, directory := range search {
@@ -585,7 +578,7 @@ func execute(ctx context.Context, root string, args selection, out, errout io.Wr
 		if err != nil {
 			return err
 		}
-		receipt, err := jsonBytes(map[string]any{"package_version": manifest["version"], "package_manifest_sha256": inputs.manifestHash, "files": files})
+		receipt, err := receiptBytes(BuildReceipt{Files: files, PackageManifestSHA256: inputs.manifestHash, PackageVersion: manifest.Version})
 		if err != nil {
 			return err
 		}

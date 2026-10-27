@@ -9410,8 +9410,8 @@
       "OpaqueText",
       "TextLike"
     ],
-    "sha256": "e1557a66538753f327a4dbdfa731b5f28147731fc8f4840f5c54cfd5f48a2e92",
-    "total_type_names": 8704
+    "sha256": "c083c5d56c7ab16b501c19c6650b5281eaf27d241eb236c4d626309516c843cd",
+    "total_type_names": 8706
   },
   "inputs": {
     "client": {
@@ -9435,7 +9435,7 @@
       "version": "12.1.5.70575"
     },
     "client_lock_sha256": "ca77bae8f83a643106a15db1506d2502648a449d69f30940a9b89ceac1cef23b",
-    "declaration_manifest_sha256": "140d072284b2199766694675a3a88d8ba5add812a00c05a9f4dd2c651dd4c077",
+    "declaration_manifest_sha256": "3df4ed73473e1c0c240b766140199e5a75649df4bc7d6294a8e9fec95b495a56",
     "source_cohort": {
       "blizzard": {
         "commit": "15881d522c44cd106d3d8660106ec9f9d2f44167",
@@ -66918,6 +66918,46 @@
       "source_category": "native"
     },
     {
+      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
+      "kind": "function",
+      "metadata_sha256": "4d738742be52815535573fd691ede5b53e48320d513e2a38c97c569c2b3d1d2f",
+      "name": "LayeredRegion.GetDrawLayer",
+      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "source_category": "native"
+    },
+    {
+      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
+      "kind": "function",
+      "metadata_sha256": "c4a496e11edd62c3abb02e0450f5b1c49eb51fbe5e52c1c4a1cf39c9b568a926",
+      "name": "LayeredRegion.GetVertexColor",
+      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "source_category": "native"
+    },
+    {
+      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
+      "kind": "function",
+      "metadata_sha256": "f8084b7229c0cb3e23baad36b4b1acb9230a4af0c8727dcc10bfd2c8effd9f65",
+      "name": "LayeredRegion.SetDrawLayer",
+      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "source_category": "native"
+    },
+    {
+      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
+      "kind": "function",
+      "metadata_sha256": "4ea0f32cdd95f442b9ef09facd6728116754bfea51950d1bb127123cfcf1581f",
+      "name": "LayeredRegion.SetVertexColor",
+      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "source_category": "native"
+    },
+    {
+      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
+      "kind": "function",
+      "metadata_sha256": "82c7e5569e854f3e3f753d775102b2b7a5e55cdb505b1d4227960b5833b79890",
+      "name": "LayeredRegion.SetVertexColorFromBoolean",
+      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "source_category": "native"
+    },
+    {
       "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleLineAPIDocumentation.lua",
       "kind": "function",
       "metadata_sha256": "db281022b2dddd199f235941bbd709c3392273736d16a9621eb019e770f1c0e8",
@@ -69856,14 +69896,6 @@
     {
       "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
       "kind": "function",
-      "metadata_sha256": "4d738742be52815535573fd691ede5b53e48320d513e2a38c97c569c2b3d1d2f",
-      "name": "Region.GetDrawLayer",
-      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "source_category": "native"
-    },
-    {
-      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
-      "kind": "function",
       "metadata_sha256": "8bba4b9783ce76a2af600117bf3954ff351a2cf3c8418871ff2051a3dce6b7d5",
       "name": "Region.GetEffectiveScale",
       "source": "blizzard:SimpleRegionAPIDocumentation.lua",
@@ -69874,14 +69906,6 @@
       "kind": "function",
       "metadata_sha256": "2c0407eeed8562a06a9237ef4a5ffffa9454225535af7276b2111098aa37d282",
       "name": "Region.GetScale",
-      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "source_category": "native"
-    },
-    {
-      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
-      "kind": "function",
-      "metadata_sha256": "c4a496e11edd62c3abb02e0450f5b1c49eb51fbe5e52c1c4a1cf39c9b568a926",
-      "name": "Region.GetVertexColor",
       "source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "source_category": "native"
     },
@@ -69928,14 +69952,6 @@
     {
       "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
       "kind": "function",
-      "metadata_sha256": "f8084b7229c0cb3e23baad36b4b1acb9230a4af0c8727dcc10bfd2c8effd9f65",
-      "name": "Region.SetDrawLayer",
-      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "source_category": "native"
-    },
-    {
-      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
-      "kind": "function",
       "metadata_sha256": "fd56405214c4db652fb07c386c53f5b35b8ace85ea09dd8ce44fabdf72270b4a",
       "name": "Region.SetIgnoreParentAlpha",
       "source": "blizzard:SimpleRegionAPIDocumentation.lua",
@@ -69954,22 +69970,6 @@
       "kind": "function",
       "metadata_sha256": "94a7541868bee2ff8bb04786173ebc6a4d34a26ceddb55ce7494d18cfff98daa",
       "name": "Region.SetScale",
-      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "source_category": "native"
-    },
-    {
-      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
-      "kind": "function",
-      "metadata_sha256": "4ea0f32cdd95f442b9ef09facd6728116754bfea51950d1bb127123cfcf1581f",
-      "name": "Region.SetVertexColor",
-      "source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "source_category": "native"
-    },
-    {
-      "client_path": "Interface/AddOns/Blizzard_APIDocumentationGenerated/SimpleRegionAPIDocumentation.lua",
-      "kind": "function",
-      "metadata_sha256": "82c7e5569e854f3e3f753d775102b2b7a5e55cdb505b1d4227960b5833b79890",
-      "name": "Region.SetVertexColorFromBoolean",
       "source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "source_category": "native"
     },
@@ -99022,9 +99022,79 @@
       "symbol": "Frame.SetAttribute/SetAttributeNoHandler"
     },
     {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.contains"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.count"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.freeze"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.getcountinfo"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.indexof"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.isempty"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.isfrozen"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.keys"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.removeunordered"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.removevalue"
+    },
+    {
+      "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+      "rule": "preserve documented container inputs and input/output type relations",
+      "symbol": "table.values"
+    },
+    {
       "evidence": "native LuaCurveEvaluatedResult documentation distinguishes supplied-curve result carriers",
       "rule": "numeric curves retain a number-like result; general base/color curves retain the opaque native variant",
       "symbol": "UnitHealthPercent/UnitPowerPercent/DurationObject.Evaluate*"
+    },
+    {
+      "evidence": "pinned wowless/data/products/wow/docs.yaml uiobject_method_reassignments.Region and uiobjects.yaml LayeredRegion/Frame/ModelScene",
+      "rule": "route five layer/color methods from the SimpleRegionAPI documentation group to their distinct receiver; Frame retains common Region",
+      "symbol": "LayeredRegion"
+    },
+    {
+      "evidence": "questie:Data/Wiki.lua:3602 and Blizzard_Menu/Compositor.lua:191",
+      "rule": "literal StatusBar construction retains its native subtype; other frame names return the common Frame surface, and template composition is not inferred",
+      "symbol": "CreateFrame"
+    },
+    {
+      "evidence": "recorded public RadialProgress native fixture",
+      "rule": "literal RadialProgress construction retains the native receiver subtype",
+      "symbol": "AnimationGroup.CreateAnimation"
     },
     {
       "evidence": [
@@ -99454,17 +99524,12 @@
     },
     {
       "expression": "fun(self, name: string, ...: string): table|AceAddon",
-      "representation": "{any: any}",
+      "representation": "{unknown: unknown}",
       "rule": "common table surface of source union"
     },
     {
       "expression": "table|AceAddon",
-      "representation": "{any: any}",
-      "rule": "common table surface of source union"
-    },
-    {
-      "expression": "table|function|AceConfig.OptionsTable",
-      "representation": "{any: any}",
+      "representation": "{unknown: unknown}",
       "rule": "common table surface of source union"
     },
     {
@@ -104516,6 +104581,10 @@
       "symbol": "MenuUtil.CreateEnumRadioMenu"
     },
     {
+      "rule": "function-name lookup has opaque results; only a supplied callback establishes its result relation",
+      "symbol": "securecall"
+    },
+    {
       "rule": "inherit canonical native ancestor contract",
       "symbol": "Animation.GetParent"
     },
@@ -104786,10 +104855,6 @@
     {
       "rule": "retain documented native call shorthands from Questie and Blizzard FrameXML call sites",
       "symbol": "ScriptRegionResizing.SetPoint"
-    },
-    {
-      "rule": "return common Frame; template composition requires reviewed assertion",
-      "symbol": "CreateFrame"
     },
     {
       "rule": "single optional arbitrary callback argument, not a variadic type pack",
@@ -112082,7 +112147,7 @@
     "representation-policy": "Reviewed FrameXML assertions, aliases, opaque identities or compiler representation helpers; not automatically inferred client types."
   },
   "statistics": {
-    "catalogue_type_exports": 5562,
+    "catalogue_type_exports": 5564,
     "client_files": 4029,
     "native_events": 1784,
     "native_functions": 6440,
@@ -112100,7 +112165,7 @@
     "third_party_symbol_declarations": 459,
     "third_party_type_exports": 110,
     "type_origins": {
-      "annotation-supplement": 1731,
+      "annotation-supplement": 1733,
       "native": 3595,
       "representation-policy": 236
     }
@@ -119269,6 +119334,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callable_CreateFrame",
+      "kind": "record",
+      "name": "Callable_CreateFrame",
+      "native_contract_bases": [],
+      "source": "reviewed native frame factory",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Callable_GetAchievementInfo",
       "kind": "record",
       "name": "Callable_GetAchievementInfo",
@@ -119379,6 +119454,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callable_securecall",
+      "kind": "record",
+      "name": "Callable_securecall",
+      "native_contract_bases": [],
+      "source": "questie:Data/Wiki.lua",
+      "source_category": "annotation-supplement"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "CallbackHandler_1_0",
       "kind": "interface",
       "name": "CallbackHandler-1.0",
@@ -119409,9 +119494,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_01413e4a5d73",
+      "export": "Callback_002b93f3b4d5",
       "kind": "callback",
-      "name": "Callback_01413e4a5d73",
+      "name": "Callback_002b93f3b4d5",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119419,9 +119504,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_046096dae265",
+      "export": "Callback_01413e4a5d73",
       "kind": "callback",
-      "name": "Callback_046096dae265",
+      "name": "Callback_01413e4a5d73",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119449,26 +119534,6 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_0d24bde78c61",
-      "kind": "callback",
-      "name": "Callback_0d24bde78c61",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_144052c7af00",
-      "kind": "callback",
-      "name": "Callback_144052c7af00",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
       "export": "Callback_148d90de31f3",
       "kind": "callback",
       "name": "Callback_148d90de31f3",
@@ -119489,6 +119554,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callback_1618319ec62a",
+      "kind": "callback",
+      "name": "Callback_1618319ec62a",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Callback_18e17c792cdd",
       "kind": "callback",
       "name": "Callback_18e17c792cdd",
@@ -119499,9 +119574,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_1f24faab15fc",
+      "export": "Callback_1bafafac8988",
       "kind": "callback",
-      "name": "Callback_1f24faab15fc",
+      "name": "Callback_1bafafac8988",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119509,9 +119584,19 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_220e4a3fa810",
+      "export": "Callback_1bf5d38b4c3b",
       "kind": "callback",
-      "name": "Callback_220e4a3fa810",
+      "name": "Callback_1bf5d38b4c3b",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
+      "export": "Callback_1f24faab15fc",
+      "kind": "callback",
+      "name": "Callback_1f24faab15fc",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119539,6 +119624,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callback_27fceb362db7",
+      "kind": "callback",
+      "name": "Callback_27fceb362db7",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Callback_284ef80ec2bc",
       "kind": "callback",
       "name": "Callback_284ef80ec2bc",
@@ -119559,16 +119654,6 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_293d31e0fcd5",
-      "kind": "callback",
-      "name": "Callback_293d31e0fcd5",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
       "export": "Callback_2b2d9a7f4d1a",
       "kind": "callback",
       "name": "Callback_2b2d9a7f4d1a",
@@ -119579,9 +119664,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_2b4bff2ad2a6",
+      "export": "Callback_2b9e3773470a",
       "kind": "callback",
-      "name": "Callback_2b4bff2ad2a6",
+      "name": "Callback_2b9e3773470a",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119599,26 +119684,6 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_31f63beac5c5",
-      "kind": "callback",
-      "name": "Callback_31f63beac5c5",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_322b8fcde795",
-      "kind": "callback",
-      "name": "Callback_322b8fcde795",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
       "export": "Callback_373ba55346b1",
       "kind": "callback",
       "name": "Callback_373ba55346b1",
@@ -119629,29 +119694,19 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_3917e9068121",
-      "kind": "callback",
-      "name": "Callback_3917e9068121",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_3c005cb9052e",
-      "kind": "callback",
-      "name": "Callback_3c005cb9052e",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
       "export": "Callback_3e59a5f74001",
       "kind": "callback",
       "name": "Callback_3e59a5f74001",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
+      "export": "Callback_423bae1d5dde",
+      "kind": "callback",
+      "name": "Callback_423bae1d5dde",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119689,6 +119744,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callback_49bbf91b6c33",
+      "kind": "callback",
+      "name": "Callback_49bbf91b6c33",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Callback_4af858cf56d4",
       "kind": "callback",
       "name": "Callback_4af858cf56d4",
@@ -119719,16 +119784,6 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_55043f4f4e7b",
-      "kind": "callback",
-      "name": "Callback_55043f4f4e7b",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
       "export": "Callback_5799dfecc20d",
       "kind": "callback",
       "name": "Callback_5799dfecc20d",
@@ -119739,19 +119794,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_5920e7182d42",
+      "export": "Callback_5aa27264011e",
       "kind": "callback",
-      "name": "Callback_5920e7182d42",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_5b97b4ced89f",
-      "kind": "callback",
-      "name": "Callback_5b97b4ced89f",
+      "name": "Callback_5aa27264011e",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119782,16 +119827,6 @@
       "export": "Callback_60307e2f4821",
       "kind": "callback",
       "name": "Callback_60307e2f4821",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_61ca26dc46f9",
-      "kind": "callback",
-      "name": "Callback_61ca26dc46f9",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119839,16 +119874,6 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_71b82e9336d7",
-      "kind": "callback",
-      "name": "Callback_71b82e9336d7",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
       "export": "Callback_756a10786a51",
       "kind": "callback",
       "name": "Callback_756a10786a51",
@@ -119872,6 +119897,16 @@
       "export": "Callback_7788fec2c014",
       "kind": "callback",
       "name": "Callback_7788fec2c014",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
+      "export": "Callback_78161532ce55",
+      "kind": "callback",
+      "name": "Callback_78161532ce55",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119939,6 +119974,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callback_8a559613c27f",
+      "kind": "callback",
+      "name": "Callback_8a559613c27f",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Callback_8c7a74399e4b",
       "kind": "callback",
       "name": "Callback_8c7a74399e4b",
@@ -119952,16 +119997,6 @@
       "export": "Callback_8f2a72c76334",
       "kind": "callback",
       "name": "Callback_8f2a72c76334",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_8fef7d81680a",
-      "kind": "callback",
-      "name": "Callback_8fef7d81680a",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -119989,9 +120024,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_9b0b308d94f7",
+      "export": "Callback_99f8f84f0549",
       "kind": "callback",
-      "name": "Callback_9b0b308d94f7",
+      "name": "Callback_99f8f84f0549",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120009,6 +120044,26 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callback_a24eb8d23ee5",
+      "kind": "callback",
+      "name": "Callback_a24eb8d23ee5",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
+      "export": "Callback_a2b263498345",
+      "kind": "callback",
+      "name": "Callback_a2b263498345",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Callback_a3063ef31ab4",
       "kind": "callback",
       "name": "Callback_a3063ef31ab4",
@@ -120019,9 +120074,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_a66c31075b7b",
+      "export": "Callback_a5a7c0e58978",
       "kind": "callback",
-      "name": "Callback_a66c31075b7b",
+      "name": "Callback_a5a7c0e58978",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120079,9 +120134,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_bcb28754c1a2",
+      "export": "Callback_b40b7f5ec6ca",
       "kind": "callback",
-      "name": "Callback_bcb28754c1a2",
+      "name": "Callback_b40b7f5ec6ca",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120089,9 +120144,19 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_bdc1b5e10f81",
+      "export": "Callback_bb19ad1a5e48",
       "kind": "callback",
-      "name": "Callback_bdc1b5e10f81",
+      "name": "Callback_bb19ad1a5e48",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
+      "export": "Callback_bcb28754c1a2",
+      "kind": "callback",
+      "name": "Callback_bcb28754c1a2",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120119,9 +120184,19 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_c0e69240ad2b",
+      "export": "Callback_c44077c9ed13",
       "kind": "callback",
-      "name": "Callback_c0e69240ad2b",
+      "name": "Callback_c44077c9ed13",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
+      "export": "Callback_c86d5b4121b0",
+      "kind": "callback",
+      "name": "Callback_c86d5b4121b0",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120159,9 +120234,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_ce3b9ac116e8",
+      "export": "Callback_cf87fb3060b1",
       "kind": "callback",
-      "name": "Callback_ce3b9ac116e8",
+      "name": "Callback_cf87fb3060b1",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120182,26 +120257,6 @@
       "export": "Callback_d2bebbbcf9c0",
       "kind": "callback",
       "name": "Callback_d2bebbbcf9c0",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_d799ed34c008",
-      "kind": "callback",
-      "name": "Callback_d799ed34c008",
-      "native_contract_bases": [],
-      "source": "named LuaLS callback",
-      "source_category": "representation-policy"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "Callback_d82d71a5fd2e",
-      "kind": "callback",
-      "name": "Callback_d82d71a5fd2e",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120309,6 +120364,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Callback_f19159e08ff2",
+      "kind": "callback",
+      "name": "Callback_f19159e08ff2",
+      "native_contract_bases": [],
+      "source": "named LuaLS callback",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Callback_f4d6b3f85a43",
       "kind": "callback",
       "name": "Callback_f4d6b3f85a43",
@@ -120319,9 +120384,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_fa07745fedba",
+      "export": "Callback_f551087c4418",
       "kind": "callback",
-      "name": "Callback_fa07745fedba",
+      "name": "Callback_f551087c4418",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -120329,9 +120394,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Callback_fa550466c43c",
+      "export": "Callback_fa07745fedba",
       "kind": "callback",
-      "name": "Callback_fa550466c43c",
+      "name": "Callback_fa07745fedba",
       "native_contract_bases": [],
       "source": "named LuaLS callback",
       "source_category": "representation-policy"
@@ -153613,6 +153678,7 @@
         "AnimatableObject",
         "FontString",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -153883,7 +153949,7 @@
     },
     {
       "bases": [
-        "Region",
+        "LayeredRegion",
         "AnimatableObject"
       ],
       "direct_native_contracts": 57,
@@ -153893,6 +153959,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -157238,6 +157305,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Line",
         "Object",
         "Region",
@@ -157257,6 +157325,24 @@
       "native_contract_bases": [],
       "source": "blizzard:ChatConstantsDocumentation.lua",
       "source_category": "native"
+    },
+    {
+      "bases": [
+        "Region"
+      ],
+      "direct_native_contracts": 5,
+      "export": "LayeredRegion",
+      "kind": "interface",
+      "name": "LayeredRegion",
+      "native_contract_bases": [
+        "FrameScriptObject",
+        "Object",
+        "Region",
+        "ScriptRegion",
+        "ScriptRegionResizing"
+      ],
+      "source": "questie:Widget/Base/Region.lua",
+      "source_category": "annotation-supplement"
     },
     {
       "bases": [],
@@ -157400,6 +157486,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -157782,6 +157869,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -157921,6 +158009,16 @@
       "export": "Literal_18f964a7429c",
       "kind": "enum",
       "name": "Literal_18f964a7429c",
+      "native_contract_bases": [],
+      "source": "interned LuaLS string literals",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
+      "export": "Literal_1969a2b6f35c",
+      "kind": "enum",
+      "name": "Literal_1969a2b6f35c",
       "native_contract_bases": [],
       "source": "interned LuaLS string literals",
       "source_category": "representation-policy"
@@ -158408,6 +158506,16 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
+      "export": "Literal_ca705345ef52",
+      "kind": "enum",
+      "name": "Literal_ca705345ef52",
+      "native_contract_bases": [],
+      "source": "interned LuaLS string literals",
+      "source_category": "representation-policy"
+    },
+    {
+      "bases": [],
+      "direct_native_contracts": 0,
       "export": "Literal_ce140696dff0",
       "kind": "enum",
       "name": "Literal_ce140696dff0",
@@ -158860,6 +158968,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -159225,6 +159334,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -162720,7 +162830,7 @@
         "ScriptRegion",
         "ScriptRegionResizing"
       ],
-      "direct_native_contracts": 16,
+      "direct_native_contracts": 11,
       "export": "Region",
       "kind": "interface",
       "name": "Region",
@@ -164088,9 +164198,9 @@
     {
       "bases": [],
       "direct_native_contracts": 0,
-      "export": "Shape_ca0c4b227666",
+      "export": "Shape_d7ca860ff637",
       "kind": "converted_record",
-      "name": "Shape_ca0c4b227666",
+      "name": "Shape_d7ca860ff637",
       "native_contract_bases": [],
       "source": "interned LuaLS record",
       "source_category": "representation-policy"
@@ -165531,6 +165641,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -165781,6 +165892,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -165842,7 +165954,7 @@
     },
     {
       "bases": [
-        "Region",
+        "LayeredRegion",
         "AnimatableObject"
       ],
       "direct_native_contracts": 52,
@@ -165852,6 +165964,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -168558,7 +168671,7 @@
     },
     {
       "bases": [
-        "Region"
+        "LayeredRegion"
       ],
       "direct_native_contracts": 4,
       "export": "VectorGraphics",
@@ -168566,6 +168679,7 @@
       "name": "VectorGraphics",
       "native_contract_bases": [
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -169724,6 +169838,7 @@
         "AnimatableObject",
         "FontString",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -169824,6 +169939,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Line",
         "Object",
         "Region",
@@ -169865,6 +169981,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -170264,6 +170381,7 @@
       "native_contract_bases": [
         "AnimatableObject",
         "FrameScriptObject",
+        "LayeredRegion",
         "Object",
         "Region",
         "ScriptRegion",
@@ -170398,16 +170516,6 @@
       ],
       "source": "questie:Widget/Frame/UnitPositionFrame.lua",
       "source_category": "annotation-supplement"
-    },
-    {
-      "bases": [],
-      "direct_native_contracts": 0,
-      "export": "unknown",
-      "kind": "alias",
-      "name": "unknown",
-      "native_contract_bases": [],
-      "source": "LuaLS unknown: opaque until explicitly narrowed",
-      "source_category": "representation-policy"
     },
     {
       "bases": [],

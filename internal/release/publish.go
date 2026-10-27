@@ -2,23 +2,40 @@ package release
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
+	"maps"
 	"os"
 	"path/filepath"
-	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
 	"syscall"
+	"wow-teal-types/internal/consumer"
+	"wow-teal-types/internal/sourcelock"
 )
 
 type fileIdentity struct {
 	SHA256 string `json:"sha256"`
 	Mode   uint32 `json:"mode"`
 }
+
+func (id *fileIdentity) UnmarshalJSON(data []byte) error {
+	value, err := decodeJSON[struct {
+		SHA256 string  `json:"sha256"`
+		Mode   *uint32 `json:"mode"`
+	}](data)
+	if err != nil {
+		return err
+	}
+	if value.Mode == nil || *value.Mode > 0777 || !sourcelock.IsSHA256(value.SHA256) {
+		return fmt.Errorf("invalid publication file identity")
+	}
+	*id = fileIdentity{SHA256: value.SHA256, Mode: *value.Mode}
+	return nil
+}
+
 type inputState map[string]fileIdentity
 type publicationRow struct {
 	Path   string        `json:"path"`
@@ -32,10 +49,16 @@ type journal struct {
 	Files  []publicationRow `json:"files"`
 }
 
-var ownedOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "evidence/generated/wow_manifest.json", "evidence/generated/wow_tsm_crosscheck.json", "evidence/generated/wow_client_coverage.json", "evidence/generated/wow_native_metadata.json", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json", "provenance.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json"}
+var ownedOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "evidence/generated/wow_manifest.json", "evidence/generated/wow_tsm_crosscheck.json", "evidence/generated/wow_client_coverage.json", "evidence/generated/wow_native_metadata.json", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json", "provenance.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json"}
 
 const equivalenceReceipt = "scripts/wow_api/source_equivalence.json"
 
+func sameIdentity(a, b *fileIdentity) bool {
+	return a == nil && b == nil || a != nil && b != nil && *a == *b
+}
+func validFileIdentity(id *fileIdentity) bool {
+	return id != nil && sourcelock.IsSHA256(id.SHA256) && id.Mode <= 0777
+}
 func identityOf(path string) (*fileIdentity, error) {
 	if !exists(path) {
 		return nil, nil
@@ -122,7 +145,7 @@ func requireUnchanged(root string, expected inputState) error {
 	if e != nil {
 		return e
 	}
-	if !reflect.DeepEqual(actual, expected) {
+	if !maps.Equal(actual, expected) {
 		var changed []string
 		names := map[string]bool{}
 		for n := range actual {
@@ -160,11 +183,15 @@ func updateLock(root string) (func(), error) {
 	return func() { _ = syscall.Flock(int(f.Fd()), syscall.LOCK_UN); _ = f.Close() }, nil
 }
 func outputNames(workspace string) ([]string, error) {
-	m, e := readObject(filepath.Join(workspace, "package.json"))
+	data, e := readFile(filepath.Join(workspace, "package.json"), maxFile)
 	if e != nil {
 		return nil, e
 	}
-	v := s(m["version"])
+	m, e := consumer.ParsePackageManifest(data)
+	if e != nil {
+		return nil, e
+	}
+	v := m.Version
 	if !regexp.MustCompile(`^\d+\.\d+\.\d+$`).MatchString(v) {
 		return nil, fmt.Errorf("invalid checked package version")
 	}
@@ -196,10 +223,10 @@ func rollback(root, transaction string, rows []publicationRow) error {
 			failures = append(failures, e)
 			continue
 		}
-		if reflect.DeepEqual(current, row.Before) {
+		if sameIdentity(current, row.Before) {
 			continue
 		}
-		if !reflect.DeepEqual(current, row.After) {
+		if !sameIdentity(current, row.After) {
 			failures = append(failures, fmt.Errorf("preserved external edit: %s", row.Path))
 			continue
 		}
@@ -263,7 +290,7 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 		if before != nil {
 			after.Mode = before.Mode
 		}
-		if reflect.DeepEqual(before, after) {
+		if sameIdentity(before, after) {
 			continue
 		}
 		rows = append(rows, publicationRow{name, before, after, strconv.Itoa(len(rows))})
@@ -307,14 +334,14 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 	if exists(marker) {
 		return nil, fmt.Errorf("another publication journal exists")
 	}
-	if e = writeObject(marker, M{"journal": jp, "sha256": sha(body)}); e != nil {
+	if e = writeObject(marker, publicationPointer{Journal: jp, SHA256: sha(body)}); e != nil {
 		return nil, e
 	}
 	applied := []publicationRow{}
 	defer func() {
 		if err != nil {
 			failure := rollback(root, transaction, applied)
-			_ = writeObject(filepath.Join(transaction, "result.json"), M{"status": "rolled-back", "error": err.Error(), "rollback_error": fmt.Sprint(failure)})
+			_ = writeObject(filepath.Join(transaction, "result.json"), publicationOutcome{Status: "rolled-back", Error: err.Error(), RollbackError: fmt.Sprint(failure)})
 			if failure == nil {
 				_ = os.Remove(marker)
 			} else {
@@ -337,7 +364,7 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 		if e != nil {
 			return nil, e
 		}
-		if !reflect.DeepEqual(current, r.Before) {
+		if !sameIdentity(current, r.Before) {
 			return nil, fmt.Errorf("publication destination changed: %s", r.Path)
 		}
 		if e = os.MkdirAll(filepath.Dir(dst), 0755); e != nil {
@@ -359,7 +386,7 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 	if e = requireUnchanged(root, after); e != nil {
 		return nil, e
 	}
-	if e = writeObject(filepath.Join(transaction, "result.json"), M{"status": "complete"}); e != nil {
+	if e = writeObject(filepath.Join(transaction, "result.json"), publicationOutcome{Status: "complete"}); e != nil {
 		return nil, e
 	}
 	if e = os.Remove(marker); e != nil {
@@ -367,42 +394,42 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 	}
 	return changed, nil
 }
-func Recover(root string) (M, error) {
+func Recover(root string) (PublicationResult, error) {
 	unlock, e := updateLock(root)
 	if e != nil {
-		return nil, e
+		return PublicationResult{}, e
 	}
 	defer unlock()
 	marker := filepath.Join(root, "build/wow-update/pending.json")
 	if !exists(marker) {
-		return M{"status": "no-pending-publication"}, nil
+		return PublicationResult{Status: "no-pending-publication"}, nil
 	}
-	pointer, e := readObject(marker)
+	pointer, e := readJSON[publicationPointer](marker)
 	if e != nil {
-		return nil, e
+		return PublicationResult{}, e
 	}
-	path := s(pointer["journal"])
+	path := pointer.Journal
 	relative, e := filepath.Rel(root, path)
 	if e != nil || !strings.HasPrefix(filepath.ToSlash(relative), "build/wow-update/") {
-		return nil, fmt.Errorf("publication journal outside owned directory")
+		return PublicationResult{}, fmt.Errorf("publication journal outside owned directory")
 	}
 	path, e = safeJoin(root, filepath.ToSlash(relative))
 	if e != nil {
-		return nil, e
+		return PublicationResult{}, e
 	}
 	body, e := readFile(path, maxFile)
 	if e != nil {
-		return nil, e
+		return PublicationResult{}, e
 	}
-	if sha(body) != s(pointer["sha256"]) {
-		return nil, fmt.Errorf("publication journal identity mismatch")
+	if sha(body) != pointer.SHA256 {
+		return PublicationResult{}, fmt.Errorf("publication journal identity mismatch")
 	}
-	var j journal
-	if e = json.Unmarshal(body, &j); e != nil {
-		return nil, e
+	j, e := decodeJSON[journal](body)
+	if e != nil {
+		return PublicationResult{}, e
 	}
 	if j.Schema != 1 || j.Root != root || len(j.Files) < 1 || len(j.Files) > len(ownedOutputs)+2 {
-		return nil, fmt.Errorf("invalid publication journal inventory")
+		return PublicationResult{}, fmt.Errorf("invalid publication journal inventory")
 	}
 	allowed := map[string]bool{equivalenceReceipt: true}
 	for _, n := range ownedOutputs {
@@ -412,26 +439,29 @@ func Recover(root string) (M, error) {
 	recipe := regexp.MustCompile(`^rockspecs/wow-tl-type-\d+\.\d+\.\d+-1\.rockspec\.in$`)
 	for k, row := range j.Files {
 		if seen[row.Path] || row.Backup != strconv.Itoa(k) || (!allowed[row.Path] && !recipe.MatchString(row.Path)) || row.After == nil {
-			return nil, fmt.Errorf("unowned or duplicate publication journal path")
+			return PublicationResult{}, fmt.Errorf("unowned or duplicate publication journal path")
+		}
+		if !validFileIdentity(row.After) || (row.Before != nil && !validFileIdentity(row.Before)) {
+			return PublicationResult{}, fmt.Errorf("invalid publication file identity")
 		}
 		seen[row.Path] = true
 		dst, e := safeJoin(root, row.Path)
 		if e != nil {
-			return nil, e
+			return PublicationResult{}, e
 		}
 		current, e := identityOf(dst)
 		if e != nil {
-			return nil, e
+			return PublicationResult{}, e
 		}
-		if !reflect.DeepEqual(current, row.Before) && !reflect.DeepEqual(current, row.After) {
-			return nil, fmt.Errorf("recovery preserved external edit: %s", row.Path)
+		if !sameIdentity(current, row.Before) && !sameIdentity(current, row.After) {
+			return PublicationResult{}, fmt.Errorf("recovery preserved external edit: %s", row.Path)
 		}
 	}
 	if e = rollback(root, filepath.Dir(path), j.Files); e != nil {
-		return nil, e
+		return PublicationResult{}, e
 	}
 	if e = os.Remove(marker); e != nil {
-		return nil, e
+		return PublicationResult{}, e
 	}
-	return M{"status": "restored-prior-publication", "files": len(j.Files)}, nil
+	return PublicationResult{Status: "restored-prior-publication", Files: len(j.Files)}, nil
 }

@@ -6,6 +6,9 @@ usage, [UPDATING](../UPDATING.md) describes release operations, and the
 Maintainer commands and their source inputs require the source checkout; the
 consumer archive contains only consumer commands and tests.
 
+The [erased-type removal record](no-any-types.md) owns the current migration
+requirements and verification gates. That migration is not yet complete.
+
 ## Capability ownership
 
 | Capability | Owner | Contract |
@@ -14,7 +17,9 @@ consumer archive contains only consumer commands and tests.
 | Interpret evidence and project declarations | `internal/wowapi` | Preserve raw evidence, finalize a typed declaration graph, render once, and audit the same emitted bytes. |
 | Check and build an addon | `internal/consumer` | Capture bounded inputs, verify copied package bytes, run all compiler phases against that capture, then publish checked Lua. |
 | Extract the selected client | `tools/cdn` | Independent Go module; verified acquisition feeds the release boundary. |
-| Enforce secret operations | `tools/check_secrets.lua` | Teal 0.24.8 typed checks and canonical native declaration identity. |
+| Validate locked source identities | `internal/sourcelock` | Concrete transport schemas and path validation shared by acquisition and interpretation. |
+| Enforce opaque type operations | `tools/teal` | Pinned compiler extension, reproducible patch and versioned report capabilities. |
+| Enforce secret operations | `tools/check_secrets.lua` | Paired compiler reports and canonical native call permissions from the finalized projection. |
 | Reject native runtime imports | `tools/check_runtime_imports.lua` | Inspect generated Lua before publication. |
 
 CLI packages translate arguments and pass explicit dependencies. Release
@@ -27,6 +32,8 @@ Standalone metadata, catalogue, coverage and template-refresh writers are remove
 
 A consumer invocation owns a private directory until completion. It captures the
 package manifest and verifies each copied package file against that manifest.
+The capture includes the bundled compiler runtime and generated native call
+policy. A capability check precedes declaration or addon checking.
 Selected sources and admitted `.tl`/`.lua` dependencies share one mirrored physical
 namespace, preserving identity for overlapping include roots. Teal retains control
 of module suffix and include-root precedence. Native declarations precede caller
@@ -62,6 +69,10 @@ command. Its journal and fingerprint gates remain distinct from consumer/probe
 directory replacement. None of these operations claims power-loss atomicity.
 
 ## Declaration generation
+
+The closed `internal/wowapi/literal` syntax tree retains raw evidence, including
+unknown fields and exact number kinds. It carries no arbitrary Go payload.
+Concrete interpreted models own domain decisions; raw sidecars remain evidence.
 
 Raw source records retain metadata that Teal cannot express. Interpretation builds
 a mutable catalogue, then finalization resolves graph closure into concrete

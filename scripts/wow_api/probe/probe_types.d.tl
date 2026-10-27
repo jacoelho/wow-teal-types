@@ -1,3 +1,4 @@
+local type W = require("wow")
 local record Types
    record Family
       name: string
@@ -113,13 +114,58 @@ local record Types
       bindingTextSamples: {BindingTextSample}
       bindingExperimentChecks: {BindingDiagnostic}
    end
+   record Packed
+      count: integer
+      values: {unknown}
+      binding: W.DurationTextBindingObject
+      duration: W.DurationObject
+      clock: W.LuaDurationClockObject
+      font: W.FontString
+      fontObject: W.Font
+      curve: W.ColorCurveObject
+      color: W.colorRGBA
+      currency: W.CurrencyParseResult
+      numbers: {number}
+   end
+   type Operation = function(): (Packed, string)
+   type Scalar = string | number | boolean
+   record PublicColor
+      r: number
+      g: number
+      b: number
+      a: number
+   end
+   record PublicCurrency
+      amount: number
+      currencyCode: string
+   end
+   record CheckedResult
+      count: integer
+      values: {Scalar}
+      binding: W.DurationTextBindingObject
+      duration: W.DurationObject
+      clock: W.LuaDurationClockObject
+      font: W.FontString
+      fontObject: W.Font
+      curve: W.ColorCurveObject
+      color: PublicColor
+      currency: PublicCurrency
+      numbers: {number}
+   end
+   type Oracle = function(CheckedResult): boolean
    record InvocationHost
-      field: function(any, string): (any, string)
-      resolve: function(string, ? string): (any, string)
-      create: function(any, any...): (any, string)
-      construct: function(string, {string: any}, {string: string}): (any, string)
-      uiObject: function(string): (any, string)
-      observeHierarchy: function(any, string, ? string): {Observation}
+      binding: function(): (W.DurationTextBindingObject, string)
+      clock: function(): (W.LuaDurationManualClock, string)
+      locale: function(): (W.LuaLocaleContext, string)
+      signals: function(): (W.TimedSignalMap, string)
+      radial: function(): (W.RadialProgress, string)
+      vector: function(): (W.VectorGraphics, string)
+      font: function(): (W.FontString, string)
+      duration: function(): (W.DurationObject, string)
+      formatter: function(): (W.SecondsFormatter, string)
+      curve: function(): (W.ColorCurveObject, string)
+      fontObject: function(): (W.Font, string)
+      observeHierarchy: function(string): {Observation}
    end
    record Namespace
       Plan: Plan

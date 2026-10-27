@@ -7,306 +7,49 @@ import (
 	"strings"
 )
 
-func evMustFact(m M, e error) M {
-	if e != nil {
-		factFail("%s", e)
-	}
-	return m
-}
-func compareFunction(native, stub M, predicates M, widget bool, facts *typeFacts, absent *bool) (differences []any, err error) {
-	defer func() {
-		if p := recover(); p != nil {
-			err = evError(p)
-		}
-	}()
-	differences = []any{}
-	difference := func(kind string, expected, actual any, position int) {
-		m := M{"kind": kind, "native": expected, "tsm": actual}
-		if position > 0 {
-			m["position"] = position
-		}
-		differences = append(differences, m)
-	}
-	expand := func(raw any) []any {
-		r := []any{}
-		for _, v := range asList(raw) {
-			m := asMap(v)
-			if m["Type"] == "uiRect" {
-				for range 4 {
-					r = append(r, evMerge(m, M{"Type": "number", "Mixin": "number"}))
-				}
-			} else {
-				r = append(r, m)
-			}
-		}
-		return r
-	}
-	arguments, returns := expand(native["Arguments"]), expand(native["Returns"])
-	generics := evStrings(stub["generics"])
-	carrier := func(value, side string) string {
-		if facts == nil {
-			return value
-		}
-		g := []string{}
-		if side == "tsm" {
-			g = generics
-		}
-		result := facts.fact(value, side, g)
-		if s, ok := result["carrier_type"].(string); ok {
-			return s
-		}
-		return value
-	}
-	positionExpression := func(expression string, variadic, nilable bool) string {
-		if facts != nil && variadic && !truth(facts.fact(expression, "tsm", generics)["variadic"]) {
-			if nilable {
-				expression = "(" + expression + ")|nil"
-			}
-			return "(" + expression + ")..."
-		}
-		return expression
-	}
-	positionNilable := func(expression string, fallback bool) bool {
-		if facts == nil {
-			return fallback
-		}
-		fact := facts.fact(expression, "tsm", generics)
-		n := childNode(fact["tree"])
-		if kindOf(n) == "variadic" {
-			return nullableFact(childNode(n[1]))
-		}
-		if v, ok := fact["nilable"].(bool); ok {
-			return v
-		}
-		return fallback
-	}
-	structural := func(side string, position int, nativeExpression, tsmExpression string) {
-		if facts == nil {
-			return
-		}
-		expected := facts.fact(nativeExpression, "native", nil)
-		actual := facts.fact(tsmExpression, "tsm", generics)
-		if expected["unsupported"] != nil || actual["unsupported"] != nil {
-			return
-		}
-		features := evSortedUnique(append(evStrings(expected["features"]), evStrings(actual["features"])...))
-		if len(features) == 0 {
-			return
-		}
-		if !evEqual(expected["tree"], actual["tree"]) || !evEqual(evGet(expected, "binders", []any{}), evGet(actual, "binders", []any{})) {
-			differences = append(differences, M{"kind": side + "-structural-contract", "position": position, "native": expected, "tsm": actual, "features": evList(features)})
-		}
-	}
-	stubArgs := asList(stub["arguments"])
-	stubReturns := asList(stub["returns"])
-	if len(arguments) != len(stubArgs) {
-		difference("argument-count", len(arguments), len(stubArgs), 0)
-	}
-	annotated := M{}
-	for _, v := range asList(stub["parameters"]) {
-		m := asMap(v)
-		annotated[asString(m["name"])] = m
-	}
-	for i, v := range arguments {
-		if i >= len(stubArgs) {
-			break
-		}
-		value := asMap(v)
-		name := asString(stubArgs[i])
-		actual := asMap(annotated[name])
-		if actual == nil {
-			difference("argument-annotation-missing", value["Type"], name, i+1)
-			continue
-		}
-		expectedFact := evMustFact(nativeTypeFact(value, false))
-		actualFact := evMustFact(simpleTypeFact(asString(actual["type"])))
-		expectedExpression := positionExpression(asString(expectedFact["type"]), truth(value["StrideIndex"]), truth(value["Nilable"]))
-		actualExpression := positionExpression(asString(actual["type"]), strings.HasPrefix(name, "..."), false)
-		structural("argument", i+1, expectedExpression, actualExpression)
-		actualCarrierExpression := actualExpression
-		if facts == nil {
-			actualCarrierExpression = asString(actualFact["type"])
-		}
-		if carrier(expectedExpression, "native") != carrier(actualCarrierExpression, "tsm") {
-			difference("argument-type", expectedFact["type"], actualFact["type"], i+1)
-		}
-		_, hasDefault := value["Default"]
-		optional := truth(value["Nilable"]) || hasDefault
-		actualNilable := positionNilable(actualExpression, truth(actualFact["nilable"]))
-		if optional != (truth(actual["optional"]) || actualNilable) {
-			difference("argument-optional", optional, truth(actual["optional"]) || actualNilable, i+1)
-		}
-	}
-	if len(returns) != len(stubReturns) {
-		difference("return-annotation-count", len(returns), len(stubReturns), 0)
-	}
-	expectedWhen := []string{}
-	for key, value := range native {
-		if truth(value) && (predicates[key] == "Secret" || strings.HasPrefix(key, "SecretWhen") || strings.HasPrefix(key, "SecretIn") || strings.HasPrefix(key, "SecretOn")) {
-			expectedWhen = append(expectedWhen, key)
-		}
-	}
-	sort.Strings(expectedWhen)
-	functionSecret := len(expectedWhen) > 0 || truth(native["SecretReturns"])
-	for i := 0; i < min(len(returns), len(stubReturns)); i++ {
-		value, actual := asMap(returns[i]), asMap(stubReturns[i])
-		absence := truth(native["MayReturnNothing"])
-		if absent != nil {
-			absence = *absent
-		}
-		expectedFact := evMustFact(nativeTypeFact(value, absence))
-		actualFact := evMustFact(simpleTypeFact(asString(actual["type"])))
-		expectedExpression := positionExpression(asString(expectedFact["type"]), truth(value["StrideIndex"]), truth(value["Nilable"]))
-		structural("return", i+1, expectedExpression, asString(actual["type"]))
-		for _, key := range []string{"type", "nilable"} {
-			var expected, actualValue any
-			if key == "type" {
-				expected = carrier(expectedExpression, "native")
-				expression := asString(actual["type"])
-				if facts == nil {
-					expression = asString(actualFact["type"])
-				}
-				actualValue = carrier(expression, "tsm")
-			} else {
-				expected = expectedFact[key]
-				actualValue = actualFact[key]
-				if facts != nil {
-					actualValue = positionNilable(asString(actual["type"]), truth(actualFact[key]))
-				}
-			}
-			if !evEqual(expected, actualValue) {
-				difference("return-"+key, expectedFact[key], actualFact[key], i+1)
-			}
-		}
-		aggregate := value["Type"] == "table" || !evContains([]string{"number", "boolean", "string", "WOWGUID", "fileID", "time_t", "normalizedValue", "Seconds"}, asString(expectedFact["type"]))
-		if !widget && !aggregate {
-			secret := (functionSecret || truth(value["ConditionalSecret"]) || truth(value["SecretValue"])) && !truth(value["NeverSecret"]) && !truth(native["ReturnsNeverSecret"])
-			if secret != truth(actualFact["secret"]) {
-				difference("return-secret-scalar", secret, actualFact["secret"], i+1)
-			}
-		}
-	}
-	security := asMap(stub["security"])
-	firstWords := func(v any) []string {
-		r := []string{}
-		for _, text := range evStrings(v) {
-			words := strings.Fields(text)
-			if len(words) > 0 {
-				r = append(r, words[0])
-			}
-		}
-		sort.Strings(r)
-		return r
-	}
-	actualWhen := firstWords(security["secret-when"])
-	if !evEqual(evList(expectedWhen), evList(actualWhen)) {
-		difference("secret-predicates", evList(expectedWhen), evList(actualWhen), 0)
-	}
-	expectedPre := []string{}
-	for key, kind := range predicates {
-		if kind == "Precondition" && truth(native[key]) {
-			expectedPre = append(expectedPre, key)
-		}
-	}
-	sort.Strings(expectedPre)
-	actualPre := firstWords(security["secret-precondition"])
-	if !evEqual(evList(expectedPre), evList(actualPre)) {
-		difference("secret-preconditions", evList(expectedPre), evList(actualPre), 0)
-	}
-	aspects := []string{}
-	for _, key := range []string{"SecretArgumentsAddAspect", "SecretReturnsForAspect"} {
-		for _, aspect := range asList(native[key]) {
-			s := asString(aspect)
-			if m := asMap(aspect); m != nil {
-				s = asString(m["$ref"])
-			}
-			parts := strings.Split(s, ".")
-			aspects = append(aspects, parts[len(parts)-1])
-		}
-	}
-	aspects = evSortedUnique(aspects)
-	actualAspects := evStrings(security["secret-aspect"])
-	sort.Strings(actualAspects)
-	if !evEqual(evList(aspects), evList(actualAspects)) {
-		difference("secret-aspects", evList(aspects), evList(actualAspects), 0)
-	}
-	if policy := native["SecretArguments"]; policy != nil {
-		expectedPolicy := policy
-		if mapped, ok := map[string]string{"AllowedWhenTainted": "tainted", "AllowedWhenUntainted": "untainted", "NotAllowed": "none"}[asString(policy)]; ok {
-			expectedPolicy = mapped
-		}
-		var actualPolicy any
-		args := evStrings(security["secret-args"])
-		if len(args) > 0 {
-			w := strings.Fields(args[0])
-			if len(w) > 0 {
-				actualPolicy = w[0]
-			}
-		}
-		if !evEqual(expectedPolicy, actualPolicy) {
-			difference("secret-argument-policy", expectedPolicy, actualPolicy, 0)
-			if actualPolicy == "tainted" && (truth(native["ConstSecretAccessor"]) || truth(native["SecretArgumentsAddAspect"])) {
-				row := asMap(differences[len(differences)-1])
-				row["disposition"] = "documented-tsm-const-accessor-or-aspect-setter-policy-override"
-				row["basis"] = "TSM secret_stubs.rs entry_secrecy deliberately promotes these argument policies to tainted."
-			}
-		}
-		allPositions := []any{}
-		for i := range arguments {
-			allPositions = append(allPositions, i+1)
-		}
-		for _, tag := range args {
-			scope := scopedPolicy(tag, stubArgs)
-			if truth(scope["unknown_names"]) || truth(scope["unsupported"]) {
-				difference("unsupported-secret-argument-scope", nil, scope, 0)
-			} else if scope["scope"] == "named" && !evEqual(scope["positions"], allPositions) {
-				difference("secret-argument-scope", allPositions, scope, 0)
-			}
-		}
-	}
-	return differences, nil
-}
-func effectiveFact(c *catalogue, projection declarationProjection, name string, stub M, widget bool, carrierAliases map[string]string) (M, error) {
+func effectiveFact(c *catalogue, projection declarationProjection, name string, stub tsmStub, widget bool, carrierAliases map[string]string) (effectiveDeclaration, error) {
 	owner, method := "", name
 	if i := strings.LastIndex(name, "."); i >= 0 {
 		owner, method = name[:i], name[i+1:]
 	}
-	var item M
+	var item *catalogueFunction
 	if owner != "" {
-		item = asMap(asMap(asMap(c.defs[owner])["methods"])[method])
+		if def := c.defs[owner]; def != nil {
+			item = def.Methods[method]
+		}
 	} else {
-		item = asMap(c.globals[method])
+		item = c.globals[method]
 	}
 	if item == nil {
-		return nil, fmt.Errorf("native symbol missing from effective catalogue: %s", name)
+		return effectiveDeclaration{}, fmt.Errorf("native symbol missing from effective catalogue: %s", name)
 	}
-	metadata := asMap(evGet(item, "callable_contract", item))
+	metadata := item.contract()
 	signatures, e := projection.signatures(name)
 	if e != nil {
-		return nil, e
+		return effectiveDeclaration{}, e
 	}
 	signatureReturns := [][]string{}
 	for _, s := range signatures {
 		parts, e := SplitTopLevel(s, ':')
 		if e != nil {
-			return nil, e
+			return effectiveDeclaration{}, e
 		}
 		values := []string{}
 		if len(parts) > 1 {
 			values, e = SplitTopLevel(strings.Join(parts[1:], ":"), ',')
 			if e != nil {
-				return nil, e
+				return effectiveDeclaration{}, e
 			}
 		}
 		signatureReturns = append(signatureReturns, values)
 	}
-	tsmSecrets := []any{}
-	for _, v := range asList(stub["returns"]) {
-		fact, e := simpleTypeFact(asString(asMap(v)["type"]))
+	tsmSecrets := []bool{}
+	for _, v := range stub.Returns {
+		fact, e := simpleTypeFact(v.Type)
 		if e != nil {
-			return nil, e
+			return effectiveDeclaration{}, e
 		}
-		tsmSecrets = append(tsmSecrets, fact["secret"])
+		tsmSecrets = append(tsmSecrets, fact.Secret)
 	}
 	var opaqueCarrier func(string, []string) bool
 	opaqueCarrier = func(expression string, seen []string) bool {
@@ -319,7 +62,7 @@ func effectiveFact(c *catalogue, projection declarationProjection, name string, 
 		}
 		for _, token := range members {
 			token = strings.TrimPrefix(strings.TrimSpace(token), "W.")
-			if evContains([]string{"OpaqueNumber", "OpaqueText", "OpaqueValue"}, token) {
+			if evContains([]string{"OpaqueNumber", "OpaqueText", "OpaqueValue", "unknown"}, token) {
 				return true
 			}
 			if alias, ok := carrierAliases[token]; ok && !evContains(seen, token) && opaqueCarrier(alias, append(append([]string{}, seen...), token)) {
@@ -328,7 +71,7 @@ func effectiveFact(c *catalogue, projection declarationProjection, name string, 
 		}
 		return false
 	}
-	opacity, unchecked := []any{}, []any{}
+	opacity, unchecked := []opacityDifference{}, []uncheckedReturn{}
 	for i, secret := range tsmSecrets {
 		comparable := []string{}
 		for _, values := range signatureReturns {
@@ -339,23 +82,23 @@ func effectiveFact(c *catalogue, projection declarationProjection, name string, 
 			}
 		}
 		if len(comparable) == 0 {
-			unchecked = append(unchecked, M{"position": i + 1, "reason": "return tuple differs; inspect the explicit arity discrepancy"})
+			unchecked = append(unchecked, uncheckedReturn{Position: i + 1, Reason: "return tuple differs; inspect the explicit arity discrepancy"})
 			continue
 		}
 		opaque := true
 		for _, v := range comparable {
 			opaque = opaque && opaqueCarrier(v, nil)
 		}
-		if opaque != truth(secret) {
+		if opaque != secret {
 			disposition := "workspace-opaque-carrier-versus-tsm-public-type"
-			if truth(secret) {
+			if secret {
 				disposition = "review-effective-projection-of-tsm-secret-return"
-			} else if truth(metadata["secret_effect"]) {
+			} else if metadata.SecretEffect {
 				disposition = "intentional-reviewed-handle-secret-effect"
 			} else if widget {
 				disposition = "intentional-conservative-native-widget-projection"
 			}
-			opacity = append(opacity, M{"position": i + 1, "tsm_secret_wrapper": secret, "workspace_opaque_carrier": opaque, "disposition": disposition})
+			opacity = append(opacity, opacityDifference{Position: i + 1, TSMSecretWrapper: secret, WorkspaceOpaqueCarrier: opaque, Disposition: disposition})
 		}
 	}
 	dataReturns := []string{}
@@ -368,5 +111,237 @@ func effectiveFact(c *catalogue, projection declarationProjection, name string, 
 			}
 		}
 	}
-	return M{"symbol": name, "emitted_signatures": evList(signatures), "workspace_result_secret": c.resultSecret(metadata), "reviewed_secret_effect": truth(metadata["secret_effect"]), "secret_data_returns": evList(evSortedUnique(dataReturns)), "tsm_secret_returns": tsmSecrets, "opacity_differences": opacity, "unchecked_return_positions": unchecked}, nil
+	return effectiveDeclaration{Symbol: name, EmittedSignatures: signatures, WorkspaceResultSecret: c.resultSecret(metadata), ReviewedSecretEffect: new(metadata.SecretEffect), SecretDataReturns: evSortedUnique(dataReturns), TSMSecretReturns: tsmSecrets, OpacityDifferences: opacity, UncheckedReturnPositions: unchecked}, nil
+}
+
+func compareFunction(native NativeFunction, stub tsmStub, predicates map[string]string, widget bool, facts *typeFacts, absent *bool) (differences []contractDifference, err error) {
+	defer recoverFact(&err)
+	differences = []contractDifference{}
+	add := func(kind string, expected, actual differenceValue, position int) {
+		differences = append(differences, difference(kind, expected, actual, position))
+	}
+	expand := func(raw []NativeParameter) []NativeParameter {
+		r := []NativeParameter{}
+		for _, v := range raw {
+			if v.Type == "uiRect" {
+				v.Type = "number"
+				v.Mixin = "number"
+				for range 4 {
+					r = append(r, v)
+				}
+			} else {
+				r = append(r, v)
+			}
+		}
+		return r
+	}
+	arguments, returns := expand(native.Arguments), expand(native.Returns)
+	generics := stub.Generics
+	carrier := func(value, side string) string {
+		if facts == nil {
+			return value
+		}
+		var g []string
+		if side == "tsm" {
+			g = generics
+		}
+		f := facts.fact(value, side, g)
+		if f.Unsupported == "" {
+			return f.CarrierType
+		}
+		return value
+	}
+	positionExpression := func(expression string, variadic, nilable bool) string {
+		if facts != nil && variadic && !facts.fact(expression, "tsm", generics).Variadic {
+			if nilable {
+				expression = "(" + expression + ")|nil"
+			}
+			return "(" + expression + ")..."
+		}
+		return expression
+	}
+	positionNilable := func(expression string, fallback bool) bool {
+		if facts == nil {
+			return fallback
+		}
+		f := facts.fact(expression, "tsm", generics)
+		if kindOf(f.Tree) == "variadic" {
+			return nullableFact(f.Tree.children[0])
+		}
+		if f.Unsupported == "" {
+			return f.Nilable
+		}
+		return fallback
+	}
+	structural := func(side string, position int, nativeExpression, tsmExpression string) {
+		if facts == nil {
+			return
+		}
+		expected, actual := facts.fact(nativeExpression, "native", nil), facts.fact(tsmExpression, "tsm", generics)
+		if expected.Unsupported != "" || actual.Unsupported != "" {
+			return
+		}
+		features := evSortedUnique(append(append([]string{}, expected.Features...), actual.Features...))
+		if len(features) == 0 {
+			return
+		}
+		if !evEqual(expected.Tree, actual.Tree) || !evEqual(expected.Binders, actual.Binders) {
+			d := difference(side+"-structural-contract", differenceValue{fact: &expected}, differenceValue{fact: &actual}, position)
+			d.Features = features
+			differences = append(differences, d)
+		}
+	}
+	stubArgs, stubReturns := stub.Arguments, stub.Returns
+	if len(arguments) != len(stubArgs) {
+		add("argument-count", countDifference(len(arguments)), countDifference(len(stubArgs)), 0)
+	}
+	annotated := map[string]tsmParameter{}
+	for _, v := range stub.Parameters {
+		annotated[v.Name] = v
+	}
+	for i, value := range arguments {
+		if i >= len(stubArgs) {
+			break
+		}
+		name := stubArgs[i]
+		actual, ok := annotated[name]
+		if !ok {
+			add("argument-annotation-missing", textDifference(value.Type), textDifference(name), i+1)
+			continue
+		}
+		expectedFact, actualFact := evMustFact(nativeTypeFact(value, false)), evMustFact(simpleTypeFact(actual.Type))
+		expectedExpression := positionExpression(expectedFact.Type, value.StrideIndex != nil && *value.StrideIndex != 0, enabled(value.Nilable))
+		actualExpression := positionExpression(actual.Type, strings.HasPrefix(name, "..."), false)
+		structural("argument", i+1, expectedExpression, actualExpression)
+		actualCarrierExpression := actualExpression
+		if facts == nil {
+			actualCarrierExpression = actualFact.Type
+		}
+		if carrier(expectedExpression, "native") != carrier(actualCarrierExpression, "tsm") {
+			add("argument-type", textDifference(expectedFact.Type), textDifference(actualFact.Type), i+1)
+		}
+		optional := enabled(value.Nilable) || value.HasDefault
+		actualOptional := actual.Optional || positionNilable(actualExpression, actualFact.Nilable)
+		if optional != actualOptional {
+			add("argument-optional", boolDifference(optional), boolDifference(actualOptional), i+1)
+		}
+	}
+	if len(returns) != len(stubReturns) {
+		add("return-annotation-count", countDifference(len(returns)), countDifference(len(stubReturns)), 0)
+	}
+	expectedWhen := []string{}
+	for _, key := range nativeSecretPredicateNames {
+		if native.Policy.precondition(key) {
+			expectedWhen = append(expectedWhen, key)
+		}
+	}
+	for key, kind := range predicates {
+		if kind == "Secret" && native.Policy.precondition(key) && !evContains(expectedWhen, key) {
+			expectedWhen = append(expectedWhen, key)
+		}
+	}
+	sort.Strings(expectedWhen)
+	functionSecret := len(expectedWhen) > 0 || enabled(native.Policy.SecretReturns)
+	for i := 0; i < min(len(returns), len(stubReturns)); i++ {
+		value, actual := returns[i], stubReturns[i]
+		absence := enabled(native.Policy.MayReturnNothing)
+		if absent != nil {
+			absence = *absent
+		}
+		expectedFact, actualFact := evMustFact(nativeTypeFact(value, absence)), evMustFact(simpleTypeFact(actual.Type))
+		expectedExpression := positionExpression(expectedFact.Type, value.StrideIndex != nil && *value.StrideIndex != 0, enabled(value.Nilable))
+		structural("return", i+1, expectedExpression, actual.Type)
+		expression := actual.Type
+		if facts == nil {
+			expression = actualFact.Type
+		}
+		if carrier(expectedExpression, "native") != carrier(expression, "tsm") {
+			add("return-type", textDifference(expectedFact.Type), textDifference(actualFact.Type), i+1)
+		}
+		if expectedFact.Nilable != positionNilable(actual.Type, actualFact.Nilable) {
+			add("return-nilable", boolDifference(expectedFact.Nilable), boolDifference(actualFact.Nilable), i+1)
+		}
+		aggregate := value.Type == "table" || !evContains([]string{"number", "boolean", "string", "WOWGUID", "fileID", "time_t", "normalizedValue", "Seconds"}, expectedFact.Type)
+		if !widget && !aggregate {
+			secret := (functionSecret || enabled(value.ConditionalSecret) || enabled(value.SecretValue)) && !enabled(value.NeverSecret) && !enabled(native.Policy.ReturnsNeverSecret)
+			if secret != actualFact.Secret {
+				add("return-secret-scalar", boolDifference(secret), boolDifference(actualFact.Secret), i+1)
+			}
+		}
+	}
+	security := stub.Security
+	firstWords := func(values []string) []string {
+		r := []string{}
+		for _, text := range values {
+			words := strings.Fields(text)
+			if len(words) > 0 {
+				r = append(r, words[0])
+			}
+		}
+		sort.Strings(r)
+		return r
+	}
+	actualWhen := firstWords(security["secret-when"])
+	if !evEqual(expectedWhen, actualWhen) {
+		add("secret-predicates", textsDifference(expectedWhen), textsDifference(actualWhen), 0)
+	}
+	expectedPre := []string{}
+	for key, kind := range predicates {
+		if kind == "Precondition" && native.Policy.precondition(key) {
+			expectedPre = append(expectedPre, key)
+		}
+	}
+	sort.Strings(expectedPre)
+	actualPre := firstWords(security["secret-precondition"])
+	if !evEqual(expectedPre, actualPre) {
+		add("secret-preconditions", textsDifference(expectedPre), textsDifference(actualPre), 0)
+	}
+	aspects := []string{}
+	for _, group := range [][]NativeReference{native.Policy.SecretArgumentsAddAspect, native.Policy.SecretReturnsForAspect} {
+		for _, aspect := range group {
+			parts := strings.Split(aspect.Name, ".")
+			aspects = append(aspects, parts[len(parts)-1])
+		}
+	}
+	aspects = evSortedUnique(aspects)
+	actualAspects := append([]string{}, security["secret-aspect"]...)
+	sort.Strings(actualAspects)
+	if !evEqual(aspects, actualAspects) {
+		add("secret-aspects", textsDifference(aspects), textsDifference(actualAspects), 0)
+	}
+	if policy := native.Policy.SecretArguments; policy != nil {
+		expectedPolicy := *policy
+		if mapped, ok := map[string]string{"AllowedWhenTainted": "tainted", "AllowedWhenUntainted": "untainted", "NotAllowed": "none"}[*policy]; ok {
+			expectedPolicy = mapped
+		}
+		var actualPolicy *string
+		args := security["secret-args"]
+		if len(args) > 0 {
+			words := strings.Fields(args[0])
+			if len(words) > 0 {
+				actualPolicy = &words[0]
+			}
+		}
+		if actualPolicy == nil || expectedPolicy != *actualPolicy {
+			add("secret-argument-policy", textDifference(expectedPolicy), differenceValue{text: actualPolicy}, 0)
+			if actualPolicy != nil && *actualPolicy == "tainted" && (enabled(native.Policy.ConstSecretAccessor) || len(native.Policy.SecretArgumentsAddAspect) > 0) {
+				row := &differences[len(differences)-1]
+				row.Disposition = "documented-tsm-const-accessor-or-aspect-setter-policy-override"
+				row.Basis = "TSM secret_stubs.rs entry_secrecy deliberately promotes these argument policies to tainted."
+			}
+		}
+		positions := []int{}
+		for i := range arguments {
+			positions = append(positions, i+1)
+		}
+		for _, tag := range args {
+			scope := scopedPolicy(tag, stubArgs)
+			if len(scope.UnknownNames) > 0 || scope.Unsupported != "" {
+				add("unsupported-secret-argument-scope", differenceValue{}, differenceValue{scope: &scope}, 0)
+			} else if scope.Scope == "named" && !evEqual(scope.Positions, positions) {
+				add("secret-argument-scope", differenceValue{positions: &positions}, differenceValue{scope: &scope}, 0)
+			}
+		}
+	}
+	return differences, nil
 }

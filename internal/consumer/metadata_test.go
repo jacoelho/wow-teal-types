@@ -14,7 +14,7 @@ func recipeFixture(t *testing.T) addonFixture {
 	f := newAddon(t)
 	repo := repositoryRoot(t)
 	writeTest(t, filepath.Join(f.root, "LICENSE"), fileText(t, filepath.Join(repo, "LICENSE")))
-	manifest, err := readJSON(filepath.Join(f.root, "package.json"))
+	manifest, err := readManifest(filepath.Join(f.root, "package.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -22,32 +22,22 @@ func recipeFixture(t *testing.T) addonFixture {
 	if err != nil {
 		t.Fatal(err)
 	}
-	writeTest(t, filepath.Join(f.root, "rockspecs/wow-tl-type-"+str(manifest["version"])+"-1.rockspec.in"), recipe)
+	writeTest(t, filepath.Join(f.root, "rockspecs/wow-tl-type-"+manifest.Version+"-1.rockspec.in"), recipe)
 	return f
 }
 func recipeCommand(t *testing.T, f addonFixture, args []string, reject string) string {
 	t.Helper()
 	return f.run(t, append([]string{"rockspecs", "--output", filepath.Join(f.project, "candidate")}, args...), reject)
 }
-func TestRecipeMatchesFrozenTemplateAndInstallsOnlyFourModules(t *testing.T) {
+func TestRecipeInstallsOnlyFourModulesWithMatchingToolkit(t *testing.T) {
 	f := recipeFixture(t)
-	manifest, err := readJSON(filepath.Join(f.root, "package.json"))
+	manifest, err := readManifest(filepath.Join(f.root, "package.json"))
 	if err != nil {
 		t.Fatal(err)
-	}
-	template, err := Recipe(f.root, manifest, "", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-	baseline := filepath.Join(repositoryRoot(t), "build/go-migration-baseline/rockspecs/wow-tl-type-"+str(manifest["version"])+"-1.rockspec.in")
-	if _, err = os.Stat(baseline); err == nil {
-		if template != fileText(t, baseline) {
-			t.Fatal("Go recipe differs from frozen Python recipe")
-		}
 	}
 	recipeCommand(t, f, []string{"--check"}, "")
 	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types"}, "")
-	path := filepath.Join(f.project, "candidate/wow-tl-type-"+str(manifest["version"])+"-1.rockspec")
+	path := filepath.Join(f.project, "candidate/wow-tl-type-"+manifest.Version+"-1.rockspec")
 	before := fileText(t, path)
 	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types"}, "")
 	if before != fileText(t, path) {
@@ -69,6 +59,8 @@ print(data.version)
 print(data.source.url)
 print(data.source.tag)
 print(data.description.license)
+assert(#data.dependencies == 1 and data.dependencies[1] == "lua >= 5.1")
+assert(data.description.detailed:find("0.24.8-wow.1", 1, true))
 for _, path in ipairs(data.build.install.lua) do print(path) end
 `)
 	command := exec.CommandContext(t.Context(), teal(t), "run", inspector, "--", path)
@@ -77,7 +69,7 @@ for _, path in ipairs(data.build.install.lua) do print(path) end
 	if err != nil {
 		t.Fatalf("recipe Lua parse: %v %s", err, output)
 	}
-	expected := "wow-tl-type\n" + str(manifest["version"]) + "-1\ngit+https://github.com/example/wow-teal-types\nv" + str(manifest["version"]) + "\nMIT\ntypes/wow/native_values.d.tl\ntypes/wow/wow.d.tl\ntypes/wow/wow_env.d.tl\ntypes/wow/wow_secure_env.d.tl\n"
+	expected := "wow-tl-type\n" + manifest.Version + "-1\ngit+https://github.com/example/wow-teal-types\nv" + manifest.Version + "\nMIT\ntypes/wow/native_values.d.tl\ntypes/wow/wow.d.tl\ntypes/wow/wow_env.d.tl\ntypes/wow/wow_secure_env.d.tl\n"
 	if string(output) != expected {
 		t.Fatalf("unexpected recipe installation contract:\n%s", output)
 	}
@@ -113,7 +105,7 @@ func TestRecipeRequiresSourceIdentityAndIntactDeclarations(t *testing.T) {
 func TestOwnerDescriptionRoundTripsAndCannotOverrideCoreFields(t *testing.T) {
 	f := recipeFixture(t)
 	value := "Maintainer \"Quoted\" \\ José"
-	metadata, err := json.Marshal(map[string]any{"maintainer": value})
+	metadata, err := json.Marshal(map[string]string{"maintainer": value})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -136,12 +128,8 @@ print(data.description.maintainer)
 		t.Fatalf("owner metadata did not roundtrip: %v %s", err, output)
 	}
 	before := fileText(t, path)
-	for _, invalid := range []map[string]any{{"summary": "override"}, {"license": "other"}, {"maintainer": []any{}}, {"maintainer": "line\nbreak"}} {
-		encoded, err := json.Marshal(invalid)
-		if err != nil {
-			t.Fatal(err)
-		}
-		recipeCommand(t, f, []string{"--repository", "example/wow-teal-types", "--description-json", string(encoded)}, "description")
+	for _, invalid := range []string{`{"summary":"override"}`, `{"license":"other"}`, `{"maintainer":[]}`, `{"maintainer":"line\nbreak"}`, `null`, `{"maintainer":null}`, `{"maintainer":17}`, `[]`} {
+		recipeCommand(t, f, []string{"--repository", "example/wow-teal-types", "--description-json", invalid}, "description")
 		if fileText(t, path) != before {
 			t.Fatal("invalid description changed candidate")
 		}

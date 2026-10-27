@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"wow-teal-types/internal/consumer"
+	"wow-teal-types/internal/sourcelock"
 )
 
 func replaceOnce(data []byte, pattern, replacement, context string) ([]byte, error) {
@@ -27,62 +28,54 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	load := func(name string) (map[string]any, error) {
-		path, e := safeJoin(root, name)
-		if e != nil {
-			return nil, e
-		}
-		return readObject(path)
-	}
-	native, err := load("scripts/wow_api/sources.json")
+	native, err := sourcelock.ReadSources(filepath.Join(root, "scripts/wow_api/sources.json"))
 	if err != nil {
 		return nil, err
 	}
-	client, err := load("scripts/wow_api/client_sources.json")
+	client, err := sourcelock.ReadSnapshot(filepath.Join(root, "scripts/wow_api/client_sources.json"))
 	if err != nil {
 		return nil, err
 	}
-	if err = selected.Require(client); err != nil {
+	if err = selected.Require(client.Version, client.Build); err != nil {
 		return nil, err
 	}
-	versions, ok := obj(native["blizzard_version"])["files"].([]any)
+	versions := native["blizzard_version"].Files
 	versionBytes := []byte(selected.Full + "\n")
-	if !ok || len(versions) != 1 {
+	if len(versions) != 1 || versions[0].Name != "version.txt" || versions[0].SHA != blob(versionBytes) || versions[0].Size != len(versionBytes) {
 		return nil, fmt.Errorf("native source version lock does not match .wow-version")
 	}
-	version := obj(versions[0])
-	if version["name"] != "version.txt" || version["sha"] != blob(versionBytes) || i(version["size"]) != len(versionBytes) {
-		return nil, fmt.Errorf("native source version lock does not match .wow-version")
-	}
-	manifest, err := load("package.json")
+	manifestData, err := readFile(filepath.Join(root, "package.json"), maxFile)
 	if err != nil {
 		return nil, err
 	}
-	provenance, err := load("provenance.json")
+	manifest, err := consumer.ParsePackageManifest(manifestData)
 	if err != nil {
 		return nil, err
 	}
-	files := map[string]any{}
+	provenance, err := readJSON[provenanceRecord](filepath.Join(root, "provenance.json"))
+	if err != nil {
+		return nil, err
+	}
+	if provenance.SchemaVersion != 1 || provenance.PackageName == "" || provenance.SourceLockSHA256 == nil || provenance.Limits == nil || provenance.Compiler.StrictArity == nil {
+		return nil, fmt.Errorf("invalid provenance schema")
+	}
+	files := map[string]string{}
 	for _, name := range consumer.RequiredFiles() {
 		files[name] = ""
 	}
-	manifest["files"] = files
-	manifest["wow_build"] = selected.Full
-	provenance["package_version"] = manifest["version"]
-	compiler := obj(provenance["compiler"])
-	if compiler == nil {
-		compiler = map[string]any{}
-		provenance["compiler"] = compiler
-	}
-	compiler["version"] = manifest["teal_version"]
-	provenance["client"] = map[string]any{"version": selected.Version, "build": selected.Build, "interface": selected.Interface, "flavor": "retail"}
+	manifest.Files = files
+	manifest.WoWBuild = selected.Full
+	manifest.TealVersion = consumer.TealVersion
+	provenance.PackageVersion = manifest.Version
+	provenance.Compiler.Version = manifest.TealVersion
+	provenance.Client = provenanceClient{Build: selected.Build, Flavor: "retail", Interface: selected.Interface, Version: selected.Version}
 	lockNames := map[string]bool{"client_sources.json": true}
-	for name := range obj(provenance["source_lock_sha256"]) {
+	for name := range provenance.SourceLockSHA256 {
 		if name != "extractor.json" {
 			lockNames[name] = true
 		}
 	}
-	locks := map[string]any{}
+	locks := map[string]string{}
 	for _, name := range keys(lockNames) {
 		path, e := safeJoin(root, "scripts/wow_api/"+name)
 		if e != nil {
@@ -94,28 +87,25 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 		}
 		locks[name] = sha(data)
 	}
-	provenance["source_lock_sha256"] = locks
-	sources := obj(provenance["sources"])
-	if sources == nil {
-		sources = map[string]any{}
-		provenance["sources"] = sources
-	}
-	for name, value := range native {
-		copy := map[string]any{}
-		for key, value := range obj(value) {
-			if key != "files" && key != "path" {
-				copy[key] = value
-			}
-		}
-		sources[name] = copy
-	}
-	clientSource := map[string]any{}
-	for key, value := range client {
-		if key != "files" {
-			clientSource[key] = value
+	provenance.SourceLockSHA256 = locks
+	for name, source := range native {
+		value := sourceSummary(source)
+		switch name {
+		case "blizzard":
+			provenance.Sources.Blizzard = value
+		case "blizzard_support":
+			provenance.Sources.BlizzardSupport = value
+		case "blizzard_version":
+			provenance.Sources.BlizzardVersion = value
+		case "questie":
+			provenance.Sources.Questie = value
+		case "questie_runtime":
+			provenance.Sources.QuestieRuntime = value
+		default:
+			return nil, fmt.Errorf("unsupported provenance source group %q", name)
 		}
 	}
-	sources["client_casc"] = clientSource
+	provenance.Sources.ClientCASC = clientSummary(client)
 	outputs := map[string][]byte{}
 	outputs["provenance.json"], err = jsonBytes(provenance)
 	if err != nil {
@@ -157,7 +147,7 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 		}
 		files[name] = sha(data)
 	}
-	template := "rockspecs/wow-tl-type-" + s(manifest["version"]) + "-1.rockspec.in"
+	template := "rockspecs/wow-tl-type-" + manifest.Version + "-1.rockspec.in"
 	templates, err := filepath.Glob(filepath.Join(root, "rockspecs/*.rockspec.in"))
 	if err != nil {
 		return nil, err

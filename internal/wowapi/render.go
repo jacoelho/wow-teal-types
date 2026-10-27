@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"wow-teal-types/internal/sourcelock"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 // render consumes only finalized declarations. It cannot discover types, change
@@ -46,13 +48,13 @@ func (p declarationProjection) render() map[string][]byte {
 					lines = append(lines, "   -- "+method.restrictions)
 				}
 				for _, signature := range method.signatures {
-					lines = append(lines, "   "+method.name+": "+string(signature))
+					lines = append(lines, "   "+method.name+": "+signature.expression)
 				}
 			}
 			lines = append(lines, "end", "")
 		}
 	}
-	env := []string{"-- Generated public native environment; addon fragments add only owned globals.", `local type W = require("wow")`, "local type CatalogueTable = {any: any}"}
+	env := []string{"-- Generated public native environment; addon fragments add only owned globals.", `local type W = require("wow")`, "local type CatalogueTable = {unknown: unknown}"}
 	for _, global := range p.globals {
 		if global.public {
 			env = append(env, "global "+global.name+": "+global.ambientExpression)
@@ -85,7 +87,7 @@ func (p declarationProjection) render() map[string][]byte {
 		}
 	}
 	body = append(append(enumLines, ordinary...), aliasLines...)
-	lines = append(header, "local type CatalogueTable = {any: any}", "local record CatalogueTypes")
+	lines = append(header, "local type CatalogueTable = {unknown: unknown}", "local record CatalogueTypes")
 	for _, line := range body {
 		if line != "" {
 			lines = append(lines, "   "+strings.TrimPrefix(line, "local "))
@@ -104,7 +106,9 @@ func (p declarationProjection) render() map[string][]byte {
 	for _, name := range p.secureGlobals {
 		secureEnv = append(secureEnv, "global "+name+": W.Global_"+ident(name))
 	}
-	return map[string][]byte{"wow.d.tl": []byte(strings.Join(lines, "\n")), "wow_env.d.tl": []byte(strings.Join(env, "\n") + "\n"), "wow_secure_env.d.tl": []byte(strings.Join(secureEnv, "\n") + "\n")}
+	files := map[string][]byte{"wow.d.tl": []byte(strings.Join(lines, "\n")), "wow_env.d.tl": []byte(strings.Join(env, "\n") + "\n"), "wow_secure_env.d.tl": []byte(strings.Join(secureEnv, "\n") + "\n")}
+	files["call_policy.lua"] = p.renderCallPolicy(files)
+	return files
 }
 
 var qualifyName = regexp.MustCompile(`[A-Za-z_]\w*`)
@@ -130,94 +134,108 @@ func qualifyExports(text string, exports map[string]bool) string {
 	out.WriteString(text[last:])
 	return out.String()
 }
-func (c *catalogue) manifest() M {
-	var selectedMethod func(string, string, map[string]bool) M
-	selectedMethod = func(owner, name string, seen map[string]bool) M {
+func (c *catalogue) manifest() Manifest {
+	var selectedMethod func(string, string, map[string]bool) *catalogueFunction
+	selectedMethod = func(owner, name string, seen map[string]bool) *catalogueFunction {
 		if seen[owner] {
-			return M{}
+			return nil
 		}
 		seen[owner] = true
-		definition := asMap(c.defs[owner])
-		if item := asMap(asMap(definition["methods"])[name]); item != nil {
+		definition := c.defs[owner]
+		if definition == nil {
+			return nil
+		}
+		if item := definition.Methods[name]; item != nil {
 			return item
 		}
-		for _, base := range stringsOf(definition["bases"]) {
-			if selected := selectedMethod(base, name, seen); len(selected) > 0 {
+		for _, base := range definition.Bases {
+			if selected := selectedMethod(base, name, seen); selected != nil {
 				return selected
 			}
 		}
-		return M{}
+		return nil
 	}
-	questieSymbols := []any{}
+	questieSymbols := []ManifestAnnotationSymbol{}
 	for _, doc := range c.questie {
-		if strings.HasPrefix(asString(doc["path"]), "Lua/") {
+		if strings.HasPrefix(doc.Path, "Lua/") {
 			continue
 		}
-		for _, v := range asList(doc["functions"]) {
-			function := asMap(v)
-			if strings.HasPrefix(strings.TrimLeft(asString(function["raw"]), " \t"), "local function ") {
+		for _, function := range doc.Functions {
+			if strings.HasPrefix(strings.TrimLeft(function.Raw, " \t"), "local function ") {
 				continue
 			}
-			owner, name := asString(function["owner"]), asString(function["name"])
-			selected := asMap(c.globals[name])
+			owner, name := stringValue(function.Owner), function.Name
+			selected := c.globals[name]
 			symbol := name
 			if owner != "" {
-				selected = selectedMethod(owner, name, map[string]bool{})
+				emittedOwner := owner
+				if owner == "Region" {
+					emittedOwner = nativeMethodOwner("SimpleRegionAPI", name)
+				}
+				selected = selectedMethod(emittedOwner, name, map[string]bool{})
 				symbol = owner + "." + name
 			}
-			excluded := c.excludedMethods[symbol]
-			selectedSource := getOr(selected, "source", "inherited contract")
-			if excluded != nil {
+			_, excluded := c.excludedMethods[symbol]
+			selectedSource := "inherited contract"
+			if selected != nil {
+				selectedSource = selected.Source
+			}
+			if excluded {
 				selectedSource = "reviewed supplemental exclusion"
 			}
-			row := M{"name": symbol, "source": "questie:" + asString(doc["path"]), "line": function["line"], "selected_source": selectedSource, "parameters": function["params"], "returns": function["returns"]}
-			if excluded != nil {
-				row["excluded"] = true
-			}
-			questieSymbols = append(questieSymbols, row)
+			questieSymbols = append(questieSymbols, ManifestAnnotationSymbol{Name: symbol, Source: "questie:" + doc.Path, Line: function.Line, SelectedSource: selectedSource, Parameters: function.Params, Returns: function.Returns, Excluded: excluded})
 		}
 	}
-	combined := M{}
-	for k, v := range c.aliases {
-		combined[k] = v
+	combined := map[string]ManifestType{}
+	for name, item := range c.aliases {
+		combined[name] = ManifestType{Name: name, Export: ident(name), Source: item.Source, Kind: "alias", Bases: []string{}}
 	}
-	for k, v := range c.defs {
-		combined[k] = v
+	for name, item := range c.defs {
+		bases := item.Bases
+		if bases == nil {
+			bases = []string{}
+		}
+		combined[name] = ManifestType{Name: name, Export: ident(name), Source: item.Source, Kind: item.Kind, Bases: bases}
 	}
-	typeExports := []any{}
+	typeExports := []ManifestType{}
 	for _, name := range sortedKeys(combined) {
-		item := asMap(combined[name])
-		typeExports = append(typeExports, M{"name": name, "export": ident(name), "source": item["source"], "kind": getOr(item, "kind", "alias"), "bases": getOr(item, "bases", []any{})})
+		typeExports = append(typeExports, combined[name])
 	}
-	representations := M{}
+	representations := map[string]RepresentationNote{}
 	for _, note := range c.notes {
 		representations[requireStringJSON(note)] = note
 	}
-	notes := []any{}
+	notes := []RepresentationNote{}
 	for _, key := range sortedKeys(representations) {
 		notes = append(notes, representations[key])
 	}
-	lock := mustMap(c.project.Lock("sources.json"))
-	sources := M{}
-	for key, v := range lock {
-		source := mapCopy(asMap(v))
-		delete(source, "files")
-		sources[key] = source
+	sources := map[string]sourcelock.SourceIdentity{}
+	for key, source := range c.sourceLocks() {
+		sources[key] = source.Identity()
 	}
-	files := append([]any{}, c.files...)
-	sort.SliceStable(files, func(i, j int) bool { return asString(asMap(files[i])["source"]) < asString(asMap(files[j])["source"]) })
+	files := append([]ManifestFile{}, c.files...)
+	sort.SliceStable(files, func(i, j int) bool { return files[i].Source < files[j].Source })
 	functions, events := 0, 0
-	tables := []any{}
+	tables := []ManifestNativeTables{}
 	for _, doc := range c.nativeDocs {
-		functions += len(asList(doc.Metadata["Functions"]))
-		events += len(asList(doc.Metadata["Events"]))
-		tables = append(tables, M{"source": "blizzard:" + doc.Name, "tables": getOr(doc.Metadata, "Tables", []any{}), "predicates": getOr(doc.Metadata, "Predicates", []any{})})
+		functions += len(doc.Metadata.Functions)
+		events += len(doc.Metadata.Events)
+		rawTables := []literal.Value{}
+		for _, table := range doc.Metadata.Tables {
+			rawTables = append(rawTables, literal.Record(table.Raw))
+		}
+		predicates := []literal.Value{}
+		for _, predicate := range doc.Metadata.Predicates {
+			predicates = append(predicates, literal.Record(predicate.Raw))
+		}
+		tables = append(tables, ManifestNativeTables{Source: "blizzard:" + doc.Name, Tables: rawTables, Predicates: predicates})
 	}
-	diagnostics := []any{}
+	diagnostics := []AnnotationDiagnostic{}
 	for _, doc := range c.questie {
-		for _, v := range asList(doc["diagnostics"]) {
-			diagnostics = append(diagnostics, withFields(asMap(v), M{"source": "questie:" + asString(doc["path"])}))
+		for _, diagnostic := range doc.Diagnostics {
+			diagnostic.Source = "questie:" + doc.Path
+			diagnostics = append(diagnostics, diagnostic)
 		}
 	}
-	return M{"sources": sources, "statistics": M{"input_files": len(c.files), "type_exports": len(typeExports), "native_functions": functions, "native_events": events, "questie_declarations": len(questieSymbols)}, "files": files, "types": typeExports, "symbols": c.symbols, "questie_symbols": questieSymbols, "native_tables": tables, "source_diagnostics": diagnostics, "representations": notes, "supplemental_method_exclusions": c.excludedMethods}
+	return Manifest{Sources: sources, Statistics: CatalogueStatistics{InputFiles: len(c.files), TypeExports: len(typeExports), NativeFunctions: functions, NativeEvents: events, QuestieDeclarations: len(questieSymbols)}, Files: files, Types: typeExports, Symbols: c.symbols, QuestieSymbols: questieSymbols, NativeTables: tables, SourceDiagnostics: diagnostics, Representations: notes, SupplementalMethodExclusions: c.excludedMethods}
 }

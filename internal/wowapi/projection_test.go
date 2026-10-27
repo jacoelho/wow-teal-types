@@ -9,20 +9,20 @@ import (
 func TestFinalizedDeclarationsResolveGeneratedTypesInheritanceAndSecrecy(t *testing.T) {
 	c := newCatalogue(Project{})
 	base := c.record("Base", "fixture")
-	asMap(base["fields"])["count"] = M{"native": true, "Type": "number"}
-	asMap(base["methods"])["Get"] = M{"native": true, "method": true, "Returns": []any{M{"Type": "number"}}}
+	base.Fields["count"] = &catalogueField{Native: &NativeParameter{Type: "number"}}
+	base.Methods["Get"] = &catalogueFunction{Method: true, Native: &NativeFunction{Returns: []NativeParameter{{Type: "number"}}}}
 	child := c.record("Child", "fixture")
-	child["bases"] = []any{"Base"}
-	asMap(child["fields"])["count"] = M{"type": "number"}
-	asMap(child["methods"])["Get"] = M{"returns": []any{M{"type": "string"}}}
+	child.Bases = []string{"Base"}
+	child.Fields["count"] = &catalogueField{Type: "number"}
+	child.Methods["Get"] = &catalogueFunction{Annotation: &AnnotationFunction{Returns: []AnnotationReturn{{Type: "string"}}}}
 	payload := c.record("Payload", "fixture")
-	asMap(payload["fields"])["count"] = M{"native": true, "Type": "number"}
-	asMap(payload["fields"])["visible"] = M{"native": true, "Type": "boolean", "NeverSecret": true}
+	payload.Fields["count"] = &catalogueField{Native: &NativeParameter{Type: "number"}}
+	payload.Fields["visible"] = &catalogueField{Native: &NativeParameter{Type: "boolean", NeverSecret: boolPointer(true)}}
 	holder := c.record("Holder", "fixture")
-	asMap(holder["fields"])["left"] = M{"type": "{value:number}"}
-	asMap(holder["fields"])["right"] = M{"type": "{value:number}"}
-	asMap(holder["fields"])["callback"] = M{"type": "fun(value:number):string"}
-	c.setGlobal("GetPayload", M{"source": "fixture", "native": true, "Returns": []any{M{"Type": "Payload", "SecretValue": true}}})
+	holder.Fields["left"] = &catalogueField{Type: "{value:number}"}
+	holder.Fields["right"] = &catalogueField{Type: "{value:number}"}
+	holder.Fields["callback"] = &catalogueField{Type: "fun(value:number):string"}
+	c.setGlobal("GetPayload", &catalogueFunction{Source: "fixture", Native: &NativeFunction{Returns: []NativeParameter{{Type: "Payload", SecretValue: boolPointer(true)}}}})
 
 	projection, err := c.finalize(t.Context())
 	if err != nil {
@@ -51,8 +51,8 @@ func TestFinalizedDeclarationsResolveGeneratedTypesInheritanceAndSecrecy(t *test
 	}
 
 	// A finalized projection is independent of subsequent source changes.
-	asMap(payload["fields"])["count"] = M{"native": true, "Type": "string"}
-	c.globals["GetPayload"] = M{"resolved_signature": "function(): string"}
+	payload.Fields["count"] = &catalogueField{Native: &NativeParameter{Type: "string"}}
+	c.globals["GetPayload"] = &catalogueFunction{ResolvedSignature: stringPointer("function(): string")}
 	for name, expected := range outputs {
 		if !bytes.Equal(projection.render()[name], expected) {
 			t.Errorf("source mutation changed finalized %s", name)
@@ -62,8 +62,8 @@ func TestFinalizedDeclarationsResolveGeneratedTypesInheritanceAndSecrecy(t *test
 
 func TestFinalizationRejectsInheritanceCycles(t *testing.T) {
 	c := newCatalogue(Project{})
-	c.record("First", "fixture")["bases"] = []any{"Second"}
-	c.record("Second", "fixture")["bases"] = []any{"First"}
+	c.record("First", "fixture").Bases = []string{"Second"}
+	c.record("Second", "fixture").Bases = []string{"First"}
 	if _, err := c.finalize(t.Context()); err == nil || !strings.Contains(err.Error(), "cyclic inheritance") {
 		t.Fatalf("inheritance cycle error = %v", err)
 	}

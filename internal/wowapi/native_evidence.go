@@ -6,53 +6,48 @@ import (
 	"strings"
 )
 
-func staticEvidenceValue(raw string) any {
-	var v any
-	if e := json.Unmarshal([]byte(raw), &v); e != nil {
-		panic(e)
-	}
-	return v
-}
-func primaryObservations(files map[string]string) (M, error) {
+func primaryObservations(files map[string]string) (map[string]primaryObservation, error) {
 	path := "blizzard/Blizzard_CustomAuraButton.lua"
 	text := files[path]
-	for _, snippet := range evStrings(staticEvidenceValue(nativeCallsiteRequiredJSON)) {
+	var required []string
+	e := json.Unmarshal([]byte(nativeCallsiteRequiredJSON), &required)
+	if e != nil {
+		return nil, e
+	}
+	for _, snippet := range required {
 		if !strings.Contains(text, snippet) {
 			return nil, fmt.Errorf("primary call-site ownership or data-flow evidence changed")
 		}
 	}
-	r := M{}
-	for _, v := range asList(staticEvidenceValue(nativeCallsiteRowsJSON)) {
-		row := asList(v)
-		name, snippet := asString(row[0]), asString(row[1])
-		i := strings.Index(text, snippet)
+	out := map[string]primaryObservation{}
+	for _, row := range nativeCallsites {
+		i := strings.Index(text, row.Snippet)
 		if i < 0 {
-			return nil, fmt.Errorf("primary call-site evidence changed: %s", name)
+			return nil, fmt.Errorf("primary call-site evidence changed: %s", row.Name)
 		}
-		r[name] = M{"source": path, "line": strings.Count(text[:i], "\n") + 1, "call": snippet, "observed_argument_count": asInt(row[2]), "argument_roles": row[3], "scope": "Static Blizzard use corroborates this invocation and data flow; complete arity, return, secret permission and runtime behavior are not established."}
+		out[row.Name] = primaryObservation{Source: path, Line: strings.Count(text[:i], "\n") + 1, Call: row.Snippet, ObservedArgumentCount: row.ArgumentCount, ArgumentRoles: row.ArgumentRoles, Scope: "Static Blizzard use corroborates this invocation and data flow; complete arity, return, secret permission and runtime behavior are not established."}
 	}
-	return r, nil
+	return out, nil
 }
-func inheritedCapabilityNames(owner string, definitions M, seen []string) (map[string]bool, error) {
+
+type capabilityReceiver struct {
+	Methods []string
+	Bases   []string
+}
+
+func inheritedCapabilityNames(owner string, definitions map[string]capabilityReceiver, seen []string) (map[string]bool, error) {
 	if evContains(seen, owner) || len(seen) > 32 {
 		return nil, fmt.Errorf("cyclic or unbounded native capability composition")
 	}
-	definition := asMap(definitions[owner])
-	if definition == nil {
+	definition, present := definitions[owner]
+	if !present {
 		return nil, fmt.Errorf("missing native capability receiver: %s", owner)
 	}
 	names := map[string]bool{}
-	for key := range asMap(definition["methods"]) {
+	for _, key := range definition.Methods {
 		names[key] = true
 	}
-	parents := evGet(definition, "bases", definition["inherits"])
-	parentNames := evStrings(parents)
-	if s, ok := parents.(string); ok {
-		parentNames = []string{s}
-	} else if m := asMap(parents); m != nil {
-		parentNames = sortedKeys(m)
-	}
-	for _, parent := range parentNames {
+	for _, parent := range definition.Bases {
 		more, e := inheritedCapabilityNames(parent, definitions, append(append([]string{}, seen...), owner))
 		if e != nil {
 			return nil, e
@@ -66,19 +61,19 @@ func inheritedCapabilityNames(owner string, definitions M, seen []string) (map[s
 	}
 	return names, nil
 }
-func (p Project) loadNativeEvidence(c *catalogue, projection declarationProjection) (M, error) {
+func (p Project) loadNativeEvidence(c *catalogue, projection declarationProjection) (NativeEvidence, error) {
 	observed, e := p.LoadObservations()
 	if e != nil {
-		return nil, e
+		return NativeEvidence{}, e
 	}
 	lock, files, e := p.loadNativeSecondary()
 	if e != nil {
-		return nil, e
+		return NativeEvidence{}, e
 	}
 	docs := c.nativeDocs
 	available := map[string]bool{}
 	for _, doc := range docs {
-		available[asString(doc.Metadata["Name"])] = true
+		available[doc.Metadata.Name] = true
 	}
 	all := true
 	for family := range nativeFamilies {
@@ -87,97 +82,112 @@ func (p Project) loadNativeEvidence(c *catalogue, projection declarationProjecti
 	if !all {
 		docs, e = p.nativeDocuments()
 		if e != nil {
-			return nil, e
+			return NativeEvidence{}, e
 		}
 	}
 	backupLock, backupDocs, e := p.loadBackup()
 	if e != nil {
-		return nil, e
+		return NativeEvidence{}, e
 	}
 	backupContext, e := corroborateBackup(backupDocs, docs)
 	if e != nil {
-		return nil, e
+		return NativeEvidence{}, e
 	}
 	tables := map[string]string{}
-	nativeDocs := map[string]nativeDocument{}
+	nativeDocs := map[string]NativeDocument{}
 	for _, doc := range docs {
-		for _, v := range asList(doc.Metadata["Tables"]) {
-			m := asMap(v)
-			tables[asString(m["Name"])] = asString(m["Type"])
+		for _, table := range doc.Metadata.Tables {
+			tables[table.Name] = table.Type
 		}
-		if _, ok := nativeFamilies[asString(doc.Metadata["Name"])]; ok {
-			nativeDocs[asString(doc.Metadata["Name"])] = doc
+		if _, ok := nativeFamilies[doc.Metadata.Name]; ok {
+			nativeDocs[doc.Metadata.Name] = doc
 		}
 	}
 	prefix := "wowless/data/products/wow/"
-	secondary := map[string]M{}
+	secondary := map[string]map[string]SecondaryReceiver{}
+	secondaryCapabilities := map[string]map[string]capabilityReceiver{}
 	for _, name := range []string{"luaobjects.yaml", "uiobjects.yaml"} {
-		v, e := safeYAML([]byte(files[prefix+name]))
+		receivers, e := parseSecondaryReceivers([]byte(files[prefix+name]))
 		if e != nil {
-			return nil, e
+			return NativeEvidence{}, e
 		}
-		secondary[name] = asMap(v)
+		secondary[name] = receivers
+		capabilities := map[string]capabilityReceiver{}
+		for name, receiver := range receivers {
+			capabilities[name] = capabilityReceiver{Methods: sortedKeys(receiver.Methods), Bases: receiver.Inherits}
+		}
+		secondaryCapabilities[name] = capabilities
 	}
-	v, e := safeYAML([]byte(files[prefix+"docs.yaml"]))
+	neededTypes := map[string]bool{}
+	for _, doc := range nativeDocs {
+		for _, fn := range doc.Metadata.Functions {
+			for _, tuple := range [][]NativeParameter{fn.Arguments, fn.Returns} {
+				for _, parameter := range tuple {
+					neededTypes[parameter.Type] = true
+					neededTypes[parameter.InnerType] = true
+				}
+			}
+		}
+	}
+	typedefs, e := parseSecondaryTypedefs([]byte(files[prefix+"docs.yaml"]), neededTypes)
 	if e != nil {
-		return nil, e
+		return NativeEvidence{}, e
 	}
-	typedefs := asMap(asMap(v)["typedefs"])
+	workspaceCapabilities := map[string]capabilityReceiver{}
+	for name, def := range c.defs {
+		workspaceCapabilities[name] = capabilityReceiver{Methods: sortedKeys(def.Methods), Bases: def.Bases}
+	}
 	observations, e := primaryObservations(files)
 	if e != nil {
-		return nil, e
+		return NativeEvidence{}, e
 	}
-	methods, hierarchy := M{}, M{}
+	methods, hierarchy := map[string]*NativeMethodEvidence{}, map[string]receiverHierarchy{}
 	for _, family := range sortedKeys(nativeFamilies) {
 		spec := nativeFamilies[family]
 		doc := nativeDocs[family]
-		if doc.Metadata == nil || backupDocs[doc.Name] == nil {
-			return nil, fmt.Errorf("native backup lacks receiver metadata: %s", family)
+		backupDoc, backed := backupDocs[doc.Name]
+		if doc.Name == "" || !backed {
+			return NativeEvidence{}, fmt.Errorf("native backup lacks receiver metadata: %s", family)
 		}
-		nativeMethods, backupMethods := M{}, M{}
-		for _, v := range asList(doc.Metadata["Functions"]) {
-			m := asMap(v)
-			nativeMethods[asString(m["Name"])] = m
+		nativeMethods, backupMethods := map[string]NativeFunction{}, map[string]NativeFunction{}
+		for _, method := range doc.Metadata.Functions {
+			nativeMethods[method.Name] = method
 		}
-		for _, v := range asList(backupDocs[doc.Name]["Functions"]) {
-			m := asMap(v)
-			backupMethods[asString(m["Name"])] = m
+		for _, method := range backupDoc.Metadata.Functions {
+			backupMethods[method.Name] = method
 		}
-		if len(backupMethods) != len(asList(backupDocs[doc.Name]["Functions"])) || !evEqual(evList(sortedKeys(backupMethods)), evList(sortedKeys(nativeMethods))) {
-			return nil, fmt.Errorf("native backup method inventory differs: %s", family)
+		if len(backupMethods) != len(backupDoc.Metadata.Functions) || !evEqual(sortedKeys(backupMethods), sortedKeys(nativeMethods)) {
+			return NativeEvidence{}, fmt.Errorf("native backup method inventory differs: %s", family)
 		}
-		if len(nativeMethods) != len(asList(doc.Metadata["Functions"])) || len(nativeMethods) != spec.count {
-			return nil, fmt.Errorf("native secondary method inventory changed: %s", family)
+		if len(nativeMethods) != len(doc.Metadata.Functions) || len(nativeMethods) != spec.count {
+			return NativeEvidence{}, fmt.Errorf("native secondary method inventory changed: %s", family)
 		}
-		receiver, e := evStrictMapping(secondary[spec.source][spec.owner], []string{"methods", "inherits", "fields", "virtual"}, "secondary receiver")
-		if e != nil {
-			return nil, e
+		receiver := secondary[spec.source][spec.owner]
+		receiverMethods := receiver.Methods
+		if !evEqual(sortedKeys(receiverMethods), sortedKeys(nativeMethods)) {
+			return NativeEvidence{}, fmt.Errorf("secondary method inventory differs: %s", family)
 		}
-		receiverMethods := asMap(receiver["methods"])
-		if !evEqual(evList(sortedKeys(receiverMethods)), evList(sortedKeys(nativeMethods))) {
-			return nil, fmt.Errorf("secondary method inventory differs: %s", family)
-		}
-		bases := evStrings(asMap(c.defs[spec.canonical])["bases"])
+		bases := definitionBases(c.defs[spec.canonical])
 		parentage, e := compareHierarchy(bases, receiver)
 		if e != nil {
-			return nil, e
+			return NativeEvidence{}, e
 		}
-		hierarchy[family] = parentage
-		if (family == "SimpleAnimRadialProgressAPI" || family == "SimpleVectorGraphicsAPI") && truth(observed["applicable"]) {
+
+		if (family == "SimpleAnimRadialProgressAPI" || family == "SimpleVectorGraphicsAPI") && observed.Applicable {
 			workspaceNames, secondaryNames := map[string]bool{}, map[string]bool{}
 			for _, base := range bases {
-				names, e := inheritedCapabilityNames(base, c.defs, nil)
+				names, e := inheritedCapabilityNames(base, workspaceCapabilities, nil)
 				if e != nil {
-					return nil, e
+					return NativeEvidence{}, e
 				}
 				for key := range names {
 					workspaceNames[key] = true
 				}
 			}
-			for _, base := range evStrings(parentage["secondary_bases"]) {
-				names, e := inheritedCapabilityNames(base, secondary[spec.source], nil)
+			for _, base := range parentage.SecondaryBases {
+				names, e := inheritedCapabilityNames(base, secondaryCapabilities[spec.source], nil)
 				if e != nil {
-					return nil, e
+					return NativeEvidence{}, e
 				}
 				for key := range names {
 					secondaryNames[key] = true
@@ -190,80 +200,89 @@ func (p Project) loadNativeEvidence(c *catalogue, projection declarationProjecti
 			present := true
 			for _, names := range []map[string]bool{workspaceNames, secondaryNames} {
 				for name := range names {
-					if asMap(asMap(observed["hierarchy"])[spec.canonical+".parent."+parent+"."+name])["state"] != "present" {
+					if observed.Hierarchy[spec.canonical+".parent."+parent+"."+name].State != "present" {
 						present = false
 					}
 				}
 			}
-			match := evEqual(evList(sortedKeys(workspaceNames)), evList(sortedKeys(secondaryNames)))
-			parentage["native_capability_confirmation"] = M{"build": asMap(observed["sources"])["build"], "workspace_methods": evList(sortedKeys(workspaceNames)), "secondary_methods": evList(sortedKeys(secondaryNames)), "method_sets_match": match, "all_methods_observed_present": present, "scope": "method availability on the owned native receiver; virtual names are not native type identity claims"}
+			match := evEqual(sortedKeys(workspaceNames), sortedKeys(secondaryNames))
+			parentage.NativeCapabilityConfirmation = &capabilityConfirmation{Build: observed.Sources.Build, WorkspaceMethods: sortedKeys(workspaceNames), SecondaryMethods: sortedKeys(secondaryNames), MethodSetsMatch: match, AllMethodsObservedPresent: present, Scope: "method availability on the owned native receiver; virtual names are not native type identity claims"}
 			if present && match {
-				for _, v := range asList(parentage["differences"]) {
-					asMap(v)["disposition"] = "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup"
+				for i := range parentage.Differences {
+					parentage.Differences[i].Disposition = "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup"
 				}
 			}
 		}
+		hierarchy[family] = parentage
 		for _, name := range sortedKeys(nativeMethods) {
-			native := asMap(nativeMethods[name])
+			native := nativeMethods[name]
 			symbol := spec.canonical + "." + name
-			compared, e := compareSecondaryMethod(native, asMap(receiverMethods[name]), typedefs, tables)
+			compared, e := compareSecondaryMethod(native, receiverMethods[name], typedefs, tables)
 			if e != nil {
-				return nil, e
+				return NativeEvidence{}, e
 			}
-			item := asMap(asMap(asMap(c.defs[spec.canonical])["methods"])[name])
-			var signatures any
-			if item != nil {
-				a, e := projection.signatures(symbol)
+			var signatures []string
+			if definition := c.defs[spec.canonical]; definition != nil && definition.Methods[name] != nil {
+				signatures, e = projection.signatures(symbol)
 				if e != nil {
-					return nil, e
+					return NativeEvidence{}, e
 				}
-				signatures = evList(a)
 			}
-			var invocation any
-			if truth(observed["applicable"]) {
-				invocation = asMap(observed["methods"])[symbol]
+			var invocation *CaptureInvocation
+			if observed.Applicable {
+				if value, present := observed.Methods[symbol]; present {
+					invocation = &value
+				}
 			}
-			row := M{"symbol": symbol, "family": family, "coverage": "Blizzard-derived secondary translation consistency", "native_source": "blizzard:" + doc.Name, "native_metadata": cloneValue(native), "secondary_source": prefix + spec.source, "secondary_receiver": spec.owner, "secondary_method": cloneValue(receiverMethods[name]), "signature_comparison": compared, "receiver_hierarchy": parentage, "native_security_not_represented_by_secondary": nativeSecurity(native), "backup_metadata": M{"source": "native-backup:" + doc.Name, "metadata_comparison": "exact", "security": nativeSecurity(asMap(backupMethods[name])), "scope": "separately maintained metadata distribution; not independent native semantics"}, "emitted_signatures": signatures, "primary_observation": observations[symbol], "native_invocation_observation": invocation, "limits": []any{"Secondary signatures derive from the same Blizzard documentation source family.", "Missing secondary secrecy does not establish public values, permitted arguments or preconditions.", "Static sources do not establish live runtime availability or access."}}
-			if review := asMap(observed["behavior_reviews"])[symbol]; review != nil {
-				row["reviewed_behavior_observation"] = review
+			var observation *primaryObservation
+			if value, present := observations[symbol]; present {
+				observation = &value
+			}
+			row := &NativeMethodEvidence{Symbol: symbol, Family: family, Coverage: "Blizzard-derived secondary translation consistency", NativeSource: "blizzard:" + doc.Name, NativeMetadata: native.Raw, SecondarySource: prefix + spec.source, SecondaryReceiver: spec.owner, SecondaryMethod: receiverMethods[name], SignatureComparison: compared, ReceiverHierarchy: parentage, NativeSecurityNotRepresentedBySecondary: nativeSecurity(native), BackupMetadata: backupMethodEvidence{Source: "native-backup:" + doc.Name, MetadataComparison: "exact", Security: nativeSecurity(backupMethods[name]), Scope: "separately maintained metadata distribution; not independent native semantics"}, EmittedSignatures: signatures, PrimaryObservation: observation, NativeInvocationObservation: invocation, Limits: []string{"Secondary signatures derive from the same Blizzard documentation source family.", "Missing secondary secrecy does not establish public values, permitted arguments or preconditions.", "Static sources do not establish live runtime availability or access."}}
+			if review, present := observed.BehaviorReviews[symbol]; present {
+				row.ReviewedBehaviorObservation = &review
 			}
 			methods[symbol] = row
+
 		}
 	}
 	if len(methods) != 73 {
-		return nil, fmt.Errorf("secondary or primary method coverage changed")
+		return NativeEvidence{}, fmt.Errorf("secondary or primary method coverage changed")
 	}
 	for symbol := range observations {
 		if methods[symbol] == nil {
-			return nil, fmt.Errorf("secondary or primary method coverage changed")
+			return NativeEvidence{}, fmt.Errorf("secondary or primary method coverage changed")
 		}
 	}
-	statistics := M{"secondary_methods": len(methods), "signature_differences": 0, "receiver_families_with_differences": 0, "methods_with_unrepresented_security": 0, "methods_with_backup_metadata": len(methods), "security_contracts_without_build_matched_corroboration": 0, "methods_with_native_invocations": 0, "methods_without_native_invocations": 0, "native_property_mismatches": 0, "methods_with_accepted_public_behavior_observations": 0, "methods_without_accepted_public_behavior_observations": 0, "receiver_families_without_native_capability_corroboration": 0, "primary_callsite_methods": len(observations), "methods_without_primary_callsites": len(methods) - len(observations)}
+	statistics := map[string]int{"secondary_methods": len(methods), "signature_differences": 0, "receiver_families_with_differences": 0, "methods_with_unrepresented_security": 0, "methods_with_backup_metadata": len(methods), "security_contracts_without_build_matched_corroboration": 0, "methods_with_native_invocations": 0, "methods_without_native_invocations": 0, "native_property_mismatches": 0, "methods_with_accepted_public_behavior_observations": 0, "methods_without_accepted_public_behavior_observations": 0, "receiver_families_without_native_capability_corroboration": 0, "primary_callsite_methods": len(observations), "methods_without_primary_callsites": len(methods) - len(observations)}
 	inc := func(key string, yes bool) {
 		if yes {
-			statistics[key] = asInt(statistics[key]) + 1
+			statistics[key] = statistics[key] + 1
 		}
 	}
-	for _, v := range methods {
-		row := asMap(v)
-		invocation := asMap(row["native_invocation_observation"])
-		invoked := invocation != nil && truth(invocation["invoked"])
-		accepted := truth(invocation["behaviorVerified"]) || truth(asMap(row["reviewed_behavior_observation"])["behavior_verified"])
-		inc("signature_differences", truth(asMap(row["signature_comparison"])["differences"]))
-		inc("methods_with_unrepresented_security", truth(row["native_security_not_represented_by_secondary"]))
+	for _, row := range methods {
+		invocation := row.NativeInvocationObservation
+		invoked := invocation != nil && invocation.Invoked
+		accepted := invocation != nil && invocation.BehaviorVerified || row.ReviewedBehaviorObservation != nil && row.ReviewedBehaviorObservation.BehaviorVerified
+		inc("signature_differences", len(row.SignatureComparison.Differences) > 0)
+		inc("methods_with_unrepresented_security", !row.NativeSecurityNotRepresentedBySecondary.empty())
 		inc("methods_with_native_invocations", invoked)
 		inc("methods_without_native_invocations", !invoked)
-		inc("native_property_mismatches", invocation["state"] == "property_mismatch")
+		inc("native_property_mismatches", invocation != nil && invocation.State == "property_mismatch")
 		inc("methods_with_accepted_public_behavior_observations", accepted)
 		inc("methods_without_accepted_public_behavior_observations", !accepted)
 	}
-	for _, v := range hierarchy {
-		inc("receiver_families_with_differences", truth(asMap(v)["differences"]))
+	for _, parentage := range hierarchy {
+		inc("receiver_families_with_differences", len(parentage.Differences) > 0)
 	}
 	for _, family := range []string{"SimpleAnimRadialProgressAPI", "SimpleVectorGraphicsAPI"} {
-		m := asMap(asMap(hierarchy[family])["native_capability_confirmation"])
-		inc("receiver_families_without_native_capability_corroboration", !truth(m["method_sets_match"]) || !truth(m["all_methods_observed_present"]))
+		confirmation := hierarchy[family].NativeCapabilityConfirmation
+		inc("receiver_families_without_native_capability_corroboration", confirmation == nil || !confirmation.MethodSetsMatch || !confirmation.AllMethodsObservedPresent)
 	}
-	sources := evMerge(lock, M{"backup": backupLock, "native_observations": observed["sources"], "native_behavior_reviews": observed["behavior_review_sources"]})
-	return M{"sources": sources, "backup_context": backupContext, "methods": methods, "receiver_hierarchy": hierarchy, "statistics": statistics, "coverage": staticEvidenceValue(nativeCoverageJSON)}, nil
+	sources := NativeEvidenceSources{Crosscheck: lock, Backup: backupLock, NativeObservations: observed.Sources, NativeBehaviorReviews: observed.BehaviorReviewSources}
+	coverage, e := decodeEvidenceJSON[nativeCoverage]([]byte(nativeCoverageJSON))
+	if e != nil {
+		return NativeEvidence{}, e
+	}
+	return NativeEvidence{Sources: sources, BackupContext: backupContext, Methods: methods, ReceiverHierarchy: hierarchy, Statistics: statistics, Coverage: coverage}, nil
 }

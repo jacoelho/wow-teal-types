@@ -1,10 +1,9 @@
 package wowapi
 
 import (
-	"encoding/json"
-	"reflect"
 	"strings"
 	"testing"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 func TestClosedLuaMetadataGrammar(t *testing.T) {
@@ -16,15 +15,15 @@ APIDocumentation:AddDocumentationTable(Example);`
 	if e != nil {
 		t.Fatal(e)
 	}
-	if doc["Enabled"] != false || asMap(asList(doc["Arguments"])[0])["Default"] != false || doc["Other"] != "raw" || doc["Escaped"] != "A\n" || doc["Arithmetic"] != int64(1) {
+	if !doc["Enabled"].Equal(literal.Bool(false)) || !rawArgument(t, doc, "Arguments", 0)["Default"].Equal(literal.Bool(false)) || !doc["Other"].Equal(literal.Text("raw")) || !doc["Escaped"].Equal(literal.Text("A\n")) || !doc["Arithmetic"].Equal(literal.Int(1)) {
 		t.Fatalf("literal values changed: %#v", doc)
 	}
-	expected := M{"$expression": []any{M{"$ref": "Enum.Test.One"}, "+", int64(1)}}
-	if !reflect.DeepEqual(doc["Value"], expected) {
+	encoded, _ := doc["Value"].MarshalJSON()
+	if string(encoded) != `{"$expression":[{"$ref":"Enum.Test.One"},"+",1]}` {
 		t.Fatalf("reference arithmetic: %#v", doc["Value"])
 	}
 	doc, e = ParseLua([]byte("local Example={Documentation={\"line\\\nnext\"}}"), "physical-newline.lua")
-	if e != nil || !reflect.DeepEqual(doc["Documentation"], []any{"line\nnext"}) {
+	if e != nil || !doc["Documentation"].Equal(literal.List([]literal.Value{literal.Text("line\nnext")})) {
 		t.Fatalf("escaped physical newline: %#v, %v", doc, e)
 	}
 	for _, input := range []string{`local Example={Name="a",["Name"]="b"}`, `local Example={[1]="a",["1"]="b"}`, `local Example={["$ref"]="ambiguous"}`, `Run(); local Example={Name="a"}`, `local Example={Name="a"};Example.Name="b"`, `local Example={Name="a"};APIDocumentation:AddDocumentationTable(Other)`, `local Example={Value=true+1}`, `local Example={Value=1e999}`, `local Example={Value=1e308+1e308}`, `local Example={Value="\x41"}`, `local Example={Value="\255"}`, "local Example={Value=\"line\nnext\"}", `local Example={Name="a"};--[[unclosed`, `local Example={Name=[[unclosed}`, `local Example={Value=function() end}`} {
@@ -69,24 +68,24 @@ function Unknown() end
 	if e != nil {
 		t.Fatal(e)
 	}
-	functions := asList(doc["functions"])
+	functions := doc.Functions
 	if len(functions) != 2 {
 		t.Fatalf("functions: %#v", functions)
 	}
-	method := asMap(functions[0])
-	if method["owner"] != "Example" || method["raw_owner"] != "E" || method["method"] != true {
+	method := functions[0]
+	if stringValue(method.Owner) != "Example" || stringValue(method.RawOwner) != "E" || !method.Method {
 		t.Fatalf("owner lost: %#v", method)
 	}
-	param := asMap(asList(method["params"])[0])
-	if param["type"] != "table<string, number>" || param["optional"] != true || param["description"] != "explanation" {
+	param := method.Params[0]
+	if param.Type != "table<string, number>" || !param.Optional || param.Description != "explanation" {
 		t.Fatalf("parameter lost: %#v", param)
 	}
-	ret := asMap(asList(method["returns"])[0])
-	if ret["type"] != "number" || ret["name"] != "count" || ret["description"] != "explanation" {
+	ret := method.Returns[0]
+	if ret.Type != "number" || stringValue(ret.Name) != "count" || stringValue(ret.Description) != "explanation" {
 		t.Fatalf("return lost: %#v", ret)
 	}
-	diagnostics := asList(doc["diagnostics"])
-	if len(diagnostics) != 1 || asMap(diagnostics[0])["code"] != "unknown_annotation" {
+	diagnostics := doc.Diagnostics
+	if len(diagnostics) != 1 || diagnostics[0].Code != "unknown_annotation" {
 		t.Fatalf("unknown metadata disappeared: %#v", diagnostics)
 	}
 }
@@ -96,7 +95,10 @@ func TestLuaIntegerArithmeticDoesNotRoundThroughFloat(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	if doc["Large"] != int64(9007199254740994) || doc["Negative"] != int64(-9007199254740993) || doc["Wide"] != json.Number("9223372036854775808") {
+	large, _ := doc["Large"].Integer()
+	negative, _ := doc["Negative"].Integer()
+	wide, _ := doc["Wide"].Integer()
+	if large != "9007199254740994" || negative != "-9007199254740993" || wide != "9223372036854775808" {
 		t.Fatalf("integer precision lost: %#v", doc)
 	}
 }
@@ -109,4 +111,17 @@ func TestInvalidUTF8CannotBecomeReplacementCharacters(t *testing.T) {
 	if _, e := ParseAnnotations([]byte{'-', '-', '-', '@', 'c', 'l', 'a', 's', 's', ' ', 255}, "bad.lua"); e == nil {
 		t.Fatal("invalid UTF8 annotation accepted")
 	}
+}
+
+func rawArgument(t *testing.T, doc literal.Object, key string, index int) literal.Object {
+	t.Helper()
+	values, ok := doc[key].Array()
+	if !ok || index >= len(values) {
+		t.Fatalf("missing raw %s[%d]", key, index)
+	}
+	value, ok := values[index].Object()
+	if !ok {
+		t.Fatalf("raw %s[%d] is not an object", key, index)
+	}
+	return value
 }

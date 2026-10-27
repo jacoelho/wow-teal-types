@@ -42,9 +42,9 @@ func ReadVersion(root string) (Version, error) {
 	return Version{strings.TrimSuffix(string(data), "\n"), strings.Join(match[1:4], "."), values[3], values[0]*10000 + values[1]*100 + values[2]}, nil
 }
 
-func (v Version) Require(identity map[string]any) error {
-	if identity["version"] != v.Full || intValue(identity["build"]) != v.Build {
-		return fmt.Errorf(".wow-version selects %s; source cohort is %v. Stage and review the selected release first", v.Full, identity["version"])
+func (v Version) Require(fullVersion string, build int) error {
+	if fullVersion != v.Full || build != v.Build {
+		return fmt.Errorf(".wow-version selects %s; source cohort is %v. Stage and review the selected release first", v.Full, fullVersion)
 	}
 	return nil
 }

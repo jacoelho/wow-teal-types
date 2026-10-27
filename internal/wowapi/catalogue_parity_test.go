@@ -26,13 +26,16 @@ func TestRecordedNativeLiteralsAreLossless(t *testing.T) {
 	if _, e := os.Stat(p.InputPath("blizzard", "BuildDocumentation.lua")); e != nil {
 		t.Skip("native inputs absent; run bootstrap first")
 	}
-	report, e := readJSON(filepath.Join(root, "evidence/generated/wow_native_metadata.json"))
+	var report MetadataReport
+	data, e := os.ReadFile(filepath.Join(root, "evidence/generated/wow_native_metadata.json"))
+	if e == nil {
+		e = decodeJSON(data, &report)
+	}
 	if e != nil {
 		t.Fatal(e)
 	}
-	for _, v := range asList(report["documents"]) {
-		document := asMap(v)
-		source := asString(document["source"])
+	for _, document := range report.Documents {
+		source := document.Source
 		name := source[len("blizzard:"):]
 		data, e := os.ReadFile(p.InputPath("blizzard", name))
 		if e != nil {
@@ -42,7 +45,7 @@ func TestRecordedNativeLiteralsAreLossless(t *testing.T) {
 		if e != nil {
 			t.Fatalf("%s: %v", name, e)
 		}
-		want := document["metadata"]
+		want := document.Metadata
 		a, _ := jsonCompact(actual)
 		b, _ := jsonCompact(want)
 		if !bytes.Equal(a, b) {
@@ -73,7 +76,7 @@ func TestGenerateMatchesReviewedArtifactsAndIsDeterministic(t *testing.T) {
 	// Compute the audit's byte contract independently of the renderer and the
 	// evidence serializer, from the files returned to the generation caller.
 	graph := map[string]string{}
-	for _, name := range []string{"wow.d.tl", "wow_env.d.tl", "wow_secure_env.d.tl"} {
+	for _, name := range []string{"wow.d.tl", "wow_env.d.tl", "wow_secure_env.d.tl", "call_policy.lua"} {
 		graph[name] = string(first.Files["types/wow/"+name])
 	}
 	carrier, err := os.ReadFile(filepath.Join(root, "types/wow/native_values.d.tl"))
@@ -83,7 +86,10 @@ func TestGenerateMatchesReviewedArtifactsAndIsDeterministic(t *testing.T) {
 	var encoded bytes.Buffer
 	encoder := json.NewEncoder(&encoded)
 	encoder.SetEscapeHTML(false)
-	if err = encoder.Encode(map[string]any{"generated": graph, "native_values": string(carrier)}); err != nil {
+	if err = encoder.Encode(struct {
+		Generated    map[string]string `json:"generated"`
+		NativeValues string            `json:"native_values"`
+	}{graph, string(carrier)}); err != nil {
 		t.Fatal(err)
 	}
 	var canonical bytes.Buffer

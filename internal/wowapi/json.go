@@ -4,41 +4,48 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"math"
-	"reflect"
-	"strconv"
-	"strings"
 	"unicode/utf16"
+
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 // The three formats are existing byte contracts: review digests, interned names,
 // and human-readable reports. Native metadata separately retains literal UTF-8.
-func jsonCompact(v any) ([]byte, error)    { return encodeJSON(v, false, false, true) }
-func jsonDefault(v any) ([]byte, error)    { return encodeJSON(v, false, true, true) }
-func jsonPretty(v any) ([]byte, error)     { return encodeJSON(v, true, false, true) }
-func jsonPrettyUTF8(v any) ([]byte, error) { return encodeJSON(v, true, false, false) }
-func digest(v any) (string, error) {
+func jsonCompact[T any](v T) ([]byte, error)    { return encodeJSON(v, false, false, true) }
+func jsonDefault[T any](v T) ([]byte, error)    { return encodeJSON(v, false, true, true) }
+func jsonPretty[T any](v T) ([]byte, error)     { return encodeJSON(v, true, false, true) }
+func jsonPrettyUTF8[T any](v T) ([]byte, error) { return encodeJSON(v, true, false, false) }
+func digest[T any](v T) (string, error) {
 	b, e := jsonCompact(v)
 	if e != nil {
 		return "", e
 	}
 	return sha256hex(b), nil
 }
-func encodeJSON(v any, pretty, spaced, ascii bool) ([]byte, error) {
+func encodeJSON[T any](v T, pretty, spaced, ascii bool) ([]byte, error) {
 	var b bytes.Buffer
 	enc := json.NewEncoder(&b)
 	enc.SetEscapeHTML(false)
-	if pretty {
-		enc.SetIndent("", "  ")
+	if err := enc.Encode(v); err != nil {
+		return nil, err
 	}
-	normalized, err := pythonNumbers(reflect.ValueOf(v))
+	// The closed syntax tree is local to the codec. Domain inputs remain their
+	// concrete types; sorting is a persisted-byte rule, including struct fields.
+	syntax, err := literal.ParseJSON(b.Bytes())
 	if err != nil {
 		return nil, err
 	}
-	if err := enc.Encode(normalized); err != nil {
+	data, err := syntax.MarshalJSON()
+	if err != nil {
 		return nil, err
 	}
-	data := bytes.TrimSuffix(b.Bytes(), []byte("\n"))
+	if pretty {
+		var indented bytes.Buffer
+		if err = json.Indent(&indented, data, "", "  "); err != nil {
+			return nil, err
+		}
+		data = indented.Bytes()
+	}
 	if spaced && !pretty {
 		var out bytes.Buffer
 		quoted, escaped := false, false
@@ -78,67 +85,4 @@ func encodeJSON(v any, pretty, spaced, ascii bool) ([]byte, error) {
 		data = append(data, '\n')
 	}
 	return data, nil
-}
-
-// Python source fingerprints distinguish an integer from an integral float.
-// Keep the shortest round-tripping float with Python's fixed/exponent bounds.
-func pythonNumbers(v reflect.Value) (any, error) {
-	if !v.IsValid() {
-		return nil, nil
-	}
-	if v.Kind() == reflect.Interface || v.Kind() == reflect.Pointer {
-		if v.IsNil() {
-			return nil, nil
-		}
-		return pythonNumbers(v.Elem())
-	}
-	switch v.Kind() {
-	case reflect.Float32, reflect.Float64:
-		f := v.Float()
-		if math.IsNaN(f) || math.IsInf(f, 0) {
-			return nil, fmt.Errorf("non-finite JSON number")
-		}
-		a := math.Abs(f)
-		style := byte('f')
-		if a != 0 && (a < 1e-4 || a >= 1e16) {
-			style = 'e'
-		}
-		text := strconv.FormatFloat(f, style, -1, 64)
-		if style == 'f' && !strings.Contains(text, ".") {
-			text += ".0"
-		}
-		return json.Number(text), nil
-	case reflect.Map:
-		if v.IsNil() {
-			return nil, nil
-		}
-		if v.Type().Key().Kind() != reflect.String {
-			return nil, fmt.Errorf("JSON object keys must be strings")
-		}
-		m := map[string]any{}
-		iter := v.MapRange()
-		for iter.Next() {
-			value, e := pythonNumbers(iter.Value())
-			if e != nil {
-				return nil, e
-			}
-			m[iter.Key().String()] = value
-		}
-		return m, nil
-	case reflect.Slice, reflect.Array:
-		if v.Kind() == reflect.Slice && v.IsNil() {
-			return nil, nil
-		}
-		r := make([]any, v.Len())
-		for i := range r {
-			value, e := pythonNumbers(v.Index(i))
-			if e != nil {
-				return nil, e
-			}
-			r[i] = value
-		}
-		return r, nil
-	default:
-		return v.Interface(), nil
-	}
 }

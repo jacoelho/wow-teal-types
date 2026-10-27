@@ -3,6 +3,7 @@ local mode, root = arg[1], arg[2]
 local expected = {DurationTextBindingObject = {"Assign", "CanFormatText", "CanUpdateFontString", "ClearTextColorCurve", "Copy", "Disable", "Enable", "GetDuration", "GetExpiredText", "GetFontString", "GetFormattedText", "GetFormattedTextColor", "GetTextColorCurve", "GetTimeModifier", "GetUpdateInterval", "GetZeroDurationText", "HasSecretValues", "IsEnabled", "SetDuration", "SetEnabled", "SetExpiredText", "SetFontString", "SetFormatter", "SetTextColorCurve", "SetTextFormat", "SetTimeModifier", "SetToDefaults", "SetUpdateInterval", "SetZeroDurationText", "UpdateFontString"}, LuaDurationClockObject = {"GetTime"}, LuaDurationManualClock = {"AdvanceTime", "ResetTime", "RewindTime", "SetTime"}, LuaLocaleContext = {"CompareStrings", "FindBreaks", "FindStringMatches", "FoldCase", "FormatCurrency", "FormatDate", "FormatDateTime", "FormatNumber", "FormatTime", "GetCurrencyName", "GetDisplayName", "GetLocale", "GetSortKey", "Length", "ParseCurrency", "ParseNumber", "SelectPlural", "SetLocale", "ToLower", "ToTitle", "ToUpper", "TransformLocale"}, RadialProgress = {"GetFromPercent", "GetToPercent", "SetFromPercent", "SetToPercent"}, VectorGraphics = {"ClearSVG", "GetSVGFileID", "HasSVG", "SetSVG"}, TimedSignalMap = {"CancelAllSignals", "CancelSignal", "GetNextSignal", "GetSignalCount", "GetSignalTime", "HasSignal", "SignalAfter", "SignalAt"}}
 local private, resources, counts = {}, {}, {}
 local forbidden, disabled, messages = 0, 0, {}
+local unexpectedQueryCalls = 0
 local secret = {_secret=true}
 local proxies, tableProof, firstCaller = {}, {}, {}
 local attemptedIndexes, unauthorizedIndexes = 0, 0
@@ -24,10 +25,19 @@ local function object(name)
   for _,method in ipairs(expected[name] or {}) do
     result[method]=function() forbidden=forbidden+1; error('method invocation forbidden') end
   end
-  result.GetObjectType=function() return name end
-  result.IsObjectType=function(_,query)
-    assert(type(query)=='string' and #query<32)
-    return query==name
+  if name=='RadialProgress' or name=='VectorGraphics' then
+    result.GetObjectType=function() return name end
+    result.IsObjectType=function(_,query)
+      assert(type(query)=='string' and #query<32)
+      return query==name
+    end
+  end
+  if name=='LuaLocaleContext' and mode=='unexpected_query' then
+    local function unexpected()
+      unexpectedQueryCalls=unexpectedQueryCalls+1
+      error('uncontracted query must not be invoked')
+    end
+    result.GetObjectType, result.IsObjectType=unexpected, unexpected
   end
   if name=='DurationTextBindingObject' then
     result.Disable=function()
@@ -41,7 +51,7 @@ local function object(name)
   end
   if name=='RadialProgress' and mode=='query_secret' then result.GetObjectType=function() return secret end end
   if name=='RadialProgress' and mode=='query_malformed' then result.GetObjectType=function() return 42 end end
-  if name=='LuaLocaleContext' and mode=='query_absent' then result.GetObjectType=nil; result.IsObjectType=nil end
+  if name=='RadialProgress' and mode=='query_absent' then result.GetObjectType=nil; result.IsObjectType=nil end
   if name=='VectorGraphics' then
     result.GetRotation=function() forbidden=forbidden+1; error('candidate invocation forbidden') end
     result.SetRotation=function() forbidden=forbidden+1; error('candidate invocation forbidden') end
@@ -234,8 +244,8 @@ elseif mode=='query_secret' then
 elseif mode=='query_malformed' then
  assert(radial.queries[1].state=='invalid_result' and radial.queries[1].value==nil)
 elseif mode=='query_absent' then
- assert(#locale.queries==8)
- for _,query in ipairs(locale.queries) do assert(query.state=='absent') end
+ assert(#radial.queries==8)
+ for _,query in ipairs(radial.queries) do assert(query.state=='absent' and query.value==nil) end
 elseif mode=='wrong_build' then
  assert(result.outcome=='build_mismatch' and result.capabilityCaptureComplete==false)
 elseif mode=='cleanup_error' then
@@ -243,21 +253,59 @@ elseif mode=='cleanup_error' then
 elseif mode=='frame_error' then
  assert(radial.factory=='call_error' and families.SimpleVectorGraphicsAPI.factory=='call_error')
 end
-if mode=='normal' or mode=='query_absent' or mode=='query_secret' or mode=='query_malformed' or mode=='caller_scoped' then
+if mode=='normal' or mode=='unexpected_query' or mode=='query_absent' or mode=='query_secret' or mode=='query_malformed' or mode=='caller_scoped' then
  assert(result.outcome=='capabilities_collected' and result.capabilityCaptureComplete==true)
  assert(result.presentMethods==73)
 else assert(result.capabilityCaptureComplete==false) end
 if mode=='normal' or mode=='caller_scoped' then
- local queryCount=0
+ local queryCount, available, absent, ids=0,0,0,{}
+ local canonical={DurationTextBindingObjectAPI='DurationTextBindingObject',LuaDurationClockObjectAPI='LuaDurationClockObject',LuaDurationManualClockAPI='LuaDurationManualClock',LuaLocaleContextAPI='LuaLocaleContext',TimedSignalMapAPI='TimedSignalMap',SimpleAnimRadialProgressAPI='RadialProgress',SimpleVectorGraphicsAPI='VectorGraphics'}
+ local queryNames={'Animation','RadialProgress','Region','LayeredRegion','ScriptObject','UIObject','VectorGraphics'}
  for _,family in ipairs(result.families) do
-  for _,query in ipairs(family.queries) do assert(query.state=='available'); queryCount=queryCount+1 end
+  local nativeQueries=family.family=='SimpleAnimRadialProgressAPI' or family.family=='SimpleVectorGraphicsAPI'
+  assert(#family.queries==8)
+  for index,query in ipairs(family.queries) do
+   local suffix=index==1 and 'GetObjectType' or 'IsObjectType.'..queryNames[index-1]
+   assert(query.caseID==canonical[family.family]..'.query.'..suffix)
+   assert(not ids[query.caseID], 'duplicate query identity')
+   ids[query.caseID]=true
+   queryCount=queryCount+1
+   if nativeQueries then
+    assert(query.state=='available')
+    assert(type(query.value)==(index==1 and 'string' or 'boolean'))
+    available=available+1
+   else
+    assert(query.state=='absent' and query.value==nil)
+    absent=absent+1
+   end
+  end
  end
- assert(queryCount==56)
+ assert(queryCount==56 and available==16 and absent==40)
  assert(radial.queries[2].caseID=='RadialProgress.query.IsObjectType.Animation')
  assert(radial.queries[6].caseID=='RadialProgress.query.IsObjectType.ScriptObject')
  assert(radial.queries[3].value==true)
 end
+local function unverifiedQueries(report)
+ local target
+ for _,family in ipairs(report.families) do
+  if family.family=='LuaLocaleContextAPI' then target=family end
+ end
+ assert(target and #target.queries==8)
+ local expectedIDs={['LuaLocaleContext.query.GetObjectType']=true}
+ for _,name in ipairs({'Animation','RadialProgress','Region','LayeredRegion','ScriptObject','UIObject','VectorGraphics'}) do
+  expectedIDs['LuaLocaleContext.query.IsObjectType.'..name]=true
+ end
+ for _,query in ipairs(target.queries) do
+  assert(expectedIDs[query.caseID], 'unexpected or duplicate query identity')
+  expectedIDs[query.caseID]=nil
+  assert(query.state=='unverified_signature' and query.value==nil)
+ end
+ assert(next(expectedIDs)==nil and unexpectedQueryCalls==0)
+ assert(report.presentMethods==73 and report.capabilityCaptureComplete==true)
+end
+if mode=='unexpected_query' then unverifiedQueries(result) end
 SlashCmdList.WOWAPIPROBE('capture')
+if mode=='unexpected_query' then unverifiedQueries(WoWAPIProbeDB) end
 assert(WoWAPIProbeDB~=result,'replace the bounded last report atomically')
 assert(counts.binding==2 and counts.clock==2 and counts.locale==2 and counts.map==2)
 assert(counts.frame==1,'cached UI construction must be bounded across captures, including failures')

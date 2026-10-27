@@ -2,7 +2,11 @@ package wowapi
 
 import (
 	"bytes"
+	"crypto/sha256"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"maps"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -16,10 +20,28 @@ func TestProbePlanMatchesFrozenIndependentPlan(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	expected, err := readJSON(filepath.Join(root, "internal/wowapi/testdata/probe_plan.json"))
+	expected, err := readCaptureJSON[ProbePlan](filepath.Join(root, "internal/wowapi/testdata/probe_plan.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
+	declarations := map[string]string{}
+	for _, name := range []string{"wow.d.tl", "wow_env.d.tl", "wow_secure_env.d.tl", "native_values.d.tl"} {
+		data, err := os.ReadFile(filepath.Join(root, "types/wow", name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		declarations[name] = fmt.Sprintf("%x", sha256.Sum256(data))
+	}
+	encoded, err := json.Marshal(declarations)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := fmt.Sprintf("%x", sha256.Sum256(encoded)); plan.DeclarationFingerprint != want {
+		t.Fatalf("probe declaration fingerprint = %s, want %s", plan.DeclarationFingerprint, want)
+	}
+	// The retained plan fixes the inventory; its historical declaration bytes
+	// intentionally differ from this explicitly reviewed compiler migration.
+	plan.DeclarationFingerprint, expected.DeclarationFingerprint = "", ""
 	if !evEqual(plan, expected) {
 		actual, err := jsonPretty(plan)
 		if err != nil {
@@ -39,7 +61,7 @@ func TestGeneratedProbeRuntimeAndOwnedPublication(t *testing.T) {
 	if _, err := p.BuildProbe(t.Context(), output, ""); err != nil {
 		t.Fatal(err)
 	}
-	manifest, err := readJSON(filepath.Join(output, "probe-build.json"))
+	manifest, err := readCaptureJSON[ProbeBuildManifest](filepath.Join(output, "probe-build.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,14 +71,14 @@ func TestGeneratedProbeRuntimeAndOwnedPublication(t *testing.T) {
 	}
 	if !capEqualSet(expected, func() map[string]bool {
 		m := map[string]bool{}
-		for name := range asMap(manifest["files"]) {
+		for name := range manifest.Files {
 			m[name] = true
 		}
 		return m
 	}()) {
 		t.Fatal("probe runtime inventory changed")
 	}
-	for name, expected := range asMap(manifest["files"]) {
+	for name, expected := range manifest.Files {
 		data, err := os.ReadFile(filepath.Join(output, name))
 		if err != nil {
 			t.Fatal(err)
@@ -73,7 +95,7 @@ func TestGeneratedProbeRuntimeAndOwnedPublication(t *testing.T) {
 		}
 	}
 	for driver, modes := range map[string][]string{
-		"probe_presence_driver.lua":   {"normal", "combat", "report_error", "absent", "constructor_error", "constructor_malformed", "secret", "inaccessible", "table_inaccessible", "query_secret", "query_malformed", "query_absent", "wrong_build", "cleanup_error", "frame_error", "caller_scoped", "caller_denied", "caller_lookup_error"},
+		"probe_presence_driver.lua":   {"normal", "combat", "report_error", "absent", "constructor_error", "constructor_malformed", "secret", "inaccessible", "table_inaccessible", "query_secret", "query_malformed", "query_absent", "unexpected_query", "wrong_build", "cleanup_error", "frame_error", "caller_scoped", "caller_denied", "caller_lookup_error"},
 		"probe_invocation_driver.lua": {"normal", "combat", "unknown_context", "wrong_build", "wrong_interface", "wrong_project", "wrong_getter", "wrong_font", "tuple_short", "tuple_swap", "secret_return", "inaccessible_return", "native_error", "svg_unavailable", "svg_error", "cleanup_error", "diag_noop", "diag_zero_interval", "diag_changing", "diag_sentinel_error", "diag_sentinel_noop", "diag_setup_error", "diag_setter_tuple", "diag_fact_wrong_identity", "diag_fact_wrong_number", "diag_fact_secret", "diag_fact_inaccessible", "diag_fact_wrong_type", "diag_read_call_error", "diag_read_zero", "diag_read_multi", "diag_read_nil", "diag_read_secret", "diag_read_inaccessible", "diag_read_wrong_type", "diag_read_oversized", "diag_read_empty", "diag_read_nonempty", "clock_split", "sample_bytes", "sample_empty", "sample_128", "sample_129", "experiment_error", "default_time_secret", "native_plural", "projection_noop", "projection_noop_stale", "projection_error", "update_tuple", "update_error", "pending_abort"},
 	} {
 		for _, mode := range modes {
@@ -91,7 +113,7 @@ func TestGeneratedProbeRuntimeAndOwnedPublication(t *testing.T) {
 		t.Fatal(err)
 	}
 	after := captureProbeFiles(t, output)
-	if !evEqual(before, after) {
+	if !maps.Equal(before, after) {
 		t.Fatal("repeated probe build changed owned output")
 	}
 	path := filepath.Join(output, "WoWAPIProbe/Runtime.lua")
@@ -107,9 +129,9 @@ func TestGeneratedProbeRuntimeAndOwnedPublication(t *testing.T) {
 		t.Fatal("probe lost local changes")
 	}
 }
-func captureProbeFiles(t *testing.T, root string) M {
+func captureProbeFiles(t *testing.T, root string) map[string]string {
 	t.Helper()
-	out := M{}
+	out := map[string]string{}
 	err := filepath.WalkDir(root, func(path string, entry os.DirEntry, e error) error {
 		if e != nil {
 			return e
@@ -138,7 +160,7 @@ func TestPreviousProbeOwnershipLayoutIsCheckedBeforeUpgrade(t *testing.T) {
 	for _, mutation := range []string{"", "edited", "extra"} {
 		t.Run(mutation, func(t *testing.T) {
 			output := filepath.Join(t.TempDir(), "previous")
-			files := M{}
+			files := map[string]string{}
 			for _, name := range probePreviousRuntimeFiles {
 				data := []byte("-- previous owned runtime\n")
 				path := filepath.Join(output, name)
@@ -150,7 +172,10 @@ func TestPreviousProbeOwnershipLayoutIsCheckedBeforeUpgrade(t *testing.T) {
 				}
 				files[name] = sha256hex(data)
 			}
-			encoded, err := jsonPretty(M{"probe": "1.0.0", "files": files})
+			encoded, err := jsonPretty(struct {
+				Files map[string]string `json:"files"`
+				Probe string            `json:"probe"`
+			}{files, "1.0.0"})
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -193,7 +218,7 @@ func TestProbeCompileFailurePreservesPreviousOutput(t *testing.T) {
 	}
 	before := captureProbeFiles(t, output)
 	compiler := filepath.Join(t.TempDir(), "failing-compiler")
-	body := "#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then printf '0.24.8\\n'; exit 0; fi\nprintf 'synthetic compiler failure\\n' >&2\nexit 1\n"
+	body := "#!/bin/sh\nif [ \"$1\" = \"--version\" ]; then printf '0.24.8-wow.1\\n'; exit 0; fi\nprintf 'synthetic compiler failure\\n' >&2\nexit 1\n"
 	if err := os.WriteFile(compiler, []byte(body), 0755); err != nil {
 		t.Fatal(err)
 	}
@@ -239,7 +264,7 @@ func TestProbePublicationFailurePreservesPreviousOutput(t *testing.T) {
 			if err := os.MkdirAll(publication, 0755); err != nil {
 				t.Fatal(err)
 			}
-			files := M{}
+			files := map[string]string{}
 			previous := []byte("-- previous owned probe bytes\n")
 			for _, name := range probePreviousRuntimeFiles {
 				path := filepath.Join(output, name)
@@ -251,7 +276,10 @@ func TestProbePublicationFailurePreservesPreviousOutput(t *testing.T) {
 				}
 				files[name] = sha256hex(previous)
 			}
-			manifest, err := jsonPretty(M{"probe": "1.0.0", "files": files})
+			manifest, err := jsonPretty(struct {
+				Files map[string]string `json:"files"`
+				Probe string            `json:"probe"`
+			}{files, "1.0.0"})
 			if err != nil {
 				t.Fatal(err)
 			}

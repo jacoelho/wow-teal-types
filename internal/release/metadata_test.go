@@ -1,10 +1,10 @@
 package release
 
 import (
-	"encoding/json"
+	"bytes"
+	"maps"
 	"os"
 	"path/filepath"
-	"reflect"
 	"runtime"
 	"strings"
 	"testing"
@@ -31,11 +31,11 @@ func metadataFixture(t *testing.T) string {
 	for _, name := range append(consumer.RequiredFiles(), "package.json", "LICENSE", "README.md", "examples/minimal/WowTealExample.toc", "scripts/wow_api/sources.json", "scripts/wow_api/client_sources.json") {
 		copyFile(name)
 	}
-	provenance, err := readObject(filepath.Join(root, "provenance.json"))
+	provenance, err := readJSON[provenanceRecord](filepath.Join(root, "provenance.json"))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for name := range obj(provenance["source_lock_sha256"]) {
+	for name := range provenance.SourceLockSHA256 {
 		if name != "extractor.json" {
 			copyFile("scripts/wow_api/" + name)
 		}
@@ -60,14 +60,14 @@ func TestMetadataPreparationPreservesInputsAndExactVersionBytes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(before, metadataInputs(t, root)) {
+	if !maps.Equal(before, metadataInputs(t, root)) {
 		t.Fatal("metadata preparation changed inputs")
 	}
-	var manifest M
-	if err = json.Unmarshal(artifacts["package.json"], &manifest); err != nil {
+	manifest, err := consumer.ParsePackageManifest(artifacts["package.json"])
+	if err != nil {
 		t.Fatal(err)
 	}
-	if obj(manifest["files"])[".wow-version"] != sha([]byte("12.1.5.70575")) {
+	if manifest.Files[".wow-version"] != sha([]byte("12.1.5.70575")) {
 		t.Fatal("metadata fingerprint normalized the version bytes")
 	}
 	if err = writeCandidateArtifacts(root, artifacts); err != nil {
@@ -81,7 +81,7 @@ func TestMetadataPreparationPreservesInputsAndExactVersionBytes(t *testing.T) {
 	if _, err = prepareMetadata(root); err == nil || !strings.Contains(err.Error(), "source cohort") {
 		t.Fatalf("expected cohort refusal, got %v", err)
 	}
-	if !reflect.DeepEqual(before, metadataInputs(t, root)) {
+	if !maps.Equal(before, metadataInputs(t, root)) {
 		t.Fatal("rejected cohort changed inputs")
 	}
 }
@@ -108,7 +108,27 @@ func TestMetadataComparisonRejectsStaleFilesWithoutRefresh(t *testing.T) {
 	if err = compareArtifacts(root, artifacts); err == nil || !strings.Contains(err.Error(), "stale generated output: README.md") {
 		t.Fatalf("expected stale metadata, got %v", err)
 	}
-	if !reflect.DeepEqual(before, metadataInputs(t, root)) {
+	if !maps.Equal(before, metadataInputs(t, root)) {
 		t.Fatal("metadata comparison refreshed stale inputs")
+	}
+}
+
+func TestProvenanceSerializationPreservesApprovedBytes(t *testing.T) {
+	root := metadataFixture(t)
+	path := filepath.Join(root, "provenance.json")
+	before, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	value, err := readJSON[provenanceRecord](path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	after, err := jsonBytes(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(before, after) {
+		t.Fatal("concrete provenance representation changed approved bytes")
 	}
 }

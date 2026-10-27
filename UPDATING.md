@@ -7,9 +7,10 @@
 make generate
 ```
 
-Use the source checkout on Linux or macOS. Install Go 1.27+, Teal 0.24.8,
-Rust/Cargo, LuaJIT, `zstd` and Git first. All project tooling runs in Go; Python,
-PyYAML and a virtual environment are unnecessary. The generator uses a pinned Go
+Use the source checkout on Linux or macOS. Install Go 1.27+, Rust/Cargo, LuaJIT,
+`zstd` and Git first. The pinned compiler is bundled under `tools/teal`. Acquisition, generation and consumer tooling run in Go; they need no Python
+or virtual environment. Reproducing the compiler patch separately uses Python 3
+and `patch`, as described in [the compiler contract](tools/teal/README.md). The generator uses a pinned Go
 YAML dependency with explicit node validation. The CDN extractor has a separate,
 standard-library-only Go module. The pinned Rust reader remains an independent
 TSM cross-check. No extraction repository checkout or running WoW client is needed.
@@ -20,7 +21,8 @@ coverage, runs Teal and secret checks on the consumer example, and verifies
 repeatable generation. It replaces the maintained outputs only after every check
 passes. Source locks, provenance, package fingerprints, README target, example TOC
 and recipe follow the selected version automatically. Package and compiler
-versions remain separate inputs in `package.json`.
+versions remain separate from the WoW version. The consumer owns the compiler
+version; release metadata records it in `package.json`.
 
 Annotation and cross-check revisions stay pinned. A WoW version change does not
 silently select newer third-party code or relabel older evidence. Concurrent

@@ -1,15 +1,15 @@
 # WoW Teal Types
 
 World of Warcraft API declarations and secret-value checks for Teal addons.
-Targets Retail **12.1.5.70575** with **Teal 0.24.8**, generating Lua 5.1 without
+Targets Retail **12.1.5.70575** with the bundled **Teal 0.24.8-wow.1**, generating Lua 5.1 without
 compatibility code. Nothing from this package needs to run inside WoW.
 
 ## Add to your addon
 
 Place a pinned checkout or extracted package at `vendor/wow-teal-types`.
-The development tools support Linux and macOS. Install Go 1.27+ and
-Teal 0.24.8. Put `tl` on `PATH`, or set `TL` to its
-executable.
+The development tools support Linux and macOS. Install Go 1.27+ and LuaJIT.
+The package includes its pinned compiler. Set `LUA` to use another Lua 5.1
+interpreter. A `TL` override must provide the same compiler version and capabilities.
 
 ```text
 MyAddon/

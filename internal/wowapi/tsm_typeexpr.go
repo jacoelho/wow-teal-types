@@ -1,27 +1,91 @@
 package wowapi
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 type factFailure struct{ message string }
 
-func factFail(format string, args ...any) { panic(factFailure{fmt.Sprintf(format, args...)}) }
+func factFail(message string) { panic(factFailure{message}) }
 
-type factNode = []any
+// factNode is the interpreted type-expression tree, separate from source literals.
+type factNode = *typeFactNode
+type typeFactNode struct {
+	kind       string
+	text       string
+	index      int
+	children   []factNode
+	parameters []factParameter
+	returns    []factNode
+}
+type factParameter struct {
+	optional, variadic bool
+	value              factNode
+}
 
-func fn(kind string, values ...any) factNode { return append([]any{kind}, values...) }
-func kindOf(n factNode) string {
-	if len(n) == 0 {
+func nameFact(name string) factNode               { return &typeFactNode{kind: "name", text: name} }
+func textFact(kind, text string) factNode         { return &typeFactNode{kind: kind, text: text} }
+func indexedFact(kind string, index int) factNode { return &typeFactNode{kind: kind, index: index} }
+func compoundFact(kind string, children ...factNode) factNode {
+	return &typeFactNode{kind: kind, children: children}
+}
+func genericFact(name string, children ...factNode) factNode {
+	return &typeFactNode{kind: "generic", text: name, children: children}
+}
+func callableFact(parameters []factParameter, returns []factNode) factNode {
+	return &typeFactNode{kind: "callable", parameters: parameters, returns: returns}
+}
+func kindOf(node factNode) string {
+	if node == nil {
 		return ""
 	}
-	return asString(n[0])
+	return node.kind
 }
-func childNode(v any) factNode { return asList(v) }
+func (node *typeFactNode) literal() literal.Value {
+	if node == nil {
+		return literal.Value{}
+	}
+	values := []literal.Value{literal.Text(node.kind)}
+	switch node.kind {
+	case "name", "literal":
+		values = append(values, literal.Text(node.text))
+	case "class-name":
+		if node.text != "" {
+			values = append(values, literal.Text(node.text))
+		} else {
+			values = append(values, literal.Int(int64(node.index)))
+		}
+	case "variable", "pack":
+		values = append(values, literal.Int(int64(node.index)))
+	case "generic":
+		values = append(values, literal.Text(node.text))
+		for _, child := range node.children {
+			values = append(values, child.literal())
+		}
+	case "callable":
+		parameters := make([]literal.Value, 0, len(node.parameters))
+		for _, p := range node.parameters {
+			parameters = append(parameters, literal.List([]literal.Value{literal.Text("parameter"), literal.Bool(p.optional), literal.Bool(p.variadic), p.value.literal()}))
+		}
+		returns := make([]literal.Value, 0, len(node.returns))
+		for _, r := range node.returns {
+			returns = append(returns, r.literal())
+		}
+		values = append(values, literal.List(parameters), literal.List(returns))
+	default:
+		for _, child := range node.children {
+			values = append(values, child.literal())
+		}
+	}
+	return literal.List(values)
+}
+func (node *typeFactNode) MarshalJSON() ([]byte, error) { return json.Marshal(node.literal()) }
 
 type sourceTypeReader struct {
 	text       string
@@ -45,7 +109,7 @@ func (r *sourceTypeReader) token(s string) bool {
 }
 func (r *sourceTypeReader) require(s string) {
 	if !r.token(s) {
-		factFail("expected %s at %s", s, r.tail40())
+		factFail(fmt.Sprintf("expected %s at %s", s, r.tail40()))
 	}
 }
 func (r *sourceTypeReader) tail40() string { return r.text[r.pos:min(len(r.text), r.pos+40)] }
@@ -57,7 +121,7 @@ func (r *sourceTypeReader) identifier() string {
 	r.space()
 	s := sourceIdent.FindString(r.text[r.pos:])
 	if s == "" {
-		factFail("expected type name at %s", r.tail40())
+		factFail(fmt.Sprintf("expected type name at %s", r.tail40()))
 	}
 	r.pos += len(s)
 	return s
@@ -68,38 +132,38 @@ func (r *sourceTypeReader) expression() factNode {
 		factFail("type fact nesting exceeds 48 levels")
 	}
 	defer func() { r.depth-- }()
-	a := []any{r.intersection()}
+	a := []factNode{r.intersection()}
 	for r.token("|") {
 		a = append(a, r.intersection())
 	}
 	if len(a) == 1 {
-		return childNode(a[0])
+		return a[0]
 	}
-	return fn("union", a...)
+	return compoundFact("union", a...)
 }
 func (r *sourceTypeReader) intersection() factNode {
 	unary := r.token("&")
-	a := []any{r.atom()}
+	a := []factNode{r.atom()}
 	for r.token("&") {
 		a = append(a, r.atom())
 	}
-	if unary && (len(a) != 1 || kindOf(childNode(a[0])) != "variadic") {
+	if unary && (len(a) != 1 || kindOf(a[0]) != "variadic") {
 		factFail("unary intersection requires a type pack")
 	}
 	if unary || len(a) > 1 {
-		return fn("intersection", a...)
+		return compoundFact("intersection", a...)
 	}
-	return childNode(a[0])
+	return a[0]
 }
 func (r *sourceTypeReader) atom() factNode {
 	r.space()
 	if r.token("...") {
 		r.space()
-		v := fn("name", "untyped-vararg")
+		v := nameFact("untyped-vararg")
 		if r.pos < len(r.text) && !strings.ContainsRune(",)|&#", rune(r.text[r.pos])) {
 			v = r.atom()
 		}
-		return fn("variadic", v)
+		return compoundFact("variadic", v)
 	}
 	var value factNode
 	if r.token("(") {
@@ -129,16 +193,16 @@ func (r *sourceTypeReader) atom() factNode {
 			if !regexp.MustCompile(`^[A-Za-z_]\w*$`).MatchString(s) {
 				factFail("backtick requires a generic class-name binder")
 			}
-			value = fn("class-name", s)
+			value = textFact("class-name", s)
 		} else {
-			value = fn("literal", unquoteSource(raw))
+			value = textFact("literal", unquoteSource(raw))
 		}
 	} else {
 		r.space()
 		num := sourceNumber.FindString(r.text[r.pos:])
 		if num != "" {
 			r.pos += len(num)
-			value = fn("name", "number")
+			value = nameFact("number")
 		} else {
 			name := r.identifier()
 			if (name == "fun" || name == "function") && r.token("(") {
@@ -147,9 +211,9 @@ func (r *sourceTypeReader) atom() factNode {
 				if name == "true" || name == "false" {
 					name = "boolean"
 				}
-				value = fn("name", name)
+				value = nameFact(name)
 				if r.token("<") {
-					args := []any{r.expression()}
+					args := []factNode{r.expression()}
 					for r.token(",") {
 						args = append(args, r.expression())
 					}
@@ -157,18 +221,18 @@ func (r *sourceTypeReader) atom() factNode {
 					if name == "table" && len(args) != 2 {
 						factFail("table generic requires key and value types")
 					}
-					value = fn("generic", append([]any{name}, args...)...)
+					value = genericFact(name, args...)
 				}
 			}
 		}
 	}
 	for {
 		if r.token("[]") {
-			value = fn("array", value)
+			value = compoundFact("array", value)
 		} else if r.token("?") {
-			value = fn("union", value, fn("name", "nil"))
+			value = compoundFact("union", value, nameFact("nil"))
 		} else if r.token("...") {
-			value = fn("variadic", value)
+			value = compoundFact("variadic", value)
 		} else {
 			break
 		}
@@ -176,7 +240,7 @@ func (r *sourceTypeReader) atom() factNode {
 	return value
 }
 func (r *sourceTypeReader) callable() factNode {
-	params := []any{}
+	params := []factParameter{}
 	if !r.token(")") {
 		for {
 			variadic := r.token("...")
@@ -189,11 +253,11 @@ func (r *sourceTypeReader) callable() factNode {
 			if r.token(":") {
 				v = r.expression()
 			} else if variadic {
-				v = fn("name", "untyped-vararg")
+				v = nameFact("untyped-vararg")
 			} else {
-				factFail("untyped callback parameter: %s", name)
+				factFail(fmt.Sprintf("untyped callback parameter: %s", name))
 			}
-			params = append(params, fn("parameter", optional, variadic, v))
+			params = append(params, factParameter{optional, variadic, v})
 			if r.token(")") {
 				break
 			}
@@ -203,14 +267,14 @@ func (r *sourceTypeReader) callable() factNode {
 			}
 		}
 	}
-	returns := []any{}
+	returns := []factNode{}
 	if r.token(":") {
 		returns = append(returns, r.expression())
 		for r.token(",") {
 			returns = append(returns, r.expression())
 		}
 	}
-	return fn("callable", params, returns)
+	return callableFact(params, returns)
 }
 func readSourceType(text string, prefix bool) (n factNode, end int, err error) {
 	defer func() {
@@ -234,7 +298,7 @@ func readSourceType(text string, prefix bool) (n factNode, end int, err error) {
 	end = r.pos
 	r.space()
 	if !prefix && r.pos != len(text) {
-		factFail("unsupported type suffix: %s", text[r.pos:])
+		factFail(fmt.Sprintf("unsupported type suffix: %s", text[r.pos:]))
 	}
 	return n, end, nil
 }
@@ -256,7 +320,7 @@ func unquoteSource(raw string) string {
 	}
 	value, err := strconv.Unquote(raw)
 	if err != nil {
-		factFail("invalid type literal: %s", raw)
+		factFail(fmt.Sprintf("invalid type literal: %s", raw))
 	}
 	return value
 }

@@ -1,11 +1,14 @@
 package wowapi
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"unicode/utf8"
+
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 const annotationName = `[A-Za-z_][A-Za-z_0-9.\-]*`
@@ -74,7 +77,7 @@ func annotationTypeEnd(text string, start int) int {
 	} else {
 		match := annotationTypePrefix.FindString(text[i:])
 		if match == "" {
-			reject("unrecognized type prefix: %s", text[i:min(i+40, len(text))])
+			reject(fmt.Sprintf("unrecognized type prefix: %s", text[i:min(i+40, len(text))]))
 		}
 		i += len(match)
 		after := i
@@ -83,6 +86,8 @@ func annotationTypeEnd(text string, start int) int {
 		}
 		if after < len(text) && text[after] == '<' {
 			i = annotationBalancedEnd(text, after)
+		} else if match == "..." && after < len(text) && text[after] == ':' {
+			i = annotationTypeEnd(text, after+1)
 		}
 	}
 	for i < len(text) {
@@ -112,11 +117,11 @@ func SplitAnnotationType(text string) (raw, tail string, err error) {
 	raw, tail = splitAnnotationType(text)
 	return
 }
-func namedAnnotationType(text string, field bool) M {
-	var visibility any
+func namedAnnotationType(text string, field bool) AnnotationParameter {
+	var visibility *string
 	if field {
 		if match := annotationVisibility.FindStringSubmatch(text); match != nil {
-			visibility = match[1]
+			visibility = stringPointer(match[1])
 			text = text[len(match[0]):]
 		}
 	}
@@ -133,20 +138,20 @@ func namedAnnotationType(text string, field bool) M {
 	name := text[:end]
 	raw, description := splitAnnotationType(strings.TrimSpace(text[end:]))
 	if raw == "" {
-		reject("missing type for %s", name)
+		reject(fmt.Sprintf("missing type for %s", name))
 	}
-	return M{"name": strings.TrimSuffix(name, "?"), "type": raw, "optional": strings.HasSuffix(name, "?"), "variadic": strings.HasPrefix(name, "..."), "description": description, "visibility": visibility}
+	return AnnotationParameter{Name: strings.TrimSuffix(name, "?"), Type: raw, Optional: strings.HasSuffix(name, "?"), Variadic: strings.HasPrefix(name, "..."), Description: description, Visibility: visibility}
 }
-func annotationLiteral(text string) any {
+func annotationLiteral(text string) AnnotationConstant {
 	switch text {
 	case "true":
-		return true
+		return AnnotationConstant{kind: constantBoolean, boolean: true}
 	case "false":
-		return false
+		return AnnotationConstant{kind: constantBoolean}
 	case "nil":
-		return nil
+		return AnnotationConstant{}
 	}
-	var result any = text
+	result := AnnotationConstant{kind: constantString, text: text}
 	func() {
 		defer func() {
 			if r := recover(); r != nil {
@@ -156,12 +161,12 @@ func annotationLiteral(text string) any {
 			}
 		}()
 		if strings.HasPrefix(text, "\"") || strings.HasPrefix(text, "'") {
-			result, _ = quotedLiteral(text)
+			result.text, _ = quotedLiteral(text)
 			return
 		}
 		if strings.Contains(text, ".") {
 			if n, e := strconv.ParseFloat(text, 64); e == nil {
-				result = n
+				result = AnnotationConstant{kind: constantFloat, number: literal.Float(n)}
 			}
 		} else {
 			base := 10
@@ -171,7 +176,7 @@ func annotationLiteral(text string) any {
 				value = text[2:]
 			}
 			if n, e := strconv.ParseInt(value, base, 64); e == nil {
-				result = n
+				result = AnnotationConstant{kind: constantInteger, integer: n}
 			}
 		}
 	}()
@@ -179,31 +184,30 @@ func annotationLiteral(text string) any {
 }
 
 // ParseAnnotations retains declaration metadata and unsupported annotations without executing Lua.
-func ParseAnnotations(data []byte, relative string) (result M, err error) {
+func ParseAnnotations(data []byte, relative string) (result AnnotationDocument, err error) {
 	defer captureError(&err)
 	if !utf8.Valid(data) {
-		reject("%s: invalid UTF-8 annotations", relative)
+		reject(fmt.Sprintf("%s: invalid UTF-8 annotations", relative))
 	}
-	result = M{"path": relative}
-	for _, key := range []string{"aliases", "classes", "functions", "enums", "bindings", "annotations", "diagnostics"} {
-		result[key] = []any{}
-	}
+	result = AnnotationDocument{Path: relative, Aliases: []*AnnotationAlias{}, Annotations: []AnnotationTag{}, Bindings: []AnnotationBinding{}, Classes: []*AnnotationClass{}, Diagnostics: []AnnotationDiagnostic{}, Enums: []*AnnotationEnum{}, Functions: []*AnnotationFunction{}}
 	source := strings.ReplaceAll(string(data), "\r\n", "\n")
 	source = strings.ReplaceAll(source, "\r", "\n")
-	pending := []any{}
-	var activeClass, bindingClass, activeAlias, activeEnum M
+	pending := []AnnotationTag{}
+	var activeClass, bindingClass *AnnotationClass
+	var activeAlias *AnnotationAlias
+	var activeEnum *AnnotationEnum
 	bindings := map[string]string{}
-	classes := map[string]M{}
-	diagnostic := func(number any, code, message, raw string) {
-		result["diagnostics"] = append(asList(result["diagnostics"]), M{"line": number, "code": code, "message": message, "raw": raw})
+	classes := map[string]*AnnotationClass{}
+	diagnostic := func(number int, code, message, raw string) {
+		result.Diagnostics = append(result.Diagnostics, AnnotationDiagnostic{Line: number, Code: code, Message: message, Raw: raw})
 	}
 	for index, original := range strings.Split(source, "\n") {
 		number := index + 1
 		line := strings.TrimSpace(original)
 		if tag := annotationTag.FindStringSubmatch(line); tag != nil {
 			kind, text := tag[1], tag[2]
-			annotation := M{"kind": kind, "value": text, "line": number, "raw": original}
-			result["annotations"] = append(asList(result["annotations"]), annotation)
+			annotation := AnnotationTag{Kind: kind, Value: text, Line: number, Raw: original}
+			result.Annotations = append(result.Annotations, annotation)
 			if !annotationKnown[kind] {
 				diagnostic(number, "unknown_annotation", kind, original)
 			}
@@ -224,28 +228,28 @@ func ParseAnnotations(data []byte, relative string) (result M, err error) {
 					if match == nil {
 						reject("unrecognized class declaration")
 					}
-					bases := []any{}
+					bases := []string{}
 					for _, base := range strings.Split(match[3], ",") {
 						if s := strings.TrimSpace(base); s != "" {
 							bases = append(bases, s)
 						}
 					}
-					var attrs any
+					var attrs *string
 					if match[1] != "" {
-						attrs = match[1]
+						attrs = stringPointer(match[1])
 					}
-					activeClass = M{"name": match[2], "bases": bases, "attributes": attrs, "fields": []any{}, "methods": []any{}, "binding": nil, "line": number, "raw": original}
+					activeClass = &AnnotationClass{Name: match[2], Bases: bases, Attributes: attrs, Fields: []AnnotationParameter{}, Methods: []*AnnotationFunction{}, Line: number, Raw: original}
 					classes[match[2]] = activeClass
-					result["classes"] = append(asList(result["classes"]), activeClass)
+					result.Classes = append(result.Classes, activeClass)
 					bindingClass = activeClass
 					activeAlias = nil
 				case "field":
 					value := namedAnnotationType(text, true)
-					value["line"], value["raw"] = number, original
+					value.Line, value.Raw = number, original
 					if activeClass == nil {
 						diagnostic(number, "orphan_field", "field has no preceding class", original)
 					} else {
-						activeClass["fields"] = append(asList(activeClass["fields"]), value)
+						activeClass.Fields = append(activeClass.Fields, value)
 					}
 				case "alias":
 					match := annotationAlias.FindStringSubmatch(text)
@@ -253,12 +257,12 @@ func ParseAnnotations(data []byte, relative string) (result M, err error) {
 						reject("unrecognized alias declaration")
 					}
 					raw, description := splitAnnotationType(match[2])
-					activeAlias = M{"name": match[1], "type": raw, "description": description, "alternatives": []any{}, "line": number, "raw": original}
-					result["aliases"] = append(asList(result["aliases"]), activeAlias)
+					activeAlias = &AnnotationAlias{Name: match[1], Type: raw, Description: description, Alternatives: []AnnotationAlternative{}, Line: number, Raw: original}
+					result.Aliases = append(result.Aliases, activeAlias)
 					bindingClass = nil
 				case "enum":
-					activeEnum = M{"name": text, "binding": nil, "values": []any{}, "line": number, "raw": original}
-					result["enums"] = append(asList(result["enums"]), activeEnum)
+					activeEnum = &AnnotationEnum{Name: text, Values: []AnnotationEnumValue{}, Line: number, Raw: original}
+					result.Enums = append(result.Enums, activeEnum)
 					activeAlias = nil
 				default:
 					if kind != "meta" && kind != "diagnostic" && kind != "see" {
@@ -286,7 +290,7 @@ func ParseAnnotations(data []byte, relative string) (result M, err error) {
 					alt := strings.TrimSpace(line[4:])
 					isDefault := strings.HasPrefix(alt, ">")
 					expression, description := splitAnnotationType(strings.TrimPrefix(alt, ">"))
-					activeAlias["alternatives"] = append(asList(activeAlias["alternatives"]), M{"type": expression, "description": description, "default": isDefault, "line": number, "raw": original})
+					activeAlias.Alternatives = append(activeAlias.Alternatives, AnnotationAlternative{Type: expression, Description: description, Default: isDefault, Line: number, Raw: original})
 				}()
 			}
 			continue
@@ -309,28 +313,28 @@ func ParseAnnotations(data []byte, relative string) (result M, err error) {
 			if value, ok := bindings[owner]; ok {
 				owner = value
 			}
-			var ownerValue, rawOwnerValue any
+			var ownerValue, rawOwnerValue *string
 			if owner != "" {
-				ownerValue = owner
+				ownerValue = stringPointer(owner)
 			}
 			if rawOwner != "" {
-				rawOwnerValue = rawOwner
+				rawOwnerValue = stringPointer(rawOwner)
 			}
-			arguments := []any{}
+			arguments := []string{}
 			for _, part := range strings.Split(args, ",") {
 				if s := strings.TrimSpace(part); s != "" {
 					arguments = append(arguments, s)
 				}
 			}
-			item := M{"name": member, "qualified_name": name, "owner": ownerValue, "raw_owner": rawOwnerValue, "method": method, "arguments": arguments, "params": []any{}, "returns": []any{}, "overloads": []any{}, "generics": []any{}, "annotations": pending, "line": number, "raw": original}
+			item := &AnnotationFunction{Name: member, QualifiedName: name, Owner: ownerValue, RawOwner: rawOwnerValue, Method: method, Arguments: arguments, Params: []AnnotationParameter{}, Returns: []AnnotationReturn{}, Overloads: []string{}, Generics: []string{}, Annotations: pending, Line: number, Raw: original}
 			for _, v := range pending {
-				ann := asMap(v)
-				kind, text := asString(ann["kind"]), asString(ann["value"])
+				ann := v
+				kind, text := ann.Kind, ann.Value
 				func() {
 					defer func() {
 						if r := recover(); r != nil {
 							if e, ok := r.(conversionError); ok {
-								diagnostic(ann["line"], "function_annotation_parse", e.Error(), asString(ann["raw"]))
+								diagnostic(ann.Line, "function_annotation_parse", e.Error(), ann.Raw)
 							} else {
 								panic(r)
 							}
@@ -339,41 +343,41 @@ func ParseAnnotations(data []byte, relative string) (result M, err error) {
 					switch kind {
 					case "param":
 						value := namedAnnotationType(text, false)
-						value["line"], value["raw"] = ann["line"], ann["raw"]
-						item["params"] = append(asList(item["params"]), value)
+						value.Line, value.Raw = ann.Line, ann.Raw
+						item.Params = append(item.Params, value)
 					case "return":
 						raw, tail := splitAnnotationType(text)
 						label := annotationReturnLabel.FindStringSubmatch(tail)
-						var name any
+						var name *string
 						description := tail
 						variadic := false
 						if label != nil {
-							name = label[1]
+							name = stringPointer(label[1])
 							description = label[2]
 							variadic = label[1] == "..."
 						}
-						item["returns"] = append(asList(item["returns"]), M{"type": raw, "name": name, "variadic": variadic, "description": description, "line": ann["line"], "raw": ann["raw"]})
+						item.Returns = append(item.Returns, AnnotationReturn{Type: raw, Name: name, Variadic: variadic, Description: stringPointer(description), Line: ann.Line, Raw: ann.Raw})
 					case "generic":
-						item["generics"] = append(asList(item["generics"]), text)
+						item.Generics = append(item.Generics, text)
 					case "overload":
-						item["overloads"] = append(asList(item["overloads"]), text)
+						item.Overloads = append(item.Overloads, text)
 					}
 				}()
 			}
-			result["functions"] = append(asList(result["functions"]), item)
+			result.Functions = append(result.Functions, item)
 			if cls := classes[owner]; cls != nil {
-				cls["methods"] = append(asList(cls["methods"]), item)
+				cls.Methods = append(cls.Methods, item)
 			}
-			pending = []any{}
+			pending = []AnnotationTag{}
 			bindingClass = nil
 			continue
 		}
-		if activeEnum != nil && activeEnum["binding"] != nil {
+		if activeEnum != nil && activeEnum.Binding != nil {
 			if strings.HasPrefix(line, "}") {
 				activeEnum = nil
 			} else if value := annotationEnumValue.FindStringSubmatch(line); value != nil {
 				raw := strings.TrimSpace(strings.TrimRight(value[2], ","))
-				activeEnum["values"] = append(asList(activeEnum["values"]), M{"name": value[1], "value": annotationLiteral(raw), "raw_value": raw, "line": number, "raw": original})
+				activeEnum.Values = append(activeEnum.Values, AnnotationEnumValue{Name: value[1], Value: annotationLiteral(raw), RawValue: raw, Line: number, Raw: original})
 			} else {
 				diagnostic(number, "enum_value_parse", "unrecognized enum value", original)
 			}
@@ -381,21 +385,21 @@ func ParseAnnotations(data []byte, relative string) (result M, err error) {
 		}
 		if binding := annotationBinding.FindStringSubmatch(line); binding != nil {
 			local, name, value := binding[1] != "", binding[2], binding[3]
-			item := M{"name": name, "value": value, "local": local, "line": number, "raw": original, "class": nil}
+			item := AnnotationBinding{Name: name, Value: value, Local: local, Line: number, Raw: original}
 			if bindingClass != nil {
-				item["class"] = bindingClass["name"]
-				bindingClass["binding"] = name
-				bindings[name] = asString(bindingClass["name"])
+				item.Class = stringPointer(bindingClass.Name)
+				bindingClass.Binding = stringPointer(name)
+				bindings[name] = bindingClass.Name
 				bindingClass = nil
 			}
-			result["bindings"] = append(asList(result["bindings"]), item)
+			result.Bindings = append(result.Bindings, item)
 			if activeEnum != nil {
-				activeEnum["binding"] = name
+				activeEnum.Binding = stringPointer(name)
 				if strings.HasSuffix(strings.TrimSpace(value), "}") {
 					activeEnum = nil
 				}
 			}
-			pending = []any{}
+			pending = []AnnotationTag{}
 			continue
 		}
 		if strings.Contains(line, "function") {
@@ -403,19 +407,19 @@ func ParseAnnotations(data []byte, relative string) (result M, err error) {
 		} else if !strings.HasPrefix(line, "end") && !strings.HasPrefix(line, "}") && !strings.HasPrefix(line, "{") {
 			diagnostic(number, "unparsed_code", "code retained without declaration interpretation", original)
 		}
-		pending = []any{}
+		pending = []AnnotationTag{}
 		bindingClass = nil
 	}
 	for _, value := range pending {
-		ann := asMap(value)
-		diagnostic(ann["line"], "orphan_annotation", "annotation not followed by a declaration", asString(ann["raw"]))
+		ann := value
+		diagnostic(ann.Line, "orphan_annotation", "annotation not followed by a declaration", ann.Raw)
 	}
 	return
 }
-func parseAnnotationFile(path, relative string) (M, error) {
+func parseAnnotationFile(path, relative string) (AnnotationDocument, error) {
 	data, e := os.ReadFile(path)
 	if e != nil {
-		return nil, e
+		return AnnotationDocument{}, e
 	}
 	return ParseAnnotations(data, relative)
 }

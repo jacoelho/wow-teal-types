@@ -23,15 +23,13 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
-      - name: Install pinned compiler
+      - name: Install compiler runtime
         run: |
           sudo apt-get update
-          sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
-          luarocks --lua-version=5.1 --tree="$RUNNER_TEMP/rocks" install tl 0.24.8-1
-          echo "$RUNNER_TEMP/rocks/bin" >> "$GITHUB_PATH"
+          sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks luajit
       - name: Check and test
         run: |
-          tl --version
+          tools/teal/tl --version
           bash check-all.sh
           GOTOOLCHAIN=local GOWORK=off go test ./internal/consumer
           bin/wow-teal build examples/minimal --output build/WowTealExample

@@ -78,12 +78,10 @@ jobs:
           version="$(bin/wow-teal version)"
           test "$GITHUB_REF" = "refs/tags/v$version" || { echo "Run an upload from the matching package version tag." >&2; exit 1; }
           test "$(git rev-parse HEAD)" = "$(git rev-parse "refs/tags/v$version^{commit}")"
-      - name: Install pinned compiler
+      - name: Install compiler runtime
         run: |
           sudo apt-get update
-          sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
-          luarocks --lua-version=5.1 --tree="$RUNNER_TEMP/rocks" install tl 0.24.8-1
-          echo "$RUNNER_TEMP/rocks/bin" >> "$GITHUB_PATH"
+          sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks luajit
       - name: Verify tagged snapshot
         run: |
           bash check-all.sh

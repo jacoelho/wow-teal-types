@@ -823931,6 +823931,976 @@
         {
           "arguments": [],
           "generics": [],
+          "line": 15,
+          "method": true,
+          "overloads": [],
+          "parameters": [],
+          "returns": [
+            {
+              "label": "layer",
+              "type": "DrawLayer"
+            },
+            {
+              "label": "sublayer",
+              "type": "number"
+            }
+          ],
+          "security": {},
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+        }
+      ],
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "selection": {
+        "active": [
+          {
+            "arguments": [],
+            "generics": [],
+            "line": 15,
+            "method": true,
+            "overloads": [],
+            "parameters": [],
+            "returns": [
+              {
+                "label": "layer",
+                "type": "DrawLayer"
+              },
+              {
+                "label": "sublayer",
+                "type": "number"
+              }
+            ],
+            "security": {},
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "basis": [
+          "tsm:util.rs:164",
+          "tsm:util.rs:265",
+          "tsm:pre_globals_mod.rs:2593",
+          "tsm:pre_globals_mod.rs:2964"
+        ],
+        "discarded": [],
+        "mode": "single-definition",
+        "order_uncertain": false,
+        "possible_primary": [
+          {
+            "arguments": [],
+            "generics": [],
+            "line": 15,
+            "method": true,
+            "overloads": [],
+            "parameters": [],
+            "returns": [
+              {
+                "label": "layer",
+                "type": "DrawLayer"
+              },
+              {
+                "label": "sublayer",
+                "type": "number"
+              }
+            ],
+            "security": {},
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "primary_security_options": [
+          {
+            "security": {},
+            "sources": [
+              {
+                "line": 15,
+                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+              }
+            ]
+          }
+        ]
+      },
+      "symbol": "LayeredRegion.GetDrawLayer",
+      "tsm_symbol": "Region.GetDrawLayer",
+      "variants": [
+        {
+          "branch": "",
+          "differences": [],
+          "effective_function_security": {},
+          "line": 15,
+          "possible_primary_sources": [
+            {
+              "line": 15,
+              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+            }
+          ],
+          "raw_differences": [],
+          "raw_security": {},
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+          "type_facts": [
+            {
+              "fact": {
+                "carrier_type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
+                "evidence": [
+                  {
+                    "line": 13,
+                    "name": "DrawLayer",
+                    "source": "vendor/Annotations/Core/Widget/UIType/UIType.lua"
+                  }
+                ],
+                "features": [],
+                "nilable": false,
+                "raw": "DrawLayer",
+                "secret": false,
+                "secret_wrappers": [],
+                "type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
+                "variadic": false
+              },
+              "position": 1,
+              "side": "return"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "candidates": [
+        {
+          "arguments": [],
+          "generics": [],
+          "line": 34,
+          "method": true,
+          "overloads": [],
+          "parameters": [],
+          "returns": [
+            {
+              "label": "colorR",
+              "type": "number"
+            },
+            {
+              "label": "colorG",
+              "type": "number"
+            },
+            {
+              "label": "colorB",
+              "type": "number"
+            },
+            {
+              "label": "colorA",
+              "type": "number"
+            }
+          ],
+          "security": {
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+        }
+      ],
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "selection": {
+        "active": [
+          {
+            "arguments": [],
+            "generics": [],
+            "line": 34,
+            "method": true,
+            "overloads": [],
+            "parameters": [],
+            "returns": [
+              {
+                "label": "colorR",
+                "type": "number"
+              },
+              {
+                "label": "colorG",
+                "type": "number"
+              },
+              {
+                "label": "colorB",
+                "type": "number"
+              },
+              {
+                "label": "colorA",
+                "type": "number"
+              }
+            ],
+            "security": {
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "basis": [
+          "tsm:util.rs:164",
+          "tsm:util.rs:265",
+          "tsm:pre_globals_mod.rs:2593",
+          "tsm:pre_globals_mod.rs:2964"
+        ],
+        "discarded": [],
+        "mode": "single-definition",
+        "order_uncertain": false,
+        "possible_primary": [
+          {
+            "arguments": [],
+            "generics": [],
+            "line": 34,
+            "method": true,
+            "overloads": [],
+            "parameters": [],
+            "returns": [
+              {
+                "label": "colorR",
+                "type": "number"
+              },
+              {
+                "label": "colorG",
+                "type": "number"
+              },
+              {
+                "label": "colorB",
+                "type": "number"
+              },
+              {
+                "label": "colorA",
+                "type": "number"
+              }
+            ],
+            "security": {
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "primary_security_options": [
+          {
+            "security": {
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "sources": [
+              {
+                "line": 34,
+                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+              }
+            ]
+          }
+        ]
+      },
+      "symbol": "LayeredRegion.GetVertexColor",
+      "tsm_symbol": "Region.GetVertexColor",
+      "variants": [
+        {
+          "branch": "",
+          "differences": [
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 1,
+              "tsm": false
+            },
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 2,
+              "tsm": false
+            },
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 3,
+              "tsm": false
+            },
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 4,
+              "tsm": false
+            }
+          ],
+          "effective_function_security": {
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "line": 34,
+          "possible_primary_sources": [
+            {
+              "line": 34,
+              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+            }
+          ],
+          "raw_differences": [
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 1,
+              "tsm": false
+            },
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 2,
+              "tsm": false
+            },
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 3,
+              "tsm": false
+            },
+            {
+              "kind": "return-nilable",
+              "native": true,
+              "position": 4,
+              "tsm": false
+            }
+          ],
+          "raw_security": {
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+          "type_facts": []
+        }
+      ]
+    },
+    {
+      "candidates": [
+        {
+          "arguments": [
+            "layer",
+            "sublevel"
+          ],
+          "generics": [],
+          "line": 66,
+          "method": true,
+          "overloads": [],
+          "parameters": [
+            {
+              "name": "layer",
+              "optional": false,
+              "type": "DrawLayer"
+            },
+            {
+              "name": "sublevel",
+              "optional": true,
+              "type": "number"
+            }
+          ],
+          "returns": [],
+          "security": {
+            "secret-args": [
+              "untainted"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+        }
+      ],
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "selection": {
+        "active": [
+          {
+            "arguments": [
+              "layer",
+              "sublevel"
+            ],
+            "generics": [],
+            "line": 66,
+            "method": true,
+            "overloads": [],
+            "parameters": [
+              {
+                "name": "layer",
+                "optional": false,
+                "type": "DrawLayer"
+              },
+              {
+                "name": "sublevel",
+                "optional": true,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "security": {
+              "secret-args": [
+                "untainted"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "basis": [
+          "tsm:util.rs:164",
+          "tsm:util.rs:265",
+          "tsm:pre_globals_mod.rs:2593",
+          "tsm:pre_globals_mod.rs:2964"
+        ],
+        "discarded": [],
+        "mode": "single-definition",
+        "order_uncertain": false,
+        "possible_primary": [
+          {
+            "arguments": [
+              "layer",
+              "sublevel"
+            ],
+            "generics": [],
+            "line": 66,
+            "method": true,
+            "overloads": [],
+            "parameters": [
+              {
+                "name": "layer",
+                "optional": false,
+                "type": "DrawLayer"
+              },
+              {
+                "name": "sublevel",
+                "optional": true,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "security": {
+              "secret-args": [
+                "untainted"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "primary_security_options": [
+          {
+            "security": {
+              "secret-args": [
+                "untainted"
+              ]
+            },
+            "sources": [
+              {
+                "line": 66,
+                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+              }
+            ]
+          }
+        ]
+      },
+      "symbol": "LayeredRegion.SetDrawLayer",
+      "tsm_symbol": "Region.SetDrawLayer",
+      "variants": [
+        {
+          "branch": "",
+          "differences": [],
+          "effective_function_security": {
+            "secret-args": [
+              "untainted"
+            ]
+          },
+          "line": 66,
+          "possible_primary_sources": [
+            {
+              "line": 66,
+              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+            }
+          ],
+          "raw_differences": [],
+          "raw_security": {
+            "secret-args": [
+              "untainted"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+          "type_facts": [
+            {
+              "fact": {
+                "carrier_type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
+                "evidence": [
+                  {
+                    "line": 13,
+                    "name": "DrawLayer",
+                    "source": "vendor/Annotations/Core/Widget/UIType/UIType.lua"
+                  }
+                ],
+                "features": [],
+                "nilable": false,
+                "raw": "DrawLayer",
+                "secret": false,
+                "secret_wrappers": [],
+                "type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
+                "variadic": false
+              },
+              "position": 1,
+              "side": "argument"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "candidates": [
+        {
+          "arguments": [
+            "colorR",
+            "colorG",
+            "colorB",
+            "a"
+          ],
+          "generics": [],
+          "line": 92,
+          "method": true,
+          "overloads": [],
+          "parameters": [
+            {
+              "name": "colorR",
+              "optional": false,
+              "type": "number"
+            },
+            {
+              "name": "colorG",
+              "optional": false,
+              "type": "number"
+            },
+            {
+              "name": "colorB",
+              "optional": false,
+              "type": "number"
+            },
+            {
+              "name": "a",
+              "optional": true,
+              "type": "SingleColorValue"
+            }
+          ],
+          "returns": [],
+          "security": {
+            "secret-args": [
+              "tainted"
+            ],
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+        }
+      ],
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "selection": {
+        "active": [
+          {
+            "arguments": [
+              "colorR",
+              "colorG",
+              "colorB",
+              "a"
+            ],
+            "generics": [],
+            "line": 92,
+            "method": true,
+            "overloads": [],
+            "parameters": [
+              {
+                "name": "colorR",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "colorG",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "colorB",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "a",
+                "optional": true,
+                "type": "SingleColorValue"
+              }
+            ],
+            "returns": [],
+            "security": {
+              "secret-args": [
+                "tainted"
+              ],
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "basis": [
+          "tsm:util.rs:164",
+          "tsm:util.rs:265",
+          "tsm:pre_globals_mod.rs:2593",
+          "tsm:pre_globals_mod.rs:2964"
+        ],
+        "discarded": [],
+        "mode": "single-definition",
+        "order_uncertain": false,
+        "possible_primary": [
+          {
+            "arguments": [
+              "colorR",
+              "colorG",
+              "colorB",
+              "a"
+            ],
+            "generics": [],
+            "line": 92,
+            "method": true,
+            "overloads": [],
+            "parameters": [
+              {
+                "name": "colorR",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "colorG",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "colorB",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "a",
+                "optional": true,
+                "type": "SingleColorValue"
+              }
+            ],
+            "returns": [],
+            "security": {
+              "secret-args": [
+                "tainted"
+              ],
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "primary_security_options": [
+          {
+            "security": {
+              "secret-args": [
+                "tainted"
+              ],
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "sources": [
+              {
+                "line": 92,
+                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+              }
+            ]
+          }
+        ]
+      },
+      "symbol": "LayeredRegion.SetVertexColor",
+      "tsm_symbol": "Region.SetVertexColor",
+      "variants": [
+        {
+          "branch": "",
+          "differences": [],
+          "effective_function_security": {
+            "secret-args": [
+              "tainted"
+            ],
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "line": 92,
+          "possible_primary_sources": [
+            {
+              "line": 92,
+              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+            }
+          ],
+          "raw_differences": [],
+          "raw_security": {
+            "secret-args": [
+              "tainted"
+            ],
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+          "type_facts": [
+            {
+              "fact": {
+                "carrier_type": "number",
+                "evidence": [
+                  {
+                    "line": 35,
+                    "name": "SingleColorValue",
+                    "source": "vendor/Annotations/Core/Type/BlizzardType.lua"
+                  }
+                ],
+                "features": [],
+                "nilable": false,
+                "raw": "SingleColorValue",
+                "secret": false,
+                "secret_wrappers": [],
+                "type": "number",
+                "variadic": false
+              },
+              "position": 4,
+              "side": "argument"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "candidates": [
+        {
+          "arguments": [
+            "value",
+            "colorIfTrue",
+            "colorIfFalse"
+          ],
+          "generics": [],
+          "line": 101,
+          "method": true,
+          "overloads": [],
+          "parameters": [
+            {
+              "name": "value",
+              "optional": false,
+              "type": "boolean"
+            },
+            {
+              "name": "colorIfTrue",
+              "optional": false,
+              "type": "colorRGBA"
+            },
+            {
+              "name": "colorIfFalse",
+              "optional": false,
+              "type": "colorRGBA"
+            }
+          ],
+          "returns": [],
+          "security": {
+            "secret-args": [
+              "tainted"
+            ],
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+        }
+      ],
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "selection": {
+        "active": [
+          {
+            "arguments": [
+              "value",
+              "colorIfTrue",
+              "colorIfFalse"
+            ],
+            "generics": [],
+            "line": 101,
+            "method": true,
+            "overloads": [],
+            "parameters": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "boolean"
+              },
+              {
+                "name": "colorIfTrue",
+                "optional": false,
+                "type": "colorRGBA"
+              },
+              {
+                "name": "colorIfFalse",
+                "optional": false,
+                "type": "colorRGBA"
+              }
+            ],
+            "returns": [],
+            "security": {
+              "secret-args": [
+                "tainted"
+              ],
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "basis": [
+          "tsm:util.rs:164",
+          "tsm:util.rs:265",
+          "tsm:pre_globals_mod.rs:2593",
+          "tsm:pre_globals_mod.rs:2964"
+        ],
+        "discarded": [],
+        "mode": "single-definition",
+        "order_uncertain": false,
+        "possible_primary": [
+          {
+            "arguments": [
+              "value",
+              "colorIfTrue",
+              "colorIfFalse"
+            ],
+            "generics": [],
+            "line": 101,
+            "method": true,
+            "overloads": [],
+            "parameters": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "boolean"
+              },
+              {
+                "name": "colorIfTrue",
+                "optional": false,
+                "type": "colorRGBA"
+              },
+              {
+                "name": "colorIfFalse",
+                "optional": false,
+                "type": "colorRGBA"
+              }
+            ],
+            "returns": [],
+            "security": {
+              "secret-args": [
+                "tainted"
+              ],
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+          }
+        ],
+        "primary_security_options": [
+          {
+            "security": {
+              "secret-args": [
+                "tainted"
+              ],
+              "secret-aspect": [
+                "VertexColor",
+                "Alpha"
+              ]
+            },
+            "sources": [
+              {
+                "line": 101,
+                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+              }
+            ]
+          }
+        ]
+      },
+      "symbol": "LayeredRegion.SetVertexColorFromBoolean",
+      "tsm_symbol": "Region.SetVertexColorFromBoolean",
+      "variants": [
+        {
+          "branch": "",
+          "differences": [
+            {
+              "kind": "argument-type",
+              "native": "ColorMixin",
+              "position": 2,
+              "tsm": "colorRGBA"
+            },
+            {
+              "kind": "argument-type",
+              "native": "ColorMixin",
+              "position": 3,
+              "tsm": "colorRGBA"
+            }
+          ],
+          "effective_function_security": {
+            "secret-args": [
+              "tainted"
+            ],
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "line": 101,
+          "possible_primary_sources": [
+            {
+              "line": 101,
+              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
+            }
+          ],
+          "raw_differences": [
+            {
+              "kind": "argument-type",
+              "native": "ColorMixin",
+              "position": 2,
+              "tsm": "colorRGBA"
+            },
+            {
+              "kind": "argument-type",
+              "native": "ColorMixin",
+              "position": 3,
+              "tsm": "colorRGBA"
+            }
+          ],
+          "raw_security": {
+            "secret-args": [
+              "tainted"
+            ],
+            "secret-aspect": [
+              "VertexColor",
+              "Alpha"
+            ]
+          },
+          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+          "type_facts": []
+        }
+      ]
+    },
+    {
+      "candidates": [
+        {
+          "arguments": [],
+          "generics": [],
           "line": 10,
           "method": true,
           "overloads": [],
@@ -870441,139 +871411,6 @@
         {
           "arguments": [],
           "generics": [],
-          "line": 15,
-          "method": true,
-          "overloads": [],
-          "parameters": [],
-          "returns": [
-            {
-              "label": "layer",
-              "type": "DrawLayer"
-            },
-            {
-              "label": "sublayer",
-              "type": "number"
-            }
-          ],
-          "security": {},
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-        }
-      ],
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "selection": {
-        "active": [
-          {
-            "arguments": [],
-            "generics": [],
-            "line": 15,
-            "method": true,
-            "overloads": [],
-            "parameters": [],
-            "returns": [
-              {
-                "label": "layer",
-                "type": "DrawLayer"
-              },
-              {
-                "label": "sublayer",
-                "type": "number"
-              }
-            ],
-            "security": {},
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "basis": [
-          "tsm:util.rs:164",
-          "tsm:util.rs:265",
-          "tsm:pre_globals_mod.rs:2593",
-          "tsm:pre_globals_mod.rs:2964"
-        ],
-        "discarded": [],
-        "mode": "single-definition",
-        "order_uncertain": false,
-        "possible_primary": [
-          {
-            "arguments": [],
-            "generics": [],
-            "line": 15,
-            "method": true,
-            "overloads": [],
-            "parameters": [],
-            "returns": [
-              {
-                "label": "layer",
-                "type": "DrawLayer"
-              },
-              {
-                "label": "sublayer",
-                "type": "number"
-              }
-            ],
-            "security": {},
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "primary_security_options": [
-          {
-            "security": {},
-            "sources": [
-              {
-                "line": 15,
-                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-              }
-            ]
-          }
-        ]
-      },
-      "symbol": "Region.GetDrawLayer",
-      "tsm_symbol": "Region.GetDrawLayer",
-      "variants": [
-        {
-          "branch": "",
-          "differences": [],
-          "effective_function_security": {},
-          "line": 15,
-          "possible_primary_sources": [
-            {
-              "line": 15,
-              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-            }
-          ],
-          "raw_differences": [],
-          "raw_security": {},
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-          "type_facts": [
-            {
-              "fact": {
-                "carrier_type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
-                "evidence": [
-                  {
-                    "line": 13,
-                    "name": "DrawLayer",
-                    "source": "vendor/Annotations/Core/Widget/UIType/UIType.lua"
-                  }
-                ],
-                "features": [],
-                "nilable": false,
-                "raw": "DrawLayer",
-                "secret": false,
-                "secret_wrappers": [],
-                "type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
-                "variadic": false
-              },
-              "position": 1,
-              "side": "return"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "candidates": [
-        {
-          "arguments": [],
-          "generics": [],
           "line": 20,
           "method": true,
           "overloads": [],
@@ -870808,221 +871645,6 @@
           "raw_security": {
             "secret-aspect": [
               "Scale"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-          "type_facts": []
-        }
-      ]
-    },
-    {
-      "candidates": [
-        {
-          "arguments": [],
-          "generics": [],
-          "line": 34,
-          "method": true,
-          "overloads": [],
-          "parameters": [],
-          "returns": [
-            {
-              "label": "colorR",
-              "type": "number"
-            },
-            {
-              "label": "colorG",
-              "type": "number"
-            },
-            {
-              "label": "colorB",
-              "type": "number"
-            },
-            {
-              "label": "colorA",
-              "type": "number"
-            }
-          ],
-          "security": {
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-        }
-      ],
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "selection": {
-        "active": [
-          {
-            "arguments": [],
-            "generics": [],
-            "line": 34,
-            "method": true,
-            "overloads": [],
-            "parameters": [],
-            "returns": [
-              {
-                "label": "colorR",
-                "type": "number"
-              },
-              {
-                "label": "colorG",
-                "type": "number"
-              },
-              {
-                "label": "colorB",
-                "type": "number"
-              },
-              {
-                "label": "colorA",
-                "type": "number"
-              }
-            ],
-            "security": {
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "basis": [
-          "tsm:util.rs:164",
-          "tsm:util.rs:265",
-          "tsm:pre_globals_mod.rs:2593",
-          "tsm:pre_globals_mod.rs:2964"
-        ],
-        "discarded": [],
-        "mode": "single-definition",
-        "order_uncertain": false,
-        "possible_primary": [
-          {
-            "arguments": [],
-            "generics": [],
-            "line": 34,
-            "method": true,
-            "overloads": [],
-            "parameters": [],
-            "returns": [
-              {
-                "label": "colorR",
-                "type": "number"
-              },
-              {
-                "label": "colorG",
-                "type": "number"
-              },
-              {
-                "label": "colorB",
-                "type": "number"
-              },
-              {
-                "label": "colorA",
-                "type": "number"
-              }
-            ],
-            "security": {
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "primary_security_options": [
-          {
-            "security": {
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "sources": [
-              {
-                "line": 34,
-                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-              }
-            ]
-          }
-        ]
-      },
-      "symbol": "Region.GetVertexColor",
-      "tsm_symbol": "Region.GetVertexColor",
-      "variants": [
-        {
-          "branch": "",
-          "differences": [
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 1,
-              "tsm": false
-            },
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 2,
-              "tsm": false
-            },
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 3,
-              "tsm": false
-            },
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 4,
-              "tsm": false
-            }
-          ],
-          "effective_function_security": {
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
-            ]
-          },
-          "line": 34,
-          "possible_primary_sources": [
-            {
-              "line": 34,
-              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-            }
-          ],
-          "raw_differences": [
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 1,
-              "tsm": false
-            },
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 2,
-              "tsm": false
-            },
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 3,
-              "tsm": false
-            },
-            {
-              "kind": "return-nilable",
-              "native": true,
-              "position": 4,
-              "tsm": false
-            }
-          ],
-          "raw_security": {
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
             ]
           },
           "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
@@ -871732,178 +872354,6 @@
       "candidates": [
         {
           "arguments": [
-            "layer",
-            "sublevel"
-          ],
-          "generics": [],
-          "line": 66,
-          "method": true,
-          "overloads": [],
-          "parameters": [
-            {
-              "name": "layer",
-              "optional": false,
-              "type": "DrawLayer"
-            },
-            {
-              "name": "sublevel",
-              "optional": true,
-              "type": "number"
-            }
-          ],
-          "returns": [],
-          "security": {
-            "secret-args": [
-              "untainted"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-        }
-      ],
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "selection": {
-        "active": [
-          {
-            "arguments": [
-              "layer",
-              "sublevel"
-            ],
-            "generics": [],
-            "line": 66,
-            "method": true,
-            "overloads": [],
-            "parameters": [
-              {
-                "name": "layer",
-                "optional": false,
-                "type": "DrawLayer"
-              },
-              {
-                "name": "sublevel",
-                "optional": true,
-                "type": "number"
-              }
-            ],
-            "returns": [],
-            "security": {
-              "secret-args": [
-                "untainted"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "basis": [
-          "tsm:util.rs:164",
-          "tsm:util.rs:265",
-          "tsm:pre_globals_mod.rs:2593",
-          "tsm:pre_globals_mod.rs:2964"
-        ],
-        "discarded": [],
-        "mode": "single-definition",
-        "order_uncertain": false,
-        "possible_primary": [
-          {
-            "arguments": [
-              "layer",
-              "sublevel"
-            ],
-            "generics": [],
-            "line": 66,
-            "method": true,
-            "overloads": [],
-            "parameters": [
-              {
-                "name": "layer",
-                "optional": false,
-                "type": "DrawLayer"
-              },
-              {
-                "name": "sublevel",
-                "optional": true,
-                "type": "number"
-              }
-            ],
-            "returns": [],
-            "security": {
-              "secret-args": [
-                "untainted"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "primary_security_options": [
-          {
-            "security": {
-              "secret-args": [
-                "untainted"
-              ]
-            },
-            "sources": [
-              {
-                "line": 66,
-                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-              }
-            ]
-          }
-        ]
-      },
-      "symbol": "Region.SetDrawLayer",
-      "tsm_symbol": "Region.SetDrawLayer",
-      "variants": [
-        {
-          "branch": "",
-          "differences": [],
-          "effective_function_security": {
-            "secret-args": [
-              "untainted"
-            ]
-          },
-          "line": 66,
-          "possible_primary_sources": [
-            {
-              "line": 66,
-              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-            }
-          ],
-          "raw_differences": [],
-          "raw_security": {
-            "secret-args": [
-              "untainted"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-          "type_facts": [
-            {
-              "fact": {
-                "carrier_type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
-                "evidence": [
-                  {
-                    "line": 13,
-                    "name": "DrawLayer",
-                    "source": "vendor/Annotations/Core/Widget/UIType/UIType.lua"
-                  }
-                ],
-                "features": [],
-                "nilable": false,
-                "raw": "DrawLayer",
-                "secret": false,
-                "secret_wrappers": [],
-                "type": "\"ARTWORK\"|\"BACKGROUND\"|\"BORDER\"|\"HIGHLIGHT\"|\"OVERLAY\"",
-                "variadic": false
-              },
-              "position": 1,
-              "side": "argument"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "candidates": [
-        {
-          "arguments": [
             "ignore"
           ],
           "generics": [],
@@ -872323,456 +872773,6 @@
             ],
             "secret-aspect": [
               "Scale"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-          "type_facts": []
-        }
-      ]
-    },
-    {
-      "candidates": [
-        {
-          "arguments": [
-            "colorR",
-            "colorG",
-            "colorB",
-            "a"
-          ],
-          "generics": [],
-          "line": 92,
-          "method": true,
-          "overloads": [],
-          "parameters": [
-            {
-              "name": "colorR",
-              "optional": false,
-              "type": "number"
-            },
-            {
-              "name": "colorG",
-              "optional": false,
-              "type": "number"
-            },
-            {
-              "name": "colorB",
-              "optional": false,
-              "type": "number"
-            },
-            {
-              "name": "a",
-              "optional": true,
-              "type": "SingleColorValue"
-            }
-          ],
-          "returns": [],
-          "security": {
-            "secret-args": [
-              "tainted"
-            ],
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-        }
-      ],
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "selection": {
-        "active": [
-          {
-            "arguments": [
-              "colorR",
-              "colorG",
-              "colorB",
-              "a"
-            ],
-            "generics": [],
-            "line": 92,
-            "method": true,
-            "overloads": [],
-            "parameters": [
-              {
-                "name": "colorR",
-                "optional": false,
-                "type": "number"
-              },
-              {
-                "name": "colorG",
-                "optional": false,
-                "type": "number"
-              },
-              {
-                "name": "colorB",
-                "optional": false,
-                "type": "number"
-              },
-              {
-                "name": "a",
-                "optional": true,
-                "type": "SingleColorValue"
-              }
-            ],
-            "returns": [],
-            "security": {
-              "secret-args": [
-                "tainted"
-              ],
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "basis": [
-          "tsm:util.rs:164",
-          "tsm:util.rs:265",
-          "tsm:pre_globals_mod.rs:2593",
-          "tsm:pre_globals_mod.rs:2964"
-        ],
-        "discarded": [],
-        "mode": "single-definition",
-        "order_uncertain": false,
-        "possible_primary": [
-          {
-            "arguments": [
-              "colorR",
-              "colorG",
-              "colorB",
-              "a"
-            ],
-            "generics": [],
-            "line": 92,
-            "method": true,
-            "overloads": [],
-            "parameters": [
-              {
-                "name": "colorR",
-                "optional": false,
-                "type": "number"
-              },
-              {
-                "name": "colorG",
-                "optional": false,
-                "type": "number"
-              },
-              {
-                "name": "colorB",
-                "optional": false,
-                "type": "number"
-              },
-              {
-                "name": "a",
-                "optional": true,
-                "type": "SingleColorValue"
-              }
-            ],
-            "returns": [],
-            "security": {
-              "secret-args": [
-                "tainted"
-              ],
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "primary_security_options": [
-          {
-            "security": {
-              "secret-args": [
-                "tainted"
-              ],
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "sources": [
-              {
-                "line": 92,
-                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-              }
-            ]
-          }
-        ]
-      },
-      "symbol": "Region.SetVertexColor",
-      "tsm_symbol": "Region.SetVertexColor",
-      "variants": [
-        {
-          "branch": "",
-          "differences": [],
-          "effective_function_security": {
-            "secret-args": [
-              "tainted"
-            ],
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
-            ]
-          },
-          "line": 92,
-          "possible_primary_sources": [
-            {
-              "line": 92,
-              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-            }
-          ],
-          "raw_differences": [],
-          "raw_security": {
-            "secret-args": [
-              "tainted"
-            ],
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-          "type_facts": [
-            {
-              "fact": {
-                "carrier_type": "number",
-                "evidence": [
-                  {
-                    "line": 35,
-                    "name": "SingleColorValue",
-                    "source": "vendor/Annotations/Core/Type/BlizzardType.lua"
-                  }
-                ],
-                "features": [],
-                "nilable": false,
-                "raw": "SingleColorValue",
-                "secret": false,
-                "secret_wrappers": [],
-                "type": "number",
-                "variadic": false
-              },
-              "position": 4,
-              "side": "argument"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "candidates": [
-        {
-          "arguments": [
-            "value",
-            "colorIfTrue",
-            "colorIfFalse"
-          ],
-          "generics": [],
-          "line": 101,
-          "method": true,
-          "overloads": [],
-          "parameters": [
-            {
-              "name": "value",
-              "optional": false,
-              "type": "boolean"
-            },
-            {
-              "name": "colorIfTrue",
-              "optional": false,
-              "type": "colorRGBA"
-            },
-            {
-              "name": "colorIfFalse",
-              "optional": false,
-              "type": "colorRGBA"
-            }
-          ],
-          "returns": [],
-          "security": {
-            "secret-args": [
-              "tainted"
-            ],
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
-            ]
-          },
-          "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-        }
-      ],
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "selection": {
-        "active": [
-          {
-            "arguments": [
-              "value",
-              "colorIfTrue",
-              "colorIfFalse"
-            ],
-            "generics": [],
-            "line": 101,
-            "method": true,
-            "overloads": [],
-            "parameters": [
-              {
-                "name": "value",
-                "optional": false,
-                "type": "boolean"
-              },
-              {
-                "name": "colorIfTrue",
-                "optional": false,
-                "type": "colorRGBA"
-              },
-              {
-                "name": "colorIfFalse",
-                "optional": false,
-                "type": "colorRGBA"
-              }
-            ],
-            "returns": [],
-            "security": {
-              "secret-args": [
-                "tainted"
-              ],
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "basis": [
-          "tsm:util.rs:164",
-          "tsm:util.rs:265",
-          "tsm:pre_globals_mod.rs:2593",
-          "tsm:pre_globals_mod.rs:2964"
-        ],
-        "discarded": [],
-        "mode": "single-definition",
-        "order_uncertain": false,
-        "possible_primary": [
-          {
-            "arguments": [
-              "value",
-              "colorIfTrue",
-              "colorIfFalse"
-            ],
-            "generics": [],
-            "line": 101,
-            "method": true,
-            "overloads": [],
-            "parameters": [
-              {
-                "name": "value",
-                "optional": false,
-                "type": "boolean"
-              },
-              {
-                "name": "colorIfTrue",
-                "optional": false,
-                "type": "colorRGBA"
-              },
-              {
-                "name": "colorIfFalse",
-                "optional": false,
-                "type": "colorRGBA"
-              }
-            ],
-            "returns": [],
-            "security": {
-              "secret-args": [
-                "tainted"
-              ],
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-          }
-        ],
-        "primary_security_options": [
-          {
-            "security": {
-              "secret-args": [
-                "tainted"
-              ],
-              "secret-aspect": [
-                "VertexColor",
-                "Alpha"
-              ]
-            },
-            "sources": [
-              {
-                "line": 101,
-                "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-              }
-            ]
-          }
-        ]
-      },
-      "symbol": "Region.SetVertexColorFromBoolean",
-      "tsm_symbol": "Region.SetVertexColorFromBoolean",
-      "variants": [
-        {
-          "branch": "",
-          "differences": [
-            {
-              "kind": "argument-type",
-              "native": "ColorMixin",
-              "position": 2,
-              "tsm": "colorRGBA"
-            },
-            {
-              "kind": "argument-type",
-              "native": "ColorMixin",
-              "position": 3,
-              "tsm": "colorRGBA"
-            }
-          ],
-          "effective_function_security": {
-            "secret-args": [
-              "tainted"
-            ],
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
-            ]
-          },
-          "line": 101,
-          "possible_primary_sources": [
-            {
-              "line": 101,
-              "source": "vendor/Annotations/Core/Widget/Base/Region.lua"
-            }
-          ],
-          "raw_differences": [
-            {
-              "kind": "argument-type",
-              "native": "ColorMixin",
-              "position": 2,
-              "tsm": "colorRGBA"
-            },
-            {
-              "kind": "argument-type",
-              "native": "ColorMixin",
-              "position": 3,
-              "tsm": "colorRGBA"
-            }
-          ],
-          "raw_security": {
-            "secret-args": [
-              "tainted"
-            ],
-            "secret-aspect": [
-              "VertexColor",
-              "Alpha"
             ]
           },
           "source": "vendor/Annotations/Core/Widget/Base/Region.lua",
@@ -988203,7 +988203,7 @@
         "e642d052497e54c55c1f55ae71f7ceb51282f1d1001bff2bed85241f2c4cac77",
         "f5177b24cf8d7790c677f499e2feae804f99165c43649435d2ffeb977d6e6e2b"
       ],
-      "fingerprint": "ca42d6b005648cc528cfbf6a7267fa73978beb61e4bb011e84c11dc3daf3d817",
+      "fingerprint": "39b368ac84aecad96f5236147467a61a917a91ebaa33e3907fd6da1dcf2e6291",
       "native_source": "blizzard:SimpleAnimAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Animation.GetScript"
@@ -988257,7 +988257,7 @@
         "5f84306735366b6dd618097c7456408f3e8b259e87b002167f93d6082ba89b33",
         "bdb1ef9420b30d83a45dae8fdc64300b0d45c54b7a59c53575c4e02432af174f"
       ],
-      "fingerprint": "21bb3ea9059d744639bc25f4f91276d3878b234913c212af4e1906914e93f600",
+      "fingerprint": "05e95b4f36c816a0275b13a975d6ccdf88a65c397f117226fea6ab6b65ae1d86",
       "native_source": "blizzard:SimpleAnimAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Animation.HookScript"
@@ -988379,7 +988379,7 @@
       "discrepancies": [
         "826b09b0a2edf287a66b2099c4b5f98fd48d5c36ead2faec55f727bc153e3c5e"
       ],
-      "fingerprint": "f0260f46051ebd97380140cb2cca6f1e5dd63b3923d4ee389063b95325e3ae93",
+      "fingerprint": "e1859599c7a6648b7592d6c9dfb907cebe196317c10438891233d0f9420f013f",
       "native_source": "blizzard:SimpleAnimAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Animation.SetScript"
@@ -988456,7 +988456,7 @@
         "7cb805819b5da46551d6ef2a723f7d893388c2d5fc459bc07018a87d81d73b19",
         "be81e1f21b88777013e67ca2d82ac1ebe336a8856640aa16eb10d37c30197b9b"
       ],
-      "fingerprint": "565dee7b7d84c76ec7a92004bc7a4016e43427f8ce487ded412fe9f6433f468e",
+      "fingerprint": "c46840372c39637e5e15cf1ac5eb737ed63c957ff0a20f90639e3bb530370fcb",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "AnimationGroup.CreateAnimation"
@@ -988533,7 +988533,7 @@
         "bcfcc25eac5adb63f0f8dae23c386dd0dbc663c744e4b2766adf6f105d1c98aa",
         "e4acb6458298bf5480ddc11f34abb6e451ecc965b80a118876270e7d17a56a4e"
       ],
-      "fingerprint": "e660e1c16214f1e5e170e36d4c73ab7549ebe84ea41a7c2cba29cc1a7d3fe445",
+      "fingerprint": "e374d7946a91c4e3afe08c9b0b42da45de4de478ba15e381542b1a75004316c0",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "AnimationGroup.GetScript"
@@ -988556,7 +988556,7 @@
         "3a61ee8852e852f236731616c27a4df595692e609390416eb222b76056d1a3e9",
         "d743921b33fa4783da042dda28405ce1230df10974f1b3fcb84172e613245ccc"
       ],
-      "fingerprint": "2d852a711dff690d06014c714a5ff5e4e80142b6dcf2a33f23d907a5b0edd9e1",
+      "fingerprint": "9db4a183b10ee5b86ac32ebf80fbd5f627920a740f28451bae193c8728c68544",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "AnimationGroup.HookScript"
@@ -988670,7 +988670,7 @@
       "discrepancies": [
         "413fda9920ff98abe5b48120c4562371d6484c4fc1cd0aa4e655934e4d51c17f"
       ],
-      "fingerprint": "042655ebff1bb27c7c621924044d6552b68f1b789f2ace0e6d73c17ca823418b",
+      "fingerprint": "e836e17a85494b79af10792cfebc3580125a6dfb4e6f7ac48ff7e0a65299ee2e",
       "native_source": "blizzard:SimpleAnimGroupAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "AnimationGroup.SetScript"
@@ -990220,7 +990220,7 @@
         "93a3eebb140b2937a70f2ed9385bad26754c66b6a867c7117fe0bebd1b5dbe61",
         "a0659e5e4107cbfccb49dc2381ca28a4369e7898a2d13fdee78fe409b13d1d04"
       ],
-      "fingerprint": "62e271db52a9fc54a2b7443b49b13ef2346cbbfc02bb3cc48556dcfb168ebd4f",
+      "fingerprint": "94976a919c5be50a667a546a63ed4109085eeada048a72d822211631072fcfb8",
       "native_source": "blizzard:AddOnProfilerDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_AddOnProfiler.MeasureCall"
@@ -990310,7 +990310,7 @@
       "discrepancies": [
         "d20db4333f96ef20210e5c8393940d80cab10ae874be511d8224935bfd856542"
       ],
-      "fingerprint": "2d64c1f7d399cf975db2b90af617aeb6bc485be334f96f5dd7ddebc40eadd4c5",
+      "fingerprint": "1bfd505c648148c53559c871d1677d1f1f996f6738bd0dae5dbfd989a817dc21",
       "native_source": "blizzard:AddOnsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_AddOns.GetAddOnLocalTable"
@@ -996947,7 +996947,7 @@
       "discrepancies": [
         "e59c86cb81ac5bac52d8d3560bdfdb0a96d8479a377c36463900fb8dcdbebac8"
       ],
-      "fingerprint": "812850136844f8a2069385513cfc174088cbcf1d4db8c390884bc1eee29adb2a",
+      "fingerprint": "fbcb93c9f2e6ad71e73d52ebe859786e4b6e7140a203edd308ae167805028b77",
       "native_source": "blizzard:CombatLogDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_CombatLog.ApplyFilterSettings"
@@ -1001175,7 +1001175,7 @@
       "discrepancies": [
         "96e348902c2d66fbc94eae24d57bcad3a6dbb5954110765827e970d4b46727eb"
       ],
-      "fingerprint": "809d49c63c82461ae14d412e0012b85507e0454f796a56621864132c929da7ef",
+      "fingerprint": "ae83675ae511fdf6c3cc09b954822f8995bd9459025fe0d4e43580a5ba753698",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_EncodingUtil.DeserializeCBOR"
@@ -1001185,7 +1001185,7 @@
       "discrepancies": [
         "7f90686303626acae5dadc1931ce34b29acc6dc55a3871f1fc4e7f153cfc0575"
       ],
-      "fingerprint": "4501991faad60cd125a06236386ada9a855668513a085ae36d655ea93e4e2788",
+      "fingerprint": "fdcd6ccb6d85c208822c4fcdb4fee104e81c4c9de43851ab62dfe621ac7e9d06",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_EncodingUtil.DeserializeJSON"
@@ -1001215,7 +1001215,7 @@
       "discrepancies": [
         "47872cc4d168039acb7cbd9d73f137b6ab0df9767d056bed230e087054da47a3"
       ],
-      "fingerprint": "1464b8b3a60b2ab08ce4310a0f9ccffbe93a9acff0621ceaa089e1c454a32f44",
+      "fingerprint": "37765beb035fb29fdc6b587a055eb3c7b4433fcf225e9fa84981a0e10bec9264",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_EncodingUtil.SerializeCBOR"
@@ -1001225,7 +1001225,7 @@
       "discrepancies": [
         "b71ff89780ee9aeed8cdf3fb7072efa6ccfb173db7a5e7b069cada507105c3fe"
       ],
-      "fingerprint": "d52222486072d27c45de6297085d7da481c4740478c2649385410fcd10129916",
+      "fingerprint": "921f021587a8cf34d26179281555d0c398b7f715a21993f6cc71e672a7badba7",
       "native_source": "blizzard:EncodingUtilDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_EncodingUtil.SerializeJSON"
@@ -1007508,7 +1007508,7 @@
         "051c68b22a5a46ec5f4dea946c7c3f7250f79bc442282550d49cab05668999ea",
         "96734201a6b0ccd287a205684b2af308f5a4875bb730699f640740586407a7cb"
       ],
-      "fingerprint": "4e0e3b4a0b5d2e3bba814b13a6567347f7188b3f25473f332490e32d55b59589",
+      "fingerprint": "d36868f543097a1e034b99f67d64f54a4fe5d7dca9e51a8997dc4e2c6375fc6b",
       "native_source": "blizzard:ItemDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_Item.GetItemStatDelta"
@@ -1007519,7 +1007519,7 @@
         "df7d7a10cde766e608978ee132e6ef1f4ec3a14351cb7bea79c95fb132fd92b2",
         "f50f0e9d4743b78ef0abdda9ac354bc5e5040133728a918be7ac528b37c2158f"
       ],
-      "fingerprint": "ad0886c9bb3ad3adbc5ad069ac0d79e0605065b1a03e7731c9904cc320dbf92d",
+      "fingerprint": "c0d392b16039812265cd15e01da2946cb2a1d54f32e50a4bf5d84059387de069",
       "native_source": "blizzard:ItemDocumentation.lua",
       "requires_resolution": true,
       "symbol": "C_Item.GetItemStats"
@@ -1026944,7 +1026944,7 @@
         "7a9e3b7fc12522e7d246dcb47187dc64e731851587ce7103cf76ecbdaf12b844",
         "f17a6869254d883ac036da0796e68f1d7e07d87bb9c0fa0a435aafff14ce4cd6"
       ],
-      "fingerprint": "494c3932766349885434215318c89ebd1a144279c746076923017e3823146e43",
+      "fingerprint": "7d90e4e2f7e17a828e21c538bb3685c3df957f0d9594a498eb71efa5744ac47d",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "CreateFromMixins"
@@ -1026955,7 +1026955,7 @@
         "0421b5b6fd5ac6138747aac02576e12f076df8692ed71e14cce1b6c43971bcdd",
         "e03f94b388d14b75cc2b5392c254df93a41d4e3cfecbf3a258e7ff2864f2e63d"
       ],
-      "fingerprint": "5b68febca44d4b192527f8ae2598d58aca96ffeffd82353733b56170d62bcad8",
+      "fingerprint": "1e5ad3726eda29f5748cd77a8902fc9313f57fc54c2ff482f441c0e120498ce9",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "CreateSecureDelegate"
@@ -1026971,7 +1026971,7 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "5d5ea317e88e9707fbac9605adfd3633f0e94cdd0557935f192247d4425f6e3b",
+      "fingerprint": "e808d665269fd5ff86000ad5b52d43c1562ed4dfc09140a7cd680451a625b1aa",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": false,
       "symbol": "CreateWindow"
@@ -1029654,7 +1029654,7 @@
         "667a92ebfaf6e0fe88da473169bc8e2b7a1b885d452100575d72ca3ba9b8dbaa",
         "bdb7be63f1f5b6c73ed194c81979f2d582ea98aabfdca6e46f9ce31821f20760"
       ],
-      "fingerprint": "16115714575cd58272d4e9a288315a08d072dc6aa88025f6e8ab09a26c27dd1a",
+      "fingerprint": "44183339454521d343ae7dae7bb3e74fa664cb2a0a98d4b316c5023ead94bfbd",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Frame.GetAttribute"
@@ -1029852,7 +1029852,7 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "7ae838135b2ca87083c929de5ebd4034308a3b8d4ccb5593ecc7e19a1d67d752",
+      "fingerprint": "81dbbc627627cc3c869ac08fbfed0accd87624e34e1e3b15b459af2e8854901e",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "requires_resolution": false,
       "symbol": "Frame.GetWindow"
@@ -1030206,7 +1030206,7 @@
       "discrepancies": [
         "4e401a864cd45512f0727ae1f65d3d2a5d982f3390b6f48d53e41542f37e096d"
       ],
-      "fingerprint": "c91978a51dee2e0210772f903ba33e25da9839d239afe7fb62912af7325bba91",
+      "fingerprint": "3a545e3362f8e4c0d10827f1a681f152e8b673afac3a8bac437378b659180305",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Frame.SetAttribute"
@@ -1030216,7 +1030216,7 @@
       "discrepancies": [
         "e52267000b00266a0a1081110f7c5b31f72cb7f6fa3afdc9894ae295bedfe231"
       ],
-      "fingerprint": "6183d5b738d40fc87561c622cce0c2d09a036781d4c53a71e0abbb3d238d4532",
+      "fingerprint": "acd9969b202638849994823ec5a341b80158e53ced6eb7d518d3ee984fca8a65",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Frame.SetAttributeNoHandler"
@@ -1030472,7 +1030472,7 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "d1d96104ab42df5cf5e712db245624d6d7584e1a3f67b7c66eea33c003b1d1a2",
+      "fingerprint": "725ed81deb645874de1e288df315f2a96686e7fd1cabefcbb16cd0d16d878136",
       "native_source": "blizzard:SimpleFrameAPIDocumentation.lua",
       "requires_resolution": false,
       "symbol": "Frame.SetWindow"
@@ -1033790,6 +1033790,54 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
+      "fingerprint": "bd463293925e7ad8dbcf9cc57a034b38050e9fc5d87d2b40a6eb8c576a224d09",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "requires_resolution": false,
+      "symbol": "LayeredRegion.GetDrawLayer"
+    },
+    {
+      "coverage": "tsm-source-comparison",
+      "discrepancies": [
+        "3dff18836a2168dc8c9aab64e6c75f1c95bbbb8770dcea0c52d9d6b2e6e67098",
+        "89ae1c8148c3a04d88e2732170847fd25aa0836e311e8200da47b9d12e48232d",
+        "e1d40421a2454ecbf0ea05804c9e79429adedf3b2be6ea24ea497e6a7a9a7563",
+        "e5f46d9761fa29e5b73396c38c28760cbcff6d95980b0caf2accebf54178f7c8"
+      ],
+      "fingerprint": "3d2c4ef84ddcb6c0dbb26dc55e04c5b7fe9609500f407b7727a42e8773aa5e12",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "requires_resolution": true,
+      "symbol": "LayeredRegion.GetVertexColor"
+    },
+    {
+      "coverage": "tsm-source-comparison",
+      "discrepancies": [],
+      "fingerprint": "e9a97456b943c8d26f3ea2edc4f260e55a8ac8dba2819c3340bf41abe7fe6491",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "requires_resolution": false,
+      "symbol": "LayeredRegion.SetDrawLayer"
+    },
+    {
+      "coverage": "tsm-source-comparison",
+      "discrepancies": [],
+      "fingerprint": "c000fcf03201364e53b1f17b7061ce2de3861d59813386b35fdd0177c608ceeb",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "requires_resolution": false,
+      "symbol": "LayeredRegion.SetVertexColor"
+    },
+    {
+      "coverage": "tsm-source-comparison",
+      "discrepancies": [
+        "59b7390070ca9e50174b3ea39d67ef4862e4a23e69f9017d5a7018e31bf3f5ae",
+        "d2e10ef80171d53bf95b89541cb35f5ceebf9944f870aeeb060ee1e27627ddf0"
+      ],
+      "fingerprint": "2e46a1200e79314606a9d57332b555a88c1fe3e542512a9a31455667fd8f35ee",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "requires_resolution": true,
+      "symbol": "LayeredRegion.SetVertexColorFromBoolean"
+    },
+    {
+      "coverage": "tsm-source-comparison",
+      "discrepancies": [],
       "fingerprint": "063bd3e3e92362ed43a0690b4c066a614fe34d6b0a280fb9d8e36a9209f135a4",
       "native_source": "blizzard:SimpleLineAPIDocumentation.lua",
       "requires_resolution": false,
@@ -1033877,7 +1033925,7 @@
         "46553f9fa3e5a9e50f2344fda12e7aa46522074c213ff0a64738a92e0b289a6c",
         "eb23239ff5304b2b29c05af8e26700e2201ff2fc07ba09e8f212c9145f002333"
       ],
-      "fingerprint": "54fd2e7b585dc9b9a79d0d23a2f2aca72a568b7c61800daad63f3da535df9af7",
+      "fingerprint": "6e63f946b6c9b2d90a683ad36207c83569109f448d66aba813264551299ff3d5",
       "native_source": "blizzard:LocalizationDocumentation.lua",
       "requires_resolution": true,
       "symbol": "LocalizedClassList"
@@ -1034757,7 +1034805,7 @@
         "e6cea9e7de57b942ceb65b0862463f642ce653a7ba2801d50d671799077d25ea",
         "e8d35995060d0ebb1c3cb4432508d373a2553e23478a18247c4981531035c7c6"
       ],
-      "fingerprint": "fd7e177ec8cf42509d59139e13fdc10249d8422017c9cdb07a62310b0efb8125",
+      "fingerprint": "4b32782fd7c29fc231932a7852dd6ca678d2e275082a5b5f5b9276451877537b",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Mixin"
@@ -1036899,14 +1036947,6 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "db96f211b4e79271d899b94d784d238edccab6c40fc438c7d3289759496c2715",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "requires_resolution": false,
-      "symbol": "Region.GetDrawLayer"
-    },
-    {
-      "coverage": "tsm-source-comparison",
-      "discrepancies": [],
       "fingerprint": "cb9dd22c3c384c3d3952b9fe083e5e66a5cbb043826e7904c593d1b883913bf6",
       "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "requires_resolution": false,
@@ -1036919,19 +1036959,6 @@
       "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "requires_resolution": false,
       "symbol": "Region.GetScale"
-    },
-    {
-      "coverage": "tsm-source-comparison",
-      "discrepancies": [
-        "3dff18836a2168dc8c9aab64e6c75f1c95bbbb8770dcea0c52d9d6b2e6e67098",
-        "89ae1c8148c3a04d88e2732170847fd25aa0836e311e8200da47b9d12e48232d",
-        "e1d40421a2454ecbf0ea05804c9e79429adedf3b2be6ea24ea497e6a7a9a7563",
-        "e5f46d9761fa29e5b73396c38c28760cbcff6d95980b0caf2accebf54178f7c8"
-      ],
-      "fingerprint": "1f996d76934a21732141496bcb1c121e54a09b5b77c5e084ad72eab2fcce9780",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "requires_resolution": true,
-      "symbol": "Region.GetVertexColor"
     },
     {
       "coverage": "tsm-source-comparison",
@@ -1036976,14 +1037003,6 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "68102b96f97b7368e5c0555ed97f4806282f84a470cbb681d48a40a0467f4dbd",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "requires_resolution": false,
-      "symbol": "Region.SetDrawLayer"
-    },
-    {
-      "coverage": "tsm-source-comparison",
-      "discrepancies": [],
       "fingerprint": "452766b5d820fc78881e7a69ed1162a360d07c67c111601b0f8fac0d7f634fdc",
       "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "requires_resolution": false,
@@ -1037006,25 +1037025,6 @@
       "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "Region.SetScale"
-    },
-    {
-      "coverage": "tsm-source-comparison",
-      "discrepancies": [],
-      "fingerprint": "6138a9021aa30428c854a54e25b53db154c141a9c4238226e35662d0d7d1a1cb",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "requires_resolution": false,
-      "symbol": "Region.SetVertexColor"
-    },
-    {
-      "coverage": "tsm-source-comparison",
-      "discrepancies": [
-        "59b7390070ca9e50174b3ea39d67ef4862e4a23e69f9017d5a7018e31bf3f5ae",
-        "d2e10ef80171d53bf95b89541cb35f5ceebf9944f870aeeb060ee1e27627ddf0"
-      ],
-      "fingerprint": "21a510a0eb6f1a5d99b929fffc4ff6d073b6e909c68a924b1fa103ea2e14f955",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "requires_resolution": true,
-      "symbol": "Region.SetVertexColorFromBoolean"
     },
     {
       "coverage": "tsm-source-comparison",
@@ -1037478,7 +1037478,7 @@
         "8219c1d409ec66ab6ddf1b62fd4db3084020f5697d733bee34cd6c53eaeb9b77",
         "fd2aea36706437b1731f3c0f7f8b625c9a8a2a413fcc10f7b86bc82b3aa51d36"
       ],
-      "fingerprint": "f0e9327dcf8252833c026d1d678e57fa703a62fcb4b21e6dda28e1533e2b1e87",
+      "fingerprint": "4e5c9e7e7a08cba1c99b192b86c0cb3f4a258d00b60933048664bd6138e7e14f",
       "native_source": "blizzard:SimpleScriptRegionAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "ScriptRegion.GetScript"
@@ -1037546,7 +1037546,7 @@
         "8be13d473d2cd203126b5c4ceaaebfeefece5445e8b0a1c70705be935cd4cc8c",
         "c92d7d93db2ec1fb74bbc480bec90bc629fa81818a85b05ee41418db55823598"
       ],
-      "fingerprint": "7bdeb0b35d669e0b3140823afdc0fd705429a59bc3b48d04f1e5279c6a4b4946",
+      "fingerprint": "ea7668df449c6fe8091f4e4024b6d19dd5a68fafe15817a4bc95ebdcc1214736",
       "native_source": "blizzard:SimpleScriptRegionAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "ScriptRegion.HookScript"
@@ -1037740,7 +1037740,7 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "86033b2385929b6056ac75ff69bacf2fd0d358c2a579404fa5ff65943ff7f292",
+      "fingerprint": "db6fb06c03f2cc8830edcbc859692842ac065149892c7e925eb30bb87b947d89",
       "native_source": "blizzard:SimpleScriptRegionAPIDocumentation.lua",
       "requires_resolution": false,
       "symbol": "ScriptRegion.SetScript"
@@ -1042172,10 +1042172,10 @@
     {
       "coverage": "secondary-source-comparison",
       "discrepancies": [
-        "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
-        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e"
+        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e",
+        "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a"
       ],
-      "fingerprint": "94aafa246eb0d6d31baf90f50da2d2377f51bab062498c6728fa425d7545bff7",
+      "fingerprint": "8859e1c8e482bc7de428e01a0f9a4127da4db35f8ca17a523df568f30f27cb22",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "VectorGraphics.ClearSVG"
@@ -1042183,10 +1042183,10 @@
     {
       "coverage": "secondary-source-comparison",
       "discrepancies": [
-        "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
-        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e"
+        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e",
+        "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a"
       ],
-      "fingerprint": "51b300b2f812f0f1ea00276dd5891600ba79959e7d5ed4c31ac12e51b21f8575",
+      "fingerprint": "82bb0e33eeabfc8f1b51160426569be9dc517050ab9db75a72894cfa3c0eeec7",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "VectorGraphics.GetSVGFileID"
@@ -1042194,10 +1042194,10 @@
     {
       "coverage": "secondary-source-comparison",
       "discrepancies": [
-        "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
-        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e"
+        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e",
+        "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a"
       ],
-      "fingerprint": "3cb14cd2c092c3a3b9150de1e9cb4221029c5fb3ac49b0291ab196dc7b3eed12",
+      "fingerprint": "dec2bd62481f9b17a1a98bc69b46539a5cec1c9f461d97d280507006d7abafa4",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "VectorGraphics.HasSVG"
@@ -1042205,10 +1042205,10 @@
     {
       "coverage": "secondary-source-comparison",
       "discrepancies": [
-        "1df1abda71c7d9b15248fe24684e75655cf5887f6e6ac0cd4b61844ad37b3376",
-        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e"
+        "88e962c85d69708f3c5bbb271398f9f7a2c7d8c1c2729edbb7cbb2981f1dac0e",
+        "a823c55329874004aa9350369d8ac3b4af7c8ece56144b826cfa41dd57dcd42a"
       ],
-      "fingerprint": "09324de2545a6f1c45fdca28efb6ac68bf37cd682ec249f3e34efa7be4ac7073",
+      "fingerprint": "4a913df898ad5066e5ec42802b60a9f988ee7e3bd0b25c8e15f0609808b7a0b4",
       "native_source": "blizzard:SimpleVectorGraphicsAPIDocumentation.lua",
       "requires_resolution": true,
       "symbol": "VectorGraphics.SetSVG"
@@ -1042266,7 +1042266,7 @@
       "discrepancies": [
         "4754f098090a3860ceeaaba6e2afeff0dcf902abb26592f5c1987e3b208a8898"
       ],
-      "fingerprint": "e73b0face56039113fffcd7c8dae6cfffa6e8262ff90e754e69edae8ce282a6d",
+      "fingerprint": "e83c6aaebd71f49244dddf949f4746db41f9b0bcbac16c025882b8df5876132a",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "canaccessallvalues"
@@ -1042284,7 +1042284,7 @@
       "discrepancies": [
         "81f19c7e323561e1daf8a2ad747b965c6bdbd41f0bb18d0f0105fcf7173d2f73"
       ],
-      "fingerprint": "6d3a95b54aac73e0c590f935cf90b1d193eb14e447b3e17f8cc61e501fcb742a",
+      "fingerprint": "b4b91977241717908c34d7555f11a14d7aef27b9c3ca6dcc31534880757cd5ca",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "canaccesstable"
@@ -1042294,7 +1042294,7 @@
       "discrepancies": [
         "13d02418d1a68a7fb0d928f2384817941ca2af1651d3a86a7217710801ab485d"
       ],
-      "fingerprint": "430fb28eedde0625404592d08c7cf4ee939bbed78711bf25bd4ce34c84922127",
+      "fingerprint": "667aea3efdc8d6060ae16db0c55637b69ba73105149c035b9da68ef74c610f2f",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "canaccessvalue"
@@ -1042328,7 +1042328,7 @@
       "discrepancies": [
         "441f194cc6832804de3efc8ad2495dfe64a5a83d2e8e0817636d6eea21cc4a50"
       ],
-      "fingerprint": "6b0862e0dd2ffa07a11be85829e5811475b5c8dd59600bcf2400e941942e4676",
+      "fingerprint": "591a518877b06371c1a0b7d47405dceafb091a513924f1ca601e03d6253500e5",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "dumpobject"
@@ -1042338,7 +1042338,7 @@
       "discrepancies": [
         "532f040d6d5a8305cab840f2cc3cea9e25cbdd1655a41ef15e2ec802194ca173"
       ],
-      "fingerprint": "d26daffd1e35173d140d4d0a7df6fc3baba5b6ababb421f4c4c83cc89fe68283",
+      "fingerprint": "04602da862e9cfa9ed2694e622edd32e220f8f011e07afa03c46ae92698d5181",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "hasanysecretvalues"
@@ -1042348,7 +1042348,7 @@
       "discrepancies": [
         "636533b8289c1adb35facf7dd2b6f0a3dbd7ce0b30270c81ad222d8a8b6dd0fa"
       ],
-      "fingerprint": "a221f577477f9967bf59764e738aad0bf305a7f0a796028cd7932b4f4505da3d",
+      "fingerprint": "9d4d0844bbfa822a8e71ee4eb8abcfddd33c64de6bda49f8e955606b55bd037a",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "issecrettable"
@@ -1042358,7 +1042358,7 @@
       "discrepancies": [
         "7a591b642d21e2bf0e19a1be87e35ee35488183cb4a8fba8f3844c77ce12b6b9"
       ],
-      "fingerprint": "dac14c0f26794bf90dd18a8aeb32783db6ec066c68b1eeb7015250bfbc584636",
+      "fingerprint": "c52787a86d5d7eb0922f13fa9a22bca78eb7bab3b29f1ad8646a234ac5b47320",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "issecretvalue"
@@ -1042368,7 +1042368,7 @@
       "discrepancies": [
         "67e39cefe43f277daa9ec661b1f4421f2629e14134d0e4a93a61b057cff4d543"
       ],
-      "fingerprint": "50211aa192f497bff1e899ca256189014fbc3dac6abc4fe9b8a565fda430da9c",
+      "fingerprint": "dcc94ae459af2230a56df32b2be5fee9a4c5316d26e9e329b704c52c86300192",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "mapvalues"
@@ -1042485,7 +1042485,7 @@
       "discrepancies": [
         "ba2dc55080db7d2c4d5f30102de9c0d45872e61631d7099ddcc795af3656bad1"
       ],
-      "fingerprint": "6de0281695f3ea382907c7e4992361a109cdde21d947fb390cc26bcc147fd383",
+      "fingerprint": "4a7ec0ecd1e012c18652d55a6e7336f79cfdd42cc690656bd4ee115e2ed0592f",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "scrub"
@@ -1042495,7 +1042495,7 @@
       "discrepancies": [
         "4599c18e3cbfe580d0f73cf737cd37c5212d8b6667ba6aca2912d776ddc02d1f"
       ],
-      "fingerprint": "68559c9f7a18667651251776ba65b364b4b42fbc4f11fe78e7c4c74ef96d67ba",
+      "fingerprint": "2cb9b3aa339ffdc3475fbe67689e3ed5a03061d827f5e0632e3e3913544a85b6",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "scrubsecretvalues"
@@ -1042511,7 +1042511,7 @@
         "ca350c934da119d11e2875886c505e6727f05cbb0ec6100ed10b3848db284815",
         "ef450f603fb77b4561734db68ba66d15d28d5fc175c21b8d5c209fd4e8792f49"
       ],
-      "fingerprint": "f31b1ee5cc76e80158ddde44eb7ff5b57a08b5ba975a387632b251fb9e1d5296",
+      "fingerprint": "9b2ee7e0ccd94f4b1c5d7661b2be039649680647182b39f794f8f81f8be4e609",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "secretunwrap"
@@ -1042526,7 +1042526,7 @@
         "9644d716c4f50b20adf3b501e5cbbc4abbb62e9d288ab33f20a599e28957536e",
         "cdc059ce69741f279e0f71fbc1f516e92f2b21fd91ddd45ab116bd6949372986"
       ],
-      "fingerprint": "9d0dab32011c9fa5bd491f01d5d7ea534d89040bd3e3e7b8e69d079e4ecef14c",
+      "fingerprint": "ff064e93e67d430200b53d324715f3166628d0dc91a16fc56e06f3ae7030241c",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "secretwrap"
@@ -1042536,7 +1042536,7 @@
       "discrepancies": [
         "b0606a96b2c3897ba65a94176b33ff86c8311d48c0c69d544d7c5a498e79aaf8"
       ],
-      "fingerprint": "7bf19f731647e994bc8a305c5ff185672430dd3b6dd5b579ecf1b4dfd69f046a",
+      "fingerprint": "f7f0406d42ef0c090bd80a5f693245041e3ac02003bd1270feff311798ab1b26",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "securecallmethod"
@@ -1042544,7 +1042544,7 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "33ef6dc8b8f2fe98661387065d9ed2a2dfd2ea71c02c7eeaf09e6862679e151a",
+      "fingerprint": "6622f9d014a1e5b78ae8f4ae7bb77f1100a41de915d4e0e5904e6230ad6c7a9c",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": false,
       "symbol": "securecopy"
@@ -1042554,7 +1042554,7 @@
       "discrepancies": [
         "b31570194539748e8e88325d4e434e6307fb0dd133a4943065b973111a1647de"
       ],
-      "fingerprint": "9dc3439ee01bbf784cd5d54ada29b54fd0e361bd9784c5e22747cf97d9fa36b8",
+      "fingerprint": "b8f8ec97d5255214b069dc5634c74384129951e358a5ad24ee42e9434b397415",
       "native_source": "blizzard:FrameScriptDocumentation.lua",
       "requires_resolution": true,
       "symbol": "settablesecurity"
@@ -1042618,7 +1042618,7 @@
         "6956772ca03559d8aab00c3b07c8a4182aaeac9be3fe95683ea077d584daefab",
         "ae30c89beec6cd90f00972cba82d0cead7acd0e87257167805a8da296b0297fc"
       ],
-      "fingerprint": "0e0b1507d929ea7d0ace1257dcc5558c472fd35dfe170c2bac2cf4b0e087921a",
+      "fingerprint": "d1f47ee2a1b1bf42a4546411aad37b9369ad1d7fec2a8adef915ce56f39fa7d5",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.contains"
@@ -1042631,7 +1042631,7 @@
         "d941fb301c11f6688c8c27f304687fa744df7bed22e0074077e1a4c5f407c14f",
         "fa2e440a34acddb8e20d18d70153c911be71ce92e6871b553144b752c6df6915"
       ],
-      "fingerprint": "017130118a8e549d2e0dcef253899e1f4fb843a1d92d4b320c6c0520543858cf",
+      "fingerprint": "ed84e8d8bea7b7f6d0b5d83b24280dd35714ac8f4aab109e1c3c5cd4baffcd96",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.count"
@@ -1042639,7 +1042639,7 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "9438c48f3f248f78792a44ddd5c2068538b23ca0ac87a0cee36b58e64687478d",
+      "fingerprint": "cc6e4779103a3e00b3c17914731f3003f7add4c07913f2aea84a6d352bbf6390",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": false,
       "symbol": "table.create"
@@ -1042650,7 +1042650,7 @@
         "15170e5fa85435b78b6db9befb4171769109ce72c38bbd11155d02bccfef1744",
         "25211c7212266a1dda42fdf13634d865c49fdea0bdf0c81ddc296f437c0b424e"
       ],
-      "fingerprint": "7fa88720ad1b5de20cd7c588b95e06cdddbf330bc10b4d9e1caa2ca509bd12b2",
+      "fingerprint": "66979d54cc7d6d565faaacf978dc56384f7977f57480be2fb83bee59378df0e6",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.freeze"
@@ -1042658,7 +1042658,7 @@
     {
       "coverage": "tsm-source-comparison",
       "discrepancies": [],
-      "fingerprint": "bec33afabb75d0a3ec8d523d73aea10b6a221ba00f90157761158f83cdfc87ee",
+      "fingerprint": "d6e2df0c89a292544d25b1b630591c170f998fe59159a662676f6f619280b67e",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": false,
       "symbol": "table.getcountinfo"
@@ -1042671,7 +1042671,7 @@
         "a2216212942c09b4bf01cc09ef6aafe60482a6af2c8407e5372c80a8267fb184",
         "eca452cd2750c9281fafcb004b45fb3da21fcfba02933428d8bc2323c1b36ee9"
       ],
-      "fingerprint": "ab007cbe810954b2d15ce8ae57bbdb604e7aa440005d1cd39bf0b5678f3dd132",
+      "fingerprint": "a4c8efa2a974ede0fe73f340e00a19bbb39014e3949793f559461c6091a1372c",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.indexof"
@@ -1042682,7 +1042682,7 @@
         "99b2eb53d4720a6afb7df33c512f9551219483096a5ccdf7246372f51d860d59",
         "9aa0d81c458346830e15d241037f05b6ac4c1c22e19bae36ea632c4a47854e2c"
       ],
-      "fingerprint": "cbbc7a479e1fca2b605253b097fdb7abda24b1f6d347412e92c9276b00b6c8df",
+      "fingerprint": "3ee6156114c4ce2571a8edf3f2fe95adab119e8134f3016313669dc82532d29d",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.isempty"
@@ -1042692,7 +1042692,7 @@
       "discrepancies": [
         "0895a3b54e876843db8483f841896b03f99106ca44b0e61161f39fe2cb7c618a"
       ],
-      "fingerprint": "0dfb85d86f2a78ed3c575b753c39554bfa2752a6d501d8bb21a418943357876d",
+      "fingerprint": "95919427e9b8438649cc52dfbfb33869638141a0bbb90f2597d9d32bb4e91672",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.isfrozen"
@@ -1042703,7 +1042703,7 @@
         "3570c4cc6a0eab0a25dd4bff1400cb5a5fef52f0f5398bde6c1a3f78eaae0817",
         "e0f59e6e4e526ab2ffafbaed8a40ccd70134ba346e3252e3eec4f815d2c52b9a"
       ],
-      "fingerprint": "a86eccc24b1eb135ae8c3f4195871cd9dacdc8b38cb1b0ff6437fe9103c63b7a",
+      "fingerprint": "d194e82103a0017b4b63db2c648265d8d9efd363f203f837d2563bf92ca287a4",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.keys"
@@ -1042716,7 +1042716,7 @@
         "9e31ab14a07f73ff6ce4e8d4cc65c8d45174c484cc5745039f1f23e88e64e099",
         "d6a54a652267633496c81adfbca21aa13510c80794466ad821ce0ea61dce0e2e"
       ],
-      "fingerprint": "10c2f2d8ed3ded05361d04d0e75bd766ee602c090b261f500970e378115eaf0c",
+      "fingerprint": "220a4d3eac5f467557150bba7f929362c4f43aa8a1e9cc0ec1db0af364fd9e40",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.removeunordered"
@@ -1042728,7 +1042728,7 @@
         "8b34393b408247493cb6499d4a82a540c3f6393bbe517d806f670d187049f243",
         "fd7b9ec192c4ed465a09097dd261e1534a828b954caf61176abd09e0f1976cb9"
       ],
-      "fingerprint": "d9d62c84071e10732493b8a47139eaa5879e618893d2126343e2aad3470f1f80",
+      "fingerprint": "b1c9dcc079c820e8b47e7e3b1fd70a16362bc0dc03da982bbe1e7d78a06cb720",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.removevalue"
@@ -1042739,7 +1042739,7 @@
         "51107961bc2d97defb137e2d1d1df627fe89e14102dddace9ba342c1b9718cf6",
         "da7a2d140bceff8bb881fb2aebbf12d88d0f4ecf0004d46650641446d61386bc"
       ],
-      "fingerprint": "5c4c5bb00b6c17dfaa335e28effff1656fb7e734b34c24d5c1050b6003483f69",
+      "fingerprint": "73461c474ffb6ee74842a792ddea8aab218054cfb8cdc269b29c1d300b4f953a",
       "native_source": "blizzard:LuaTableExtensionsDocumentation.lua",
       "requires_resolution": true,
       "symbol": "table.values"
@@ -1048226,7 +1048226,7 @@
       }
     ]
   },
-  "declaration_graph_sha256": "1404d739bf2f679dc1c7b4f5762c4bae11fe786ca775c1fd31a4939aecf67db4",
+  "declaration_graph_sha256": "329173cee649f25a5a77e8459d80ceb4c847605eba16838c5bbbf7bd80bf75a1",
   "difference_kinds": {
     "argument-annotation-missing": 31,
     "argument-count": 100,
@@ -1068832,6 +1068832,62 @@
     {
       "differences": [
         {
+          "kind": "return-nilable",
+          "native": true,
+          "position": 1,
+          "tsm": false,
+          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+        },
+        {
+          "kind": "return-nilable",
+          "native": true,
+          "position": 2,
+          "tsm": false,
+          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+        },
+        {
+          "kind": "return-nilable",
+          "native": true,
+          "position": 3,
+          "tsm": false,
+          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+        },
+        {
+          "kind": "return-nilable",
+          "native": true,
+          "position": 4,
+          "tsm": false,
+          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
+        }
+      ],
+      "disposition": "requires-exact-reviewed-resolution",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "symbol": "LayeredRegion.GetVertexColor"
+    },
+    {
+      "differences": [
+        {
+          "kind": "argument-type",
+          "native": "ColorMixin",
+          "position": 2,
+          "tsm": "colorRGBA",
+          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
+        },
+        {
+          "kind": "argument-type",
+          "native": "ColorMixin",
+          "position": 3,
+          "tsm": "colorRGBA",
+          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
+        }
+      ],
+      "disposition": "requires-exact-reviewed-resolution",
+      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
+      "symbol": "LayeredRegion.SetVertexColorFromBoolean"
+    },
+    {
+      "differences": [
+        {
           "kind": "argument-optional",
           "native": false,
           "position": 2,
@@ -1070127,41 +1070183,6 @@
     {
       "differences": [
         {
-          "kind": "return-nilable",
-          "native": true,
-          "position": 1,
-          "tsm": false,
-          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-        },
-        {
-          "kind": "return-nilable",
-          "native": true,
-          "position": 2,
-          "tsm": false,
-          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-        },
-        {
-          "kind": "return-nilable",
-          "native": true,
-          "position": 3,
-          "tsm": false,
-          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-        },
-        {
-          "kind": "return-nilable",
-          "native": true,
-          "position": 4,
-          "tsm": false,
-          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:34"
-        }
-      ],
-      "disposition": "requires-exact-reviewed-resolution",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "symbol": "Region.GetVertexColor"
-    },
-    {
-      "differences": [
-        {
           "basis": "TSM secret_stubs.rs entry_secrecy deliberately promotes these argument policies to tainted.",
           "disposition": "documented-tsm-const-accessor-or-aspect-setter-policy-override",
           "kind": "secret-argument-policy",
@@ -1070173,27 +1070194,6 @@
       "disposition": "requires-exact-reviewed-resolution",
       "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
       "symbol": "Region.SetScale"
-    },
-    {
-      "differences": [
-        {
-          "kind": "argument-type",
-          "native": "ColorMixin",
-          "position": 2,
-          "tsm": "colorRGBA",
-          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
-        },
-        {
-          "kind": "argument-type",
-          "native": "ColorMixin",
-          "position": 3,
-          "tsm": "colorRGBA",
-          "variant": "vendor/Annotations/Core/Widget/Base/Region.lua:101"
-        }
-      ],
-      "disposition": "requires-exact-reviewed-resolution",
-      "native_source": "blizzard:SimpleRegionAPIDocumentation.lua",
-      "symbol": "Region.SetVertexColorFromBoolean"
     },
     {
       "differences": [
@@ -1072542,7 +1072542,7 @@
             "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
             "kind": "receiver-hierarchy",
             "native": [
-              "Region"
+              "LayeredRegion"
             ],
             "secondary": [
               "LayeredRegion",
@@ -1072569,7 +1072569,7 @@
             "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
             "kind": "receiver-hierarchy",
             "native": [
-              "Region"
+              "LayeredRegion"
             ],
             "secondary": [
               "LayeredRegion",
@@ -1072596,7 +1072596,7 @@
             "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
             "kind": "receiver-hierarchy",
             "native": [
-              "Region"
+              "LayeredRegion"
             ],
             "secondary": [
               "LayeredRegion",
@@ -1072623,7 +1072623,7 @@
             "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
             "kind": "receiver-hierarchy",
             "native": [
-              "Region"
+              "LayeredRegion"
             ],
             "secondary": [
               "LayeredRegion",
@@ -1074331,7 +1074331,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(self, string, ? number): Callback_9b0b308d94f7 | nil"
+        "function(self, string, ? number): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1074340,9 +1074340,16 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? number): Callback_9b0b308d94f7 | nil"
+        "function(self, string, ? number): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "intentional-conservative-native-widget-projection",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "Animation.GetScript",
@@ -1074500,7 +1074507,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, Callback_9b0b308d94f7, ? number): boolean"
+        "function(self, string, unknown, ? number): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1074509,7 +1074516,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, Callback_9b0b308d94f7, ? number): boolean"
+        "function(self, string, unknown, ? number): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1074887,7 +1074894,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, ? Callback_9b0b308d94f7)"
+        "function(self, string, ? unknown)"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1074896,7 +1074903,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? Callback_9b0b308d94f7)"
+        "function(self, string, ? unknown)"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1075120,15 +1075127,23 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
+        "function(self, Literal_1969a2b6f35c, ? string, ? string): RadialProgress",
         "function(self, ? string, ? string, ? string): Animation"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "recorded public RadialProgress native fixture",
+          "rule": "literal RadialProgress construction retains the native receiver subtype",
+          "symbol": "AnimationGroup.CreateAnimation"
+        }
+      ],
       "symbol": "AnimationGroup.CreateAnimation",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
+        "function(self, Literal_1969a2b6f35c, ? string, ? string): RadialProgress",
         "function(self, ? string, ? string, ? string): Animation"
       ],
       "opacity_differences": [],
@@ -1075361,7 +1075376,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(self, string, ? number): Callback_9b0b308d94f7 | nil"
+        "function(self, string, ? number): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1075370,9 +1075385,16 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? number): Callback_9b0b308d94f7 | nil"
+        "function(self, string, ? number): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "intentional-conservative-native-widget-projection",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "AnimationGroup.GetScript",
@@ -1075422,7 +1075444,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, Callback_9b0b308d94f7, ? number): boolean"
+        "function(self, string, unknown, ? number): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1075431,7 +1075453,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, Callback_9b0b308d94f7, ? number): boolean"
+        "function(self, string, unknown, ? number): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1075784,7 +1075806,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, ? Callback_9b0b308d94f7)"
+        "function(self, string, ? unknown)"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1075793,7 +1075815,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? Callback_9b0b308d94f7)"
+        "function(self, string, ? unknown)"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1080602,7 +1080624,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any, any...): AddOnProfilerCallResults, any..."
+        "function(unknown, unknown...): AddOnProfilerCallResults, unknown..."
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1080611,9 +1080633,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any, any...): AddOnProfilerCallResults, any..."
+        "function(unknown, unknown...): AddOnProfilerCallResults, unknown..."
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 2,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "C_AddOnProfiler.MeasureCall",
@@ -1080897,7 +1080926,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(string | number): any"
+        "function(string | number): unknown"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1080906,9 +1080935,16 @@
     },
     {
       "emitted_signatures": [
-        "function(string | number): any"
+        "function(string | number): unknown"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "C_AddOns.GetAddOnLocalTable",
@@ -1102252,7 +1102288,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(any)"
+        "function(unknown)"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1102261,7 +1102297,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any)"
+        "function(unknown)"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1115982,7 +1116018,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(string): any | nil"
+        "function(string): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1115991,9 +1116027,16 @@
     },
     {
       "emitted_signatures": [
-        "function(string): any | nil"
+        "function(string): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "C_EncodingUtil.DeserializeCBOR",
@@ -1116009,7 +1116052,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(string): any | nil"
+        "function(string): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1116018,9 +1116061,16 @@
     },
     {
       "emitted_signatures": [
-        "function(string): any | nil"
+        "function(string): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "C_EncodingUtil.DeserializeJSON",
@@ -1116090,7 +1116140,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(? any, ? CBORSerializationOptions): string"
+        "function(? unknown, ? CBORSerializationOptions): string"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1116099,7 +1116149,7 @@
     },
     {
       "emitted_signatures": [
-        "function(? any, ? CBORSerializationOptions): string"
+        "function(? unknown, ? CBORSerializationOptions): string"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1116117,7 +1116167,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(? any, ? JSONSerializationOptions): string"
+        "function(? unknown, ? JSONSerializationOptions): string"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1116126,7 +1116176,7 @@
     },
     {
       "emitted_signatures": [
-        "function(? any, ? JSONSerializationOptions): string"
+        "function(? unknown, ? JSONSerializationOptions): string"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1137190,7 +1137240,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(string, string): any | nil"
+        "function(string, string): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1137199,9 +1137249,16 @@
     },
     {
       "emitted_signatures": [
-        "function(string, string): any | nil"
+        "function(string, string): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "C_Item.GetItemStatDelta",
@@ -1137217,7 +1137274,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(string): any | nil"
+        "function(string): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1137226,9 +1137283,16 @@
     },
     {
       "emitted_signatures": [
-        "function(string): any | nil"
+        "function(string): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "C_Item.GetItemStats",
@@ -1199476,7 +1199540,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any...): any"
+        "function(unknown...): unknown"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1199485,9 +1199549,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any...): any"
+        "function(unknown...): unknown"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "CreateFromMixins",
@@ -1199503,7 +1199574,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(any, ? SecureDelegateOptions): any | nil"
+        "function(unknown, ? SecureDelegateOptions): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1199512,9 +1199583,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any, ? SecureDelegateOptions): any | nil"
+        "function(unknown, ? SecureDelegateOptions): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "CreateSecureDelegate",
@@ -1199557,7 +1199635,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(? boolean, ? boolean): {any: any} | nil"
+        "function(? boolean, ? boolean): {unknown: unknown} | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1199566,7 +1199644,7 @@
     },
     {
       "emitted_signatures": [
-        "function(? boolean, ? boolean): {any: any} | nil"
+        "function(? boolean, ? boolean): {unknown: unknown} | nil"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1207878,7 +1207956,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string): OpaqueValue | nil"
+        "function(self, string): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [
@@ -1207897,7 +1207975,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string): OpaqueValue | nil"
+        "function(self, string): unknown | nil"
       ],
       "opacity_differences": [
         {
@@ -1208650,7 +1208728,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self): {any: any}"
+        "function(self): {unknown: unknown}"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1208659,7 +1208737,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self): {any: any}"
+        "function(self): {unknown: unknown}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1209755,7 +1209833,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, ? any)"
+        "function(self, string, ? unknown)"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1209764,7 +1209842,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? any)"
+        "function(self, string, ? unknown)"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1209780,7 +1209858,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, ? any)"
+        "function(self, string, ? unknown)"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1209789,7 +1209867,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? any)"
+        "function(self, string, ? unknown)"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1210555,7 +1210633,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, ? {any: any})"
+        "function(self, ? {unknown: unknown})"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1210564,7 +1210642,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, ? {any: any})"
+        "function(self, ? {unknown: unknown})"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1221743,6 +1221821,164 @@
       "workspace_result_secret": false
     },
     {
+      "effective_may_return_nothing": false,
+      "emitted_signatures": [
+        "function(self): Literal_243b9650451a, number"
+      ],
+      "native_audit": true,
+      "projection_notes": [],
+      "symbol": "LayeredRegion.GetDrawLayer",
+      "workspace_result_secret": false
+    },
+    {
+      "emitted_signatures": [
+        "function(self): Literal_243b9650451a, number"
+      ],
+      "opacity_differences": [],
+      "reviewed_secret_effect": false,
+      "secret_data_returns": [],
+      "symbol": "LayeredRegion.GetDrawLayer",
+      "tsm_branch": "",
+      "tsm_line": 15,
+      "tsm_secret_returns": [
+        false,
+        false
+      ],
+      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+      "unchecked_return_positions": [],
+      "workspace_result_secret": false
+    },
+    {
+      "effective_may_return_nothing": true,
+      "emitted_signatures": [
+        "function(self): W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil"
+      ],
+      "native_audit": true,
+      "projection_notes": [],
+      "symbol": "LayeredRegion.GetVertexColor",
+      "workspace_result_secret": true
+    },
+    {
+      "emitted_signatures": [
+        "function(self): W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil"
+      ],
+      "opacity_differences": [
+        {
+          "disposition": "intentional-conservative-native-widget-projection",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        },
+        {
+          "disposition": "intentional-conservative-native-widget-projection",
+          "position": 2,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        },
+        {
+          "disposition": "intentional-conservative-native-widget-projection",
+          "position": 3,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        },
+        {
+          "disposition": "intentional-conservative-native-widget-projection",
+          "position": 4,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
+      "reviewed_secret_effect": false,
+      "secret_data_returns": [],
+      "symbol": "LayeredRegion.GetVertexColor",
+      "tsm_branch": "",
+      "tsm_line": 34,
+      "tsm_secret_returns": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+      "unchecked_return_positions": [],
+      "workspace_result_secret": true
+    },
+    {
+      "effective_may_return_nothing": false,
+      "emitted_signatures": [
+        "function(self, Literal_243b9650451a, ? number)"
+      ],
+      "native_audit": true,
+      "projection_notes": [],
+      "symbol": "LayeredRegion.SetDrawLayer",
+      "workspace_result_secret": false
+    },
+    {
+      "emitted_signatures": [
+        "function(self, Literal_243b9650451a, ? number)"
+      ],
+      "opacity_differences": [],
+      "reviewed_secret_effect": false,
+      "secret_data_returns": [],
+      "symbol": "LayeredRegion.SetDrawLayer",
+      "tsm_branch": "",
+      "tsm_line": 66,
+      "tsm_secret_returns": [],
+      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+      "unchecked_return_positions": [],
+      "workspace_result_secret": false
+    },
+    {
+      "effective_may_return_nothing": false,
+      "emitted_signatures": [
+        "function(self, W.NumberLike, W.NumberLike, W.NumberLike, ? W.NumberLike)"
+      ],
+      "native_audit": true,
+      "projection_notes": [],
+      "symbol": "LayeredRegion.SetVertexColor",
+      "workspace_result_secret": false
+    },
+    {
+      "emitted_signatures": [
+        "function(self, W.NumberLike, W.NumberLike, W.NumberLike, ? W.NumberLike)"
+      ],
+      "opacity_differences": [],
+      "reviewed_secret_effect": false,
+      "secret_data_returns": [],
+      "symbol": "LayeredRegion.SetVertexColor",
+      "tsm_branch": "",
+      "tsm_line": 92,
+      "tsm_secret_returns": [],
+      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+      "unchecked_return_positions": [],
+      "workspace_result_secret": false
+    },
+    {
+      "effective_may_return_nothing": false,
+      "emitted_signatures": [
+        "function(self, boolean | OpaqueValue, colorRGBA, colorRGBA)"
+      ],
+      "native_audit": true,
+      "projection_notes": [],
+      "symbol": "LayeredRegion.SetVertexColorFromBoolean",
+      "workspace_result_secret": false
+    },
+    {
+      "emitted_signatures": [
+        "function(self, boolean | OpaqueValue, colorRGBA, colorRGBA)"
+      ],
+      "opacity_differences": [],
+      "reviewed_secret_effect": false,
+      "secret_data_returns": [],
+      "symbol": "LayeredRegion.SetVertexColorFromBoolean",
+      "tsm_branch": "",
+      "tsm_line": 101,
+      "tsm_secret_returns": [],
+      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
+      "unchecked_return_positions": [],
+      "workspace_result_secret": false
+    },
+    {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
         "function(self)"
@@ -1222009,7 +1222245,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(? boolean): any"
+        "function(? boolean): unknown"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1222018,9 +1222254,16 @@
     },
     {
       "emitted_signatures": [
-        "function(? boolean): any"
+        "function(? boolean): unknown"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "LocalizedClassList",
@@ -1224091,7 +1224334,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any, any...): any"
+        "function(unknown, unknown...): unknown"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1224100,9 +1224343,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any, any...): any"
+        "function(unknown, unknown...): unknown"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "Mixin",
@@ -1230892,34 +1231142,6 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self): Literal_243b9650451a, number"
-      ],
-      "native_audit": true,
-      "projection_notes": [],
-      "symbol": "Region.GetDrawLayer",
-      "workspace_result_secret": false
-    },
-    {
-      "emitted_signatures": [
-        "function(self): Literal_243b9650451a, number"
-      ],
-      "opacity_differences": [],
-      "reviewed_secret_effect": false,
-      "secret_data_returns": [],
-      "symbol": "Region.GetDrawLayer",
-      "tsm_branch": "",
-      "tsm_line": 15,
-      "tsm_secret_returns": [
-        false,
-        false
-      ],
-      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-      "unchecked_return_positions": [],
-      "workspace_result_secret": false
-    },
-    {
-      "effective_may_return_nothing": false,
-      "emitted_signatures": [
         "function(self): W.NumberLike"
       ],
       "native_audit": true,
@@ -1230979,61 +1231201,6 @@
       "tsm_branch": "",
       "tsm_line": 25,
       "tsm_secret_returns": [
-        false
-      ],
-      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-      "unchecked_return_positions": [],
-      "workspace_result_secret": true
-    },
-    {
-      "effective_may_return_nothing": true,
-      "emitted_signatures": [
-        "function(self): W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil"
-      ],
-      "native_audit": true,
-      "projection_notes": [],
-      "symbol": "Region.GetVertexColor",
-      "workspace_result_secret": true
-    },
-    {
-      "emitted_signatures": [
-        "function(self): W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil, W.NumberLike | nil"
-      ],
-      "opacity_differences": [
-        {
-          "disposition": "intentional-conservative-native-widget-projection",
-          "position": 1,
-          "tsm_secret_wrapper": false,
-          "workspace_opaque_carrier": true
-        },
-        {
-          "disposition": "intentional-conservative-native-widget-projection",
-          "position": 2,
-          "tsm_secret_wrapper": false,
-          "workspace_opaque_carrier": true
-        },
-        {
-          "disposition": "intentional-conservative-native-widget-projection",
-          "position": 3,
-          "tsm_secret_wrapper": false,
-          "workspace_opaque_carrier": true
-        },
-        {
-          "disposition": "intentional-conservative-native-widget-projection",
-          "position": 4,
-          "tsm_secret_wrapper": false,
-          "workspace_opaque_carrier": true
-        }
-      ],
-      "reviewed_secret_effect": false,
-      "secret_data_returns": [],
-      "symbol": "Region.GetVertexColor",
-      "tsm_branch": "",
-      "tsm_line": 34,
-      "tsm_secret_returns": [
-        false,
-        false,
-        false,
         false
       ],
       "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
@@ -1231174,31 +1231341,6 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, Literal_243b9650451a, ? number)"
-      ],
-      "native_audit": true,
-      "projection_notes": [],
-      "symbol": "Region.SetDrawLayer",
-      "workspace_result_secret": false
-    },
-    {
-      "emitted_signatures": [
-        "function(self, Literal_243b9650451a, ? number)"
-      ],
-      "opacity_differences": [],
-      "reviewed_secret_effect": false,
-      "secret_data_returns": [],
-      "symbol": "Region.SetDrawLayer",
-      "tsm_branch": "",
-      "tsm_line": 66,
-      "tsm_secret_returns": [],
-      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-      "unchecked_return_positions": [],
-      "workspace_result_secret": false
-    },
-    {
-      "effective_may_return_nothing": false,
-      "emitted_signatures": [
         "function(self, boolean)"
       ],
       "native_audit": true,
@@ -1231266,56 +1231408,6 @@
       "symbol": "Region.SetScale",
       "tsm_branch": "",
       "tsm_line": 82,
-      "tsm_secret_returns": [],
-      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-      "unchecked_return_positions": [],
-      "workspace_result_secret": false
-    },
-    {
-      "effective_may_return_nothing": false,
-      "emitted_signatures": [
-        "function(self, W.NumberLike, W.NumberLike, W.NumberLike, ? W.NumberLike)"
-      ],
-      "native_audit": true,
-      "projection_notes": [],
-      "symbol": "Region.SetVertexColor",
-      "workspace_result_secret": false
-    },
-    {
-      "emitted_signatures": [
-        "function(self, W.NumberLike, W.NumberLike, W.NumberLike, ? W.NumberLike)"
-      ],
-      "opacity_differences": [],
-      "reviewed_secret_effect": false,
-      "secret_data_returns": [],
-      "symbol": "Region.SetVertexColor",
-      "tsm_branch": "",
-      "tsm_line": 92,
-      "tsm_secret_returns": [],
-      "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
-      "unchecked_return_positions": [],
-      "workspace_result_secret": false
-    },
-    {
-      "effective_may_return_nothing": false,
-      "emitted_signatures": [
-        "function(self, boolean | OpaqueValue, colorRGBA, colorRGBA)"
-      ],
-      "native_audit": true,
-      "projection_notes": [],
-      "symbol": "Region.SetVertexColorFromBoolean",
-      "workspace_result_secret": false
-    },
-    {
-      "emitted_signatures": [
-        "function(self, boolean | OpaqueValue, colorRGBA, colorRGBA)"
-      ],
-      "opacity_differences": [],
-      "reviewed_secret_effect": false,
-      "secret_data_returns": [],
-      "symbol": "Region.SetVertexColorFromBoolean",
-      "tsm_branch": "",
-      "tsm_line": 101,
       "tsm_secret_returns": [],
       "tsm_source": "vendor/Annotations/Core/Widget/Base/Region.lua",
       "unchecked_return_positions": [],
@@ -1232786,7 +1232878,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(self, string, ? number): Callback_9b0b308d94f7 | nil"
+        "function(self, string, ? number): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1232795,9 +1232887,16 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? number): Callback_9b0b308d94f7 | nil"
+        "function(self, string, ? number): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "intentional-conservative-native-widget-projection",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "ScriptRegion.GetScript",
@@ -1233015,7 +1233114,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, Callback_9b0b308d94f7, ? number): boolean"
+        "function(self, string, unknown, ? number): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1233024,7 +1233123,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, Callback_9b0b308d94f7, ? number): boolean"
+        "function(self, string, unknown, ? number): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1233701,7 +1233800,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(self, string, ? Callback_9b0b308d94f7)"
+        "function(self, string, ? unknown)"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1233710,7 +1233809,7 @@
     },
     {
       "emitted_signatures": [
-        "function(self, string, ? Callback_9b0b308d94f7)"
+        "function(self, string, ? unknown)"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1247894,7 +1247993,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any...): boolean"
+        "function(unknown...): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1247903,7 +1248002,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any...): boolean"
+        "function(unknown...): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1247948,7 +1248047,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1247957,7 +1248056,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1247975,7 +1248074,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1247984,7 +1248083,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1248079,7 +1248178,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(? any): any | nil"
+        "function(? unknown): unknown | nil"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248088,9 +1248187,16 @@
     },
     {
       "emitted_signatures": [
-        "function(? any): any | nil"
+        "function(? unknown): unknown | nil"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "dumpobject",
@@ -1248106,7 +1248212,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any...): boolean"
+        "function(unknown...): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248115,7 +1248221,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any...): boolean"
+        "function(unknown...): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1248133,7 +1248239,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248142,7 +1248248,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1248160,7 +1248266,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248169,7 +1248275,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any): boolean"
+        "function(unknown): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1248187,7 +1248293,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any, any...): any..."
+        "function(unknown, unknown...): unknown..."
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248196,9 +1248302,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any, any...): any..."
+        "function(unknown, unknown...): unknown..."
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "mapvalues",
@@ -1248698,7 +1248811,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any...): any..."
+        "function(unknown...): unknown..."
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248707,9 +1248820,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any...): any..."
+        "function(unknown...): unknown..."
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "scrub",
@@ -1248725,7 +1248845,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any...): any..."
+        "function(unknown...): unknown..."
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248734,9 +1248854,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any...): any..."
+        "function(unknown...): unknown..."
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "scrubsecretvalues",
@@ -1248752,7 +1248879,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(any...): any | nil..."
+        "function(unknown...): unknown | nil..."
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248761,9 +1248888,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any...): any | nil..."
+        "function(unknown...): unknown | nil..."
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "secretunwrap",
@@ -1248779,7 +1248913,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any...): OpaqueValue..."
+        "function(unknown...): unknown..."
       ],
       "native_audit": true,
       "projection_notes": [
@@ -1248797,7 +1248931,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any...): OpaqueValue..."
+        "function(unknown...): unknown..."
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": true,
@@ -1248815,7 +1248949,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(any, string, any...): any..."
+        "function(unknown, string, unknown...): unknown..."
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248824,9 +1248958,16 @@
     },
     {
       "emitted_signatures": [
-        "function(any, string, any...): any..."
+        "function(unknown, string, unknown...): unknown..."
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "securecallmethod",
@@ -1248842,7 +1248983,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(? any, ? SecureCopyOptions): any"
+        "function(? unknown, ? SecureCopyOptions): unknown"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248851,9 +1248992,16 @@
     },
     {
       "emitted_signatures": [
-        "function(? any, ? SecureCopyOptions): any"
+        "function(? unknown, ? SecureCopyOptions): unknown"
       ],
-      "opacity_differences": [],
+      "opacity_differences": [
+        {
+          "disposition": "workspace-opaque-carrier-versus-tsm-public-type",
+          "position": 1,
+          "tsm_secret_wrapper": false,
+          "workspace_opaque_carrier": true
+        }
+      ],
       "reviewed_secret_effect": false,
       "secret_data_returns": [],
       "symbol": "securecopy",
@@ -1248869,7 +1249017,7 @@
     {
       "effective_may_return_nothing": true,
       "emitted_signatures": [
-        "function(any, number)"
+        "function(unknown, number)"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1248878,7 +1249026,7 @@
     },
     {
       "emitted_signatures": [
-        "function(any, number)"
+        "function(unknown, number)"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249141,16 +1249289,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}, ? any): boolean"
+        "function<K, V>({K: V}, ? unknown): boolean",
+        "function<V>({V}, ? unknown): boolean"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.contains"
+        }
+      ],
       "symbol": "table.contains",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? any): boolean"
+        "function<K, V>({K: V}, ? unknown): boolean",
+        "function<V>({V}, ? unknown): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249167,7 +1249323,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? any): boolean"
+        "function<K, V>({K: V}, ? unknown): boolean",
+        "function<V>({V}, ? unknown): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249185,16 +1249342,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}): W.NumberLike"
+        "function<K, V>({K: V}): W.NumberLike",
+        "function<V>({V}): W.NumberLike"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.count"
+        }
+      ],
       "symbol": "table.count",
       "workspace_result_secret": true
     },
     {
       "emitted_signatures": [
-        "function({any: any}): W.NumberLike"
+        "function<K, V>({K: V}): W.NumberLike",
+        "function<V>({V}): W.NumberLike"
       ],
       "opacity_differences": [
         {
@@ -1249230,7 +1249395,7 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function(number, ? number): {any: any}"
+        "function(number, ? number): {unknown: unknown}"
       ],
       "native_audit": true,
       "projection_notes": [],
@@ -1249239,7 +1249404,7 @@
     },
     {
       "emitted_signatures": [
-        "function(number, ? number): {any: any}"
+        "function(number, ? number): {unknown: unknown}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249257,16 +1249422,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}): {any: any}"
+        "function<K, V>({K: V}): {K: V}",
+        "function<V>({V}): {V}"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.freeze"
+        }
+      ],
       "symbol": "table.freeze",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}): {any: any}"
+        "function<K, V>({K: V}): {K: V}",
+        "function<V>({V}): {V}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249283,7 +1249456,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}): {any: any}"
+        "function<K, V>({K: V}): {K: V}",
+        "function<V>({V}): {V}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249299,16 +1249473,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}): W.NumberLike, W.NumberLike, W.NumberLike"
+        "function<K, V>({K: V}): W.NumberLike, W.NumberLike, W.NumberLike",
+        "function<V>({V}): W.NumberLike, W.NumberLike, W.NumberLike"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.getcountinfo"
+        }
+      ],
       "symbol": "table.getcountinfo",
       "workspace_result_secret": true
     },
     {
       "emitted_signatures": [
-        "function({any: any}): W.NumberLike, W.NumberLike, W.NumberLike"
+        "function<K, V>({K: V}): W.NumberLike, W.NumberLike, W.NumberLike",
+        "function<V>({V}): W.NumberLike, W.NumberLike, W.NumberLike"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249327,7 +1249509,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}): W.NumberLike, W.NumberLike, W.NumberLike"
+        "function<K, V>({K: V}): W.NumberLike, W.NumberLike, W.NumberLike",
+        "function<V>({V}): W.NumberLike, W.NumberLike, W.NumberLike"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249347,16 +1249530,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}, ? any): number | nil"
+        "function<K, V>({K: V}, ? unknown): number | nil",
+        "function<V>({V}, ? unknown): number | nil"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.indexof"
+        }
+      ],
       "symbol": "table.indexof",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? any): number | nil"
+        "function<K, V>({K: V}, ? unknown): number | nil",
+        "function<V>({V}, ? unknown): number | nil"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249373,7 +1249564,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? any): number | nil"
+        "function<K, V>({K: V}, ? unknown): number | nil",
+        "function<V>({V}, ? unknown): number | nil"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249391,16 +1249583,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}): boolean | OpaqueValue"
+        "function<K, V>({K: V}): boolean | OpaqueValue",
+        "function<V>({V}): boolean | OpaqueValue"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.isempty"
+        }
+      ],
       "symbol": "table.isempty",
       "workspace_result_secret": true
     },
     {
       "emitted_signatures": [
-        "function({any: any}): boolean | OpaqueValue"
+        "function<K, V>({K: V}): boolean | OpaqueValue",
+        "function<V>({V}): boolean | OpaqueValue"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249417,7 +1249617,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}): boolean | OpaqueValue"
+        "function<K, V>({K: V}): boolean | OpaqueValue",
+        "function<V>({V}): boolean | OpaqueValue"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249435,16 +1249636,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}): boolean"
+        "function<K, V>({K: V}): boolean",
+        "function<V>({V}): boolean"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.isfrozen"
+        }
+      ],
       "symbol": "table.isfrozen",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}): boolean"
+        "function<K, V>({K: V}): boolean",
+        "function<V>({V}): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249461,7 +1249670,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}): boolean"
+        "function<K, V>({K: V}): boolean",
+        "function<V>({V}): boolean"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249479,16 +1249689,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}): any"
+        "function<K, V>({K: V}): {K}",
+        "function<V>({V}): {number}"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.keys"
+        }
+      ],
       "symbol": "table.keys",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}): any"
+        "function<K, V>({K: V}): {K}",
+        "function<V>({V}): {number}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249505,7 +1249723,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}): any"
+        "function<K, V>({K: V}): {K}",
+        "function<V>({V}): {number}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249523,16 +1249742,22 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}, ? number): any | nil"
+        "function<V>({V}, ? number): V | nil"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.removeunordered"
+        }
+      ],
       "symbol": "table.removeunordered",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? number): any | nil"
+        "function<V>({V}, ? number): V | nil"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249549,7 +1249774,7 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? number): any | nil"
+        "function<V>({V}, ? number): V | nil"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249567,16 +1249792,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}, ? any): number"
+        "function<K, V>({K: V}, ? unknown): number",
+        "function<V>({V}, ? unknown): number"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.removevalue"
+        }
+      ],
       "symbol": "table.removevalue",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? any): number"
+        "function<K, V>({K: V}, ? unknown): number",
+        "function<V>({V}, ? unknown): number"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249593,7 +1249826,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}, ? any): number"
+        "function<K, V>({K: V}, ? unknown): number",
+        "function<V>({V}, ? unknown): number"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249611,16 +1249845,24 @@
     {
       "effective_may_return_nothing": false,
       "emitted_signatures": [
-        "function({any: any}): any"
+        "function<K, V>({K: V}): {V}",
+        "function<V>({V}): {V}"
       ],
       "native_audit": true,
-      "projection_notes": [],
+      "projection_notes": [
+        {
+          "evidence": "locked LuaTableExtensionsDocumentation.lua function and return documentation",
+          "rule": "preserve documented container inputs and input/output type relations",
+          "symbol": "table.values"
+        }
+      ],
       "symbol": "table.values",
       "workspace_result_secret": false
     },
     {
       "emitted_signatures": [
-        "function({any: any}): any"
+        "function<K, V>({K: V}): {V}",
+        "function<V>({V}): {V}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249637,7 +1249879,8 @@
     },
     {
       "emitted_signatures": [
-        "function({any: any}): any"
+        "function<K, V>({K: V}): {V}",
+        "function<V>({V}): {V}"
       ],
       "opacity_differences": [],
       "reviewed_secret_effect": false,
@@ -1249713,6 +1249956,7 @@
       "HousingFixturePointFrame",
       "HousingLayoutPinFrame",
       "LINE",
+      "LayeredRegion",
       "LibDBIcon.button",
       "LibDBIcon.button.icon",
       "LibDialog.Delegate.Button",
@@ -1260706,7 +1260950,7 @@
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -1260942,7 +1261186,7 @@
           ],
           "secondary_namespace": "wowless receiver/facet names; only explicit native aliases are mapped",
           "workspace_bases": [
-            "Region"
+            "LayeredRegion"
           ]
         },
         "secondary_method": {
@@ -1261034,7 +1261278,7 @@
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -1261270,7 +1261514,7 @@
           ],
           "secondary_namespace": "wowless receiver/facet names; only explicit native aliases are mapped",
           "workspace_bases": [
-            "Region"
+            "LayeredRegion"
           ]
         },
         "secondary_method": {
@@ -1261387,7 +1261631,7 @@
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -1261623,7 +1261867,7 @@
           ],
           "secondary_namespace": "wowless receiver/facet names; only explicit native aliases are mapped",
           "workspace_bases": [
-            "Region"
+            "LayeredRegion"
           ]
         },
         "secondary_method": {
@@ -1261755,7 +1261999,7 @@
               "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
               "kind": "receiver-hierarchy",
               "native": [
-                "Region"
+                "LayeredRegion"
               ],
               "secondary": [
                 "LayeredRegion",
@@ -1261991,7 +1262235,7 @@
           ],
           "secondary_namespace": "wowless receiver/facet names; only explicit native aliases are mapped",
           "workspace_bases": [
-            "Region"
+            "LayeredRegion"
           ]
         },
         "secondary_method": {
@@ -1262284,7 +1262528,7 @@
             "disposition": "reviewed composition naming difference; equivalent method sets corroborated by build-matched native lookup",
             "kind": "receiver-hierarchy",
             "native": [
-              "Region"
+              "LayeredRegion"
             ],
             "secondary": [
               "LayeredRegion",
@@ -1262520,7 +1262764,7 @@
         ],
         "secondary_namespace": "wowless receiver/facet names; only explicit native aliases are mapped",
         "workspace_bases": [
-          "Region"
+          "LayeredRegion"
         ]
       },
       "TimedSignalMapAPI": {
@@ -1295077,6 +1295321,35 @@
       {
         "policies": [],
         "state": "reviewed",
+        "symbol": "LayeredRegion.GetDrawLayer"
+      },
+      {
+        "policies": [
+          "preserve-native-absence"
+        ],
+        "state": "reviewed",
+        "symbol": "LayeredRegion.GetVertexColor"
+      },
+      {
+        "policies": [],
+        "state": "reviewed",
+        "symbol": "LayeredRegion.SetDrawLayer"
+      },
+      {
+        "policies": [],
+        "state": "reviewed",
+        "symbol": "LayeredRegion.SetVertexColor"
+      },
+      {
+        "policies": [
+          "nominal-or-refined-type"
+        ],
+        "state": "reviewed",
+        "symbol": "LayeredRegion.SetVertexColorFromBoolean"
+      },
+      {
+        "policies": [],
+        "state": "reviewed",
         "symbol": "Line.ClearAllPoints"
       },
       {
@@ -1297071,24 +1297344,12 @@
       {
         "policies": [],
         "state": "reviewed",
-        "symbol": "Region.GetDrawLayer"
-      },
-      {
-        "policies": [],
-        "state": "reviewed",
         "symbol": "Region.GetEffectiveScale"
       },
       {
         "policies": [],
         "state": "reviewed",
         "symbol": "Region.GetScale"
-      },
-      {
-        "policies": [
-          "preserve-native-absence"
-        ],
-        "state": "reviewed",
-        "symbol": "Region.GetVertexColor"
       },
       {
         "policies": [],
@@ -1297118,11 +1297379,6 @@
       {
         "policies": [],
         "state": "reviewed",
-        "symbol": "Region.SetDrawLayer"
-      },
-      {
-        "policies": [],
-        "state": "reviewed",
         "symbol": "Region.SetIgnoreParentAlpha"
       },
       {
@@ -1297136,18 +1297392,6 @@
         ],
         "state": "reviewed",
         "symbol": "Region.SetScale"
-      },
-      {
-        "policies": [],
-        "state": "reviewed",
-        "symbol": "Region.SetVertexColor"
-      },
-      {
-        "policies": [
-          "nominal-or-refined-type"
-        ],
-        "state": "reviewed",
-        "symbol": "Region.SetVertexColorFromBoolean"
       },
       {
         "policies": [
@@ -1300924,11 +1301168,14 @@
         "reason": "These exact vendor annotations add absence without native absence metadata. They do not justify a new runtime availability guarantee. Existing runtime absence/accessibility checks remain required; Teal itself admits nil."
       },
       "verified-native-capability-composition": {
-        "decision": "Use corrected Region composition for VectorGraphics; native lookup corroborates its exact106-method capability set and the complete Wowless LayeredRegion+ScriptObject composition.",
+        "decision": "Use source-backed LayeredRegion composition for VectorGraphics; native lookup corroborates its exact 106-method capability set and the complete Wowless LayeredRegion+ScriptObject composition.",
         "evidence": [
           "scripts/wow_api/native_observations.json",
           "references/wow-api/native-observations/12.1.5.70575/public-invocations-1.1.0/report.json",
-          "docs/api/teal-catalogue.md"
+          "docs/api/teal-catalogue.md",
+          "references/wow-api/native-crosscheck/wowless/data/products/wow/docs.yaml",
+          "references/wow-api/native-crosscheck/wowless/data/products/wow/uiobjects.yaml",
+          "internal/wowapi/native_routing.go"
         ],
         "reason": "Build-matched owned native observations establish method availability despite different virtual and native type names. Existing native signatures and secret restrictions remain authoritative; presence does not certify complete inherited signatures."
       }

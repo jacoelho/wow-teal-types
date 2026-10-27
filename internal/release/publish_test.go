@@ -3,9 +3,10 @@ package release
 import (
 	"context"
 	"errors"
+	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
-	"reflect"
 	"strings"
 	"testing"
 )
@@ -30,8 +31,8 @@ func publicationFixture(t *testing.T) (string, string, string) {
 	for _, name := range append(append([]string{}, ownedOutputs...), "rockspecs/wow-tl-type-1.2.3-1.rockspec.in") {
 		old, new := []byte("old "+name), []byte("new "+name)
 		if name == "package.json" {
-			old = []byte(`{"version":"1.2.3","state":"old"}`)
-			new = []byte(`{"version":"1.2.3","state":"new"}`)
+			old = []byte(`{"schema_version":1,"version":"1.2.3","name":"old","license":"MIT","teal_version":"0.24.8","wow_build":"12.1.5.70575","files":{}}`)
+			new = []byte(`{"schema_version":1,"version":"1.2.3","name":"new","license":"MIT","teal_version":"0.24.8","wow_build":"12.1.5.70575","files":{}}`)
 		}
 		fixtureFile(t, root, name, old)
 		fixtureFile(t, next, name, new)
@@ -131,7 +132,7 @@ func TestPublicationRollsBackAfterActualReplacementAndCancellation(t *testing.T)
 			if err != nil {
 				t.Fatal(err)
 			}
-			if !reflect.DeepEqual(before, after) {
+			if !maps.Equal(before, after) {
 				t.Fatal("rollback lost original bytes, absence or modes")
 			}
 			if exists(filepath.Join(root, newName)) {
@@ -205,7 +206,7 @@ func TestRecoveryPreservesExternalEditAndRestoresAfterItIsResolved(t *testing.T)
 		t.Fatal(e)
 	}
 	after, _ := captureInputs(root)
-	if !reflect.DeepEqual(before, after) {
+	if !maps.Equal(before, after) {
 		t.Fatal("recovery did not restore prior publication")
 	}
 }
@@ -229,5 +230,62 @@ func TestFailedCandidateRetainsDiagnosticsAndActiveVersion(t *testing.T) {
 	version, _ := os.ReadFile(filepath.Join(root, ".wow-version"))
 	if string(version) != "12.1.5.70575" {
 		t.Fatal("selected version rewritten")
+	}
+}
+
+func TestMalformedRecoveryRetainsJournalAndOutputs(t *testing.T) {
+	for _, kind := range []string{"null", "array", "trailing", "missing_after", "null_after", "fractional_mode", "null_mode", "overflow_mode"} {
+		t.Run(kind, func(t *testing.T) {
+			root, _, run := publicationFixture(t)
+			id, err := identityOf(filepath.Join(root, "types/wow/wow.d.tl"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			body, err := jsonBytes(journal{Schema: 1, Root: root, Files: []publicationRow{{Path: "types/wow/wow.d.tl", Before: id, After: id, Backup: "0"}}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			switch kind {
+			case "null":
+				body = []byte("null")
+			case "array":
+				body = []byte("[]")
+			case "trailing":
+				body = append(body, []byte("{}")...)
+			case "missing_after":
+				body = []byte(fmt.Sprintf(`{"schema":1,"root":%q,"files":[{"path":"types/wow/wow.d.tl","before":null,"backup":"0"}]}`, root))
+			case "null_after":
+				body, err = jsonBytes(journal{Schema: 1, Root: root, Files: []publicationRow{{Path: "types/wow/wow.d.tl", Before: id, After: nil, Backup: "0"}}})
+				if err != nil {
+					t.Fatal(err)
+				}
+			case "fractional_mode":
+				body = []byte(strings.Replace(string(body), `"mode": 416`, `"mode": 416.5`, 1))
+			case "null_mode":
+				body = []byte(strings.Replace(string(body), `"mode": 416`, `"mode": null`, 1))
+			case "overflow_mode":
+				body = []byte(strings.Replace(string(body), `"mode": 416`, `"mode": 4294967296`, 1))
+			}
+			journalPath := filepath.Join(run, "publication/journal.json")
+			fixtureFile(t, filepath.Dir(journalPath), "journal.json", body)
+			pointer := filepath.Join(root, "build/wow-update/pending.json")
+			if err = writeObject(pointer, publicationPointer{Journal: journalPath, SHA256: sha(body)}); err != nil {
+				t.Fatal(err)
+			}
+			before := metadataInputs(t, root)
+			if _, err = Recover(root); err == nil {
+				t.Fatal("malformed recovery accepted")
+			}
+			if !maps.Equal(before, metadataInputs(t, root)) {
+				t.Fatal("malformed recovery changed outputs")
+			}
+			actual, err := os.ReadFile(journalPath)
+			if err != nil || string(actual) != string(body) {
+				t.Fatal("malformed journal changed")
+			}
+			if _, err = os.Stat(pointer); err != nil {
+				t.Fatal("pending marker removed")
+			}
+		})
 	}
 }

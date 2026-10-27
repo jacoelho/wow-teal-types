@@ -1,7 +1,6 @@
 package wowapi
 
 import (
-	"encoding/json"
 	"fmt"
 	"math"
 	"math/big"
@@ -10,12 +9,14 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 type conversionError struct{ message string }
 
 func (e conversionError) Error() string { return e.message }
-func reject(format string, args ...any) { panic(conversionError{fmt.Sprintf(format, args...)}) }
+func reject(message string)             { panic(conversionError{message}) }
 func captureError(target *error) {
 	if r := recover(); r != nil {
 		if e, ok := r.(conversionError); ok {
@@ -95,7 +96,7 @@ func luaTokens(text, source string) []luaToken {
 		if strings.HasPrefix(text[i:], "--") {
 			if _, end, long := longBracket(text, i+2); long {
 				if end == 0 {
-					reject("%s: unterminated long comment", source)
+					reject(fmt.Sprintf("%s: unterminated long comment", source))
 				}
 				line += strings.Count(text[i:end], "\n")
 				i = end
@@ -111,7 +112,7 @@ func luaTokens(text, source string) []luaToken {
 		tokenLine := line
 		if _, end, long := longBracket(text, i); long {
 			if end == 0 {
-				reject("%s: unterminated long string", source)
+				reject(fmt.Sprintf("%s: unterminated long string", source))
 			}
 			i = end
 			line += strings.Count(text[start:i], "\n")
@@ -131,7 +132,7 @@ func luaTokens(text, source string) []luaToken {
 				i++
 			}
 			if !closed || i > len(text) {
-				reject("%s: unterminated string", source)
+				reject(fmt.Sprintf("%s: unterminated string", source))
 			}
 			line += strings.Count(text[start:i], "\n")
 		} else if c >= '0' && c <= '9' {
@@ -161,7 +162,7 @@ func luaTokens(text, source string) []luaToken {
 						i++
 					}
 					if i == begin {
-						reject("%s: malformed exponent", source)
+						reject(fmt.Sprintf("%s: malformed exponent", source))
 					}
 				}
 			}
@@ -173,7 +174,7 @@ func luaTokens(text, source string) []luaToken {
 		} else if strings.ContainsRune("{}[](),;=.:+-", rune(c)) {
 			i++
 		} else {
-			reject("%s: unsupported Lua near %q", source, text[i:min(i+60, len(text))])
+			reject(fmt.Sprintf("%s: unsupported Lua near %q", source, text[i:min(i+60, len(text))]))
 		}
 		tokens = append(tokens, luaToken{text[start:i], tokenLine})
 	}
@@ -193,13 +194,13 @@ func decodeLuaString(raw, source string) string {
 		i++
 		if c != '\\' {
 			if c == '\r' || c == '\n' {
-				reject("%s: unescaped newline in quoted string", source)
+				reject(fmt.Sprintf("%s: unescaped newline in quoted string", source))
 			}
 			out.WriteByte(c)
 			continue
 		}
 		if i == len(body) {
-			reject("%s: incomplete string escape", source)
+			reject(fmt.Sprintf("%s: incomplete string escape", source))
 		}
 		c = body[i]
 		i++
@@ -210,13 +211,13 @@ func decodeLuaString(raw, source string) string {
 			}
 			value, _ := strconv.Atoi(body[start:i])
 			if value > 127 {
-				reject("%s: non-ASCII byte escape is unsupported in UTF-8 metadata", source)
+				reject(fmt.Sprintf("%s: non-ASCII byte escape is unsupported in UTF-8 metadata", source))
 			}
 			out.WriteByte(byte(value))
 		} else if value, ok := escapes[c]; ok {
 			out.WriteByte(value)
 		} else {
-			reject("%s: unsupported string escape %q", source, c)
+			reject(fmt.Sprintf("%s: unsupported string escape %q", source, c))
 		}
 	}
 	return out.String()
@@ -229,37 +230,39 @@ func (p *luaParser) peek() string {
 }
 func (p *luaParser) take(expected ...string) string {
 	if p.pos >= len(p.tokens) {
-		reject("%s: unexpected end of documentation", p.source)
+		reject(fmt.Sprintf("%s: unexpected end of documentation", p.source))
 	}
 	t := p.tokens[p.pos]
 	p.pos++
 	if len(expected) > 0 && t.text != expected[0] {
-		reject("%s:%d: expected %q, got %q", p.source, t.line, expected[0], t.text)
+		reject(fmt.Sprintf("%s:%d: expected %q, got %q", p.source, t.line, expected[0], t.text))
 	}
 	return t.text
 }
-func luaNumber(v any) (float64, bool, bool) {
-	switch x := v.(type) {
-	case int:
-		return float64(x), true, true
-	case int64:
-		return float64(x), true, true
-	case float64:
-		return x, true, false
-	case json.Number:
-		n, e := x.Float64()
-		return n, e == nil, !strings.ContainsAny(string(x), ".eE")
+func luaNumber(v literal.Value) (float64, bool, bool) {
+	if integer, ok := v.Integer(); ok {
+		number, err := strconv.ParseFloat(integer, 64)
+		return number, err == nil, true
+	}
+	if number, ok := v.Number(); ok {
+		return number, true, false
 	}
 	return 0, false, false
 }
-func arithmeticReference(v any) bool {
-	if _, ok, _ := luaNumber(v); ok {
+func arithmeticReference(v literal.Value) bool {
+	switch v.Kind() {
+	case literal.Integer, literal.FloatKind, literal.Reference, literal.Expression:
 		return true
 	}
-	m, ok := v.(map[string]any)
-	return ok && len(m) == 1 && (m["$ref"] != nil || m["$expression"] != nil)
+	return false
 }
-func (p *luaParser) value(depth int) any {
+func mustLiteral(value literal.Value, err error) literal.Value {
+	if err != nil {
+		reject(fmt.Sprintf("%s", err))
+	}
+	return value
+}
+func (p *luaParser) value(depth int) literal.Value {
 	value := p.atom(depth)
 	for p.peek() == "+" || p.peek() == "-" {
 		op := p.take()
@@ -282,50 +285,50 @@ func (p *luaParser) value(depth int) any {
 				a -= b
 			}
 			if math.IsInf(a, 0) || math.IsNaN(a) {
-				reject("%s: nonfinite documentation number", p.source)
+				reject(fmt.Sprintf("%s: nonfinite documentation number", p.source))
 			}
-			value = a
+			value = mustLiteral(literal.Number(a))
 		} else {
 			if !arithmeticReference(value) || !arithmeticReference(right) {
-				reject("%s: arithmetic requires numbers or named references", p.source)
+				reject(fmt.Sprintf("%s: arithmetic requires numbers or named references", p.source))
 			}
-			value = M{"$expression": []any{value, op, right}}
+			value = mustLiteral(literal.Binary(op, value, right))
 		}
 	}
 	return value
 }
-func (p *luaParser) atom(depth int) any {
+func (p *luaParser) atom(depth int) literal.Value {
 	if depth > 64 {
-		reject("%s: table nesting exceeds 64", p.source)
+		reject(fmt.Sprintf("%s: table nesting exceeds 64", p.source))
 	}
 	token := p.take()
 	if token == "{" {
-		entries := []any{}
-		fields := M{}
+		entries := []literal.Value{}
+		fields := literal.Object{}
 		for p.peek() != "}" {
 			if p.peek() == "[" {
 				p.take("[")
-				key, ok := p.value(depth + 1).(string)
+				key, ok := p.value(depth + 1).Text()
 				p.take("]")
 				p.take("=")
 				if !ok {
-					reject("%s: only string documentation table keys are supported", p.source)
+					reject(fmt.Sprintf("%s: only string documentation table keys are supported", p.source))
 				}
 				if strings.HasPrefix(key, "$") {
-					reject("%s: reserved metadata representation key %q", p.source, key)
+					reject(fmt.Sprintf("%s: reserved metadata representation key %q", p.source, key))
 				}
 				if _, ok := fields[key]; ok {
-					reject("%s: duplicate table key %s", p.source, key)
+					reject(fmt.Sprintf("%s: duplicate table key %s", p.source, key))
 				}
 				fields[key] = p.value(depth + 1)
 			} else if p.pos+1 < len(p.tokens) && p.tokens[p.pos+1].text == "=" {
 				key := p.take()
 				if !identifier(key) {
-					reject("%s: invalid documentation key %q", p.source, key)
+					reject(fmt.Sprintf("%s: invalid documentation key %q", p.source, key))
 				}
 				p.take("=")
 				if _, ok := fields[key]; ok {
-					reject("%s: duplicate table key %s", p.source, key)
+					reject(fmt.Sprintf("%s: duplicate table key %s", p.source, key))
 				}
 				fields[key] = p.value(depth + 1)
 			} else {
@@ -334,28 +337,28 @@ func (p *luaParser) atom(depth int) any {
 			if p.peek() == "," || p.peek() == ";" {
 				p.take()
 			} else if p.peek() != "}" {
-				reject("%s: expected table separator, got %s", p.source, p.peek())
+				reject(fmt.Sprintf("%s: expected table separator, got %s", p.source, p.peek()))
 			}
 		}
 		p.take("}")
 		if len(fields) > 0 && len(entries) > 0 {
-			reject("%s: mixed table keys unsupported", p.source)
+			reject(fmt.Sprintf("%s: mixed table keys unsupported", p.source))
 		}
 		if len(fields) > 0 {
-			return fields
+			return literal.Record(fields)
 		}
-		return entries
+		return literal.List(entries)
 	}
 	if token[0] == '\'' || token[0] == '"' || token[0] == '[' && len(token) > 1 {
-		return decodeLuaString(token, p.source)
+		return literal.Text(decodeLuaString(token, p.source))
 	}
 	switch token {
 	case "true":
-		return true
+		return literal.Bool(true)
 	case "false":
-		return false
+		return literal.Bool(false)
 	case "nil":
-		return nil
+		return literal.Value{}
 	case "-", "+":
 		v := p.atom(depth + 1)
 		if integer, ok := luaInteger(v); ok {
@@ -366,57 +369,57 @@ func (p *luaParser) atom(depth int) any {
 		}
 		n, ok, _ := luaNumber(v)
 		if !ok {
-			reject("%s: unary operator on non-number", p.source)
+			reject(fmt.Sprintf("%s: unary operator on non-number", p.source))
 		}
 		if token == "-" {
 			n = -n
 		}
-		return n
+		return mustLiteral(literal.Number(n))
 	}
 	if token[0] >= '0' && token[0] <= '9' {
 		if strings.HasPrefix(strings.ToLower(token), "0x") {
 			n, ok := new(big.Int).SetString(token[2:], 16)
 			if !ok {
-				reject("%s: unsupported number", p.source)
+				reject(fmt.Sprintf("%s: unsupported number", p.source))
 			}
 			return luaIntegerValue(n)
 		}
 		if !strings.ContainsAny(token, ".eE") {
 			if len(token) > 4300 {
-				reject("%s: documentation integer exceeds4300digits", p.source)
+				reject(fmt.Sprintf("%s: documentation integer exceeds4300digits", p.source))
 			}
 			n, ok := new(big.Int).SetString(token, 10)
 			if !ok {
-				reject("%s: unsupported number", p.source)
+				reject(fmt.Sprintf("%s: unsupported number", p.source))
 			}
 			return luaIntegerValue(n)
 		}
 		n, e := strconv.ParseFloat(token, 64)
 		if e != nil || math.IsInf(n, 0) || math.IsNaN(n) {
-			reject("%s: nonfinite documentation number", p.source)
+			reject(fmt.Sprintf("%s: nonfinite documentation number", p.source))
 		}
-		return n
+		return mustLiteral(literal.Number(n))
 	}
 	if !identifier(token) {
-		reject("%s: expected a literal or named reference, got %q", p.source, token)
+		reject(fmt.Sprintf("%s: expected a literal or named reference, got %q", p.source, token))
 	}
 	parts := []string{token}
 	for p.peek() == "." {
 		p.take(".")
 		part := p.take()
 		if !identifier(part) {
-			reject("%s: invalid named reference component %q", p.source, part)
+			reject(fmt.Sprintf("%s: invalid named reference component %q", p.source, part))
 		}
 		parts = append(parts, part)
 	}
-	return M{"$ref": strings.Join(parts, ".")}
+	return mustLiteral(literal.Ref(strings.Join(parts, ".")))
 }
 
 // ParseLua reads a closed documentation-table grammar without executing Lua.
-func ParseLua(data []byte, source string) (result M, err error) {
+func ParseLua(data []byte, source string) (result literal.Object, err error) {
 	defer captureError(&err)
 	if !utf8.Valid(data) {
-		reject("%s: invalid UTF-8 metadata", source)
+		reject(fmt.Sprintf("%s: invalid UTF-8 metadata", source))
 	}
 	text := strings.ReplaceAll(string(data), "\r\n", "\n")
 	text = strings.ReplaceAll(text, "\r", "\n")
@@ -424,13 +427,13 @@ func ParseLua(data []byte, source string) (result M, err error) {
 	p.take("local")
 	name := p.take()
 	if !identifier(name) {
-		reject("%s: invalid documentation table name %q", source, name)
+		reject(fmt.Sprintf("%s: invalid documentation table name %q", source, name))
 	}
 	p.take("=")
 	value := p.value(0)
-	result, ok := value.(map[string]any)
+	result, ok := value.Object()
 	if !ok {
-		reject("%s: documentation must be a keyed table", source)
+		reject(fmt.Sprintf("%s: documentation must be a keyed table", source))
 	}
 	if p.peek() == ";" {
 		p.take()
@@ -444,11 +447,11 @@ func ParseLua(data []byte, source string) (result M, err error) {
 		}
 	}
 	if p.peek() != "" {
-		reject("%s: unsupported statement after documentation table: %q", source, p.peek())
+		reject(fmt.Sprintf("%s: unsupported statement after documentation table: %q", source, p.peek()))
 	}
 	return
 }
-func parseLuaFile(path string) (M, error) {
+func parseLuaFile(path string) (literal.Object, error) {
 	data, e := os.ReadFile(path)
 	if e != nil {
 		return nil, e
@@ -456,23 +459,12 @@ func parseLuaFile(path string) (M, error) {
 	return ParseLua(data, path)
 }
 
-func luaInteger(value any) (*big.Int, bool) {
-	switch v := value.(type) {
-	case int:
-		return big.NewInt(int64(v)), true
-	case int64:
-		return big.NewInt(v), true
-	case json.Number:
-		if !strings.ContainsAny(string(v), ".eE") {
-			n, ok := new(big.Int).SetString(string(v), 10)
-			return n, ok
-		}
+func luaInteger(value literal.Value) (*big.Int, bool) {
+	if text, ok := value.Integer(); ok {
+		return new(big.Int).SetString(text, 10)
 	}
 	return nil, false
 }
-func luaIntegerValue(value *big.Int) any {
-	if value.IsInt64() {
-		return value.Int64()
-	}
-	return json.Number(value.String())
+func luaIntegerValue(value *big.Int) literal.Value {
+	return mustLiteral(literal.BigInteger(value.String()))
 }

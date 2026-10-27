@@ -3,16 +3,16 @@ package wowapi
 import (
 	"bytes"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"io"
-	"math"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"syscall"
 	"unicode/utf8"
+	"wow-teal-types/internal/wowapi/literal"
 )
 
 const captureMaxBytes = 256 << 10
@@ -53,153 +53,61 @@ func capEqualSet(a, b map[string]bool) bool {
 	}
 	return true
 }
-func capExact(value M, fields map[string]bool, label string) {
+func capExact(value literal.Object, fields map[string]bool, label string) {
 	if value == nil || len(value) != len(fields) {
-		reject("unexpected %s fields", label)
+		reject(fmt.Sprintf("unexpected %s fields", label))
 	}
 	for key := range value {
 		if !fields[key] {
-			reject("unexpected %s fields", label)
+			reject(fmt.Sprintf("unexpected %s fields", label))
 		}
 	}
 }
-func capInteger(value any) bool {
-	switch x := value.(type) {
-	case int, int64:
-		return true
-	case json.Number:
-		_, err := x.Int64()
-		return err == nil && !strings.ContainsAny(string(x), ".eE")
-	}
-	return false
-}
-func capInt(value any) int {
-	if !capInteger(value) {
-		reject("capture expected integer")
-	}
-	return asInt(value)
-}
-func capString(value any) string {
-	s, ok := value.(string)
-	if !ok {
-		reject("capture expected string")
-	}
-	return s
-}
-func capBool(value any) bool {
-	b, ok := value.(bool)
-	if !ok {
-		reject("capture expected boolean")
-	}
-	return b
-}
-func capArray(value any, label string) []any {
-	rows, ok := value.([]any)
-	if !ok {
-		reject("invalid %s", label)
-	}
-	return rows
-}
-func capSet(values any, label string) map[string]bool {
+func capSet(values []string, label string) map[string]bool {
 	result := map[string]bool{}
-	for _, v := range capArray(values, label) {
-		s := capString(v)
+	for _, s := range values {
 		if result[s] {
-			reject("duplicate %s", label)
+			reject(fmt.Sprintf("duplicate %s", label))
 		}
 		result[s] = true
 	}
 	return result
 }
-func capRequired(plan M, name string, expected map[string]bool) {
-	if !capEqualSet(capSet(plan[name], "binding requirements: "+name), expected) {
-		reject("invalid binding requirements: %s", name)
+func capRequired(values []string, name string, expected map[string]bool) {
+	if !capEqualSet(capSet(values, "binding requirements: "+name), expected) {
+		reject(fmt.Sprintf("invalid binding requirements: %s", name))
 	}
 }
-func capBounded(v any, depth int, budget *int) {
+func capBounded(v literal.Value, depth int, budget *int) {
 	*budget--
 	if *budget < 0 || depth > 64 {
 		reject("capture exceeds node/depth limit")
 	}
-	switch x := v.(type) {
-	case M:
-		for k, v := range x {
-			if k == "$ref" || k == "$expression" {
+	switch v.Kind() {
+	case literal.ObjectKind:
+		fields, _ := v.Object()
+		for key, value := range fields {
+			if key == "$ref" || key == "$expression" {
 				reject("nonliteral capture key")
 			}
-			capBounded(v, depth+1, budget)
+			capBounded(value, depth+1, budget)
 		}
-	case []any:
-		for _, v := range x {
-			capBounded(v, depth+1, budget)
+	case literal.Array:
+		rows, _ := v.Array()
+		for _, value := range rows {
+			capBounded(value, depth+1, budget)
 		}
-	case string:
-		if utf8.RuneCountInString(x) > 512 {
+	case literal.String:
+		text, _ := v.Text()
+		if utf8.RuneCountInString(text) > 512 {
 			reject("capture string exceeds 512 characters")
 		}
-	case float64:
-		if math.IsNaN(x) || math.IsInf(x, 0) {
-			reject("nonfinite capture value")
-		}
-	case json.Number:
-		if strings.ContainsAny(string(x), ".eE") {
-			value, err := x.Float64()
-			if err != nil || math.IsNaN(value) || math.IsInf(value, 0) {
-				reject("nonfinite capture value")
-			}
-		}
-	case nil, bool, int, int64:
+	case literal.Null, literal.Boolean, literal.Integer, literal.FloatKind:
 	default:
 		reject("unsupported capture value")
 	}
 }
-func captureJSONValue(decoder *json.Decoder, depth int, budget *int) any {
-	*budget--
-	if *budget < 0 || depth > 64 {
-		reject("capture exceeds node/depth limit")
-	}
-	token, err := decoder.Token()
-	if err != nil {
-		reject("invalid capture JSON: %s", err)
-	}
-	if delimiter, ok := token.(json.Delim); ok {
-		switch delimiter {
-		case '{':
-			value := M{}
-			for decoder.More() {
-				key, err := decoder.Token()
-				if err != nil {
-					reject("invalid capture JSON: %s", err)
-				}
-				name, ok := key.(string)
-				if !ok {
-					reject("invalid capture JSON key")
-				}
-				if _, found := value[name]; found {
-					reject("duplicate capture JSON key")
-				}
-				value[name] = captureJSONValue(decoder, depth+1, budget)
-			}
-			if _, err = decoder.Token(); err != nil {
-				reject("invalid capture JSON: %s", err)
-			}
-			return value
-		case '[':
-			value := []any{}
-			for decoder.More() {
-				value = append(value, captureJSONValue(decoder, depth+1, budget))
-			}
-			if _, err = decoder.Token(); err != nil {
-				reject("invalid capture JSON: %s", err)
-			}
-			return value
-		default:
-			reject("invalid capture JSON delimiter")
-		}
-	}
-	return token
-}
-func captureLiteral(p *luaParser, depth int) any {
+func captureLiteral(p *luaParser, depth int) literal.Value {
 	if depth > 64 {
 		reject("capture nesting exceeds 64")
 	}
@@ -215,17 +123,32 @@ func captureLiteral(p *luaParser, depth int) any {
 				reject("invalid signed capture literal")
 			}
 			value := p.atom(depth)
-			n, ok, integer := luaNumber(value)
+			if n, ok := value.Integer(); ok {
+				if sign == "-" {
+					if strings.HasPrefix(n, "-") {
+						n = strings.TrimPrefix(n, "-")
+					} else {
+						n = "-" + n
+					}
+				}
+				result, e := literal.BigInteger(n)
+				if e != nil {
+					reject(fmt.Sprintf("invalid signed capture literal: %s", e))
+				}
+				return result
+			}
+			n, ok := value.Number()
 			if !ok {
 				reject("invalid signed capture literal")
 			}
 			if sign == "-" {
 				n = -n
 			}
-			if integer {
-				return int64(n)
+			result, e := literal.Number(n)
+			if e != nil {
+				reject(fmt.Sprintf("invalid signed capture literal: %s", e))
 			}
-			return n
+			return result
 		}
 		if token == "true" || token == "false" || token == "nil" || token[0] >= '0' && token[0] <= '9' {
 			return p.atom(depth)
@@ -244,8 +167,8 @@ func captureLiteral(p *luaParser, depth int) any {
 		reject("capture must contain literal data only")
 	}
 	p.take("{")
-	entries := []any{}
-	fields := M{}
+	entries := []literal.Value{}
+	fields := literal.Object{}
 	for p.peek() != "}" {
 		key := ""
 		hasKey := false
@@ -253,7 +176,7 @@ func captureLiteral(p *luaParser, depth int) any {
 			p.take()
 			value := captureLiteral(p, depth+1)
 			var ok bool
-			key, ok = value.(string)
+			key, ok = value.Text()
 			if !ok {
 				reject("duplicate or unsupported capture key")
 			}
@@ -284,11 +207,11 @@ func captureLiteral(p *luaParser, depth int) any {
 		reject("mixed capture table")
 	}
 	if len(fields) > 0 {
-		return fields
+		return literal.Record(fields)
 	}
-	return entries
+	return literal.List(entries)
 }
-func readCaptureData(data []byte, savedVariables bool) (result M, err error) {
+func readCaptureData(data []byte, savedVariables bool) (result literal.Object, err error) {
 	defer captureError(&err)
 	if len(data) > captureMaxBytes {
 		reject("capture exceeds byte limit")
@@ -296,7 +219,7 @@ func readCaptureData(data []byte, savedVariables bool) (result M, err error) {
 	if !utf8.Valid(data) {
 		reject("capture must be UTF-8")
 	}
-	var value any
+	var value literal.Value
 	if savedVariables {
 		p := luaParser{tokens: luaTokens(string(data), "capture"), source: "capture"}
 		if len(p.tokens) > captureMaxNodes*8 {
@@ -309,62 +232,43 @@ func readCaptureData(data []byte, savedVariables bool) (result M, err error) {
 			reject("trailing capture statements")
 		}
 	} else {
-		decoder := json.NewDecoder(bytes.NewReader(data))
-		decoder.UseNumber()
-		budget := captureMaxNodes
-		value = captureJSONValue(decoder, 0, &budget)
-		var tail any
-		if e := decoder.Decode(&tail); e != io.EOF {
-			reject("trailing capture JSON data")
+		var e error
+		value, e = literal.ParseJSON(data)
+		if e != nil {
+			reject(fmt.Sprintf("invalid capture JSON: %s", e))
 		}
 	}
 	budget := captureMaxNodes
 	capBounded(value, 0, &budget)
-	result, ok := value.(map[string]any)
+	result, ok := value.Object()
 	if !ok {
 		reject("capture must be an object")
 	}
 	return result, nil
 }
-func capObservations(value any, allowed, valueCases map[string]bool) map[string]M {
-	result := map[string]M{}
-	for _, item := range capArray(value, "capture observations array") {
-		row := asMap(item)
-		if row == nil || row["caseID"] == nil || row["state"] == nil || len(row) < 2 || len(row) > 3 {
-			reject("unexpected observation fields")
-		}
-		for key := range row {
-			if key != "caseID" && key != "state" && key != "value" {
-				reject("unexpected observation fields")
-			}
-		}
-		name, state := capString(row["caseID"]), capString(row["state"])
-		if !allowed[name] || result[name] != nil || !captureState.MatchString(state) {
+func capObservations(rows []CaptureObservation, allowed, valueCases map[string]bool) map[string]CaptureObservation {
+	result := map[string]CaptureObservation{}
+	for _, row := range rows {
+		name, state := row.CaseID, row.State
+		if _, exists := result[name]; !allowed[name] || exists || !captureState.MatchString(state) {
 			reject("duplicate, unknown or invalid observation")
 		}
-		payload, present := row["value"]
-		if present {
-			_, s := payload.(string)
-			_, b := payload.(bool)
-			if !valueCases[name] || state != "available" || !(s || b) {
-				reject("unexpected observation payload")
-			}
+		if row.Value != nil && (!valueCases[name] || state != "available") {
+			reject("unexpected observation payload")
 		}
-		if valueCases[name] && state == "available" && !present {
+		if valueCases[name] && state == "available" && row.Value == nil {
 			reject("missing available query value")
 		}
 		result[name] = row
 	}
 	return result
 }
-func capStates(rows any, allowed, setters, reads map[string]bool, label string) map[string]string {
+func capStates(rows []CaptureState, allowed, setters, reads map[string]bool, label string) map[string]string {
 	found := map[string]string{}
-	for _, item := range capArray(rows, "binding "+label) {
-		row := asMap(item)
-		capExact(row, wordSet("caseID state"), "binding "+label)
-		name, state := capString(row["caseID"]), capString(row["state"])
+	for _, row := range rows {
+		name, state := row.CaseID, row.State
 		if !allowed[name] || found[name] != "" {
-			reject("duplicate or unknown binding %s", label)
+			reject(fmt.Sprintf("duplicate or unknown binding %s", label))
 		}
 		states := wordSet("matched mismatch not_comparable not_run")
 		if setters[name] {
@@ -373,16 +277,16 @@ func capStates(rows any, allowed, setters, reads map[string]bool, label string) 
 			states = capUnion(wordSet("public_empty public_nonempty nil secret wrong_type oversized unexpected_tuple"), diagnosticFailures)
 		}
 		if !states[state] {
-			reject("invalid binding %s state: %s", label, name)
+			reject(fmt.Sprintf("invalid binding %s state: %s", label, name))
 		}
 		found[name] = state
 	}
 	return found
 }
-func capDiagnostics(report, plan M, mode string) map[string]string {
+func capDiagnostics(report CaptureReport, plan ProbePlan, mode string) map[string]string {
 	required := capUnion(diagnosticSetters, diagnosticReads, diagnosticComparisons)
-	capRequired(plan, "bindingDiagnosticCases", required)
-	found := capStates(report["bindingDiagnostics"], required, diagnosticSetters, diagnosticReads, "diagnostic")
+	capRequired(plan.BindingDiagnosticCases, "bindingDiagnosticCases", required)
+	found := capStates(report.BindingDiagnostics, required, diagnosticSetters, diagnosticReads, "diagnostic")
 	if mode == "public_invocations" && len(found) != len(required) || mode == "presence" && len(found) > 0 {
 		reject("invalid binding diagnostic coverage")
 	}
@@ -394,40 +298,35 @@ func capDiagnostics(report, plan M, mode string) map[string]string {
 		if found[name] == "matched" || found[name] == "mismatch" {
 			for _, operand := range operands {
 				if found[operand] != "public_empty" && found[operand] != "public_nonempty" {
-					reject("unavailable diagnostic inputs cannot establish equality: %s", name)
+					reject(fmt.Sprintf("unavailable diagnostic inputs cannot establish equality: %s", name))
 				}
 			}
 		}
 	}
 	return found
 }
-func capExperiments(report, plan M, mode string, diagnostics map[string]string) (map[string]string, map[string]M) {
+func capExperiments(report CaptureReport, plan ProbePlan, mode string, diagnostics map[string]string) (map[string]string, map[string]BindingTextSample) {
 	required := capUnion(experimentSetters, experimentComparisons)
-	capRequired(plan, "bindingTextSampleCases", bindingSamples)
-	capRequired(plan, "bindingExperimentCases", required)
+	capRequired(plan.BindingTextSampleCases, "bindingTextSampleCases", bindingSamples)
+	capRequired(plan.BindingExperimentCases, "bindingExperimentCases", required)
 	found := map[string]string{}
 	public := map[string][]byte{}
-	samples := map[string]M{}
+	samples := map[string]BindingTextSample{}
 	failures := capUnion(diagnosticFailures, wordSet("nil secret wrong_type oversized unexpected_tuple"))
-	for _, item := range capArray(report["bindingTextSamples"], "binding experiment arrays") {
-		row := asMap(item)
-		state := capString(row["state"])
-		fields := wordSet("caseID state")
-		if state == "public" {
-			fields = wordSet("caseID state hex byteLength firstNul")
-		}
-		capExact(row, fields, "binding text sample")
-		name := capString(row["caseID"])
+	for _, row := range report.BindingTextSamples {
+		state := row.State
+
+		name := row.CaseID
 		if !bindingSamples[name] || found[name] != "" {
 			reject("duplicate or unknown binding text sample")
 		}
 		if state == "public" {
-			text := capString(row["hex"])
+			text := row.Hex
 			if !captureHex.MatchString(text) {
 				reject("invalid or oversized public fixture bytes")
 			}
 			value, _ := hex.DecodeString(text)
-			if capInt(row["byteLength"]) != len(value) || capInt(row["firstNul"]) != bytes.IndexByte(value, 0)+1 {
+			if row.ByteLength != len(value) || row.FirstNul != bytes.IndexByte(value, 0)+1 {
 				reject("inconsistent public fixture byte metadata")
 			}
 			public[name] = value
@@ -437,7 +336,7 @@ func capExperiments(report, plan M, mode string, diagnostics map[string]string) 
 		found[name] = state
 		samples[name] = row
 	}
-	checks := capStates(report["bindingExperimentChecks"], required, experimentSetters, nil, "experiment check")
+	checks := capStates(report.BindingExperimentChecks, required, experimentSetters, nil, "experiment check")
 	if mode == "presence" {
 		if len(found) > 0 || len(checks) > 0 {
 			reject("presence cannot contain binding experiment evidence")
@@ -478,29 +377,18 @@ func capExperiments(report, plan M, mode string, diagnostics map[string]string) 
 	return checks, samples
 }
 
-func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classification M, err error) {
+func validateCapture(report CaptureReport, manifest ProbeBuildManifest, receipt ProbeReceipt, manifestBytes []byte) (classification CaptureResult, err error) {
 	defer captureError(&err)
-	plan := asMap(manifest["plan"])
-	version := capString(plan["version"])
-	if !wordSet("1.0.0 1.1.0 1.2.0 1.3.0 1.4.0 1.5.0")[version] || manifest["probe"] != version {
+	plan := manifest.Plan
+	version := plan.Version
+	if !wordSet("1.0.0 1.1.0 1.2.0 1.3.0 1.4.0 1.5.0")[version] || manifest.Probe != version {
 		reject("unsupported probe version")
 	}
-	fields := capUnion(captureBaseFields)
-	if version != "1.0.0" {
-		fields = capUnion(fields, captureNewFields)
-	}
-	if version == "1.3.0" || version == "1.4.0" || version == "1.5.0" {
-		fields["bindingDiagnostics"] = true
-	}
-	if version == "1.4.0" || version == "1.5.0" {
-		fields["bindingTextSamples"] = true
-		fields["bindingExperimentChecks"] = true
-	}
-	capExact(report, fields, "capture")
-	if receipt["build_manifest_sha256"] != sha256hex(manifestBytes) || !evEqual(receipt["files"], manifest["files"]) {
+	fields := captureReportFields(version)
+	if receipt.BuildManifestSHA256 != sha256hex(manifestBytes) || !maps.Equal(receipt.Files, manifest.Files) {
 		reject("installed probe receipt identity mismatch")
 	}
-	runtimeFiles := asMap(manifest["files"])
+	runtimeFiles := manifest.Files
 	if runtimeFiles == nil {
 		reject("invalid installed probe file identity")
 	}
@@ -513,104 +401,92 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 				reject("invalid installed probe file identity")
 			}
 		}
-		if !captureHash.MatchString(capString(value)) {
+		if !captureHash.MatchString(value) {
 			reject("invalid installed probe file identity")
 		}
 	}
-	for _, key := range []string{"probeVersion", "expectedBuild", "sourceFingerprint", "declarationFingerprint"} {
-		expected := plan[key]
-		if key == "probeVersion" {
-			expected = version
-		}
-		if !evEqual(report[key], expected) {
-			reject("capture identity mismatch: %s", key)
+	for key, pair := range map[string][2]string{"probeVersion": {report.ProbeVersion, version}, "expectedBuild": {report.ExpectedBuild, plan.ExpectedBuild}, "sourceFingerprint": {report.SourceFingerprint, plan.SourceFingerprint}, "declarationFingerprint": {report.DeclarationFingerprint, plan.DeclarationFingerprint}} {
+		if pair[0] != pair[1] {
+			reject(fmt.Sprintf("capture identity mismatch: %s", key))
 		}
 	}
-	if capInt(report["schema"]) != 1 {
+	if report.Schema != 1 {
 		reject("unsupported capture schema")
 	}
-	if capString(report["clientVersion"])+"."+capString(report["clientBuild"]) != plan["expectedBuild"] {
+	if report.ClientVersion+"."+report.ClientBuild != plan.ExpectedBuild {
 		reject("client build mismatch")
 	}
-	for key, expected := range map[string]any{"clientInterface": plan["expectedInterface"], "projectID": plan["expectedProjectID"]} {
-		if capInt(report[key]) != capInt(expected) {
-			reject("client identity mismatch: %s", key)
+	for key, pair := range map[string][2]int{"clientInterface": {report.ClientInterface, plan.ExpectedInterface}, "projectID": {report.ProjectID, plan.ExpectedProjectID}} {
+		if pair[0] != pair[1] {
+			reject(fmt.Sprintf("client identity mismatch: %s", key))
 		}
 	}
-	limits := asMap(report["limits"])
-	if report["context"] != "out_of_combat_public_owned_objects" || limits == nil || !evEqual(limits, plan["limits"]) {
+	if report.Context != "out_of_combat_public_owned_objects" || report.Limits == nil || !maps.Equal(report.Limits, plan.Limits) {
 		reject("capture context/limits mismatch")
 	}
-	for _, value := range limits {
-		if !capInteger(value) {
-			reject("capture context/limits mismatch")
-		}
-	}
-	if report["verifiesSignatures"] != false || report["verifiesSecrecy"] != false {
+
+	if report.VerifiesSignatures != false || report.VerifiesSecrecy != false {
 		reject("capture cannot certify signatures or secrecy")
 	}
-	expected := map[string]M{}
+	expected := map[string]ProbeFamily{}
 	methods := map[string]bool{}
-	for _, item := range capArray(plan["families"], "capture method requirements") {
-		row := asMap(item)
-		name := capString(row["name"])
-		if expected[name] != nil {
+	for _, row := range plan.Families {
+		name := row.Name
+		if _, exists := expected[name]; exists {
 			reject("invalid capture method requirements")
 		}
 		expected[name] = row
-		for _, method := range capArray(row["methods"], "capture method requirements") {
-			methods[capString(row["canonical"])+"."+capString(method)] = true
+		for _, method := range row.Methods {
+			methods[row.Canonical+"."+method] = true
 		}
 	}
-	if len(methods) != capInt(plan["expectedMethods"]) || capInt(report["expectedMethods"]) != len(methods) {
+	if len(methods) != plan.ExpectedMethods || report.ExpectedMethods != len(methods) {
 		reject("invalid capture method requirements")
 	}
-	mode := "presence"
-	if value, ok := report["mode"]; ok {
-		mode = capString(value)
+	mode := report.Mode
+	if version == "1.0.0" {
+		mode = "presence"
 	}
 	if mode != "presence" && mode != "public_invocations" {
 		reject("unsupported capture mode")
 	}
 	diagnostics := map[string]string{}
 	checks := map[string]string{}
-	samples := map[string]M{}
+	samples := map[string]BindingTextSample{}
 	if fields["bindingDiagnostics"] {
 		diagnostics = capDiagnostics(report, plan, mode)
 	}
 	if fields["bindingTextSamples"] {
 		checks, samples = capExperiments(report, plan, mode, diagnostics)
 	}
-	observed := map[string]M{}
+	observed := map[string]CaptureObservation{}
 	families := map[string]bool{}
 	present := 0
 	factoriesAvailable := true
-	for _, item := range capArray(report["families"], "capture families") {
-		family := asMap(item)
-		capExact(family, wordSet("family factory methods queries"), "family")
-		name := capString(family["family"])
+	for _, family := range report.Families {
+		name := family.Family
 		requirement, ok := expected[name]
 		if !ok || families[name] {
 			reject("duplicate or unknown capture family")
 		}
 		families[name] = true
-		factory := capString(family["factory"])
+		factory := family.Factory
 		if !captureState.MatchString(factory) {
 			reject("invalid constructor state")
 		}
 		factoriesAvailable = factoriesAvailable && factory == "available"
 		ids := map[string]bool{}
-		canonical := capString(requirement["canonical"])
-		for _, method := range capArray(requirement["methods"], "capture method requirements") {
-			ids[canonical+"."+capString(method)] = true
+		canonical := requirement.Canonical
+		for _, method := range requirement.Methods {
+			ids[canonical+"."+method] = true
 		}
-		rows := capObservations(family["methods"], ids, nil)
+		rows := capObservations(family.Methods, ids, nil)
 		if len(rows) != len(ids) {
 			reject("missing capture method case")
 		}
 		for key, row := range rows {
 			observed[key] = row
-			if row["state"] == "present" {
+			if row.State == "present" {
 				present++
 			}
 		}
@@ -619,35 +495,29 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 		for _, kind := range captureQueryTypes {
 			queries[prefix+"IsObjectType."+kind] = true
 		}
-		queryRows := capObservations(family["queries"], queries, queries)
+		queryRows := capObservations(family.Queries, queries, queries)
 		if factory == "available" && len(queryRows) != len(queries) {
 			reject("missing capture query case")
 		}
 		for name, row := range queryRows {
-			if value, ok := row["value"]; ok {
-				if strings.HasSuffix(name, "GetObjectType") {
-					if _, ok = value.(string); !ok {
-						reject("invalid native query result type")
-					}
-				} else if _, ok = value.(bool); !ok {
-					reject("invalid native query result type")
-				}
+			if row.Value != nil && row.Value.isBoolean == strings.HasSuffix(name, "GetObjectType") {
+				reject("invalid native query result type")
 			}
 		}
 	}
 	for key, count := range map[string]int{"observedMethods": len(observed), "presentMethods": present} {
-		if capInt(report[key]) != count {
-			reject("inconsistent capture summary: %s", key)
+		if map[string]int{"observedMethods": report.ObservedMethods, "presentMethods": report.PresentMethods, "invokedMethods": report.InvokedMethods, "verifiedMethods": report.VerifiedMethods}[key] != count {
+			reject(fmt.Sprintf("inconsistent capture summary: %s", key))
 		}
 	}
 	cleanupIDs := wordSet("cleanup.DurationTextBinding.Disable cleanup.invocation.binding.1 cleanup.invocation.binding.2 cleanup.invocation.signals")
-	cleanup := capObservations(report["cleanup"], cleanupIDs, nil)
+	cleanup := capObservations(report.Cleanup, cleanupIDs, nil)
 	clean := true
 	for _, row := range cleanup {
-		clean = clean && row["state"] == "complete"
+		clean = clean && row.State == "complete"
 	}
-	presenceComplete := mode == "presence" && len(families) == len(expected) && factoriesAvailable && present == len(methods) && clean && cleanup["cleanup.DurationTextBinding.Disable"] != nil
-	if capBool(report["capabilityCaptureComplete"]) != presenceComplete {
+	presenceComplete := mode == "presence" && len(families) == len(expected) && factoriesAvailable && present == len(methods) && clean && cleanup["cleanup.DurationTextBinding.Disable"].CaseID != ""
+	if report.CapabilityCaptureComplete != presenceComplete {
 		reject("inconsistent presence completion")
 	}
 	if version == "1.0.0" {
@@ -655,22 +525,21 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 		if presenceComplete {
 			outcome = "capabilities_collected"
 		}
-		if report["outcome"] != outcome {
+		if report.Outcome != outcome {
 			reject("inconsistent presence outcome")
 		}
-		return M{"kind": "presence", "present_methods": present, "successful_invocations": 0, "probe_reported_property_passes": 0, "method_cases": evList(sortedKeys(methods)), "unobserved_hierarchy": true, "verifies_secrecy": false}, nil
+		return CaptureResult{Kind: "presence", PresentMethods: present, MethodCases: sortedKeys(methods), UnobservedHierarchy: true}, nil
 	}
-	if report["fixtureSHA256"] != plan["fixtureSHA256"] {
+	if report.FixtureSHA256 != plan.FixtureSHA256 {
 		reject("fixture identity mismatch")
 	}
 	hierarchy := map[string]bool{}
-	for _, item := range capArray(plan["hierarchy"], "hierarchy requirements") {
-		row := asMap(item)
-		for _, method := range capArray(row["methods"], "hierarchy requirements") {
-			hierarchy[capString(row["canonical"])+".parent."+capString(row["parent"])+"."+capString(method)] = true
+	for _, row := range plan.Hierarchy {
+		for _, method := range row.Methods {
+			hierarchy[row.Canonical+".parent."+row.Parent+"."+method] = true
 		}
 	}
-	hierarchyRows := capObservations(report["hierarchy"], hierarchy, nil)
+	hierarchyRows := capObservations(report.Hierarchy, hierarchy, nil)
 	if presenceComplete && len(hierarchyRows) != len(hierarchy) {
 		reject("missing hierarchy cases")
 	}
@@ -679,10 +548,8 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 	invocationStates := wordSet("not_run absent inaccessible inaccessible_table lookup_error invalid_object not_function call_error passed property_mismatch projection_unavailable secret_result inaccessible_result unsupported_tuple fixture_unavailable fixture_setup_failed")
 	validLabels := wordSet("nil boolean number string table userdata function thread secret inaccessible")
 	successfulStates := wordSet("passed property_mismatch projection_unavailable secret_result inaccessible_result unsupported_tuple fixture_unavailable")
-	for _, item := range capArray(report["invocations"], "invocation rows") {
-		row := asMap(item)
-		capExact(row, wordSet("caseID state invoked returnCount returns check behaviorVerified"), "invocation")
-		name, state := capString(row["caseID"]), capString(row["state"])
+	for _, row := range report.Invocations {
+		name, state := row.CaseID, row.State
 		if !methods[name] || seen[name] {
 			reject("duplicate or unknown invocation")
 		}
@@ -690,21 +557,21 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 		if !invocationStates[state] {
 			reject("invalid invocation state")
 		}
-		if !captureCheck.MatchString(capString(row["check"])) {
+		if !captureCheck.MatchString(row.Check) {
 			reject("invalid invocation check identity")
 		}
-		called, behavior := capBool(row["invoked"]), capBool(row["behaviorVerified"])
-		count := capInt(row["returnCount"])
+		called, behavior := row.Invoked, row.BehaviorVerified
+		count := row.ReturnCount
 		if count < 0 || count > 8 {
 			reject("invalid invocation types/count")
 		}
-		labels := capArray(row["returns"], "invocation tuple labels")
+		labels := row.Returns
 		if len(labels) != count {
 			reject("invalid invocation tuple labels")
 		}
 		opaque := map[string]bool{}
 		for _, label := range labels {
-			s := capString(label)
+			s := label
 			if !validLabels[s] {
 				reject("invalid invocation tuple labels")
 			}
@@ -733,15 +600,15 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 			reject("invalid unavailable native projection")
 		}
 		if projection && called {
-			if row["check"] != "font_matches_native_projection" {
+			if row.Check != "font_matches_native_projection" {
 				reject("incorrect native projection oracle")
 			}
 			if passed {
 				valid := count == 0 && diagnostics["baseline.expected_stable"] == "matched" && diagnostics["sentinel.set"] == "called_void" && diagnostics["sentinel.matches"] == "matched" && checks["projection.set"] == "called_void"
 				for _, sample := range []string{"baseline.expected", "baseline.font", "projection.font"} {
-					valid = valid && samples[sample]["state"] == "public"
+					valid = valid && samples[sample].State == "public"
 				}
-				valid = valid && samples["baseline.font"]["hex"] == samples["projection.font"]["hex"] && samples["projection.font"]["hex"] != hex.EncodeToString([]byte("PROBE_SENTINEL"))
+				valid = valid && samples["baseline.font"].Hex == samples["projection.font"].Hex && samples["projection.font"].Hex != hex.EncodeToString([]byte("PROBE_SENTINEL"))
 				if !valid {
 					reject("native projection result lacks its required public controls")
 				}
@@ -755,20 +622,20 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 		}
 	}
 	for key, count := range map[string]int{"invokedMethods": invoked, "verifiedMethods": verified} {
-		if capInt(report[key]) != count {
+		if map[string]int{"observedMethods": report.ObservedMethods, "presentMethods": report.PresentMethods, "invokedMethods": report.InvokedMethods, "verifiedMethods": report.VerifiedMethods}[key] != count {
 			reject("inconsistent invocation summary")
 		}
 	}
 	requiredCleanup := wordSet("cleanup.invocation.binding.1 cleanup.invocation.binding.2 cleanup.invocation.signals")
 	allCleanup := true
 	for name := range requiredCleanup {
-		allCleanup = allCleanup && cleanup[name] != nil
+		allCleanup = allCleanup && cleanup[name].CaseID != ""
 	}
 	complete := mode == "public_invocations" && len(seen) == len(methods) && verified == len(methods) && clean && allCleanup
 	if complete && len(hierarchyRows) != len(hierarchy) {
 		reject("missing hierarchy cases")
 	}
-	if capBool(report["invocationCaptureComplete"]) != complete {
+	if report.InvocationCaptureComplete != complete {
 		reject("inconsistent invocation completion")
 	}
 	if mode == "public_invocations" {
@@ -776,7 +643,7 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 		if complete {
 			outcome = "public_invocations_verified"
 		}
-		if len(seen) != len(methods) || len(observed) > 0 || len(families) > 0 || report["outcome"] != outcome {
+		if len(seen) != len(methods) || len(observed) > 0 || len(families) > 0 || report.Outcome != outcome {
 			reject("invalid invocation coverage/outcome")
 		}
 	} else {
@@ -784,11 +651,12 @@ func validateCapture(report, manifest, receipt M, manifestBytes []byte) (classif
 		if presenceComplete {
 			outcome = "capabilities_collected"
 		}
-		if len(seen) > 0 || invoked != 0 || verified != 0 || report["outcome"] != outcome {
+		if len(seen) > 0 || invoked != 0 || verified != 0 || report.Outcome != outcome {
 			reject("presence cannot contain invocation evidence")
 		}
 	}
-	return M{"kind": mode, "present_methods": present, "successful_invocations": invoked, "probe_reported_property_passes": verified, "method_cases": evList(sortedKeys(methods)), "hierarchy_cases": evList(sortedKeys(hierarchyRows)), "verifies_secrecy": false}, nil
+	cases := sortedKeys(hierarchyRows)
+	return CaptureResult{Kind: mode, PresentMethods: present, SuccessfulInvocations: invoked, ProbeReportedPropertyPasses: verified, MethodCases: sortedKeys(methods), HierarchyCases: &cases}, nil
 }
 
 func readCaptureFile(path string) ([]byte, error) {
@@ -824,97 +692,111 @@ func readCaptureFile(path string) ([]byte, error) {
 
 // IngestCapture validates caller-supplied data and retains its exact immutable
 // input bytes. It does not authenticate observations or grant secret permissions.
-func IngestCapture(capture, manifestPath, receiptPath, output string) (M, error) {
+func IngestCapture(capture, manifestPath, receiptPath, output string) (CaptureResult, error) {
 	raw, err := readCaptureFile(capture)
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
 	manifestBytes, err := readCaptureFile(manifestPath)
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
 	receiptBytes, err := readCaptureFile(receiptPath)
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
-	report, err := readCaptureData(raw, filepath.Ext(capture) == ".lua")
+	rawReport, err := readCaptureData(raw, filepath.Ext(capture) == ".lua")
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
-	manifest, err := readCaptureData(manifestBytes, false)
+	rawManifest, err := readCaptureData(manifestBytes, false)
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
-	receipt, err := readCaptureData(receiptBytes, false)
+	rawReceipt, err := readCaptureData(receiptBytes, false)
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
+	}
+	report, err := decodeCaptureReport(rawReport)
+	if err != nil {
+		return CaptureResult{}, err
+	}
+	manifest, err := decodeProbeManifest(rawManifest)
+	if err != nil {
+		return CaptureResult{}, err
+	}
+	receipt, err := decodeProbeReceipt(rawReceipt)
+	if err != nil {
+		return CaptureResult{}, err
 	}
 	classification, err := validateCapture(report, manifest, receipt, manifestBytes)
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
 	files := map[string][]byte{"capture" + filepath.Ext(capture): raw, "probe-build.json": manifestBytes, "installed-receipt.json": receiptBytes}
-	for name, value := range map[string]any{"report.json": report, "classification.json": classification} {
-		files[name], err = jsonPretty(value)
-		if err != nil {
-			return nil, err
-		}
-	}
-	index := M{}
-	for name, data := range files {
-		index[name] = M{"sha256": sha256hex(data), "size": len(data)}
-	}
-	files["evidence.json"], err = jsonPretty(M{"schema_version": 1, "files": index, "scope": "validated caller-supplied data; acquisition receipt must be independently established"})
+	files["report.json"], err = jsonPretty(rawReport)
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
+	}
+	files["classification.json"], err = jsonPretty(classification)
+	if err != nil {
+		return CaptureResult{}, err
+	}
+	index := map[string]CaptureEvidenceFile{}
+	for name, data := range files {
+		index[name] = CaptureEvidenceFile{SHA256: sha256hex(data), Size: len(data)}
+	}
+	files["evidence.json"], err = jsonPretty(CaptureEvidenceIndex{Files: index, SchemaVersion: 1, Scope: "validated caller-supplied data; acquisition receipt must be independently established"})
+	if err != nil {
+		return CaptureResult{}, err
 	}
 	if info, e := os.Lstat(output); e == nil {
 		if !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
-			return nil, fmt.Errorf("existing capture evidence differs; never overwrite")
+			return CaptureResult{}, fmt.Errorf("existing capture evidence differs; never overwrite")
 		}
 		entries, e := os.ReadDir(output)
 		if e != nil {
-			return nil, e
+			return CaptureResult{}, e
 		}
 		if len(entries) != len(files) {
-			return nil, fmt.Errorf("existing capture evidence differs; never overwrite")
+			return CaptureResult{}, fmt.Errorf("existing capture evidence differs; never overwrite")
 		}
 		for _, entry := range entries {
 			expected, exists := files[entry.Name()]
 			if !exists {
-				return nil, fmt.Errorf("existing capture evidence differs; never overwrite")
+				return CaptureResult{}, fmt.Errorf("existing capture evidence differs; never overwrite")
 			}
 			data, e := readCaptureFile(filepath.Join(output, entry.Name()))
 			if e != nil {
-				return nil, e
+				return CaptureResult{}, e
 			}
 			if !bytes.Equal(data, expected) {
-				return nil, fmt.Errorf("existing capture evidence differs; never overwrite")
+				return CaptureResult{}, fmt.Errorf("existing capture evidence differs; never overwrite")
 			}
 		}
 		return classification, nil
 	} else if !os.IsNotExist(e) {
-		return nil, e
+		return CaptureResult{}, e
 	}
 	if err = os.MkdirAll(filepath.Dir(output), 0755); err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
 	stage, err := os.MkdirTemp(filepath.Dir(output), "probe-capture-")
 	if err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
 	defer os.RemoveAll(stage)
 	evidence := filepath.Join(stage, "evidence")
 	if err = os.Mkdir(evidence, 0755); err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
 	for name, data := range files {
 		if err = os.WriteFile(filepath.Join(evidence, name), data, 0644); err != nil {
-			return nil, err
+			return CaptureResult{}, err
 		}
 	}
 	if err = os.Rename(evidence, output); err != nil {
-		return nil, err
+		return CaptureResult{}, err
 	}
 	return classification, nil
 }
