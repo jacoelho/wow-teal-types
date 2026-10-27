@@ -21,10 +21,11 @@ import (
 
 func testCDN(t *testing.T, server *httptest.Server) *cdnClient {
 	t.Helper()
-	c, err := newCDN(t.TempDir(), "")
+	cache, err := prepareDirectory(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
+	c := newCDN(cache, "")
 	c.hosts = []string{server.URL}
 	t.Cleanup(c.close)
 	return c

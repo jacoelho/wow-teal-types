@@ -182,10 +182,7 @@ func writeSource(output string, file preparedFile, data []byte) (fileReceipt, er
 	return fileReceipt{file.path, len(data), hex.EncodeToString(sum[:]), keyText(file.content)}, nil
 }
 func extract(ctx context.Context, config sourceConfig, output, cache string) error {
-	c, err := newCDN(cache, config.Installation)
-	if err != nil {
-		return err
-	}
+	c := newCDN(cache, config.Installation)
 	defer c.close()
 	bkey, _ := parseKey(config.BuildConfig)
 	ckey, _ := parseKey(config.CDNConfig)
@@ -441,6 +438,43 @@ sendFiles:
 	fmt.Printf("Verified extraction receipt: %s\n", path)
 	return nil
 }
+// Prepare directories before comparing identities so missing path components
+// and filesystem aliases are resolved by the filesystem itself.
+func prepareDirectory(path string) (string, error) {
+	absolute, err := filepath.Abs(path)
+	if err != nil {
+		return "", err
+	}
+	if err := os.MkdirAll(absolute, 0o755); err != nil {
+		return "", err
+	}
+	return filepath.EvalSymlinks(absolute)
+}
+
+func checkDirectorySeparation(output, cache string) error {
+	for _, pair := range [][2]string{{output, cache}, {cache, output}} {
+		root, err := os.Stat(pair[0])
+		if err != nil {
+			return err
+		}
+		for ancestor := pair[1]; ; {
+			info, err := os.Stat(ancestor)
+			if err != nil {
+				return err
+			}
+			if os.SameFile(root, info) {
+				return fmt.Errorf("cache and extraction output must not overlap")
+			}
+			parent := filepath.Dir(ancestor)
+			if parent == ancestor {
+				break
+			}
+			ancestor = parent
+		}
+	}
+	return nil
+}
+
 func run(ctx context.Context, args []string) error {
 	if len(args) != 3 {
 		return fmt.Errorf("usage: wow-cdn CONFIG_JSON OUTPUT_DIR CACHE_DIR")
@@ -469,32 +503,23 @@ func run(ctx context.Context, args []string) error {
 	if err := validateConfig(config); err != nil {
 		return err
 	}
-	output, err := filepath.Abs(args[1])
+	output, err := prepareDirectory(args[1])
 	if err != nil {
 		return err
 	}
-	cache, err := filepath.Abs(args[2])
+	cache, err := prepareDirectory(args[2])
 	if err != nil {
 		return err
 	}
-	for _, pair := range [][2]string{{output, cache}, {cache, output}} {
-		relative, err := filepath.Rel(pair[0], pair[1])
-		if err != nil {
-			return err
-		}
-		if relative == "." || (relative != ".." && !strings.HasPrefix(relative, ".."+string(filepath.Separator))) {
-			return fmt.Errorf("cache and extraction output must not overlap")
-		}
+	if err := checkDirectorySeparation(output, cache); err != nil {
+		return err
 	}
 	entries, err := os.ReadDir(output)
-	if err != nil && !errors.Is(err, os.ErrNotExist) {
+	if err != nil {
 		return err
 	}
 	if len(entries) != 0 {
 		return fmt.Errorf("extraction output must be empty")
-	}
-	if err := os.MkdirAll(output, 0755); err != nil {
-		return err
 	}
 	return extract(ctx, config, output, cache)
 }

@@ -41,23 +41,12 @@ type cdnClient struct {
 	cacheLocks   [64]sync.Mutex
 }
 
-func newCDN(cache, installation string) (*cdnClient, error) {
-	if err := os.MkdirAll(cache, 0o755); err != nil {
-		return nil, fmt.Errorf("create CDN cache: %w", err)
-	}
-	resolved, err := filepath.EvalSymlinks(cache)
-	if err != nil {
-		return nil, fmt.Errorf("resolve CDN cache: %w", err)
-	}
-	resolved, err = filepath.Abs(resolved)
-	if err != nil {
-		return nil, fmt.Errorf("resolve CDN cache: %w", err)
-	}
-	return &cdnClient{cache: resolved, installation: installation,
+func newCDN(cache, installation string) *cdnClient {
+	return &cdnClient{cache: cache, installation: installation,
 		client: &http.Client{Transport: &http.Transport{MaxConnsPerHost: 4, MaxIdleConns: 8,
 			MaxIdleConnsPerHost: 4, IdleConnTimeout: 60 * time.Second, DisableCompression: true},
 			CheckRedirect: func(_ *http.Request, _ []*http.Request) error { return errors.New("CDN redirects are not permitted") }},
-		hosts: []string{"https://us.cdn.blizzard.com", "https://level3.ssl.blizzard.com"}}, nil
+		hosts: []string{"https://us.cdn.blizzard.com", "https://level3.ssl.blizzard.com"}}
 }
 
 func (c *cdnClient) close() { c.client.CloseIdleConnections() }
