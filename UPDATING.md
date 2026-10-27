@@ -43,6 +43,9 @@ selected generator inputs and pinned annotation revisions.
 
 Literal parsing rejects unsupported statements and duplicate keys. Native decoding
 rejects unsupported fields and value shapes, including permission metadata.
+Malformed recognized annotations fail with their source location. Bootstrap stores
+native projections under `build/`, keyed by the client lock and selected source
+representation; it does not copy them into a second native cache.
 The [declaration contract](docs/api/teal-catalogue.md) describes projection limits.
 An unresolved type uses opaque `unknown`; it is not widened to erased `any`.
 
@@ -53,10 +56,8 @@ client. For build 70575, libxml2 validates all 1,085 UI XML documents against it
 eight `Bindings` documents require a separate contract. XML schema validation
 does not establish Lua API signatures or secret-value permissions.
 
-The published [`jacoelho/xsd` commit 478bcb1](https://github.com/jacoelho/xsd/commit/478bcb1fb01386e535082e6fabf4eb9ce8827193)
-cannot compile this schema (`complex extension content does not preserve base
-content`). Resolve that incompatibility before adding it as a generation gate;
-keep the CDN extractor independent of the XML validator.
+XML validation is not currently a generation gate. Keep the CDN extractor
+independent of the XML validator.
 
 ## Additional maintainer checks
 
@@ -139,8 +140,8 @@ Catalogue generation and registry publication remain manual maintainer commands.
 
 The [architecture entry point](docs/architecture.md) records capability ownership,
 input capture, declaration generation and publication recovery. Only `generate`
-and `recover` publish the active release cohort. `check-generator` compares an
-isolated candidate without changing active outputs. Removed standalone metadata,
+and `recover` publish the active release cohort. `check-generator` compares regenerated artifacts and metadata, then runs the
+consumer declaration check without changing active outputs. Removed standalone metadata,
 catalogue, coverage and template-refresh commands have no replacement writer.
 
 API reports should include client/package/compiler versions, expected and

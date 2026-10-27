@@ -20,6 +20,10 @@ func TestFinalizedNativeCallPermissions(t *testing.T) {
 	c.setGlobal("sourceUnknown", &catalogueFunction{Native: &NativeFunction{Returns: []NativeParameter{{Type: "unknown"}}}})
 	c.setGlobal("allow", native(allowed))
 	c.setGlobal("deny", native(denied))
+	c.setGlobal("secureAllow", native(allowed))
+	c.setGlobal("secureDeny", native(denied))
+	c.secureGlobals["secureAllow"] = true
+	c.secureGlobals["secureDeny"] = true
 	rootOnly := allowed
 	rootOnly.Type = "unknown"
 	rootOnly.NeverSecretContents = boolPointer(true)
@@ -81,6 +85,8 @@ func TestFinalizedNativeCallPermissions(t *testing.T) {
 		write(name, data)
 	}
 	cases := []struct{ name, source, rejection string }{
+		{"secure origin allows secret", `secureAllow(source())`, ""},
+		{"secure origin denies secret", `secureDeny(source())`, "secret-value"},
 		{"allowed secret scalar", `allow(source())`, ""},
 		{"never secret", `deny(source())`, "secret-value"},
 		{"contents denied", `rootOnly(sourceUnknown())`, "call argument contents"},
@@ -103,7 +109,11 @@ if pretendGuard(value) and not issecretvalue(value) and value is number then den
 		t.Run(tc.name, func(t *testing.T) {
 			caller := filepath.Join(fixture, "caller.tl")
 			write("caller.tl", []byte(tc.source))
-			command := exec.CommandContext(t.Context(), filepath.Join(root, "tools/teal/tl"), "-I", filepath.Join(fixture, "types/wow"), "--gen-target", "5.1", "--gen-compat", "off", "run", filepath.Join(fixture, "tools/check_secrets.lua"), "--", "wow_env", caller)
+			environment := "wow_env"
+			if strings.HasPrefix(tc.name, "secure origin") {
+				environment = "wow_secure_env"
+			}
+			command := exec.CommandContext(t.Context(), filepath.Join(root, "tools/teal/tl"), "-I", filepath.Join(fixture, "types/wow"), "--gen-target", "5.1", "--gen-compat", "off", "run", filepath.Join(fixture, "tools/check_secrets.lua"), "--", environment, caller)
 			output, err := command.CombinedOutput()
 			if tc.rejection == "" {
 				if err != nil {

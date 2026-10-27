@@ -1,6 +1,9 @@
 package wowapi
 
-import "slices"
+import (
+	"maps"
+	"slices"
+)
 
 type catalogueDefinition struct {
 	Kind, Source                       string
@@ -16,12 +19,11 @@ type catalogueDefinition struct {
 type catalogueAlias struct {
 	Expression, Source string
 	Signature          *catalogueFunction
-	Line               int
 }
 type catalogueField struct {
-	Type, Source string
-	Resolved     *string
-	Native       *NativeParameter
+	Type     string
+	Resolved *string
+	Native   *NativeParameter
 }
 type catalogueFunction struct {
 	PolicySymbol      string
@@ -49,6 +51,7 @@ func (function *catalogueFunction) clone() *catalogueFunction {
 	copy := *function
 	if function.Native != nil {
 		native := *function.Native
+		native.Policy.Flags = maps.Clone(native.Policy.Flags)
 		native.Arguments = slices.Clone(native.Arguments)
 		native.Returns = slices.Clone(native.Returns)
 		copy.Native = &native
@@ -60,7 +63,6 @@ func (function *catalogueFunction) clone() *catalogueFunction {
 		annotation.Generics = slices.Clone(annotation.Generics)
 		annotation.Arguments = slices.Clone(annotation.Arguments)
 		annotation.Overloads = slices.Clone(annotation.Overloads)
-		annotation.Annotations = slices.Clone(annotation.Annotations)
 		copy.Annotation = &annotation
 	}
 	copy.Variants = make([]*catalogueFunction, len(function.Variants))

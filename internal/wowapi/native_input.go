@@ -16,7 +16,11 @@ func (p Project) readNativeDocuments() ([]NativeDocument, error) {
 	}
 	documents := []NativeDocument{}
 	for _, source := range lock["blizzard"].Files {
-		data, err := os.ReadFile(p.InputPath("blizzard", source.Name))
+		path, err := p.InputPath("blizzard", source.Name)
+		if err != nil {
+			return nil, err
+		}
+		data, err := os.ReadFile(path)
 		if err != nil {
 			return nil, err
 		}

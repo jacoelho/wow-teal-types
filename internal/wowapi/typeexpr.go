@@ -15,10 +15,6 @@ var genericTypePattern = regexp.MustCompile(`^([A-Za-z_][A-Za-z_0-9.\-]*)\s*<(.*
 var simpleFieldPattern = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9]*\??$`)
 
 func unsupported(raw, reason string) { reject(fmt.Sprintf("%q: %s", raw, reason)) }
-func SplitTopLevel(text string, delimiter byte) (parts []string, err error) {
-	defer captureError(&err)
-	return splitTop(text, delimiter), nil
-}
 func splitTop(text string, delimiter byte) []string {
 	pairs := map[byte]byte{'(': ')', '[': ']', '{': '}', '<': '>'}
 	stack := []byte{}

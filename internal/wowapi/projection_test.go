@@ -2,6 +2,7 @@ package wowapi
 
 import (
 	"bytes"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -66,5 +67,26 @@ func TestFinalizationRejectsInheritanceCycles(t *testing.T) {
 	c.record("Second", "fixture").Bases = []string{"First"}
 	if _, err := c.finalize(t.Context()); err == nil || !strings.Contains(err.Error(), "cyclic inheritance") {
 		t.Fatalf("inheritance cycle error = %v", err)
+	}
+}
+
+func TestMultilineSignaturesCannotShiftPolicyOrigins(t *testing.T) {
+	for _, newline := range []string{"\n", "\r"} {
+		t.Run(strconv.Quote(newline), func(t *testing.T) {
+			c := newCatalogue(Project{})
+			c.setGlobal("first", &catalogueFunction{ResolvedSignature: stringPointer("function(" + newline + "number): number")})
+			c.setGlobal("second", &catalogueFunction{Native: &NativeFunction{Arguments: []NativeParameter{{Type: "number"}}}})
+			_, err := func() (outputs map[string][]byte, err error) {
+				defer captureError(&err)
+				projection, err := c.finalize(t.Context())
+				if err != nil {
+					return nil, err
+				}
+				return projection.render(), nil
+			}()
+			if err == nil || !strings.Contains(err.Error(), "one physical line") {
+				t.Fatalf("multiline declaration must fail before publishing policy: %v", err)
+			}
+		})
 	}
 }

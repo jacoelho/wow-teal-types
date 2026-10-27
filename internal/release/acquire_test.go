@@ -74,9 +74,8 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 		t.Fatal(e)
 	}
 	doc := []byte("local A = {}\nAPIDocumentation:AddDocumentationTable(A)\n")
-	support := []byte("schema\n")
 	version := []byte("12.1.5.70575\n")
-	source := sourcelock.Sources{"blizzard": sourceFixture("A.lua", doc), "blizzard_support": sourceFixture("Blizzard_SharedXML/UI.xsd", support), "blizzard_version": sourceFixture("version.txt", version)}
+	source := sourcelock.Sources{"blizzard": sourceFixture("A.lua", doc), "blizzard_version": sourceFixture("version.txt", version)}
 	if e := writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), source); e != nil {
 		t.Fatal(e)
 	}
@@ -84,7 +83,11 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 	if e != nil {
 		t.Fatal(e)
 	}
-	b, e := os.ReadFile(p.InputPath("blizzard", "A.lua"))
+	path, e := p.InputPath("blizzard", "A.lua")
+	if e != nil {
+		t.Fatal(e)
+	}
+	b, e := os.ReadFile(path)
 	if e != nil || !bytes.Equal(b, doc) {
 		t.Fatalf("locked representation lost: %q %v", b, e)
 	}
@@ -95,11 +98,69 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 	if _, e = Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json")); e != nil {
 		t.Fatal(e)
 	}
-	fixtureFile(t, filepath.Dir(p.InputPath("blizzard", "A.lua")), "A.lua", []byte("modified"))
+	selected := []byte("local A = {}\nAPIDocumentation:AddDocumentationTable(A)\n\n")
+	source["blizzard"] = sourceFixture("A.lua", selected)
+	if err := writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), source); err != nil {
+		t.Fatal(err)
+	}
+	next, err := Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	nextPath, err := next.InputPath("blizzard", "A.lua")
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, err = os.ReadFile(nextPath)
+	if err != nil || !bytes.Equal(b, selected) {
+		t.Fatalf("new source selection = %q, %v; want %q", b, err, selected)
+	}
+	b, err = os.ReadFile(path)
+	if err != nil || !bytes.Equal(b, doc) {
+		t.Fatalf("previous source selection changed: %q, %v", b, err)
+	}
+	fixtureFile(t, filepath.Dir(nextPath), "A.lua", []byte("modified"))
 	if _, e = Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json")); e == nil {
 		t.Fatal("modified projection accepted")
 	}
 }
+func TestBootstrapUsesVerifiedProjectionDespiteStaleOrdinaryCache(t *testing.T) {
+	root, snapshot, lock := snapshotFixture(t)
+	if err := writeObject(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"), lock); err != nil {
+		t.Fatal(err)
+	}
+	doc := []byte("local A = {}\nAPIDocumentation:AddDocumentationTable(A)\n")
+	sources := sourcelock.Sources{
+		"blizzard":         sourceFixture("A.lua", doc),
+		"blizzard_version": sourceFixture("version.txt", []byte("12.1.5.70575\n")),
+	}
+	if err := writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), sources); err != nil {
+		t.Fatal(err)
+	}
+	old := []byte("previous build\n")
+	ordinary := "references/wow-api/blizzard/A.lua"
+	fixtureFile(t, root, ordinary, old)
+	p, err := Bootstrap(t.Context(), root, snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path, err := p.InputPath("blizzard", "A.lua")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := os.ReadFile(path)
+	if err != nil || !bytes.Equal(got, doc) {
+		t.Fatalf("verified projection = %q, %v; want %q", got, err, doc)
+	}
+	got, err = os.ReadFile(filepath.Join(root, ordinary))
+	if err != nil || !bytes.Equal(got, old) {
+		t.Fatalf("ordinary cache changed: %q, %v", got, err)
+	}
+	if _, err := os.Stat(filepath.Join(root, "references/wow-api/version/version.txt")); !os.IsNotExist(err) {
+		t.Fatalf("unexpected native cache mirror: %v", err)
+	}
+}
+
 func TestBoundedResponsesAndCancelledWorkerPool(t *testing.T) {
 	if _, e := readBounded(strings.NewReader("12345"), 4); e == nil {
 		t.Fatal("oversized response accepted")

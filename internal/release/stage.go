@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"wow-teal-types/internal/consumer"
 	"wow-teal-types/internal/sourcelock"
@@ -50,9 +51,7 @@ func copyMaintained(root, target string) error {
 	}
 	return nil
 }
-func sourcePaths(p wowapi.Project, group, name string) string { return p.InputPath(group, name) }
 func stageNative(root, snapshot string) (sourcelock.Sources, error) {
-	p := wowapi.NewProject(root)
 	lock, e := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
 	if e != nil {
 		return nil, e
@@ -81,14 +80,14 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 	if len(names) == 0 {
 		return nil, fmt.Errorf("empty packaged native inventory")
 	}
-	sortStrings(names)
+	slices.Sort(names)
 	type selected struct {
 		name, path         string
 		normalized, legacy []byte
 	}
 	acquired := map[string][]selected{}
 	preserved := true
-	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
+	for _, group := range []string{"blizzard", "blizzard_version"} {
 		source := lock[group]
 		if source.Kind == "casc" {
 			preserved = false
@@ -120,7 +119,7 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 					return nil, e
 				}
 				if packaged == "" {
-					return nil, fmt.Errorf("required support removed: %s", name)
+					return nil, fmt.Errorf("required native source removed: %s", name)
 				}
 				raw, e = readFile(filepath.Join(snapshot, "raw", filepath.FromSlash(packaged)), maxFile)
 				if e != nil {
@@ -141,7 +140,7 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 			acquired[group] = append(acquired[group], selected{name, packaged, normalized(raw, 1), legacy})
 		}
 	}
-	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
+	for _, group := range []string{"blizzard", "blizzard_version"} {
 		old := lock[group]
 		rows := []sourcelock.SourceFile{}
 		for _, r := range acquired[group] {
@@ -151,9 +150,6 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 			}
 			origin := sourcelock.ClientPath(r.path)
 			rows = append(rows, sourcelock.SourceFile{ClientPath: origin, Name: r.name, SHA: blob(data), Size: len(data)})
-			if e = atomicWrite(p.InputPath(group, r.name), data, 0644); e != nil {
-				return nil, e
-			}
 		}
 		if !preserved {
 			lock[group] = sourcelock.SourceGroup{Kind: "casc", ClientLockSHA256: sha(receipt), Path: old.Path, Normalization: "lf-final-newline", Files: rows}
@@ -166,13 +162,6 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 		return nil, e
 	}
 	return lock, nil
-}
-func sortStrings(v []string) {
-	for n := 1; n < len(v); n++ {
-		for j := n; j > 0 && v[j] < v[j-1]; j-- {
-			v[j], v[j-1] = v[j-1], v[j]
-		}
-	}
 }
 
 type githubEntry struct {
@@ -299,63 +288,38 @@ func refreshCommunity(ctx context.Context, root string, g *github, questieRef st
 	if e != nil {
 		return e
 	}
-	revisionByRepo := map[string]string{}
-	for _, group := range keys(lock) {
-		if group == "blizzard" || group == "blizzard_support" || group == "blizzard_version" {
-			continue
-		}
-		source := lock[group]
-		repo := source.Repository
-		revision := revisionByRepo[repo]
-		if revision == "" {
-			ref := questieRef
-			if ref == "" {
-				ref = source.Ref
-			}
-			if ref == "" {
-				ref = source.Commit
-			}
-			revision, e = g.resolve(ctx, repo, ref)
-			if e != nil {
-				return e
-			}
-			revisionByRepo[repo] = revision
-			source.Ref = ref
-		}
-		source.Commit = revision
-		if group == "questie" {
-			source.Files, e = g.inventory(ctx, repo, revision, source.Path)
-			if e != nil {
-				return e
-			}
-		} else {
-			tree, err := g.tree(ctx, repo, revision)
-			if err != nil {
-				return err
-			}
-			rows := []sourcelock.SourceFile{}
-			for _, old := range source.Files {
-				name := old.Name
-				entry, found := tree[strings.Trim(source.Path+"/"+name, "/")]
-				if !found || entry.Size == nil {
-					return fmt.Errorf("required supporting source removed: %s", name)
-				}
-				rows = append(rows, sourcelock.SourceFile{Name: name, SHA: entry.SHA, Size: *entry.Size})
-			}
-			source.Files = rows
-		}
-		for _, row := range source.Files {
-			name := row.Name
-			b, e := g.file(ctx, repo, revision, strings.Trim(source.Path+"/"+name, "/"), maxFile)
-			if e != nil {
-				return e
-			}
-			if e = atomicWrite(p.InputPath(group, name), b, 0644); e != nil {
-				return e
-			}
-		}
-		lock[group] = source
+	source := lock["questie"]
+	ref := questieRef
+	if ref == "" {
+		ref = source.Ref
 	}
+	if ref == "" {
+		ref = source.Commit
+	}
+	revision, e := g.resolve(ctx, source.Repository, ref)
+	if e != nil {
+		return e
+	}
+	source.Ref = ref
+	source.Commit = revision
+	source.Files, e = g.inventory(ctx, source.Repository, revision, source.Path)
+	if e != nil {
+		return e
+	}
+	for _, row := range source.Files {
+		b, e := g.file(ctx, source.Repository, revision, strings.Trim(source.Path+"/"+row.Name, "/"), maxFile)
+		if e != nil {
+			return e
+		}
+		path, e := p.InputPath("questie", row.Name)
+		if e != nil {
+			return e
+		}
+		if e = atomicWrite(path, b, 0644); e != nil {
+			return e
+		}
+	}
+	lock["questie"] = source
 	return writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), lock)
 }
 

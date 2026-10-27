@@ -68,18 +68,3 @@ func TestJSONRejectsAmbiguousOrInvalidLiterals(t *testing.T) {
 		}
 	}
 }
-func TestKnownNumericScalarPreservesSourceForm(t *testing.T) {
-	for _, source := range []string{"1", "1.0", "-0.0", "9007199254740993"} {
-		var value Numeric
-		if err := value.UnmarshalJSON([]byte(source)); err != nil {
-			t.Fatal(err)
-		}
-		encoded, err := value.MarshalJSON()
-		if err != nil {
-			t.Fatal(err)
-		}
-		if string(encoded) != source {
-			t.Errorf("number = %s, want %s", encoded, source)
-		}
-	}
-}

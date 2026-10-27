@@ -257,10 +257,6 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 	}
 	return signature
 }
-func (c *catalogue) signatures(item *catalogueFunction, owner string) (values []string, err error) {
-	defer captureError(&err)
-	return c.signaturesValue(item, owner), nil
-}
 
 type signatureChoice struct {
 	expression string

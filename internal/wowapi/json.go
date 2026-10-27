@@ -81,17 +81,6 @@ func decodeJSON[T any](data []byte, value *T) error {
 	return nil
 }
 
-func jsonEqual[T any](a, b T) bool {
-	x, err := jsonCompact(a)
-	if err != nil {
-		reject(fmt.Sprintf("JSON encoding: %s", err))
-	}
-	y, err := jsonCompact(b)
-	if err != nil {
-		reject(fmt.Sprintf("JSON encoding: %s", err))
-	}
-	return bytes.Equal(x, y)
-}
 func jsonDigest[T any](value T) string {
 	data, err := jsonCompact(value)
 	if err != nil {

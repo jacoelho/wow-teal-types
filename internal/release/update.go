@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"wow-teal-types/internal/consumer"
 	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
@@ -231,9 +232,6 @@ func CheckGenerator(ctx context.Context, root, snapshot string) (wowapi.Catalogu
 	if err != nil {
 		return wowapi.CatalogueStatistics{}, err
 	}
-	if err = validateDeclarations(ctx, root, artifacts.Files); err != nil {
-		return wowapi.CatalogueStatistics{}, err
-	}
 	if err = compareArtifacts(root, artifacts.Files); err != nil {
 		return wowapi.CatalogueStatistics{}, err
 	}
@@ -243,6 +241,10 @@ func CheckGenerator(ctx context.Context, root, snapshot string) (wowapi.Catalogu
 	}
 	if err = compareArtifacts(root, metadata); err != nil {
 		return wowapi.CatalogueStatistics{}, err
+	}
+	var diagnostics bytes.Buffer
+	if err = consumer.Run(ctx, root, []string{"check-types"}, &diagnostics, &diagnostics); err != nil {
+		return wowapi.CatalogueStatistics{}, fmt.Errorf("generated declaration check: %w\n%s", err, strings.TrimSpace(diagnostics.String()))
 	}
 	return artifacts.Statistics, nil
 }

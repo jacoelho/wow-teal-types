@@ -73,12 +73,29 @@ committed consumer snapshot and its packaging contracts.
 Locked client and annotation sources feed `internal/wowapi`. Its closed literal
 parser validates source syntax without arbitrary Go payloads. Native decoding
 rejects unsupported fields, shapes and permissions before constructing concrete
-models. Explicit overrides own the corrections missing from those sources.
+models. Recognized malformed annotations fail with source locations; unknown tags
+and unrelated Lua statements are ignored. Explicit overrides own the corrections
+missing from those sources.
+
+Release bootstrap supplies native input roots from a verified client snapshot.
+Its immutable projection cache is keyed by both the snapshot lock and selected
+source representation. No ordinary native mirror is maintained. Only consumed
+native documents, version metadata and Questie annotations are selected; the full
+client inventory remains verified independently.
+
+Native policy owns presence-aware Boolean flags under one closed classification.
+Absent and explicitly false flags remain distinct, and cloned contracts own their
+flag maps. String and reference-valued permissions retain concrete types.
 
 Interpretation builds a mutable catalogue; finalization resolves graph closure
 into concrete fields, methods and signatures. Rendering consumes that finalized
 representation without changing it and emits three declaration files plus the
-native call policy. Full generation runs twice to verify determinism.
+native call policy. Typed passes preserve declaration ordering and record each
+function's compiler origin while emitting its signature. Embedded CR/LF in a
+declaration is rejected so physical line counts remain exact. Secure aliases retain
+the originating declaration's policy. Full generation runs twice to verify
+determinism. Read-only generator checks compare declarations and package metadata
+before invoking the same consumer declaration check used by release candidates.
 
 Source locks own acquisition identities; `package.json` owns consumer file hashes.
 There is no separate release provenance file, report manifest, cross-source audit,
@@ -87,6 +104,9 @@ contracts; it does not independently corroborate every API against a running cli
 The compiler's own source manifest remains necessary for reproducible rebuilding.
 
 A mutable map renderer was rejected because rendering must not change the graph.
+Reparsing rendered declarations to recover policy locations was removed because
+emission already owns their final positions. A second native cache and separate
+compiler runner were removed to avoid competing source and compiler contracts.
 A shared filesystem framework was rejected because local rename injection suffices
 to test the actual recovery boundary. Audit reports and approval fingerprints were
 removed rather than retained as a second source of generation authority.

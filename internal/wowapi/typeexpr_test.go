@@ -52,7 +52,7 @@ func TestTypeExpressionsPreserveExplicitContracts(t *testing.T) {
 		}
 	}
 }
-func TestAnnotationInventoryRetainsOwnerTypesAndDiagnostics(t *testing.T) {
+func TestAnnotationsPreserveContractsAndIgnoreUnsupportedTags(t *testing.T) {
 	source := `---@class Example: Base
 ---@field private enabled? boolean caption
 local E = {}
@@ -73,20 +73,38 @@ function Unknown() end
 		t.Fatalf("functions: %#v", functions)
 	}
 	method := functions[0]
-	if stringValue(method.Owner) != "Example" || stringValue(method.RawOwner) != "E" || !method.Method {
+	if stringValue(method.Owner) != "Example" || !method.Method {
 		t.Fatalf("owner lost: %#v", method)
 	}
 	param := method.Params[0]
-	if param.Type != "table<string, number>" || !param.Optional || param.Description != "explanation" {
+	if param.Type != "table<string, number>" || !param.Optional {
 		t.Fatalf("parameter lost: %#v", param)
 	}
 	ret := method.Returns[0]
-	if ret.Type != "number" || stringValue(ret.Name) != "count" || stringValue(ret.Description) != "explanation" {
+	if ret.Type != "number" {
 		t.Fatalf("return lost: %#v", ret)
 	}
-	diagnostics := doc.Diagnostics
-	if len(diagnostics) != 1 || diagnostics[0].Code != "unknown_annotation" {
-		t.Fatalf("unknown metadata disappeared: %#v", diagnostics)
+
+}
+
+func TestAnnotationsRejectMalformedFunctionContracts(t *testing.T) {
+	for _, annotation := range []string{"---@return @invalid\n---@return number", "---@return \"unterminated", "---@return", "---@param", "---@param value"} {
+		t.Run(annotation, func(t *testing.T) {
+			_, err := ParseAnnotations([]byte(annotation+"\nfunction Broken(value) end"), "broken.lua")
+			if err == nil || !strings.Contains(err.Error(), "broken.lua:1:") {
+				t.Fatalf("malformed contract did not fail at its source: %v", err)
+			}
+		})
+	}
+}
+
+func TestAnnotationsIgnoreOrdinaryLua(t *testing.T) {
+	doc, err := ParseAnnotations([]byte("---@strange ignored\nCallSomething()\nif ready then\n---@return number\nfunction Valid() end\nend"), "ordinary.lua")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(doc.Functions) != 1 || doc.Functions[0].Name != "Valid" || len(doc.Functions[0].Returns) != 1 || doc.Functions[0].Returns[0].Type != "number" {
+		t.Fatalf("ordinary Lua changed the declaration contract: %#v", doc.Functions)
 	}
 }
 

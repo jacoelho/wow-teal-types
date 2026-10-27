@@ -354,14 +354,21 @@ func Projection(root, snapshot, lockPath string) (wowapi.Project, error) {
 		return p, e
 	}
 	identity := sha(lockBytes)
-	dest := filepath.Join(root, "build/wow-api-source", identity)
+	selection, e := jsonBytes(sourcelock.Sources{
+		"blizzard": sources["blizzard"], "blizzard_version": sources["blizzard_version"],
+	})
+	if e != nil {
+		return p, e
+	}
+	// The selected representation can change independently of the raw snapshot.
+	dest := filepath.Join(root, "build/wow-api-source", identity+"-"+sha(selection))
 	files := map[string]bool{}
 	for _, row := range record.Files {
 		files[row.Path] = true
 	}
 	pending := map[string][]byte{}
 	paths := map[string]string{}
-	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
+	for _, group := range []string{"blizzard", "blizzard_version"} {
 		source := sources[group]
 		casc := source.Kind == "casc"
 		if casc && (source.ClientLockSHA256 != identity || source.Normalization != "lf-final-newline") {

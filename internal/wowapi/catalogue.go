@@ -34,13 +34,6 @@ func requireStringJSON[T any](v T) string {
 	}
 	return string(b)
 }
-func stringSet(values ...string) map[string]bool {
-	out := map[string]bool{}
-	for _, v := range values {
-		out[v] = true
-	}
-	return out
-}
 func setAdd(target map[string]bool, source map[string]bool) {
 	for k, v := range source {
 		if v {
@@ -61,20 +54,20 @@ func setEqual(a, b map[string]bool) bool {
 }
 
 type catalogue struct {
-	project                                                                                           Project
-	defs                                                                                              map[string]*catalogueDefinition
-	aliases                                                                                           map[string]*catalogueAlias
-	globals                                                                                           map[string]*catalogueFunction
-	errors                                                                                            []string
-	questie                                                                                           []AnnotationDocument
-	nativeDocs                                                                                        []NativeDocument
-	used, secretStructs, nativeNames, nativeFunctions, resolving, secureGlobals, absencePreconditions map[string]bool
-	abiTuples                                                                                         map[string][]string
-	defOrder, globalOrder                                                                             []string
+	project                                                                                     Project
+	defs                                                                                        map[string]*catalogueDefinition
+	aliases                                                                                     map[string]*catalogueAlias
+	globals                                                                                     map[string]*catalogueFunction
+	errors                                                                                      []string
+	questie                                                                                     []AnnotationDocument
+	nativeDocs                                                                                  []NativeDocument
+	secretStructs, nativeNames, nativeFunctions, resolving, secureGlobals, absencePreconditions map[string]bool
+	abiTuples                                                                                   map[string][]string
+	defOrder, globalOrder                                                                       []string
 }
 
 func newCatalogue(p Project) *catalogue {
-	return &catalogue{project: p, defs: map[string]*catalogueDefinition{"OpaqueValue": {Kind: "external", Source: "opaque native/LuaLS unknown carrier"}}, aliases: map[string]*catalogueAlias{}, globals: map[string]*catalogueFunction{}, errors: []string{}, questie: []AnnotationDocument{}, nativeDocs: []NativeDocument{}, used: map[string]bool{}, secretStructs: map[string]bool{}, nativeNames: map[string]bool{}, nativeFunctions: map[string]bool{}, resolving: map[string]bool{}, secureGlobals: map[string]bool{}, absencePreconditions: map[string]bool{}, abiTuples: map[string][]string{}, defOrder: []string{"OpaqueValue"}, globalOrder: []string{}}
+	return &catalogue{project: p, defs: map[string]*catalogueDefinition{"OpaqueValue": {Kind: "external", Source: "opaque native/LuaLS unknown carrier"}}, aliases: map[string]*catalogueAlias{}, globals: map[string]*catalogueFunction{}, errors: []string{}, questie: []AnnotationDocument{}, nativeDocs: []NativeDocument{}, secretStructs: map[string]bool{}, nativeNames: map[string]bool{}, nativeFunctions: map[string]bool{}, resolving: map[string]bool{}, secureGlobals: map[string]bool{}, absencePreconditions: map[string]bool{}, abiTuples: map[string][]string{}, defOrder: []string{"OpaqueValue"}, globalOrder: []string{}}
 }
 func (c *catalogue) setDef(name string, item *catalogueDefinition) {
 	if _, ok := c.defs[name]; !ok {
@@ -168,7 +161,6 @@ func (c *catalogue) resolve(name string) string {
 		return c.tealValue(alias.Expression, "", nil)
 	}
 	if c.defs[name] != nil || c.aliases[name] != nil {
-		c.used[name] = true
 		return ident(name)
 	}
 	unsupported(name, "unresolved named type")
@@ -307,7 +299,11 @@ func (c *catalogue) loadQuestie() {
 	sort.SliceStable(rows, func(i, j int) bool { return rows[i].Name < rows[j].Name })
 	for _, row := range rows {
 		if strings.HasSuffix(row.Name, ".lua") {
-			doc, e := parseAnnotationFile(c.project.InputPath("questie", row.Name), row.Name)
+			path, e := c.project.InputPath("questie", row.Name)
+			if e != nil {
+				reject(e.Error())
+			}
+			doc, e := parseAnnotationFile(path, row.Name)
 			if e != nil {
 				reject(e.Error())
 			}
@@ -326,7 +322,7 @@ func (c *catalogue) loadQuestie() {
 				alternatives = append(alternatives, alias.Type)
 			}
 			for _, v := range alias.Alternatives {
-				alternatives = append(alternatives, strings.TrimRight(v.Type, "| "))
+				alternatives = append(alternatives, strings.TrimRight(v, "| "))
 			}
 			expression := strings.Join(alternatives, " | ")
 			if expression == "" {
@@ -336,7 +332,7 @@ func (c *catalogue) loadQuestie() {
 			if strings.HasSuffix(expression, "|") {
 				expression = strings.TrimRight(expression, "| ")
 			}
-			c.aliases[alias.Name] = &catalogueAlias{Expression: expression, Source: source, Line: alias.Line}
+			c.aliases[alias.Name] = &catalogueAlias{Expression: expression, Source: source}
 		}
 		for _, cls := range doc.Classes {
 			record := c.record(cls.Name, source, "interface")
@@ -346,13 +342,13 @@ func (c *catalogue) loadQuestie() {
 				}
 			}
 			for _, field := range cls.Fields {
-				record.Fields[field.Name] = &catalogueField{Type: field.Type, Source: source}
+				record.Fields[field.Name] = &catalogueField{Type: field.Type}
 			}
 		}
 		for _, enum := range doc.Enums {
 			numeric := true
 			for _, v := range enum.Values {
-				if !v.Value.numeric() {
+				if !v.Numeric {
 					numeric = false
 				}
 			}
@@ -366,15 +362,15 @@ func (c *catalogue) loadQuestie() {
 			record := c.record(recordName, source)
 			for _, v := range enum.Values {
 				typ := "string"
-				if v.Value.numeric() {
+				if v.Numeric {
 					typ = "number"
 				}
-				record.Fields[v.Name] = &catalogueField{Type: typ, Source: source}
+				record.Fields[v.Name] = &catalogueField{Type: typ}
 			}
 			c.bindGlobal(name, recordName, source)
 		}
 		for _, function := range doc.Functions {
-			if strings.HasPrefix(strings.TrimLeft(function.Raw, " \t"), "local function ") {
+			if function.Local {
 				continue
 			}
 			item := functionFromAnnotation(function, source)
@@ -394,8 +390,7 @@ func (c *catalogue) loadQuestie() {
 			}
 		}
 		for _, binding := range doc.Bindings {
-			raw := binding.Raw
-			if binding.Local || len(raw) > 0 && (raw[0] == ' ' || raw[0] == '\t') {
+			if binding.Local || !binding.TopLevel {
 				continue
 			}
 			name, value := strings.TrimPrefix(binding.Name, "_G."), binding.Value
@@ -444,7 +439,7 @@ func (c *catalogue) bindGlobal(name, typeName, source string) {
 		c.errors = append(c.errors, source+": unsupported global nesting "+name)
 		return
 	}
-	record.Fields[parts[1]] = &catalogueField{Resolved: stringPointer(ident(typeName)), Source: source}
+	record.Fields[parts[1]] = &catalogueField{Resolved: stringPointer(ident(typeName))}
 }
 func scriptName(name string) string {
 	direct := map[string]string{"SimpleCheckboxAPI": "CheckButton", "SimpleHTMLAPI": "SimpleHTML", "SimpleAnimAPI": "Animation", "SimpleAnimGroupAPI": "AnimationGroup", "SimpleAnimatableObjectAPI": "AnimatableObject", "SimpleFrameScriptObjectAPI": "FrameScriptObject", "SimpleControlPointAPI": "ControlPoint", "SimpleTextureBaseAPI": "TextureBase", "SimpleScriptRegionAPI": "ScriptRegion", "SimpleScriptRegionResizingAPI": "ScriptRegionResizing", "SimpleObjectAPI": "Object", "SimpleRegionAPI": "Region", "SimpleMovieAPI": "MovieFrame", "MinimapFrameAPI": "Minimap", "FrameAPITooltip": "GameTooltip", "FrameAPIModelSceneFrame": "ModelScene", "FrameAPIModelSceneFrameActor": "ModelSceneFrameActor", "FrameAPIModelSceneFrameActorBase": "ModelSceneFrameActorBase", "FrameAPIArchaeologyDigSiteFrame": "ArchaeologyDigSiteFrame", "FrameAPIQuestPOI": "QuestPOIFrame", "FrameAPIScenarioPOI": "ScenarioPOIFrame", "LuaDurationObjectAPI": "DurationObject", "LuaCurveObjectAPI": "CurveObject", "LuaColorCurveObjectAPI": "ColorCurveObject", "LuaCurveObjectBaseAPI": "CurveObjectBase", "UnitHealPredictionCalculatorAPI": "UnitHealPredictionCalculator", "AbbreviateConfigAPI": "AbbreviateConfig"}
@@ -488,12 +483,12 @@ func (c *catalogue) loadNative() {
 				record := c.record("Enum."+name+"_Values", source)
 				record.Fields = map[string]*catalogueField{}
 				for _, field := range table.Fields {
-					record.Fields[field.Name] = &catalogueField{Type: "number", Source: source}
+					record.Fields[field.Name] = &catalogueField{Type: "number"}
 				}
 				c.bindGlobal("Enum."+name, "Enum."+name+"_Values", source)
 				metadata := map[string]*catalogueField{}
 				for _, key := range table.EnumMetadata {
-					metadata[key] = &catalogueField{Type: "number", Source: source}
+					metadata[key] = &catalogueField{Type: "number"}
 				}
 				if len(metadata) > 0 {
 					metaName := "Enum." + name + "Meta_Values"
@@ -505,7 +500,7 @@ func (c *catalogue) loadNative() {
 				record.Kind, record.Source, record.Bases = "record", source, []string{}
 				record.Fields = map[string]*catalogueField{}
 				for _, field := range table.Fields {
-					record.Fields[field.Name] = &catalogueField{Native: &field, Source: source}
+					record.Fields[field.Name] = &catalogueField{Native: &field}
 				}
 			case "CallbackType":
 				c.aliases[name] = &catalogueAlias{Signature: functionFromNative(table.Callback(), source, false), Source: source}
@@ -513,7 +508,7 @@ func (c *catalogue) loadNative() {
 				record := c.record("Constants."+name+"_Values", source)
 				record.Fields = map[string]*catalogueField{}
 				for _, field := range table.Fields {
-					record.Fields[field.Name] = &catalogueField{Native: &field, Source: source}
+					record.Fields[field.Name] = &catalogueField{Native: &field}
 				}
 				c.bindGlobal("Constants."+name, "Constants."+name+"_Values", source)
 			default:
@@ -590,7 +585,7 @@ func (c *catalogue) mayReturnNothing(item *catalogueFunction) bool {
 		return false
 	}
 	policy := item.Native.Policy
-	if enabled(policy.MayReturnNothing) {
+	if policy.Flags[nativeMayReturnNothing] {
 		return true
 	}
 	for name := range c.absencePreconditions {
@@ -660,10 +655,7 @@ func (c *catalogue) resultSecret(item *catalogueFunction) bool {
 	return item != nil && (!item.returnsNeverSecret()) && ((item.Native != nil && item.Native.Policy.secretResult()) || item.SecretEffect)
 }
 func (item *catalogueFunction) returnsNeverSecret() bool {
-	return item != nil && item.Native != nil && enabled(item.Native.Policy.ReturnsNeverSecret)
-}
-func (c *catalogue) nativeType(item NativeParameter, secret bool) (string, error) {
-	return captureString(func() string { return c.nativeTypeValue(item, secret) })
+	return item != nil && item.Native != nil && item.Native.Policy.Flags[nativeReturnsNeverSecret]
 }
 func (c *catalogue) nativeTypeValue(item NativeParameter, secret bool) string {
 	raw := item.Type
@@ -757,7 +749,7 @@ func (c *catalogue) loadFrameXML() {
 		owner := cls.Name
 		record := c.defs[owner]
 		for _, name := range sortedKeys(cls.Fields) {
-			record.Fields[name] = &catalogueField{Type: cls.Fields[name], Source: source}
+			record.Fields[name] = &catalogueField{Type: cls.Fields[name]}
 		}
 		for _, name := range sortedKeys(cls.Methods) {
 			expression := cls.Methods[name]
@@ -819,7 +811,7 @@ func (c *catalogue) statistics() CatalogueStatistics {
 			continue
 		}
 		for _, function := range doc.Functions {
-			if !strings.HasPrefix(strings.TrimLeft(function.Raw, " \t"), "local function ") {
+			if !function.Local {
 				stats.QuestieDeclarations++
 			}
 		}

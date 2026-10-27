@@ -1,4 +1,4 @@
-package wowapi
+package wowapi_test
 
 import (
 	"os"
@@ -10,32 +10,7 @@ import (
 
 func TestNativeTableContractsPreserveConcreteTypes(t *testing.T) {
 	root := catalogueTestRoot(t)
-	c := newCatalogue(Project{})
-	c.aliases["bool"] = &catalogueAlias{Expression: "boolean"}
-	c.aliases["LuaValueVariant"] = &catalogueAlias{Expression: "unknown"}
-	for _, name := range []string{"LuaTableExtensionsDocumentation.lua", "AddOnProfilerDocumentation.lua"} {
-		data, err := os.ReadFile(filepath.Join(root, "references/wow-api/blizzard", name))
-		if err != nil {
-			t.Fatal(err)
-		}
-		raw, err := ParseLua(data, name)
-		if err != nil {
-			t.Fatal(err)
-		}
-		metadata, err := decodeNativeMetadata(raw)
-		if err != nil {
-			t.Fatal(err)
-		}
-		namespace := c.record(metadata.Namespace, name)
-		for _, function := range metadata.Functions {
-			if metadata.Namespace == "table" || function.Name == "MeasureCall" {
-				namespace.Methods[function.Name] = functionFromNative(function, name, false)
-			}
-		}
-	}
-	c.record("AddOnProfilerCallResults", "fixture")
-	c.applyNativeTableContracts()
-	projection, err := c.finalize(t.Context())
+	artifacts, err := catalogueTestProject(t).Generate(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,8 +19,8 @@ func TestNativeTableContractsPreserveConcreteTypes(t *testing.T) {
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		t.Fatal(err)
 	}
-	for name, data := range projection.render() {
-		if err := os.WriteFile(filepath.Join(dir, name), data, 0644); err != nil {
+	for name, data := range artifacts.Files {
+		if err := os.WriteFile(filepath.Join(fixture, name), data, 0644); err != nil {
 			t.Fatal(err)
 		}
 	}

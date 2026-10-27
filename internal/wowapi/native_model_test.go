@@ -29,6 +29,11 @@ func TestNativeMetadataRejectsUnsupportedContracts(t *testing.T) {
 
 		{"malformed functions", `Functions="callable"`, "Functions must be an array"},
 		{"unknown permission", `Functions={{Name="Run",Type="Function",RequiresNewPermission=true}}`, "unsupported native field RequiresNewPermission"},
+		{"changed parameter flag shape", `Functions={{Name="Run",Type="Function",Arguments={{Name="value",Type="number",NeverSecret="yes"}}}}`, "NeverSecret must be a boolean"},
+		{"malformed unused namespace", `Functions={{Name="Run",Type="Function",Namespace=1}}`, "Namespace must be a string"},
+		{"malformed unused mixin", `Functions={{Name="Run",Type="Function",Arguments={{Name="value",Type="number",Mixin=1}}}}`, "Mixin must be a string"},
+		{"malformed unused event literal", `Events={{Name="Ready",Type="Event",LiteralName=1}}`, "LiteralName must be a string"},
+		{"malformed unused table values", `Tables={{Name="Mode",Type="Enumeration",Values={{Name="value",Type="number",SecretValue="yes"}}}}`, "SecretValue must be a boolean"},
 		{"changed secrecy shape", `Functions={{Name="Run",Type="Function",SecretReturns="yes"}}`, "SecretReturns must be a boolean"},
 		{"missing function name", `Functions={{Type="Function"}}`, "Name must be a nonempty string"},
 		{"missing function type", `Functions={{Name="Run"}}`, "Type must be a nonempty string"},
@@ -80,5 +85,79 @@ func TestNativeMetadataAcceptsSupportedDiscriminators(t *testing.T) {
 				t.Fatalf("supported contract rejected: %v", err)
 			}
 		})
+	}
+}
+
+func TestNativePolicyPresenceAndSecrecy(t *testing.T) {
+	for _, tc := range []struct {
+		name, flags, restrictions string
+		secret, absence           bool
+	}{
+		{"absent", "", `{}`, false, false},
+		{"explicit false", `SecretReturns=false,RequiresFriendList=false,MayReturnNothing=false`, `{"RequiresFriendList": false, "SecretReturns": false}`, false, false},
+		{"enabled", `SecretReturns=true,RequiresFriendList=true,MayReturnNothing=true`, `{"RequiresFriendList": true, "SecretReturns": true}`, true, true},
+		{"never secret wins", `ReturnsNeverSecret=true,SecretReturns=true`, `{"ReturnsNeverSecret": true, "SecretReturns": true}`, false, false},
+		{"false never secret", `ReturnsNeverSecret=false,SecretReturns=true`, `{"ReturnsNeverSecret": false, "SecretReturns": true}`, true, false},
+		{"event payload is not a return policy", `SecretPayloads=true`, `{"SecretPayloads": true}`, false, false},
+		{"aspect dependent", `SecretReturnsForAspect={Secrets.Aspect}`, `{"SecretReturnsForAspect": [{"$ref": "Secrets.Aspect"}]}`, true, false},
+		{"explicit empty aspects", `SecretReturnsForAspect={}`, `{"SecretReturnsForAspect": []}`, false, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			raw, err := ParseLua([]byte(`local Test={Functions={{Name="Run",Type="Function",`+tc.flags+`}}}`), "policy.lua")
+			if err != nil {
+				t.Fatal(err)
+			}
+			metadata, err := decodeNativeMetadata(raw)
+			if err != nil {
+				t.Fatal(err)
+			}
+			policy := metadata.Functions[0].Policy
+			if got := requireStringJSON(policy.restrictions()); got != tc.restrictions {
+				t.Errorf("restriction comment = %s; want %s", got, tc.restrictions)
+			}
+			if got := policy.secretResult(); got != tc.secret {
+				t.Errorf("secret return = %v; want %v", got, tc.secret)
+			}
+			if got := policy.precondition("MayReturnNothing"); got != tc.absence {
+				t.Errorf("absence precondition = %v; want %v", got, tc.absence)
+			}
+		})
+	}
+}
+
+func TestNativeParameterFlagPresence(t *testing.T) {
+	for _, tc := range []struct {
+		name, flag      string
+		present, secret bool
+	}{
+		{"absent", "", false, true},
+		{"false", "NeverSecret=false", true, true},
+		{"true", "NeverSecret=true", true, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			raw, err := ParseLua([]byte(`local Test={Name="value",Type="number",SecretValue=true,`+tc.flag+`}`), "parameter.lua")
+			if err != nil {
+				t.Fatal(err)
+			}
+			parameter, err := decodeNativeParameter(raw)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if (parameter.NeverSecret != nil) != tc.present {
+				t.Errorf("NeverSecret presence = %v; want %v", parameter.NeverSecret != nil, tc.present)
+			}
+			if got := parameter.secretResult(); got != tc.secret {
+				t.Errorf("secret result = %v; want %v", got, tc.secret)
+			}
+		})
+	}
+}
+
+func TestNativeFunctionCloneOwnsPolicy(t *testing.T) {
+	original := &catalogueFunction{Native: &NativeFunction{Policy: NativePolicy{Flags: map[nativeFlag]bool{nativeSecretReturns: true}}}}
+	variant := original.clone()
+	variant.Native.Policy.Flags[nativeReturnsNeverSecret] = true
+	if !original.Native.Policy.secretResult() || variant.Native.Policy.secretResult() {
+		t.Fatal("cloned contracts do not retain independent return secrecy")
 	}
 }

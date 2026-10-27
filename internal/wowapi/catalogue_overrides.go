@@ -176,7 +176,7 @@ func (c *catalogue) applyOverrides() {
 		item.Annotation.Params[0].Type = "string"
 		item.Annotation.Returns[0].Type = "unknown?"
 		if name == "GetLibrary" && len(item.Annotation.Returns) == 1 {
-			item.Annotation.Returns = append(item.Annotation.Returns, AnnotationReturn{Type: "number?", Name: stringPointer("minor")})
+			item.Annotation.Returns = append(item.Annotation.Returns, AnnotationReturn{Type: "number?"})
 		}
 		if name == "NewLibrary" {
 			annotationArgument(item, "minor").Type = "number|string"
@@ -187,7 +187,7 @@ func (c *catalogue) applyOverrides() {
 	item.Annotation.Params[0].Type = "string"
 	item.Annotation.Returns[0].Type = "unknown?"
 	if len(item.Annotation.Returns) == 1 {
-		item.Annotation.Returns = append(item.Annotation.Returns, AnnotationReturn{Type: "number?", Name: stringPointer("minor")})
+		item.Annotation.Returns = append(item.Annotation.Returns, AnnotationReturn{Type: "number?"})
 	}
 	for _, name := range []string{"CreateEnumRadioMenu", "CreateEnumRadioContextMenu"} {
 		annotationArgument(c.method("MenuUtil", name), "enum").Type = "table<string,V>"

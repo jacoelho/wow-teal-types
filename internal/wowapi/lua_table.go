@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"math/big"
-	"os"
 	"strconv"
 	"strings"
 	"unicode"
@@ -451,14 +450,6 @@ func ParseLua(data []byte, source string) (result literal.Object, err error) {
 	}
 	return
 }
-func parseLuaFile(path string) (literal.Object, error) {
-	data, e := os.ReadFile(path)
-	if e != nil {
-		return nil, e
-	}
-	return ParseLua(data, path)
-}
-
 func luaInteger(value literal.Value) (*big.Int, bool) {
 	if text, ok := value.Integer(); ok {
 		return new(big.Int).SetString(text, 10)

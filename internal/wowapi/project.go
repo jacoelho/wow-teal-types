@@ -23,11 +23,7 @@ type Artifacts struct {
 
 func NewProject(root string) Project {
 	return Project{Root: root, inputs: map[string]string{
-		"blizzard":         filepath.Join(root, "references/wow-api/blizzard"),
-		"blizzard_support": filepath.Join(root, "references/wow-api/support"),
-		"blizzard_version": filepath.Join(root, "references/wow-api/version"),
-		"questie":          filepath.Join(root, "references/questie-annotations/Core"),
-		"questie_runtime":  filepath.Join(root, "references/wow-api/questie-runtime"),
+		"questie": filepath.Join(root, "references/questie-annotations/Core"),
 	}}
 }
 func (p Project) WithInputs(paths map[string]string) Project {
@@ -40,8 +36,12 @@ func (p Project) WithInputs(paths map[string]string) Project {
 	}
 	return next
 }
-func (p Project) InputPath(group, name string) string {
-	return filepath.Join(p.inputs[group], filepath.FromSlash(name))
+func (p Project) InputPath(group, name string) (string, error) {
+	root := p.inputs[group]
+	if root == "" {
+		return "", fmt.Errorf("input root not selected: %s", group)
+	}
+	return filepath.Join(root, filepath.FromSlash(name)), nil
 }
 func sha256hex(b []byte) string { s := sha256.Sum256(b); return hex.EncodeToString(s[:]) }
 func blobSHA(b []byte) string {

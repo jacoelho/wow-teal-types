@@ -1,11 +1,15 @@
-package wowapi
+package wowapi_test
 
 import (
 	"bytes"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"testing"
+	"wow-teal-types/internal/release"
+	"wow-teal-types/internal/sourcelock"
+	"wow-teal-types/internal/wowapi"
 )
 
 func catalogueTestRoot(t *testing.T) string {
@@ -16,12 +20,29 @@ func catalogueTestRoot(t *testing.T) string {
 	}
 	return filepath.Clean(filepath.Join(filepath.Dir(file), "../.."))
 }
+func catalogueTestProject(t *testing.T) wowapi.Project {
+	t.Helper()
+	root := catalogueTestRoot(t)
+	lock, err := sourcelock.ReadSnapshot(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	snapshot := filepath.Join(root, "build/wow-client", strconv.Itoa(lock.Build))
+	if _, err := os.Stat(snapshot); os.IsNotExist(err) {
+		t.Skip("client snapshot absent; run bootstrap first")
+	} else if err != nil {
+		t.Fatal(err)
+	}
+	project, err := release.Bootstrap(t.Context(), root, snapshot)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return project
+}
+
 func TestGenerateMatchesCheckedDeclarationsAndIsDeterministic(t *testing.T) {
 	root := catalogueTestRoot(t)
-	p := NewProject(root)
-	if _, err := os.Stat(p.InputPath("blizzard", "BuildDocumentation.lua")); err != nil {
-		t.Skip("native inputs absent; run bootstrap first")
-	}
+	p := catalogueTestProject(t)
 	first, err := p.Generate(t.Context())
 	if err != nil {
 		t.Fatal(err)
@@ -41,7 +62,7 @@ func TestGenerateMatchesCheckedDeclarationsAndIsDeterministic(t *testing.T) {
 		}
 	}
 
-	second, err := NewProject(root).Generate(t.Context())
+	second, err := catalogueTestProject(t).Generate(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}

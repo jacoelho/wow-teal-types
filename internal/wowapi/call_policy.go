@@ -2,6 +2,7 @@ package wowapi
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -15,6 +16,13 @@ type callPolicy struct {
 	SecretContentsParameters []int
 	SecretContentsVarargFrom int
 	Guard                    string
+}
+
+func (p *callPolicy) equal(other *callPolicy) bool {
+	if p == nil || other == nil {
+		return p == other
+	}
+	return p.Symbol == other.Symbol && p.Guard == other.Guard && p.SecretVarargFrom == other.SecretVarargFrom && p.SecretContentsVarargFrom == other.SecretContentsVarargFrom && slices.Equal(p.SecretParameters, other.SecretParameters) && slices.Equal(p.SecretContentsParameters, other.SecretContentsParameters)
 }
 
 func uniqueSignatureChoices(values []signatureChoice) []signatureChoice {
@@ -34,7 +42,7 @@ func (c *catalogue) projectCallable(item *catalogueFunction, owner, symbol strin
 	for _, choice := range c.signatureChoices(item, owner) {
 		policy := c.signaturePolicy(choice.contract, symbol, choice.expression)
 		if index, ok := seen[choice.expression]; ok {
-			if !jsonEqual(out[index].policy, policy) {
+			if !out[index].policy.equal(policy) {
 				reject(fmt.Sprintf("ambiguous permissions for identical overload: %s", symbol))
 			}
 			continue
@@ -114,75 +122,7 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 	return policy
 }
 
-func (p declarationProjection) renderCallPolicy(files map[string][]byte) []byte {
-	locations := map[string]map[string]callPolicy{}
-	add := func(path string, line, column int, policy *callPolicy) {
-		if policy == nil {
-			return
-		}
-		if locations[path] == nil {
-			locations[path] = map[string]callPolicy{}
-		}
-		key := strconv.Itoa(line) + ":" + strconv.Itoa(column)
-		if previous, ok := locations[path][key]; ok && !jsonEqual(previous, *policy) {
-			reject(fmt.Sprintf("conflicting native policy origin: %s:%s", path, key))
-		}
-		locations[path][key] = *policy
-	}
-	type origin struct {
-		policy *callPolicy
-		column int
-	}
-	methods := map[string]map[string]origin{}
-	for _, declaration := range p.declarations {
-		rows := map[string]origin{}
-		for _, method := range declaration.methods {
-			prefix := "      " + method.name + ": "
-			for _, signature := range method.signatures {
-				if signature.policy != nil {
-					rows[prefix+signature.expression] = origin{signature.policy, len(prefix) + 1}
-				}
-			}
-		}
-		methods[declaration.name] = rows
-	}
-	globals := map[string]origin{}
-	ambient := map[string]origin{}
-	for _, global := range p.globals {
-		if global.policy == nil {
-			continue
-		}
-		prefix := "   type Global_" + ident(global.name) + " = "
-		globals[prefix+global.expression] = origin{global.policy, len(prefix) + 1}
-		if global.public {
-			prefix = "global " + global.name + ": "
-			ambient[prefix+global.ambientExpression] = origin{global.policy, len(prefix) + 1}
-		}
-	}
-	for _, file := range []string{"wow.d.tl", "wow_env.d.tl", "wow_secure_env.d.tl"} {
-		path := "types/wow/" + file
-		locations[path] = map[string]callPolicy{}
-		owner := ""
-		for index, line := range strings.Split(string(files[file]), "\n") {
-			if file == "wow.d.tl" {
-				if strings.HasPrefix(line, "   record ") {
-					owner = strings.TrimPrefix(line, "   record ")
-				} else if strings.HasPrefix(line, "   interface ") {
-					owner = strings.TrimPrefix(line, "   interface ")
-				} else if line == "   end" {
-					owner = ""
-				}
-				if value, ok := methods[owner][line]; ok {
-					add(path, index+1, value.column, value.policy)
-				}
-				if value, ok := globals[line]; ok {
-					add(path, index+1, value.column, value.policy)
-				}
-			} else if value, ok := ambient[line]; ok {
-				add(path, index+1, value.column, value.policy)
-			}
-		}
-	}
+func renderCallPolicy(locations map[string]map[string]callPolicy) []byte {
 	var out strings.Builder
 	out.WriteString("-- Generated native-call permissions, bound by the consumer artifact manifest.\nreturn {\n   schema = 1,\n   compiler = \"0.24.8-wow.1\",\n   declarations = {\n")
 	for _, path := range sortedKeys(locations) {

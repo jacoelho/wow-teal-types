@@ -1,4 +1,4 @@
-package wowapi
+package wowapi_test
 
 import (
 	"os"
@@ -10,31 +10,15 @@ import (
 
 func TestLayeredRegionContractsPreserveSourceAndReceiverCapabilities(t *testing.T) {
 	root := catalogueTestRoot(t)
-	project := NewProject(root)
-	c := newCatalogue(project)
-	var construction error
-	func() {
-		defer captureError(&construction)
-		c.loadQuestie()
-		c.loadNative()
-		c.loadFrameXML()
-		c.applyOverrides()
-	}()
-	if construction != nil {
-		t.Fatal(construction)
-	}
-	projection, err := c.finalize(t.Context())
+	artifacts, err := catalogueTestProject(t).Generate(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
 	names := []string{"GetDrawLayer", "SetDrawLayer", "GetVertexColor", "SetVertexColor", "SetVertexColorFromBoolean"}
-	outputs := projection.render()
-	policy := string(outputs["call_policy.lua"])
+	outputs := artifacts.Files
+	policy := string(outputs["types/wow/call_policy.lua"])
 	for _, name := range names {
 		symbol := "LayeredRegion." + name
-		if _, err := projection.signatures(symbol); err != nil {
-			t.Error(err)
-		}
 		if strings.Count(policy, `symbol = "`+symbol+`"`) != 1 || strings.Contains(policy, `symbol = "Region.`+name+`"`) {
 			t.Errorf("policy owner mismatch: %s", symbol)
 		}
@@ -48,7 +32,7 @@ func TestLayeredRegionContractsPreserveSourceAndReceiverCapabilities(t *testing.
 		t.Fatal(err)
 	}
 	for name, data := range outputs {
-		if err := os.WriteFile(filepath.Join(dir, name), data, 0644); err != nil {
+		if err := os.WriteFile(filepath.Join(fixture, name), data, 0644); err != nil {
 			t.Fatal(err)
 		}
 	}

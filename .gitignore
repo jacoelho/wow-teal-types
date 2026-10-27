@@ -7,7 +7,3 @@ __pycache__/
 
 # Reacquired from immutable source locks by bin/wow-types bootstrap.
 references/questie-annotations/
-references/wow-api/blizzard/
-references/wow-api/support/
-references/wow-api/version/
-references/wow-api/questie-runtime/

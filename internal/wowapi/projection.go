@@ -50,51 +50,6 @@ type declarationProjection struct {
 	declarations  []projectedDeclaration
 	globals       []projectedGlobal
 	secureGlobals []string
-	contracts     map[string][]projectedSignature
-}
-
-func (p declarationProjection) signatures(symbol string) ([]string, error) {
-	values, ok := p.contracts[symbol]
-	if !ok {
-		return nil, fmt.Errorf("native symbol missing from finalized projection: %s", symbol)
-	}
-	out := make([]string, len(values))
-	for i, value := range values {
-		out[i] = value.expression
-	}
-	return out, nil
-}
-
-func emittedSignatures(c *catalogue, item *catalogueFunction, owner string) ([]string, error) {
-	if item.TypeName == "" {
-		return c.signatures(item, owner)
-	}
-	typeName := item.TypeName
-	record := c.defs[typeName]
-	var call *catalogueFunction
-	if record != nil {
-		call = record.Methods["metamethod __call"]
-	}
-	if call == nil {
-		return nil, fmt.Errorf("native function binding is not callable: %s", typeName)
-	}
-	signatures, e := c.signatures(call, typeName)
-	if e != nil {
-		return nil, e
-	}
-	for i, s := range signatures {
-		s = strings.Replace(s, "(self, ", "(", 1)
-		s = strings.Replace(s, "(self)", "()", 1)
-		signatures[i] = s
-	}
-	return signatures, nil
-}
-func projectSignatures(values []string) []projectedSignature {
-	out := make([]projectedSignature, len(values))
-	for i, value := range values {
-		out[i] = projectedSignature{expression: value}
-	}
-	return out
 }
 
 // finalize resolves the generated-type and secrecy closure before publishing any
@@ -144,7 +99,7 @@ func (c *catalogue) projectAttempt(label string, fn func()) {
 }
 
 func (c *catalogue) projectDeclarations() declarationProjection {
-	projection := declarationProjection{contracts: map[string][]projectedSignature{}, secureGlobals: sortedSet(c.secureGlobals)}
+	projection := declarationProjection{secureGlobals: sortedSet(c.secureGlobals)}
 	for _, name := range append([]string{}, c.globalOrder...) {
 		item := c.globals[name]
 		if item.TypeName == "" {
@@ -181,9 +136,6 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 					return
 				}
 				projection.declarations = append(projection.declarations, declaration)
-				for _, method := range declaration.methods {
-					projection.contracts[name+"."+method.name] = method.signatures
-				}
 			})
 		}
 	}
@@ -224,13 +176,6 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 				global.policy = c.signaturePolicy(item, name, value)
 			}
 			projection.globals = append(projection.globals, global)
-			if item.TypeName == "" || item.CallableContract != nil {
-				signatures, e := emittedSignatures(c, item, "")
-				if e != nil {
-					reject(fmt.Sprintf("%s", e))
-				}
-				projection.contracts[name] = projectSignatures(signatures)
-			}
 		})
 	}
 	return projection

@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"syscall"
@@ -195,7 +196,7 @@ func outputNames(workspace string) ([]string, error) {
 	}
 	names := append([]string{}, ownedOutputs...)
 	names = append(names, "rockspecs/wow-tl-type-"+v+"-1.rockspec.in")
-	sortStrings(names)
+	slices.Sort(names)
 	for k, n := range names {
 		if n == "package.json" {
 			names = append(append(names[:k], names[k+1:]...), n)

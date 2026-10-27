@@ -1,7 +1,6 @@
 package release
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -86,7 +85,10 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 		}
 	}
 	return parallel(ctx, jobs, func(ctx context.Context, j sourceJob) error {
-		path := p.InputPath(j.group, j.name)
+		path, e := p.InputPath(j.group, j.name)
+		if e != nil {
+			return e
+		}
 		if _, e := safeJoin(filepath.Dir(path), filepath.Base(path)); e != nil {
 			return e
 		}
@@ -100,7 +102,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 			}
 			return nil
 		}
-		if j.group == "blizzard" || j.group == "blizzard_support" || j.group == "blizzard_version" {
+		if j.group == "blizzard" || j.group == "blizzard_version" {
 			return fmt.Errorf("missing verified native input: %s", path)
 		}
 		if !hex40.MatchString(j.commit) {
@@ -117,7 +119,7 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 	})
 }
 
-// Bootstrap populates ordinary caches only from a verified native projection and pinned community inputs.
+// Bootstrap selects verified native inputs and populates pinned community inputs.
 func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, error) {
 	p, e := Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
 	if e != nil {
@@ -125,38 +127,6 @@ func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, erro
 	}
 	if e = syncPrimary(ctx, p); e != nil {
 		return p, e
-	}
-	ordinary := wowapi.NewProject(root)
-	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "internal/wowapi/inputs/sources.json"))
-	if e != nil {
-		return p, e
-	}
-	pending := map[string][]byte{}
-	for _, group := range []string{"blizzard", "blizzard_support", "blizzard_version"} {
-		for _, row := range lock[group].Files {
-			name := row.Name
-			b, e := readFile(p.InputPath(group, name), maxFile)
-			if e != nil {
-				return p, e
-			}
-			target := ordinary.InputPath(group, name)
-			if exists(target) {
-				old, e := readFile(target, maxFile)
-				if e != nil {
-					return p, e
-				}
-				if !bytes.Equal(old, b) {
-					return p, fmt.Errorf("modified pinned native cache: %s", target)
-				}
-			} else {
-				pending[target] = b
-			}
-		}
-	}
-	for _, target := range keys(pending) {
-		if e = atomicWrite(target, pending[target], 0644); e != nil {
-			return p, e
-		}
 	}
 	return p, nil
 }
@@ -169,12 +139,15 @@ func seedCaches(origin, target string) error {
 		return e
 	}
 	for _, group := range keys(lock) {
-		if group == "blizzard" || group == "blizzard_support" || group == "blizzard_version" {
+		if group == "blizzard" || group == "blizzard_version" {
 			continue
 		}
 		for _, row := range lock[group].Files {
 			name := row.Name
-			src := p.InputPath(group, name)
+			src, e := p.InputPath(group, name)
+			if e != nil {
+				return e
+			}
 			if !exists(src) {
 				continue
 			}
@@ -185,7 +158,10 @@ func seedCaches(origin, target string) error {
 			if len(b) != row.Size || blob(b) != row.SHA {
 				return fmt.Errorf("modified pinned community cache: %s", name)
 			}
-			dst := wowapi.NewProject(target).InputPath(group, name)
+			dst, e := wowapi.NewProject(target).InputPath(group, name)
+			if e != nil {
+				return e
+			}
 			if e = atomicWrite(dst, b, 0644); e != nil {
 				return e
 			}
