@@ -264,6 +264,9 @@
       ],
       "bases": [
         "Object"
+      ],
+      "inherit_methods_from": [
+        "ModelSceneActorBase"
       ]
     },
     {

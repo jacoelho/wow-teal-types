@@ -53,10 +53,14 @@ type supplementalExclusion struct {
 	Source    string `json:"source"`
 	Signature string `json:"signature"`
 }
+// receiverHierarchyOverride replaces owner's reviewed bases. Owner keeps the
+// own methods of each InheritMethodsFrom base it detaches from, unless it
+// declares them itself.
 type receiverHierarchyOverride struct {
-	Owner         string   `json:"owner"`
-	ExpectedBases []string `json:"expected_bases"`
-	Bases         []string `json:"bases"`
+	Owner              string   `json:"owner"`
+	ExpectedBases      []string `json:"expected_bases"`
+	Bases              []string `json:"bases"`
+	InheritMethodsFrom []string `json:"inherit_methods_from"`
 }
 
 func (c *catalogue) definition(name string) *catalogueDefinition {
@@ -103,16 +107,6 @@ func annotationArgument(item *catalogueFunction, name string) *annotationParamet
 	return nil
 }
 func (c *catalogue) applyOverrides(overrides catalogueOverrides) {
-	// Legacy world actors keep the shared actor methods after receiver_hierarchy
-	// detaches them from ModelSceneActorBase, whose SetPlayerModelFromGlues
-	// arguments differ.
-	legacyActor := c.definition("ModelSceneActor")
-	for name, value := range c.definition("ModelSceneActorBase").Methods {
-		methods := legacyActor.Methods
-		if methods[name] == nil {
-			methods[name] = value
-		}
-	}
 	c.abiTuples = overrides.ABITuples
 	for _, name := range slices.Sorted(maps.Keys(overrides.Aliases)) {
 		item := overrides.Aliases[name]
@@ -375,6 +369,17 @@ func (c *catalogue) applyReceiverCorrections(overrides catalogueOverrides) {
 		for _, base := range rule.Bases {
 			if c.defs[base] == nil {
 				reject(fmt.Sprintf("review changed receiver hierarchy: %s base %s is not defined", owner, base))
+			}
+		}
+		methods := c.definition(owner).Methods
+		for _, base := range rule.InheritMethodsFrom {
+			if !slices.Contains(rule.ExpectedBases, base) || slices.Contains(rule.Bases, base) {
+				reject(fmt.Sprintf("review changed receiver hierarchy: %s inherits methods from %s, which it does not detach", owner, base))
+			}
+			for name, method := range c.definition(base).Methods {
+				if methods[name] == nil {
+					methods[name] = method
+				}
 			}
 		}
 		c.definition(owner).Bases = append([]string{}, rule.Bases...)
