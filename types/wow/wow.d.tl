@@ -2,212 +2,314 @@
 -- Canonical native declarations. See docs/api/teal-catalogue.md.
 local type W = require("native_values")
 local record CatalogueTypes
+   -- named LuaLS callback
    type Callback_01413e4a5d73 = function(number, ? string)
 
+   -- named LuaLS callback
    type Callback_03059a8143c0 = function(TooltipDataHandlerMixin, number): boolean
 
+   -- named LuaLS callback
    type Callback_03c0b50da3e0 = function(CallbackHandlerRegistry, any, string)
 
+   -- named LuaLS callback
    type Callback_05a8255de844 = function(number, Vector2DMixin, ? number): UiMapPoint
 
+   -- named LuaLS callback
    type Callback_08cc7a05a5e5 = function(Callback_2197f66ced24)
 
+   -- named LuaLS callback
    type Callback_08d44b7626a0 = function(AceGUIWidget, Literal_73288166ef67, ? number, ? number)
 
+   -- named LuaLS callback
    type Callback_12fcf8bc35c1 = function(Literal_3a064e09ef93, string, ? number): any
 
+   -- named LuaLS callback
    type Callback_148d90de31f3 = function(EditModeManagerFrame): boolean
 
+   -- named LuaLS callback
    type Callback_1547b5eb3604 = function(string)
 
+   -- named LuaLS callback
    type Callback_18e17c792cdd = function(GameTooltip, ElementMenuDescriptionProxy)
 
+   -- named LuaLS callback
    type Callback_1df329697fd3 = function(LibQTip_Cell<any, any>, ? any): W.Data, W.Data
 
+   -- named LuaLS callback
    type Callback_1f24faab15fc = function(MapCanvasDataProviderMixin): MapCanvasMixin
 
+   -- named LuaLS callback
    type Callback_1fe22104bd65 = function(string, any)
 
+   -- named LuaLS callback
    type Callback_2197f66ced24 = function(W.Data...)
 
+   -- named LuaLS callback
    type Callback_220e4a3fa810 = function(ScrollingMessageFrame, string, ? number, ? number, ? number, any...)
 
+   -- named LuaLS callback
    type Callback_23810861cf61 = function(MenuProxy, SharedMenuDescriptionProxy)
 
+   -- named LuaLS callback
    type Callback_27e0d96a7eac = function(MenuProxy, number)
 
+   -- named LuaLS callback
    type Callback_284ef80ec2bc = function(EditModeManagerFrame): boolean
 
+   -- named LuaLS callback
    type Callback_290432078bb6 = function(SettingsCategoryMixin)
 
+   -- named LuaLS callback
    type Callback_2b2d9a7f4d1a = function(Frame, string, string)
 
+   -- named LuaLS callback
    type Callback_312081f5b7ca = function({MissionInfo}, number)
 
+   -- named LuaLS callback
    type Callback_35cb555a891e = function(LibQTip_Tooltip<any, any>, ? any): W.Data, W.Data
 
+   -- named LuaLS callback
    type Callback_373ba55346b1 = function(MapCanvasMixin, MapCanvasDataProviderMixin)
 
+   -- named LuaLS callback
    type Callback_3c005cb9052e = function(any, MenuInputData, MenuProxy): number
 
+   -- named LuaLS callback
    type Callback_3e59a5f74001 = function({string: string}, ? string): string, string
 
+   -- named LuaLS callback
    type Callback_3ec4fdf48b4f = function(AceAddon, string, any, string...)
 
+   -- named LuaLS callback
    type Callback_42c10352f5a6 = function()
 
+   -- named LuaLS callback
    type Callback_4345a39e918d = function(GameTooltip, W.Data...)
 
+   -- named LuaLS callback
    type Callback_440d17e6e23d = function(ElementMenuDescriptionProxy): boolean
 
+   -- named LuaLS callback
    type Callback_4933ba48aa75 = function(Frame, string, Frame)
 
+   -- named LuaLS callback
    type Callback_49bbf91b6c33<A, R> = function(A...): R...
 
+   -- named LuaLS callback
    type Callback_4af858cf56d4 = function(SettingsCategoryMixin, Frame, string): SettingsCategoryMixin, SettingsCanvasLayoutMixin
 
+   -- named LuaLS callback
    type Callback_4c67338a3ded = function(W.Data, MenuInputData, MenuProxy): number
 
+   -- named LuaLS callback
    type Callback_4cd1f316ab01 = function(number, number, number, ? number): UiMapPoint
 
+   -- named LuaLS callback
    type Callback_4dd9cc277bfa = function(EditModeLayoutDialog): string
 
+   -- named LuaLS callback
    type Callback_4e9d3d5ad0fc = function(RaidWarningFrameMixin, string, any...)
 
+   -- named LuaLS callback
    type Callback_55043f4f4e7b = function(MapCanvasPinMixin, any...)
 
+   -- named LuaLS callback
    type Callback_5799dfecc20d = function(number, Literal_b7e0de2fb994): number
 
+   -- named LuaLS callback
    type Callback_5ed4c95d7d25 = function(EditModeManagerFrame): {EditModeLayoutInfo}
 
+   -- named LuaLS callback
    type Callback_5f799a79e215 = function(AceGUIWidget, Literal_73288166ef67, Region | string, ? number, ? number)
 
+   -- named LuaLS callback
    type Callback_60307e2f4821 = function(CustomAuraContainer)
 
+   -- named LuaLS callback
    type Callback_636b9224c325 = function(AceAddon_3_0, string, string...): W.Data
 
+   -- named LuaLS callback
    type Callback_637ee03a355f = function(Frame, string): SettingsCategoryMixin, SettingsCanvasLayoutMixin
 
+   -- named LuaLS callback
    type Callback_63961a063db3 = function(MapCanvasPinMixin, number, number, ? number)
 
+   -- named LuaLS callback
    type Callback_6af77eca61d7 = function(Frame, ElementMenuDescriptionProxy)
 
+   -- named LuaLS callback
    type Callback_6dc034cef83a = function(string, ? EditBox)
 
+   -- named LuaLS callback
    type Callback_756a10786a51 = function(ElementMenuDescriptionProxy): number
 
+   -- named LuaLS callback
    type Callback_7649559cdfa2 = function(SettingsCategoryMixin): string
 
+   -- named LuaLS callback
    type Callback_7788fec2c014 = function(EditModeLayoutDialog): EditModeLayoutInfo
 
+   -- named LuaLS callback
    type Callback_78ba9eea13ac = function(CustomAuraContainer): string
 
+   -- named LuaLS callback
    type Callback_7f32b7c0d06e = function(FunctionContainer)
 
+   -- named LuaLS callback
    type Callback_82ca5204df88 = function(CustomAuraContainer): boolean
 
+   -- named LuaLS callback
    type Callback_854c98a187fb = function(MapCanvasPinMixin, number, ? number, ? number)
 
+   -- named LuaLS callback
    type Callback_88481f38e71a = function(Frame, string, ChatTypeColor, ? number)
 
+   -- named LuaLS callback
    type Callback_89634d3352ac = function(Frame)
 
+   -- named LuaLS callback
    type Callback_8c7a74399e4b = function(SettingsCanvasLayoutMixin): Frame
 
+   -- named LuaLS callback
    type Callback_8f2a72c76334<V> = function(V): string
 
+   -- named LuaLS callback
    type Callback_91116618e4b4 = function(ElementMenuDescriptionProxy): boolean
 
+   -- named LuaLS callback
    type Callback_978e5fb8e9be = function(EditModeManagerFrame, boolean)
 
+   -- named LuaLS callback
    type Callback_9de61f1753e8 = function(MapCanvasPinMixin, string...)
 
+   -- named LuaLS callback
    type Callback_a0ed567cd40f = function(Region, RootMenuDescriptionProxy, W.Data)
 
+   -- named LuaLS callback
    type Callback_a3063ef31ab4 = function(Frame, ElementMenuDescriptionProxy, MenuProxy)
 
+   -- named LuaLS callback
    type Callback_a7bf358ce778 = function(Literal_3a064e09ef93, string, ? number): W.Data
 
+   -- named LuaLS callback
    type Callback_a8569325e554 = function(? number, ? number, ? number)
 
+   -- named LuaLS callback
    type Callback_ab2d0031b812 = function(MapCanvasPinMixin, string, ? number)
 
+   -- named LuaLS callback
    type Callback_acbd3bf37beb = function(Frame, W.Data...)
 
+   -- named LuaLS callback
    type Callback_acbfc7e33545 = function(W.Data): boolean
 
+   -- named LuaLS callback
    type Callback_ad2d122842f1 = function(number, number, number, number)
 
+   -- named LuaLS callback
    type Callback_ad6e0666d24b = function(Literal_3a064e09ef93, string, string): W.Data
 
+   -- named LuaLS callback
    type Callback_b12a0b829f70 = function(GameTooltip)
 
+   -- named LuaLS callback
    type Callback_b18972c48a4e = function({string: Callback_12fcf8bc35c1}, ? string): string, Callback_a7bf358ce778
 
+   -- named LuaLS callback
    type Callback_b1e8f201bfa6 = function(): number, ElementMenuDescriptionProxy
 
+   -- named LuaLS callback
    type Callback_bcb28754c1a2 = function(EditModeManagerFrame): EditModeLayoutInfo
 
+   -- named LuaLS callback
    type Callback_bee733b13fdd = function(MapCanvasDataProviderMixin, ? boolean)
 
+   -- named LuaLS callback
    type Callback_c0d474b2407a = function(string, boolean)
 
+   -- named LuaLS callback
    type Callback_ca8df2f43ab8 = function(MapCanvasMixin, string)
 
+   -- named LuaLS callback
    type Callback_cadd0f36726f = function(Frame, string)
 
+   -- named LuaLS callback
    type Callback_cb70861f0b9e = function(MapCanvasDataProviderMixin, MapCanvasMixin)
 
+   -- named LuaLS callback
    type Callback_ce01a755e083 = function(EditModeLayoutDialog): {string: W.Data}
 
+   -- named LuaLS callback
    type Callback_cfbf58d6956b = function(MapCanvasMixin): number
 
+   -- named LuaLS callback
    type Callback_d2bebbbcf9c0 = function(Frame, ElementMenuDescriptionProxy, Frame, number, number)
 
+   -- named LuaLS callback
    type Callback_d82d71a5fd2e = function(MapCanvasMixin, string, any...): MapCanvasPin
 
+   -- named LuaLS callback
    type Callback_d98d32bf2385 = function(string, ? boolean)
 
+   -- named LuaLS callback
    type Callback_dd95c2c8336e = function(Frame, number)
 
+   -- named LuaLS callback
    type Callback_ddd094b75a29 = function(EditModeLayoutDialog): number
 
+   -- named LuaLS callback
    type Callback_de8823f4c88e = function(EditModeManagerFrame)
 
+   -- named LuaLS callback
    type Callback_def77e0306d5 = function(number, Vector3DType): UiMapPoint
 
+   -- named LuaLS callback
    type Callback_e007ccc4073d = function(Literal_3a064e09ef93, string, string): any
 
+   -- named LuaLS callback
    type Callback_e00847e9e259 = function(MenuProxy)
 
+   -- named LuaLS callback
    type Callback_e3593162b86d = function(CustomAuraContainer, boolean)
 
+   -- named LuaLS callback
    type Callback_e3ca125fbb5d = function(number, number)
 
+   -- named LuaLS callback
    type Callback_e62163c5b5be = function(CustomAuraContainer, string)
 
+   -- named LuaLS callback
    type Callback_e7176cc03c05 = function(Region, RootMenuDescriptionProxy, W.Data...)
 
+   -- named LuaLS callback
    type Callback_eff084b7b696 = function(Frame, string, Frame, string, ? string)
 
+   -- named LuaLS callback
    type Callback_f4d6b3f85a43 = function(MapCanvasDataProviderMixin)
 
+   -- named LuaLS callback
    type Callback_fa07745fedba = function(CustomAuraContainer, string, string, ? AuraContainerGroupOptions)
 
+   -- named LuaLS callback
    type Callback_fae6a84418b7 = function(number, string)
 
+   -- named LuaLS callback
    type Callback_fb50e9ce6f1a = function(SettingsCategoryMixin): number
 
+   -- named LuaLS callback
    type Callback_fe15fad53a14 = function(MapCanvasPinMixin)
 
+   -- interned LuaLS string literals
    enum Literal_0082599e053d
       "Model"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0733e92fb285
       "Translation"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0839f8b7ee27
       "Alpha"
       "Animation"
@@ -221,22 +323,27 @@ local record CatalogueTypes
       "VertexColor"
    end
 
+   -- interned LuaLS string literals
    enum Literal_08c3419f2cc6
       "Cooldown"
    end
 
+   -- interned LuaLS string literals
    enum Literal_08c77eb0d5fe
       "OnUiMapChanged"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0951f225dd42
       "QuestPOIFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0a276f097cda
       "Scale"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0b53d6003782
       "focus"
       "mouseover"
@@ -249,12 +356,14 @@ local record CatalogueTypes
       "vehicle"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0c541190a2ed
       "BOTTOM"
       "MIDDLE"
       "TOP"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0c77bd0575f5
       "BlizOptionsGroup"
       "Button"
@@ -271,6 +380,7 @@ local record CatalogueTypes
       "Slider"
    end
 
+   -- interned LuaLS string literals
    enum Literal_0dc23621406b
       "ADD"
       "ALPHAKEY"
@@ -279,6 +389,7 @@ local record CatalogueTypes
       "MOD"
    end
 
+   -- interned LuaLS string literals
    enum Literal_1749b34b7675
       "nameplate1"
       "nameplate10"
@@ -322,11 +433,13 @@ local record CatalogueTypes
       "nameplate9"
    end
 
+   -- interned LuaLS string literals
    enum Literal_186b928995f7
       "inline"
       "tooltip"
    end
 
+   -- interned LuaLS string literals
    enum Literal_18f964a7429c
       "double"
       "full"
@@ -334,40 +447,48 @@ local record CatalogueTypes
       "normal"
    end
 
+   -- interned LuaLS string literals
    enum Literal_1969a2b6f35c
       "RadialProgress"
    end
 
+   -- interned LuaLS string literals
    enum Literal_1aefd35d9a61
       "BOUNCE"
       "NONE"
       "REPEAT"
    end
 
+   -- interned LuaLS string literals
    enum Literal_1b028717682a
       "ScenarioPOIFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_1e2f93ce76a8
       "ArchaeologyDigSiteFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_20b05e0b44f5
       "DISABLED"
       "NORMAL"
       "PUSHED"
    end
 
+   -- interned LuaLS string literals
    enum Literal_20c2d7b4b784
       "MessageFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_21b8b1856b23
       "OnMovieFinished"
       "OnMovieHideSubtitle"
       "OnMovieShowSubtitle"
    end
 
+   -- interned LuaLS string literals
    enum Literal_23f664ad5404
       "BACKGROUND"
       "BLIZZARD"
@@ -381,6 +502,7 @@ local record CatalogueTypes
       "TOOLTIP"
    end
 
+   -- interned LuaLS string literals
    enum Literal_243b9650451a
       "ARTWORK"
       "BACKGROUND"
@@ -389,18 +511,21 @@ local record CatalogueTypes
       "OVERLAY"
    end
 
+   -- interned LuaLS string literals
    enum Literal_2ace0779ab46
       "ALERT"
       "BULK"
       "NORMAL"
    end
 
+   -- interned LuaLS string literals
    enum Literal_322608a5af35
       "LINEAR"
       "NEAREST"
       "TRILINEAR"
    end
 
+   -- interned LuaLS string literals
    enum Literal_32b7d7cf6025
       "anyenemy"
       "anyfriend"
@@ -410,6 +535,7 @@ local record CatalogueTypes
       "softinteract"
    end
 
+   -- interned LuaLS string literals
    enum Literal_33aa1b92c841
       "OnButtonUpdate"
       "OnEditFocusGained"
@@ -419,43 +545,52 @@ local record CatalogueTypes
       "OnExternalLink"
    end
 
+   -- interned LuaLS string literals
    enum Literal_35e64d0ac750
       "LineTranslation"
    end
 
+   -- interned LuaLS string literals
    enum Literal_39d2acafc60a
       "HORIZONTAL"
       "VERTICAL"
    end
 
+   -- interned LuaLS string literals
    enum Literal_3a064e09ef93
       "cmd"
       "dialog"
       "dropdown"
    end
 
+   -- interned LuaLS string literals
    enum Literal_3be0cb965eac
       "CENTER"
       "LEFT"
       "RIGHT"
    end
 
+   -- interned LuaLS string literals
    enum Literal_3e52dd165467
       "Slider"
    end
 
+   -- interned LuaLS string literals
    enum Literal_43271d478c55
       "EventFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_45494e02f5a2
       "DropdownButton"
    end
 
+   -- interned LuaLS string literals
    enum Literal_4655fc524b75
       "GameTooltip"
    end
 
+   -- interned LuaLS string literals
    enum Literal_472c04684756
       "DropdownGroup"
       "Frame"
@@ -467,6 +602,7 @@ local record CatalogueTypes
       "Window"
    end
 
+   -- interned LuaLS string literals
    enum Literal_48840cc66c6a
       "OnDatabaseReset"
       "OnDatabaseShutdown"
@@ -478,11 +614,13 @@ local record CatalogueTypes
       "OnProfileShutdown"
    end
 
+   -- interned LuaLS string literals
    enum Literal_4a6e0b704b04
       "OnMinMaxChanged"
       "OnValueChanged"
    end
 
+   -- interned LuaLS string literals
    enum Literal_4d29e10a1d47
       "deDE"
       "enGB"
@@ -498,30 +636,37 @@ local record CatalogueTypes
       "zhTW"
    end
 
+   -- interned LuaLS string literals
    enum Literal_4ee485c30aa4
       "ModelScene"
    end
 
+   -- interned LuaLS string literals
    enum Literal_523360ace038
       "TextureCoordTranslation"
    end
 
+   -- interned LuaLS string literals
    enum Literal_560997e63a80
       "ScrollFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_567e9c9b1c74
       "Rotation"
    end
 
+   -- interned LuaLS string literals
    enum Literal_56e4228fc780
       "UnitPositionFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_591c4078329d
       "OnColorSelect"
    end
 
+   -- interned LuaLS string literals
    enum Literal_5cc62c3a5627
       "OnFinished"
       "OnPause"
@@ -529,10 +674,12 @@ local record CatalogueTypes
       "OnStop"
    end
 
+   -- interned LuaLS string literals
    enum Literal_5d92fd5640bd
       "PlayerModel"
    end
 
+   -- interned LuaLS string literals
    enum Literal_5f63e5fe342c
       "color"
       "description"
@@ -547,6 +694,7 @@ local record CatalogueTypes
       "toggle"
    end
 
+   -- interned LuaLS string literals
    enum Literal_5f8af3cbf148
       "arena1"
       "arena2"
@@ -599,6 +747,7 @@ local record CatalogueTypes
       "raid9"
    end
 
+   -- interned LuaLS string literals
    enum Literal_5fadaef201d5
       "OnEnter"
       "OnLeave"
@@ -607,6 +756,7 @@ local record CatalogueTypes
       "OnReceiveDrag"
    end
 
+   -- interned LuaLS string literals
    enum Literal_61586155aabd
       "CLAMP"
       "CLAMPTOBLACK"
@@ -616,6 +766,7 @@ local record CatalogueTypes
       "REPEAT"
    end
 
+   -- interned LuaLS string literals
    enum Literal_62300f6ce66d
       "AFK"
       "CHANNEL"
@@ -633,6 +784,7 @@ local record CatalogueTypes
       "YELL"
    end
 
+   -- interned LuaLS string literals
    enum Literal_64df3f2b0a3d
       "OnButtonUpdate"
       "OnEditFocusGained"
@@ -643,16 +795,19 @@ local record CatalogueTypes
       "OnRequestNewSize"
    end
 
+   -- interned LuaLS string literals
    enum Literal_6545a2fa310a
       "Frame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_6e07064ecc1c
       "OnAnimFinished"
       "OnModelLoaded"
       "OnModelLoading"
    end
 
+   -- interned LuaLS string literals
    enum Literal_6eeb2006e30b
       "korean"
       "roman"
@@ -661,6 +816,7 @@ local record CatalogueTypes
       "traditionalchinese"
    end
 
+   -- interned LuaLS string literals
    enum Literal_6efddcdaa800
       "ActionButtonTemplate"
       "AutoCompleteEditBoxTemplate"
@@ -703,10 +859,12 @@ local record CatalogueTypes
       "WowScrollBoxList"
    end
 
+   -- interned LuaLS string literals
    enum Literal_6fb6981bef02
       "BackdropTemplate"
    end
 
+   -- interned LuaLS string literals
    enum Literal_73288166ef67
       "BOTTOM"
       "BOTTOMLEFT"
@@ -719,20 +877,24 @@ local record CatalogueTypes
       "TOPRIGHT"
    end
 
+   -- interned LuaLS string literals
    enum Literal_7452875e7fdf
       "OnAnimFinished"
       "OnAnimStarted"
       "OnModelLoaded"
    end
 
+   -- interned LuaLS string literals
    enum Literal_7457e3501e75
       "PlayerZoneChanged"
    end
 
+   -- interned LuaLS string literals
    enum Literal_75d15b27e405
       "DressUpModel"
    end
 
+   -- interned LuaLS string literals
    enum Literal_77f6c05a1158
       "BlizOptionsGroup"
       "Button"
@@ -757,6 +919,7 @@ local record CatalogueTypes
       "Window"
    end
 
+   -- interned LuaLS string literals
    enum Literal_783b873487b5
       "boss1"
       "boss10"
@@ -770,6 +933,7 @@ local record CatalogueTypes
       "boss9"
    end
 
+   -- interned LuaLS string literals
    enum Literal_7a28f0f291f7
       "AMMOSLOT"
       "BACKSLOT"
@@ -793,16 +957,19 @@ local record CatalogueTypes
       "WRISTSLOT"
    end
 
+   -- interned LuaLS string literals
    enum Literal_7de162711680
       "EditBox"
    end
 
+   -- interned LuaLS string literals
    enum Literal_8617e67e98d9
       "select"
       "tab"
       "tree"
    end
 
+   -- interned LuaLS string literals
    enum Literal_87c985dfb48e
       "ArchaeologyDigSiteFrame"
       "Browser"
@@ -836,6 +1003,7 @@ local record CatalogueTypes
       "UnitPositionFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_8c18208578b0
       "DEATHKNIGHT"
       "DEMONHUNTER"
@@ -852,6 +1020,7 @@ local record CatalogueTypes
       "WARRIOR"
    end
 
+   -- interned LuaLS string literals
    enum Literal_900f607657c5
       "background"
       "border"
@@ -860,24 +1029,29 @@ local record CatalogueTypes
       "statusbar"
    end
 
+   -- interned LuaLS string literals
    enum Literal_905a17a023cf
       "OnHorizontalScroll"
       "OnScrollRangeChanged"
       "OnVerticalScroll"
    end
 
+   -- interned LuaLS string literals
    enum Literal_92aff6f9a867
       "ColorSelect"
    end
 
+   -- interned LuaLS string literals
    enum Literal_959b44ebcdbd
       "Alpha"
    end
 
+   -- interned LuaLS string literals
    enum Literal_95a18fa8a2fa
       "Button"
    end
 
+   -- interned LuaLS string literals
    enum Literal_963201200d4e
       "OnClick"
       "OnDoubleClick"
@@ -885,6 +1059,7 @@ local record CatalogueTypes
       "PreClick"
    end
 
+   -- interned LuaLS string literals
    enum Literal_97e0b5f4a9c9
       "BNplayer"
       "BNplayerCommunity"
@@ -930,25 +1105,30 @@ local record CatalogueTypes
       "worldmap"
    end
 
+   -- interned LuaLS string literals
    enum Literal_a2b566dacd52
       "BOTTOM"
       "TOP"
    end
 
+   -- interned LuaLS string literals
    enum Literal_a4b2138c4157
       "OnCooldownDone"
    end
 
+   -- interned LuaLS string literals
    enum Literal_a7a093b4a6c5
       "FlipBook"
    end
 
+   -- interned LuaLS string literals
    enum Literal_a99fd297b3dc
       "LE_SCRIPT_BINDING_TYPE_EXTRINSIC"
       "LE_SCRIPT_BINDING_TYPE_INTRINSIC_POSTCALL"
       "LE_SCRIPT_BINDING_TYPE_INTRINSIC_PRECALL"
    end
 
+   -- interned LuaLS string literals
    enum Literal_ac71681d6ff2
       "icon"
       "iconB"
@@ -957,10 +1137,12 @@ local record CatalogueTypes
       "iconR"
    end
 
+   -- interned LuaLS string literals
    enum Literal_b52e337f6c44
       "data source"
    end
 
+   -- interned LuaLS string literals
    enum Literal_b7e0de2fb994
       "Button4"
       "Button5"
@@ -969,19 +1151,23 @@ local record CatalogueTypes
       "RightButton"
    end
 
+   -- interned LuaLS string literals
    enum Literal_b86caeddf0d0
       "NONE"
       "SMOOTH"
    end
 
+   -- interned LuaLS string literals
    enum Literal_bcc5ca793eac
       "LineScale"
    end
 
+   -- interned LuaLS string literals
    enum Literal_bfcc1ce0f6be
       "ScrollingMessageFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_c024aadc65e4
       "OnAttributeChanged"
       "OnChar"
@@ -1009,14 +1195,17 @@ local record CatalogueTypes
       "OnSizeChanged"
    end
 
+   -- interned LuaLS string literals
    enum Literal_ca705345ef52
       "StatusBar"
    end
 
+   -- interned LuaLS string literals
    enum Literal_ce03bb487f0b
       "TabardModel"
    end
 
+   -- interned LuaLS string literals
    enum Literal_ce140696dff0
       "AnyDown"
       "AnyUp"
@@ -1032,19 +1221,23 @@ local record CatalogueTypes
       "RightButtonUp"
    end
 
+   -- interned LuaLS string literals
    enum Literal_cf0f87efa315
       "FogOfWarFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_d17ce30d9b7f
       "checkbox"
       "radio"
    end
 
+   -- interned LuaLS string literals
    enum Literal_d58f76291463
       "launcher"
    end
 
+   -- interned LuaLS string literals
    enum Literal_d974b8242f36
       ""
       "MONOCHROME"
@@ -1053,6 +1246,7 @@ local record CatalogueTypes
       "THICKOUTLINE"
    end
 
+   -- interned LuaLS string literals
    enum Literal_dc0a7e087203
       "OnTooltipAddMoney"
       "OnTooltipCleared"
@@ -1066,6 +1260,7 @@ local record CatalogueTypes
       "OnTooltipSetUnit"
    end
 
+   -- interned LuaLS string literals
    enum Literal_dd54f7ba76a0
       "OnArrowPressed"
       "OnCharComposition"
@@ -1081,6 +1276,7 @@ local record CatalogueTypes
       "OnTextSet"
    end
 
+   -- interned LuaLS string literals
    enum Literal_e1898549d1c8
       "OnFinished"
       "OnLoop"
@@ -1089,10 +1285,12 @@ local record CatalogueTypes
       "OnStop"
    end
 
+   -- interned LuaLS string literals
    enum Literal_e4c7e1d2ab4d
       "Path"
    end
 
+   -- interned LuaLS string literals
    enum Literal_e757ffab7460
       "IN"
       "IN_OUT"
@@ -1101,6 +1299,7 @@ local record CatalogueTypes
       "OUT_IN"
    end
 
+   -- interned LuaLS string literals
    enum Literal_ec5fe0086554
       "Fill"
       "Flow"
@@ -1108,34 +1307,42 @@ local record CatalogueTypes
       "Table"
    end
 
+   -- interned LuaLS string literals
    enum Literal_f0084e160acf
       "OnDressModel"
    end
 
+   -- interned LuaLS string literals
    enum Literal_f11bf3556cc1
       "CinematicModel"
    end
 
+   -- interned LuaLS string literals
    enum Literal_f30e5d98d4db
       "SimpleHTML"
    end
 
+   -- interned LuaLS string literals
    enum Literal_f90ae02847e6
       "VertexColor"
    end
 
+   -- interned LuaLS string literals
    enum Literal_fa1b0bd6dc9b
       "CheckButton"
    end
 
+   -- interned LuaLS string literals
    enum Literal_fa96e18768d1
       "MovieFrame"
    end
 
+   -- interned LuaLS string literals
    enum Literal_fc048ef3cd5a
       "OnPanFinished"
    end
 
+   -- interned LuaLS string literals
    enum Literal_fdca81acebe4
       "ANCHOR_BOTTOM"
       "ANCHOR_BOTTOMLEFT"
@@ -1901,8 +2108,6 @@ local record CatalogueTypes
       SetBreakpoints: function(self, {NumberAbbreviationBreakpoint})
    end
 
-   -- blizzard:LocalizationSharedDocumentation.lua
-
    -- questie:Data/Wiki.lua
    interface AbilityCounter
       description: string
@@ -1926,18 +2131,6 @@ local record CatalogueTypes
       temporary: boolean
    end
 
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
    -- blizzard:AccountStoreDocumentation.lua
    record AccountStoreCategoryInfo
       icon: number
@@ -1945,8 +2138,6 @@ local record CatalogueTypes
       name: string
       ["type"]: number
    end
-
-   -- Questie numeric enum name
 
    -- blizzard:AccountStoreDocumentation.lua
    record AccountStoreCurrencyInfo
@@ -1956,8 +2147,6 @@ local record CatalogueTypes
       maxQuantity: number
       name: string
    end
-
-   -- Questie numeric enum name
 
    -- blizzard:AccountStoreDocumentation.lua
    record AccountStoreItemInfo
@@ -1976,14 +2165,6 @@ local record CatalogueTypes
       status: number
       transmogSetID: number
    end
-
-   -- Questie numeric enum name
-
-   -- Questie numeric enum name
-
-   -- Questie numeric enum name
-
-   -- blizzard:AccountConstantsDocumentation.lua
 
    -- questie:Libraries/Ace3/AceAddon-3.0.lua
    interface AceAddon
@@ -2072,14 +2253,6 @@ local record CatalogueTypes
       width: number | Literal_18f964a7429c
    end
 
-   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
-
-   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
-
-   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
-
-   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
-
    -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigCmd-3.0.lua
    interface AceConfigCmd_3_0
       CreateChatCommand: function(self, string, string)
@@ -2122,12 +2295,6 @@ local record CatalogueTypes
       ValidateOptionsTable: function(self, any, string, ? number)
    end
 
-   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
-
-   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
-
-   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
-
    -- questie:Libraries/Ace3/AceConsole-3.0.lua
    interface AceConsole_3_0
       commands: W.Data
@@ -2147,8 +2314,6 @@ local record CatalogueTypes
    interface AceDB_3_0
       New: function(self, any, ? AceDB_Schema, ? string | boolean): AceDBObject_3_0
    end
-
-   -- questie:Libraries/Ace3/AceDB-3.0.lua
 
    -- questie:Libraries/Ace3/AceDB-3.0.lua
    interface AceDB_Schema
@@ -2321,8 +2486,6 @@ local record CatalogueTypes
       SetHasAlpha: function(self, boolean)
       SetLabel: function(self, string)
    end
-
-   -- questie:Libraries/Ace3/AceGUI-3.0/AceGUI-3.0.lua
 
    -- questie:Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua
    interface AceGUIDropdown
@@ -2497,8 +2660,6 @@ local record CatalogueTypes
       SetText: function(self, string)
    end
 
-   -- questie:Libraries/Ace3/AceGUI-3.0/AceGUI-3.0.lua
-
    -- questie:Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-MultiLineEditBox.lua
    interface AceGUIMultiLineEditBox
       is AceGUIWidget
@@ -2663,8 +2824,6 @@ local record CatalogueTypes
       treewidth: integer
    end
 
-   -- questie:Libraries/Ace3/AceGUI-3.0/AceGUI-3.0.lua
-
    -- questie:Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-Window.lua
    interface AceGUIWindow
       is AceGUIContainer
@@ -2712,8 +2871,6 @@ local record CatalogueTypes
       NewLocale: function(self, string, Literal_4d29e10a1d47, ? boolean, ? boolean): {string: boolean | string}
    end
 
-   -- questie:Libraries/Ace3/AceLocale-3.0.lua
-
    -- questie:Libraries/Ace3/AceAddon-3.0.lua
    interface AceModule
       is AceAddon
@@ -2753,18 +2910,12 @@ local record CatalogueTypes
       object: W.Data
    end
 
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- blizzard:ActionBarSharedDocumentation.lua
    record ActionUsableState
       noMana: boolean
       slot: number
       usable: boolean
    end
-
-   -- blizzard:AddOnsDocumentation.lua
 
    -- blizzard:AddOnsDocumentation.lua
    record AddOnInfo
@@ -2791,8 +2942,6 @@ local record CatalogueTypes
       ["type"]: number
    end
 
-   -- blizzard:AddOnProfilerConstantsDocumentation.lua
-
    -- blizzard:AddOnProfilerDocumentation.lua
    record AddOnProfilerCallEvent
       allocatedBytes: number
@@ -2811,19 +2960,11 @@ local record CatalogueTypes
       events: {AddOnProfilerCallEvent}
    end
 
-   -- blizzard:AddOnProfilerConstantsDocumentation.lua
-
    -- blizzard:AddOnProfilerDocumentation.lua
    record AddOnProfilerResult
       addOnName: string
       metricValue: number
    end
-
-   -- blizzard:RestrictedActionsConstantsDocumentation.lua
-
-   -- blizzard:RestrictedActionsConstantsDocumentation.lua
-
-   -- blizzard:AddOnsDocumentation.lua
 
    -- blizzard:UnitConstantsDocumentation.lua
    record AddPrivateAuraAnchorArgs
@@ -2838,8 +2979,6 @@ local record CatalogueTypes
       showDispelIcon: boolean
       unitToken: string
    end
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
 
    -- blizzard:ChatSharedDocumentation.lua
    record AddonMessageParams
@@ -2938,12 +3077,6 @@ local record CatalogueTypes
       talentID: number
    end
 
-   -- blizzard:AnimaDiversionUIDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
    -- blizzard:AppearanceSourceDocumentation.lua
    record AppearanceSourceInfo
       canDisplayOnPlayer: boolean
@@ -2996,10 +3129,6 @@ local record CatalogueTypes
       tooltipWidgetSet: number
       uiTextureKit: string
    end
-
-   -- blizzard:ArrowCalloutConstantsDocumentation.lua
-
-   -- blizzard:ArrowCalloutConstantsDocumentation.lua
 
    -- blizzard:ArtifactUIDocumentation.lua
    record ArtifactAppearanceInfo
@@ -3085,10 +3214,6 @@ local record CatalogueTypes
       slotTypeName: string
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:AsyncAssistActionsConstantsDocumentation.lua
-
    -- blizzard:TextureUtilsDocumentation.lua
    record AtlasInfo
       bottomTexCoord: number
@@ -3116,16 +3241,6 @@ local record CatalogueTypes
       sorts: {AuctionHouseSortType}
    end
 
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseDocumentation.lua
-
    -- blizzard:AuctionHouseDocumentation.lua
    record AuctionHouseFilterGroup
       category: number
@@ -3139,19 +3254,11 @@ local record CatalogueTypes
       subClassID: number
    end
 
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
    -- blizzard:AuctionHouseDocumentation.lua
    record AuctionHouseSortType
       reverseSort: boolean
       sortOrder: number
    end
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
 
    -- blizzard:AuctionHouseDocumentation.lua
    record AuctionInfo
@@ -3162,8 +3269,6 @@ local record CatalogueTypes
       itemLink: string
       minBid: number
    end
-
-   -- blizzard:AuctionHouseDocumentation.lua
 
    -- reviewed FrameXML supplement
    interface AuraContainerCandidateFilters
@@ -3288,16 +3393,6 @@ local record CatalogueTypes
       timeMod: W.MaybeSecret<number>
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- questie:FrameXML/Blizzard_FrameXML/AuraUtil.lua
    record AuraUtil
       FindAuraByName: function(string, string, ? string): string, number, number, string, number, number, string, boolean, boolean, number, boolean, boolean, boolean, boolean, number, W.Data...
@@ -3374,10 +3469,6 @@ local record CatalogueTypes
       textureKit: string
    end
 
-   -- blizzard:AutoCompleteSharedDocumentation.lua
-
-   -- blizzard:AutoCompleteSharedDocumentation.lua
-
    -- blizzard:AutoCompleteDocumentation.lua
    record AutoCompleteResult
       bnetID: number
@@ -3430,10 +3521,6 @@ local record CatalogueTypes
       raceID: number
    end
 
-   -- blizzard:PartyConstantsDocumentation.lua
-
-   -- questie:Type/Mixin.lua
-
    -- blizzard:AzeriteEmpoweredItemDocumentation.lua
    record AzeriteEmpoweredItemPowerInfo
       azeritePowerID: number
@@ -3462,10 +3549,6 @@ local record CatalogueTypes
       valid: boolean
    end
 
-   -- blizzard:AzeriteConstantsDocumentation.lua
-
-   -- questie:Type/Mixin.lua
-
    -- blizzard:AzeriteEssenceDocumentation.lua
    record AzeriteMilestoneInfo
       ID: number
@@ -3475,8 +3558,6 @@ local record CatalogueTypes
       slot: number
       unlocked: boolean
    end
-
-   -- blizzard:AzeriteEmpoweredItemDocumentation.lua
 
    -- blizzard:AzeriteEmpoweredItemDocumentation.lua
    record AzeriteSpecInfo
@@ -3672,20 +3753,6 @@ local record CatalogueTypes
       quantity: number
    end
 
-   -- blizzard:BagConstantsDocumentation.lua
-
-   -- blizzard:BagIndexConstantsDocumentation.lua
-
-   -- blizzard:BagConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:PowerTypeConstantsDocumentation.lua
-
-   -- blizzard:BankDocumentation.lua
-
    -- blizzard:BankDocumentation.lua
    record BankTabData
       ID: number
@@ -3696,22 +3763,6 @@ local record CatalogueTypes
       tabCleanupConfirmation: string
       tabNameEditBoxHeader: string
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:EncodingUtilDocumentation.lua
-
-   -- blizzard:BattleNetSharedDocumentation.lua
-
-   -- blizzard:BattleNetSharedDocumentation.lua
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
 
    -- blizzard:PvpInfoDocumentation.lua
    record BattlefieldCurrencyReward
@@ -3802,20 +3853,6 @@ local record CatalogueTypes
       timeLeft: number
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:KeyBindingsDocumentation.lua
-
-   -- blizzard:KeyBindingsDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
    -- blizzard:BountySharedDocumentation.lua
    record BountyInfo
       factionID: number
@@ -3824,10 +3861,6 @@ local record CatalogueTypes
       questID: number
       turninRequirementText: string
    end
-
-   -- blizzard:PvpInfoDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
 
    -- blizzard:AuctionHouseDocumentation.lua
    record BrowseResultInfo
@@ -3874,12 +3907,6 @@ local record CatalogueTypes
       recordId: number
       status: number
    end
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record BulletTextListWidgetVisualizationInfo
@@ -4362,10 +4389,6 @@ local record CatalogueTypes
       is Cooldown
    end
 
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Data/CVar.lua
-
    -- blizzard:CVarDocumentation.lua
    record CVarInfo
       defaultValue: string
@@ -4376,8 +4399,6 @@ local record CatalogueTypes
       isStoredServerCharacter: boolean
       value: string
    end
-
-   -- reviewed override
 
    -- blizzard:AccessibilityOptionsDocumentation.lua
    record C_AccessibilityOptions
@@ -14690,10 +14711,6 @@ local record CatalogueTypes
       GetZoneAbilityIcon: function(number): number
    end
 
-   -- Questie numeric enum name
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
    -- blizzard:CalendarDocumentation.lua
    record CalendarDayEvent
       calendarType: W.MaybeSecret<string>
@@ -14718,12 +14735,6 @@ local record CatalogueTypes
       startTime: CalendarTime
       title: W.MaybeSecret<string>
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:CalendarDocumentation.lua
    record CalendarEventIndexInfo
@@ -14767,8 +14778,6 @@ local record CatalogueTypes
       ["type"]: W.MaybeSecret<number>
    end
 
-   -- blizzard:CalendarConstantsDocumentation.lua
-
    -- blizzard:CalendarDocumentation.lua
    record CalendarEventStatusOption
       status: number
@@ -14785,17 +14794,11 @@ local record CatalogueTypes
       title: string
    end
 
-   -- blizzard:CalendarConstantsDocumentation.lua
-
    -- blizzard:CalendarDocumentation.lua
    record CalendarEventTypeDisplayInfo
       displayString: string
       eventType: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarDocumentation.lua
    record CalendarGuildEventInfo
@@ -14821,8 +14824,6 @@ local record CatalogueTypes
       rank: number
    end
 
-   -- blizzard:CalendarConstantsDocumentation.lua
-
    -- blizzard:CalendarDocumentation.lua
    record CalendarHolidayInfo
       description: string
@@ -14831,14 +14832,6 @@ local record CatalogueTypes
       startTime: CalendarTime
       texture: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarDocumentation.lua
    record CalendarMonthInfo
@@ -14858,10 +14851,6 @@ local record CatalogueTypes
       time: CalendarTime
    end
 
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
    -- blizzard:TimeDocumentation.lua
    record CalendarTime
       hour: W.MaybeSecret<number>
@@ -14871,10 +14860,6 @@ local record CatalogueTypes
       weekday: W.MaybeSecret<number>
       year: W.MaybeSecret<number>
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- reviewed literal factory
    record Callable_CreateFrame
@@ -15017,208 +15002,6 @@ local record CatalogueTypes
       UnregisterEvents: function(self, any)
    end
 
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- named LuaLS callback
-
-   -- blizzard:CovenantCallingsConstantsDocumentation.lua
-
-   -- blizzard:CameraConstantsDocumentation.lua
-
    -- blizzard:WarCampaignDocumentation.lua
    record CampaignChapterInfo
       description: string
@@ -15244,12 +15027,6 @@ local record CatalogueTypes
       uiTextureKit: string
       usesNormalQuestIcons: boolean
    end
-
-   -- blizzard:WarCampaignDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record CaptureBarWidgetVisualizationInfo
@@ -15439,10 +15216,6 @@ local record CatalogueTypes
       currencyCode: string
    end
 
-   -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:DamageConstantsDocumentation.lua
-
    -- blizzard:ChallengeModeInfoDocumentation.lua
    record ChallengeCompletionInfo
       isAffixRecord: boolean
@@ -15496,12 +15269,6 @@ local record CatalogueTypes
       name: string
    end
 
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
    -- blizzard:ChallengeModeInfoDocumentation.lua
    record ChallengeModeReward
       displayInfoID: number
@@ -15509,10 +15276,6 @@ local record CatalogueTypes
       quantity: number
       rewardID: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:CharacterCreationConstantsDocumentation.lua
 
    -- blizzard:CharacterCustomizationSharedDocumentation.lua
    record CharCustomizationCategory
@@ -15557,10 +15320,6 @@ local record CatalogueTypes
       orderIndex: number
    end
 
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
-
-   -- blizzard:CharacterCreationConstantsDocumentation.lua
-
    -- blizzard:PlayerInfoSharedDocumentation.lua
    record CharacterAlternateFormData
       createScreenIconAtlas: string
@@ -15589,10 +15348,6 @@ local record CatalogueTypes
       scriptCode: string
    end
 
-   -- blizzard:CharacterServicesConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
    -- blizzard:ChatConstantsDocumentation.lua
    record ChatChannelInfo
       channelType: number
@@ -15602,10 +15357,6 @@ local record CatalogueTypes
       shortcut: string
       zoneChannelID: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
 
    -- blizzard:ChatInfoDocumentation.lua
    record ChatMessageEventParams
@@ -15637,12 +15388,6 @@ local record CatalogueTypes
       SendChatMessage: function(self, Literal_2ace0779ab46, string, string, string, ? number, ? string, ? string, ? any, ? any)
    end
 
-   -- questie:Libraries/ChatThrottleLib/ChatThrottleLib.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
-
-   -- questie:Type/Type.lua
-
    -- reviewed FrameXML supplement
    interface ChatTypeColor
       b: number
@@ -15650,18 +15395,10 @@ local record CatalogueTypes
       r: number
    end
 
-   -- blizzard:ChatConstantsDocumentation.lua
-
    -- reviewed literal factory
    interface CheckButton_BackdropTemplate
       is CheckButton, BackdropTemplate
    end
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
 
    -- blizzard:ChromieTimeUIDocumentation.lua
    record ChromieTimeExpansionInfo
@@ -15675,10 +15412,6 @@ local record CatalogueTypes
       recommended: boolean
       sortPriority: number
    end
-
-   -- blizzard:CinematicConstantsDocumentation.lua
-
-   -- questie:Type/Type.lua
 
    -- blizzard:CreatureInfoDocumentation.lua
    record ClassInfo
@@ -15694,24 +15427,6 @@ local record CatalogueTypes
       modifiers: number
       ["type"]: number
    end
-
-   -- blizzard:ClickBindingsConstantsDocumentation.lua
-
-   -- blizzard:ClickBindingsConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
-   -- blizzard:PlatformDocumentation.lua
-
-   -- blizzard:ClientSceneDocumentation.lua
-
-   -- blizzard:ClientSettingsDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
 
    -- blizzard:ClubFinderDocumentation.lua
    record ClubFinderApplicantInfo
@@ -15729,20 +15444,6 @@ local record CatalogueTypes
       requestStatus: number
       specIds: {number}
    end
-
-   -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:ClubDocumentation.lua
    record ClubInfo
@@ -15767,10 +15468,6 @@ local record CatalogueTypes
       priority: number
       status: number
    end
-
-   -- blizzard:ClubDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:ClubDocumentation.lua
    record ClubInvitationInfo
@@ -15819,10 +15516,6 @@ local record CatalogueTypes
       timerunningSeasonID: W.MaybeSecret<number>
       zone: W.MaybeSecret<string>
    end
-
-   -- reviewed override
-
-   -- blizzard:ClubDocumentation.lua
 
    -- blizzard:ClubDocumentation.lua
    record ClubMessageIdentifier
@@ -15893,12 +15586,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubSharedDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record ClubRoleInfo
       name: string
       required: boolean
@@ -15936,8 +15623,6 @@ local record CatalogueTypes
       sortRelevance: boolean
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:ClubDocumentation.lua
    record ClubStreamInfo
       creationTime: W.MaybeSecret<number>
@@ -15949,14 +15634,10 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record ClubStreamNotificationSetting
       filter: number
       streamId: string
    end
-
-   -- blizzard:ClubDocumentation.lua
 
    -- blizzard:ClubDocumentation.lua
    record ClubTicketInfo
@@ -15968,10 +15649,6 @@ local record CatalogueTypes
       expirationTime: number
       ticketId: string
    end
-
-   -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
 
    -- questie:ScriptObject/CurveObjectBase.lua
    interface CurveObjectBase
@@ -16029,8 +15706,6 @@ local record CatalogueTypes
       WrapTextInColorCode: function(self, string): W.MaybeSecret<string>
    end
 
-   -- blizzard:ColorOverrideConstantsDocumentation.lua
-
    -- blizzard:ColorOverridesDocumentation.lua
    record ColorOverrideInfo
       overrideColor: colorRGB
@@ -16052,59 +15727,13 @@ local record CatalogueTypes
       a: W.MaybeSecret<number>
    end
 
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
    -- blizzard:CombatLogSharedDocumentation.lua
    record CombatLogEventInfo
    end
 
-   -- blizzard:CombatLogSharedDocumentation.lua
-
-   -- blizzard:CombatLogConstantsDocumentation.lua
-
-   -- blizzard:CombatLogConstantsDocumentation.lua
-
    -- blizzard:CombatTextSharedDocumentation.lua
    record CombatTextEventInfo
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:QuestConstantsDocumentation.lua
 
    -- blizzard:CommentatorFrameDocumentation.lua
    record CommentatorHistory
@@ -16192,16 +15821,6 @@ local record CatalogueTypes
       unitPrice: number
    end
 
-   -- blizzard:VoiceChatDocumentation.lua
-
-   -- blizzard:DelvesConstantsDocumentation.lua
-
-   -- blizzard:DelvesUIDocumentation.lua
-
-   -- blizzard:EncodingUtilDocumentation.lua
-
-   -- blizzard:EncodingUtilDocumentation.lua
-
    -- blizzard:SoulbindsDocumentation.lua
    record ConduitCollectionData
       conduitID: number
@@ -16215,16 +15834,6 @@ local record CatalogueTypes
       covenantID: number
    end
 
-   -- blizzard:ConfigurationWarningConstantsDocumentation.lua
-
-   -- blizzard:SpellConstantsDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- reviewed override
-
-   -- blizzard:WeeklyRewardsDocumentation.lua
-
    -- blizzard:WeeklyRewardsDocumentation.lua
    record ConquestWeeklyProgress
       displayType: number
@@ -16236,10 +15845,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ConsoleDocumentation.lua
-
-   -- blizzard:ConsoleDocumentation.lua
-
-   -- blizzard:ConsoleDocumentation.lua
    record ConsoleCommandInfo
       category: number
       command: string
@@ -16248,8 +15853,6 @@ local record CatalogueTypes
       scriptContents: string
       scriptParameters: string
    end
-
-   -- blizzard:ConsoleDocumentation.lua
 
    -- blizzard:ConsoleScriptCollectionDocumentation.lua
    record ConsoleScriptCollectionData
@@ -16600,8 +16203,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ContentTrackingTypesDocumentation.lua
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
    record ContentTrackingMapInfo
       targetID: number
       targetType: number
@@ -16611,14 +16212,6 @@ local record CatalogueTypes
       x: number
       y: number
    end
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
 
    -- questie:Blizzard_APIDocumentationGenerated/PingConstantsDocumentation.lua
    interface ContextualWorldPingResult
@@ -16650,8 +16243,6 @@ local record CatalogueTypes
       tooltipUseTimeRemaining: boolean
    end
 
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
    -- blizzard:ContributionCollectorDocumentation.lua
    record ContributionMapInfo
       areaPoiID: number
@@ -16661,31 +16252,11 @@ local record CatalogueTypes
       position: Vector2DMixin
    end
 
-   -- blizzard:ContributionCollectorDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
    -- blizzard:ItemInteractionUIDocumentation.lua
    record ConversionCurrencyCost
       amount: number
       currencyID: number
    end
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
 
    -- blizzard:CooldownViewerDocumentation.lua
    record CooldownViewerCooldown
@@ -16706,16 +16277,6 @@ local record CatalogueTypes
       spellID: number
    end
 
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:HousingNeighborhoodUIDocumentation.lua
-
    -- blizzard:UnitDocumentation.lua
    record CorruptionEffectInfo
       description: string
@@ -16728,8 +16289,6 @@ local record CatalogueTypes
       spellID: number
       ["type"]: number
    end
-
-   -- blizzard:CovenantsConstantsDocumentation.lua
 
    -- blizzard:CovenantsDocumentation.lua
    record CovenantData
@@ -16804,8 +16363,6 @@ local record CatalogueTypes
       uiOrder: number
    end
 
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
    -- blizzard:CovenantPreviewDocumentation.lua
    record CovenantSoulbindInfo
       description: string
@@ -16814,8 +16371,6 @@ local record CatalogueTypes
       spellID: number
       uiTextureKit: string
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record CraftingCurrencyResultData
@@ -16918,8 +16473,6 @@ local record CatalogueTypes
       tertiaryCategoryID: number
    end
 
-   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
-
    -- blizzard:CraftingOrderUISharedDocumentation.lua
    record CraftingOrderCustomerOptionInfo
       bindOnPickup: boolean
@@ -16970,10 +16523,6 @@ local record CatalogueTypes
       options: {CraftingOrderCustomerOptionInfo}
    end
 
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
    -- blizzard:CraftingOrderUISharedDocumentation.lua
    record CraftingOrderInfo
       claimEndTime: number
@@ -17005,10 +16554,6 @@ local record CatalogueTypes
       tipAmount: number
    end
 
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
    -- blizzard:CraftingOrderUISharedDocumentation.lua
    record CraftingOrderMailInfo
       commissionPaid: number
@@ -17036,12 +16581,6 @@ local record CatalogueTypes
       source: number
    end
 
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
-
-   -- blizzard:CraftingOrderUISharedDocumentation.lua
-
    -- blizzard:CraftingOrderUIDocumentation.lua
    record CraftingOrderRequestInfo
       callback: function(number, number, boolean, boolean, number, boolean)
@@ -17056,8 +16595,6 @@ local record CatalogueTypes
       selectedSkillLineAbility: number
    end
 
-   -- blizzard:CraftingOrderUISharedDocumentation.lua
-
    -- blizzard:CraftingOrderUIDocumentation.lua
    record CraftingOrderRequestMyOrdersInfo
       callback: function(number, boolean, number, boolean)
@@ -17065,8 +16602,6 @@ local record CatalogueTypes
       primarySort: CraftingOrderSortInfo
       secondarySort: CraftingOrderSortInfo
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:CraftingOrderUISharedDocumentation.lua
    record CraftingOrderRewardInfo
@@ -17080,12 +16615,6 @@ local record CatalogueTypes
       reversed: boolean
       sortType: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record CraftingQualityInfo
@@ -17118,8 +16647,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
    record CraftingReagentSlotInfo
       mcrSlotID: number
       requiredSkillRank: number
@@ -17140,8 +16667,6 @@ local record CatalogueTypes
       slotInfo: CraftingReagentSlotInfo
       variableQuantities: {CraftingVariableQuantities}
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record CraftingRecipeOutputInfo
@@ -17217,8 +16742,6 @@ local record CatalogueTypes
       parent: Frame
    end
 
-   -- blizzard:HousingUIDocumentation.lua
-
    -- blizzard:SimpleFrameAPIDocumentation.lua
    record CreateRegionParams
       drawLayer: Literal_243b9650451a
@@ -17252,19 +16775,11 @@ local record CatalogueTypes
       requirementText: string
    end
 
-   -- blizzard:DelvesConstantsDocumentation.lua
-
-   -- blizzard:DelvesUIDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
    -- blizzard:LegendaryCraftingTypesDocumentation.lua
    record CurrencyCost
       amount: number
       currencyID: number
    end
-
-   -- blizzard:CurrencyConstants_MainlineDocumentation.lua
 
    -- blizzard:CurrencyInfoDocumentation.lua
    record CurrencyDisplayInfo
@@ -17275,14 +16790,6 @@ local record CatalogueTypes
       name: string
       quality: number
    end
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
 
    -- blizzard:CurrencyInfoDocumentation.lua
    record CurrencyInfo
@@ -17314,14 +16821,10 @@ local record CatalogueTypes
    end
 
    -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
    record CurrencyParseResult
       amount: number
       currencyCode: string
    end
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
 
    -- blizzard:CurrencyInfoDocumentation.lua
    record CurrencyTransferTransaction
@@ -17337,17 +16840,11 @@ local record CatalogueTypes
       totalQuantityConsumed: number
    end
 
-   -- blizzard:MoneyConstantsDocumentation.lua
-
    -- blizzard:CursorUtilDocumentation.lua
    record CursorFileInfo
       hasBaseBlp: boolean
       name: string
    end
-
-   -- blizzard:CursorConstDocumentation.lua
-
-   -- blizzard:CursorConstDocumentation.lua
 
    -- questie:ScriptObject/CurveObject.lua
    interface CurveObject
@@ -17374,8 +16871,6 @@ local record CatalogueTypes
       SetToDefaults: function(self)
    end
 
-   -- questie:Widget/UIType/UIType.lua
-
    -- blizzard:AuraContainerUtilDocumentation.lua
    record CustomAuraButtonApplicationBarOptions
       interpolation: number
@@ -17393,8 +16888,6 @@ local record CatalogueTypes
       showRealmName: boolean
       useClassColors: boolean
    end
-
-   -- blizzard:AuraContainerSharedDocumentation.lua
 
    -- blizzard:AuraContainerUtilDocumentation.lua
    record CustomAuraButtonDispelTypeTextOptions
@@ -17424,8 +16917,6 @@ local record CatalogueTypes
       style: number
    end
 
-   -- blizzard:AuraContainerSharedDocumentation.lua
-
    -- blizzard:AuraContainerUtilDocumentation.lua
    record CustomAuraButtonDispelTypeTextureTexCoords
       bottom: number
@@ -17448,8 +16939,6 @@ local record CatalogueTypes
       textFormatter: NumericFormatter
    end
 
-   -- blizzard:AuraContainerSharedDocumentation.lua
-
    -- reviewed FrameXML supplement
    interface CustomAuraContainer
       is Frame
@@ -17460,8 +16949,6 @@ local record CatalogueTypes
       SetUnit: function(self, string)
       UpdateAllAuras: function(self)
    end
-
-   -- blizzard:KeyBindingsDocumentation.lua
 
    -- blizzard:UIColorSharedDocumentation.lua
    record DBColorExport
@@ -17581,32 +17068,6 @@ local record CatalogueTypes
       unitName: W.MaybeSecret<string>
    end
 
-   -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
-
    -- blizzard:SpellDocumentation.lua
    record DeadlyDebuffInfo
       criticalStacks: number
@@ -17659,10 +17120,6 @@ local record CatalogueTypes
       textureIndex: number
    end
 
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:DiscordConstantsDocumentation.lua
-
    -- blizzard:DiscordConstantsDocumentation.lua
    record DiscordChatInfo
       forwardedMessage: W.MaybeSecret<string>
@@ -17680,10 +17137,6 @@ local record CatalogueTypes
       ["type"]: W.MaybeSecret<number>
       userID: W.Secret<DiscordID>
    end
-
-   -- blizzard:DiscordConstantsDocumentation.lua
-
-   -- blizzard:DiscordConstantsDocumentation.lua
 
    -- reviewed opaque native object
    record DiscordID
@@ -17800,8 +17253,6 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- questie:Widget/UIType/UIType.lua
-
    -- questie:Widget/Intrinsic/DropdownButton.lua
    interface DropdownButtonMixin
       is CallbackRegistryMixin
@@ -17905,10 +17356,6 @@ local record CatalogueTypes
       SetToDefaults: function(self)
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- reviewed override
-
    -- blizzard:DurationTextBindingSharedDocumentation.lua
    record DurationTextBindingColorOptions
       curve: ColorCurveObject
@@ -17991,10 +17438,6 @@ local record CatalogueTypes
       -- {"Environment": "All"}
       UpdateFontString: function(self)
    end
-
-   -- blizzard:DurationTextBindingSharedDocumentation.lua
-
-   -- blizzard:LuaDurationObjectSharedDocumentation.lua
 
    -- blizzard:DyeColorInfoSharedDocumentation.lua
    record DyeColorCategoryDisplayInfo
@@ -18187,12 +17630,6 @@ local record CatalogueTypes
       is EditBox, BackdropTemplate
    end
 
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- blizzard:EditModeManagerDocumentation.lua
    record EditModeAnchorInfo
       offsetX: number
@@ -18201,32 +17638,6 @@ local record CatalogueTypes
       relativePoint: Literal_73288166ef67
       relativeTo: string
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- reviewed FrameXML supplement
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- reviewed FrameXML supplement
    interface EditModeLayoutDialog
@@ -18245,15 +17656,11 @@ local record CatalogueTypes
       systems: {EditModeSystemInfo}
    end
 
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- blizzard:EditModeManagerDocumentation.lua
    record EditModeLayouts
       activeLayout: number
       layouts: {EditModeLayoutInfo}
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- reviewed FrameXML supplement
    interface EditModeManagerFrame
@@ -18268,31 +17675,11 @@ local record CatalogueTypes
       SetHasActiveChanges: function(self, boolean)
    end
 
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- blizzard:EditModeManagerDocumentation.lua
    record EditModeSettingInfo
       setting: number
       value: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerDocumentation.lua
    record EditModeSystemInfo
@@ -18304,19 +17691,11 @@ local record CatalogueTypes
       systemIndex: number
    end
 
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- reviewed FrameXML supplement
    interface EditModeUnsavedChangesDialog
       is Frame
       SaveAndProceedButton: Button
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- questie:FrameXML/Blizzard_Menu/Proxies/SharedMenuDescriptionProxy.lua
    interface SharedMenuDescriptionProxy
@@ -18393,16 +17772,6 @@ local record CatalogueTypes
       ShouldRespondIfSubmenu: function(self): boolean
    end
 
-   -- questie:Type/EmoteToken.lua
-
-   -- questie:Type/Mixin.lua
-
-   -- blizzard:DungeonEncounterConstantsDocumentation.lua
-
-   -- blizzard:EncounterEventsSharedDocumentation.lua
-
-   -- blizzard:DungeonEncounterConstantsDocumentation.lua
-
    -- blizzard:EncounterEventsSharedDocumentation.lua
    record EncounterEventInfo
       enabled: boolean
@@ -18413,26 +17782,12 @@ local record CatalogueTypes
       spellID: number
    end
 
-   -- blizzard:DungeonEncounterConstantsDocumentation.lua
-
    -- blizzard:EncounterEventsSharedDocumentation.lua
    record EncounterEventSoundInfo
       channel: number
       file: string
       volume: number
    end
-
-   -- blizzard:EncounterEventsSharedDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EncounterJournalDocumentation.lua
    record EncounterJournalItemInfo
@@ -18502,8 +17857,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LootHistoryDocumentation.lua
-
-   -- blizzard:LootHistoryDocumentation.lua
    record EncounterLootDrops
       drops: {EncounterLootDropInfo}
       encounterID: number
@@ -18525,8 +17878,6 @@ local record CatalogueTypes
       maxEventDuration: number
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:EncounterTimelineDocumentation.lua
    record EncounterTimelineEventInfo
       duration: number
@@ -18541,14 +17892,6 @@ local record CatalogueTypes
       spellName: W.MaybeSecret<string>
    end
 
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
    -- blizzard:EncounterTimelineDocumentation.lua
    record EncounterTimelineScriptEventRequest
       duration: number
@@ -18561,8 +17904,6 @@ local record CatalogueTypes
       spellID: number
    end
 
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
    -- blizzard:EncounterTimelineDocumentation.lua
    record EncounterTimelineTrackInfo
       id: number
@@ -18574,10 +17915,6 @@ local record CatalogueTypes
       sortDirection: number
       ["type"]: number
    end
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
 
    -- blizzard:ContentTrackingTypesDocumentation.lua
    record EncounterTrackingInfo
@@ -18616,13 +17953,9 @@ local record CatalogueTypes
       tooltipSpellID: W.MaybeSecret<number>
    end
 
-   -- blizzard:EndOfMatchUIDocumentation.lua
-
    -- questie:Data/Enum.lua
    record Enum
    end
-
-   -- blizzard:LocalizationSharedDocumentation.lua
 
    -- blizzard:LocalizationSharedDocumentation.lua
    record Enum_AbbreviationDataErrorMeta_Values
@@ -18638,8 +17971,6 @@ local record CatalogueTypes
       InvalidSignificandDivisor: number
       NotMultipleOfTen: number
    end
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
 
    -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_AccountCurrencyTransferResultMeta_Values
@@ -18664,15 +17995,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
    record Enum_AccountDataMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:AccountConstantsDocumentation.lua
 
    -- blizzard:AccountConstantsDocumentation.lua
    record Enum_AccountDataUpdateStatusMeta_Values
@@ -18714,8 +18041,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
    record Enum_AccountExportResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -18741,8 +18066,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
    record Enum_AccountGetListRequestTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -18754,8 +18077,6 @@ local record CatalogueTypes
       Battlepets: number
       None: number
    end
-
-   -- blizzard:AccountConstantsDocumentation.lua
 
    -- blizzard:AccountConstantsDocumentation.lua
    record Enum_AccountSequenceCacheTypeMeta_Values
@@ -18772,8 +18093,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AccountStateFlags_Values
       AccountUpgradeComplete: number
       InPetCombat: number
@@ -18781,8 +18100,6 @@ local record CatalogueTypes
       None: number
       TokenEligCheckComplete: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_AccountStateLoadedFlags_Values
@@ -18837,8 +18154,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AccountStoreCategoryType_Values
       Creature: number
       Icon: number
@@ -18847,15 +18162,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AccountStoreFrontFlag_Values
       Enabled: number
       PurchaseEnabled: number
       RefundEnabled: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_AccountStoreItemFlag_Values
@@ -18866,15 +18177,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AccountStoreItemMode_Values
       Hidden: number
       Locked: number
       Normal: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_AccountStoreItemRewardType_Values
@@ -18890,15 +18197,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AccountStoreItemStatus_Values
       Owned: number
       Refundable: number
       Unowned: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_AccountStoreSettlementAction_Values
@@ -18908,15 +18211,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AccountStoreState_Values
       Available: number
       Unavailable: number
       Unknown: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_AccountStoreTransactionResult_Values
@@ -18936,8 +18235,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AccountStoreTransactionType_Values
       DebugRemoveItem: number
       DebugResetHistory: number
@@ -18945,8 +18242,6 @@ local record CatalogueTypes
       Refund: number
       Undefined: number
    end
-
-   -- blizzard:AccountConstantsDocumentation.lua
 
    -- blizzard:AccountConstantsDocumentation.lua
    record Enum_AccountTransTypeMeta_Values
@@ -19027,8 +18322,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_ActionBarOrientationMeta_Values
       MaxValue: number
       MinValue: number
@@ -19040,8 +18333,6 @@ local record CatalogueTypes
       Horizontal: number
       Vertical: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_ActionBarVisibleSettingMeta_Values
@@ -19059,8 +18350,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AddOnsDocumentation.lua
-
-   -- blizzard:AddOnsDocumentation.lua
    record Enum_AddOnEnableStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -19075,8 +18364,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AddOnProfilerConstantsDocumentation.lua
-
-   -- blizzard:AddOnProfilerConstantsDocumentation.lua
    record Enum_AddOnPerformanceMessageTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -19089,8 +18376,6 @@ local record CatalogueTypes
       SpecificAddOnChatWarning: number
       SpecificAddOnErrorDialog: number
    end
-
-   -- blizzard:AddOnProfilerConstantsDocumentation.lua
 
    -- blizzard:AddOnProfilerConstantsDocumentation.lua
    record Enum_AddOnProfilerMetricMeta_Values
@@ -19116,8 +18401,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RestrictedActionsConstantsDocumentation.lua
-
-   -- blizzard:RestrictedActionsConstantsDocumentation.lua
    record Enum_AddOnRestrictionStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -19130,8 +18413,6 @@ local record CatalogueTypes
       Active: number
       Inactive: number
    end
-
-   -- blizzard:RestrictedActionsConstantsDocumentation.lua
 
    -- blizzard:RestrictedActionsConstantsDocumentation.lua
    record Enum_AddOnRestrictionTypeMeta_Values
@@ -19151,8 +18432,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AddOnsDocumentation.lua
-
-   -- blizzard:AddOnsDocumentation.lua
    record Enum_AddOnSecurityStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -19168,8 +18447,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SoulbindsConstantsDocumentation.lua
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
    record Enum_AddSoulbindConduitReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -19183,8 +18460,6 @@ local record CatalogueTypes
       SpellEffect: number
       Upgrade: number
    end
-
-   -- blizzard:AnimaDiversionUIDocumentation.lua
 
    -- blizzard:AnimaDiversionUIDocumentation.lua
    record Enum_AnimaDiversionNodeStateMeta_Values
@@ -19203,8 +18478,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ArrowCalloutConstantsDocumentation.lua
-
-   -- blizzard:ArrowCalloutConstantsDocumentation.lua
    record Enum_ArrowCalloutDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -19218,8 +18491,6 @@ local record CatalogueTypes
       Right: number
       Up: number
    end
-
-   -- blizzard:ArrowCalloutConstantsDocumentation.lua
 
    -- blizzard:ArrowCalloutConstantsDocumentation.lua
    record Enum_ArrowCalloutTypeMeta_Values
@@ -19238,8 +18509,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_AssertDomain_Values
       Art: number
       Design: number
@@ -19249,8 +18518,6 @@ local record CatalogueTypes
       Sound: number
       Tools: number
    end
-
-   -- blizzard:AsyncAssistActionsConstantsDocumentation.lua
 
    -- blizzard:AsyncAssistActionsConstantsDocumentation.lua
    record Enum_AssistActionTypeMeta_Values
@@ -19271,8 +18538,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
    record Enum_AuctionHouseCommoditySortOrderMeta_Values
       MaxValue: number
       MinValue: number
@@ -19284,8 +18549,6 @@ local record CatalogueTypes
       Quantity: number
       UnitPrice: number
    end
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
 
    -- blizzard:AuctionHouseEnumsDocumentation.lua
    record Enum_AuctionHouseErrorMeta_Values
@@ -19326,8 +18589,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
    record Enum_AuctionHouseExtraColumnMeta_Values
       MaxValue: number
       MinValue: number
@@ -19342,10 +18603,6 @@ local record CatalogueTypes
       Skill: number
       Slots: number
    end
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseDocumentation.lua
 
    -- blizzard:AuctionHouseDocumentation.lua
    record Enum_AuctionHouseFilterCategoryMeta_Values
@@ -19387,8 +18644,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
    record Enum_AuctionHouseItemSortOrderMeta_Values
       MaxValue: number
       MinValue: number
@@ -19400,8 +18655,6 @@ local record CatalogueTypes
       Bid: number
       Buyout: number
    end
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
 
    -- blizzard:AuctionHouseEnumsDocumentation.lua
    record Enum_AuctionHouseNotificationMeta_Values
@@ -19421,8 +18674,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
    record Enum_AuctionHouseSortOrderMeta_Values
       MaxValue: number
       MinValue: number
@@ -19440,8 +18691,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuctionHouseEnumsDocumentation.lua
-
-   -- blizzard:AuctionHouseEnumsDocumentation.lua
    record Enum_AuctionHouseTimeLeftBandMeta_Values
       MaxValue: number
       MinValue: number
@@ -19457,8 +18706,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuctionHouseDocumentation.lua
-
-   -- blizzard:AuctionHouseDocumentation.lua
    record Enum_AuctionStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -19470,8 +18717,6 @@ local record CatalogueTypes
       Active: number
       Sold: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_AuraFrameIconDirectionMeta_Values
@@ -19489,8 +18734,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_AuraFrameIconWrapMeta_Values
       MaxValue: number
       MinValue: number
@@ -19506,8 +18749,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_AuraFrameOrientationMeta_Values
       MaxValue: number
       MinValue: number
@@ -19519,8 +18760,6 @@ local record CatalogueTypes
       Horizontal: number
       Vertical: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_AuraFrameVisibleSettingMeta_Values
@@ -19535,8 +18774,6 @@ local record CatalogueTypes
       Hidden: number
       InCombat: number
    end
-
-   -- blizzard:AutoCompleteSharedDocumentation.lua
 
    -- blizzard:AutoCompleteSharedDocumentation.lua
    record Enum_AutoCompleteEntryFlagMeta_Values
@@ -19559,8 +18796,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AutoCompleteSharedDocumentation.lua
-
-   -- blizzard:AutoCompleteSharedDocumentation.lua
    record Enum_AutoCompletePriorityMeta_Values
       MaxValue: number
       MinValue: number
@@ -19577,8 +18812,6 @@ local record CatalogueTypes
       Interacted: number
       Other: number
    end
-
-   -- blizzard:PartyConstantsDocumentation.lua
 
    -- blizzard:PartyConstantsDocumentation.lua
    record Enum_AvgItemLevelCategoriesMeta_Values
@@ -19598,8 +18831,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AzeriteConstantsDocumentation.lua
-
-   -- blizzard:AzeriteConstantsDocumentation.lua
    record Enum_AzeriteEssenceSlotMeta_Values
       MaxValue: number
       MinValue: number
@@ -19615,8 +18846,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AzeriteEmpoweredItemDocumentation.lua
-
-   -- blizzard:AzeriteEmpoweredItemDocumentation.lua
    record Enum_AzeritePowerLevelMeta_Values
       MaxValue: number
       MinValue: number
@@ -19629,8 +18858,6 @@ local record CatalogueTypes
       Downgraded: number
       Upgraded: number
    end
-
-   -- blizzard:BagConstantsDocumentation.lua
 
    -- blizzard:BagConstantsDocumentation.lua
    record Enum_BagFlagMeta_Values
@@ -19671,8 +18898,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:BagIndexConstantsDocumentation.lua
-
-   -- blizzard:BagIndexConstantsDocumentation.lua
    record Enum_BagIndexMeta_Values
       MaxValue: number
       MinValue: number
@@ -19704,8 +18929,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:BagConstantsDocumentation.lua
-
-   -- blizzard:BagConstantsDocumentation.lua
    record Enum_BagSlotFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -19727,8 +18950,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_BagsDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -19744,8 +18965,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_BagsOrientationMeta_Values
       MaxValue: number
       MinValue: number
@@ -19759,8 +18978,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PowerTypeConstantsDocumentation.lua
-
-   -- blizzard:PowerTypeConstantsDocumentation.lua
    record Enum_BalanceTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -19772,8 +18989,6 @@ local record CatalogueTypes
       Eclipse: number
       None: number
    end
-
-   -- blizzard:BankDocumentation.lua
 
    -- blizzard:BankDocumentation.lua
    record Enum_BankLockedReasonMeta_Values
@@ -19791,8 +19006,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_BankTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -19805,8 +19018,6 @@ local record CatalogueTypes
       Character: number
       Guild: number
    end
-
-   -- blizzard:EncodingUtilDocumentation.lua
 
    -- blizzard:EncodingUtilDocumentation.lua
    record Enum_Base64VariantMeta_Values
@@ -19822,8 +19033,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:BattleNetSharedDocumentation.lua
-
-   -- blizzard:BattleNetSharedDocumentation.lua
    record Enum_BattleNetFriendLevelMeta_Values
       MaxValue: number
       MinValue: number
@@ -19836,8 +19045,6 @@ local record CatalogueTypes
       RealID: number
       Title: number
    end
-
-   -- blizzard:BattleNetSharedDocumentation.lua
 
    -- blizzard:BattleNetSharedDocumentation.lua
    record Enum_BattleNetFriendTagMeta_Values
@@ -19861,8 +19068,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetAbilityFlag_Values
       DisplayAsHostileDebuff: number
       HideStrongWeakHints: number
@@ -19873,15 +19078,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetAbilitySlot_Values
       A: number
       B: number
       C: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_BattlePetAbilityTargets_Values
@@ -19901,8 +19102,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetAbilityTurnFlag_Values
       CanProcFromProc: number
       TriggerByAuraCaster: number
@@ -19913,22 +19112,16 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetAbilityTurnType_Values
       Normal: number
       TriggeredEffect: number
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetAbilityType_Values
       Ability: number
       Aura: number
    end
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
 
    -- blizzard:BattlePetConstantsDocumentation.lua
    record Enum_BattlePetActionMeta_Values
@@ -19945,8 +19138,6 @@ local record CatalogueTypes
       SwitchPet: number
       Trap: number
    end
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
 
    -- blizzard:BattlePetConstantsDocumentation.lua
    record Enum_BattlePetBreedQualityMeta_Values
@@ -19966,22 +19157,16 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetEffectFlags_Values
       EnableAbilityPicker: number
       LuaNeedsAllPets: number
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetEffectParamType_Values
       Ability: number
       Int: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_BattlePetEvent_Values
@@ -20001,8 +19186,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetNpcEmote_Values
       BattleLose: number
       BattleStart: number
@@ -20015,14 +19198,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetNpcTeamFlag_Values
       MatchPlayerHighPetLevel: number
       NoPlayerXP: number
    end
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
 
    -- blizzard:BattlePetConstantsDocumentation.lua
    record Enum_BattlePetOwnerMeta_Values
@@ -20037,8 +19216,6 @@ local record CatalogueTypes
       Enemy: number
       Weather: number
    end
-
-   -- blizzard:BattlePetConstantsDocumentation.lua
 
    -- blizzard:BattlePetConstantsDocumentation.lua
    record Enum_BattlePetSourcesMeta_Values
@@ -20064,8 +19241,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetSpeciesFlags_Values
       AddsAllowedWithBoss: number
       AllianceOnly: number
@@ -20087,8 +19262,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetStateFlag_Values
       Client: number
       DynamicScaling: number
@@ -20106,8 +19279,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetTypes_Values
       Aquatic: number
       Beast: number
@@ -20122,15 +19293,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlePetVisualFlag_Values
       Test1: number
       Test2: number
       Test3: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_BattlePetVisualRange_Values
@@ -20143,13 +19310,9 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlepayLicenseSynthesisFlags_Values
       ForceToGameAccount: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_BattlepayProductChoiceType_Values
@@ -20161,8 +19324,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlepayShopEntryBannerType_Values
       Discount: number
       Featured: number
@@ -20170,13 +19331,9 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlepayShopEntryFlags_Values
       None: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_BattlepetDbFlags_Values
@@ -20196,8 +19353,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlepetDeletedReason_Values
       AccountStore: number
       CageError: number
@@ -20210,8 +19365,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_BattlepetSlotLockCheat_Values
       CheatOff: number
       Cheat_0_Locked: number
@@ -20219,8 +19372,6 @@ local record CatalogueTypes
       Cheat_2_Locked: number
       UnlockAll: number
    end
-
-   -- blizzard:KeyBindingsDocumentation.lua
 
    -- blizzard:KeyBindingsDocumentation.lua
    record Enum_BindingContextMeta_Values
@@ -20244,8 +19395,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:KeyBindingsDocumentation.lua
-
-   -- blizzard:KeyBindingsDocumentation.lua
    record Enum_BindingSetMeta_Values
       MaxValue: number
       MinValue: number
@@ -20259,8 +19408,6 @@ local record CatalogueTypes
       Current: number
       Default: number
    end
-
-   -- blizzard:AccountConstantsDocumentation.lua
 
    -- blizzard:AccountConstantsDocumentation.lua
    record Enum_BnetAccountFlagMeta_Values
@@ -20294,8 +19441,6 @@ local record CatalogueTypes
       TwitterLinked: number
       WasSecured: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_BonusStatIndexMeta_Values
@@ -20451,8 +19596,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PvpInfoDocumentation.lua
-
-   -- blizzard:PvpInfoDocumentation.lua
    record Enum_BrawlTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -20470,8 +19613,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_BreakTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -20485,8 +19626,6 @@ local record CatalogueTypes
       Sentence: number
       Word: number
    end
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
 
    -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_BulkPurchaseResultMeta_Values
@@ -20508,8 +19647,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_BulkPurchaseStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -20524,8 +19661,6 @@ local record CatalogueTypes
       PlacingOrders: number
       PurchasesPending: number
    end
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
 
    -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_BulkRefundResultMeta_Values
@@ -20545,14 +19680,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_CDMLayoutMode_Values
       AccessOnly: number
       AllowCreate: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_CachedRewardType_Values
@@ -20561,8 +19692,6 @@ local record CatalogueTypes
       None: number
       Quest: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarCommandTypeMeta_Values
@@ -20586,8 +19715,6 @@ local record CatalogueTypes
       Status: number
       UpdateEvent: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarErrorTypeMeta_Values
@@ -20652,8 +19779,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarEventBitsMeta_Values
       MaxValue: number
       MinValue: number
@@ -20680,8 +19805,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarEventRepeatOptionsMeta_Values
       MaxValue: number
       MinValue: number
@@ -20695,8 +19818,6 @@ local record CatalogueTypes
       Never: number
       Weekly: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarEventTypeMeta_Values
@@ -20716,8 +19837,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarFilterFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -20734,8 +19853,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarGetEventTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -20748,8 +19865,6 @@ local record CatalogueTypes
       Copy: number
       Get: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarHolidayFilterTypeMeta_Values
@@ -20766,8 +19881,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarInviteBitsMeta_Values
       MaxValue: number
       MinValue: number
@@ -20782,8 +19895,6 @@ local record CatalogueTypes
       PendingInvite: number
       Signup: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarInviteSortTypeMeta_Values
@@ -20803,8 +19914,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarInviteTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -20816,8 +19925,6 @@ local record CatalogueTypes
       Normal: number
       Signup: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarModeratorStatusMeta_Values
@@ -20832,8 +19939,6 @@ local record CatalogueTypes
       Moderator: number
       None: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarStatusMeta_Values
@@ -20856,8 +19961,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarTexturesTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -20869,8 +19972,6 @@ local record CatalogueTypes
       Dungeons: number
       Raid: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarTypeMeta_Values
@@ -20892,8 +19993,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_CalendarWebActionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -20912,8 +20011,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CovenantCallingsConstantsDocumentation.lua
-
-   -- blizzard:CovenantCallingsConstantsDocumentation.lua
    record Enum_CallingStatesMeta_Values
       MaxValue: number
       MinValue: number
@@ -20926,8 +20023,6 @@ local record CatalogueTypes
       QuestCompleted: number
       QuestOffer: number
    end
-
-   -- blizzard:CameraConstantsDocumentation.lua
 
    -- blizzard:CameraConstantsDocumentation.lua
    record Enum_CameraModeAspectRatioMeta_Values
@@ -20945,8 +20040,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:WarCampaignDocumentation.lua
-
-   -- blizzard:WarCampaignDocumentation.lua
    record Enum_CampaignStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -20962,8 +20055,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_CanRedeemTokenForBalanceResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -20977,8 +20068,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_CaptureBarWidgetFillDirectionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -20990,10 +20079,6 @@ local record CatalogueTypes
       LeftToRight: number
       RightToLeft: number
    end
-
-   -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:DamageConstantsDocumentation.lua
 
    -- blizzard:DamageConstantsDocumentation.lua
    record Enum_CauseofdeathFlagsMeta_Values
@@ -21032,8 +20117,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
    record Enum_ChallengeModeHistoryFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -21045,8 +20128,6 @@ local record CatalogueTypes
       ConfirmedLeaver: number
       None: number
    end
-
-   -- blizzard:AccountConstantsDocumentation.lua
 
    -- blizzard:AccountConstantsDocumentation.lua
    record Enum_ChallengeModeHistoryResultMeta_Values
@@ -21062,8 +20143,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
    record Enum_ChallengeModeHistoryStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -21075,8 +20154,6 @@ local record CatalogueTypes
       Leaver: number
       Normal: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
 
    -- blizzard:ChatConstantsDocumentation.lua
    record Enum_ChannelPlayerFlagsMeta_Values
@@ -21095,8 +20172,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterCreationConstantsDocumentation.lua
-
-   -- blizzard:CharacterCreationConstantsDocumentation.lua
    record Enum_CharCreateAnimTurnTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21108,8 +20183,6 @@ local record CatalogueTypes
       Normal: number
       Torso: number
    end
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
 
    -- blizzard:CharacterCustomizationSharedDocumentation.lua
    record Enum_CharCustomizationTypeMeta_Values
@@ -21132,8 +20205,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterCreationConstantsDocumentation.lua
-
-   -- blizzard:CharacterCreationConstantsDocumentation.lua
    record Enum_CharSectionConditionMeta_Values
       MaxValue: number
       MinValue: number
@@ -21149,8 +20220,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterServicesConstantsDocumentation.lua
-
-   -- blizzard:CharacterServicesConstantsDocumentation.lua
    record Enum_CharacterServiceInfoFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -21162,8 +20231,6 @@ local record CatalogueTypes
       AllowMaxLevelBoost: number
       RestrictToRecommendedSpecs: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
 
    -- blizzard:ChatConstantsDocumentation.lua
    record Enum_ChatChannelRulesetMeta_Values
@@ -21186,8 +20253,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
    record Enum_ChatChannelTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21204,14 +20269,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ChatMessagingLockdownRestriction_Values
       DropIncomingAddonMessages: number
       DropOutgoingAddonMessages: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
 
    -- blizzard:ChatConstantsDocumentation.lua
    record Enum_ChatToxityFilterOptOutMeta_Values
@@ -21229,8 +20290,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
    record Enum_ChatWhisperTargetStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -21246,8 +20305,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterCustomizationSharedDocumentation.lua
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    record Enum_ChrCustomizationCategoryFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -21259,8 +20316,6 @@ local record CatalogueTypes
       Subcategory: number
       UndressModel: number
    end
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
 
    -- blizzard:CharacterCustomizationSharedDocumentation.lua
    record Enum_ChrCustomizationOptionTypeMeta_Values
@@ -21275,8 +20330,6 @@ local record CatalogueTypes
       Dropdown: number
       Slider: number
    end
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
 
    -- blizzard:CharacterCustomizationSharedDocumentation.lua
    record Enum_ChrModelFeatureFlagsMeta_Values
@@ -21298,15 +20351,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ChrRacesAllianceType_Values
       Alliance: number
       Horde: number
       NeutralOrNpc: number
    end
-
-   -- blizzard:CinematicConstantsDocumentation.lua
 
    -- blizzard:CinematicConstantsDocumentation.lua
    record Enum_CinematicTypeMeta_Values
@@ -21324,8 +20373,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClickBindingsConstantsDocumentation.lua
-
-   -- blizzard:ClickBindingsConstantsDocumentation.lua
    record Enum_ClickBindingInteractionMeta_Values
       MaxValue: number
       MinValue: number
@@ -21337,8 +20384,6 @@ local record CatalogueTypes
       OpenContextMenu: number
       Target: number
    end
-
-   -- blizzard:ClickBindingsConstantsDocumentation.lua
 
    -- blizzard:ClickBindingsConstantsDocumentation.lua
    record Enum_ClickBindingTypeMeta_Values
@@ -21355,8 +20400,6 @@ local record CatalogueTypes
       PetAction: number
       Spell: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_ClientDebugAISpellReadyStatus_Values
@@ -21395,8 +20438,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlatformDocumentation.lua
-
-   -- blizzard:PlatformDocumentation.lua
    record Enum_ClientPlatformTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21410,8 +20451,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClientSceneDocumentation.lua
-
-   -- blizzard:ClientSceneDocumentation.lua
    record Enum_ClientSceneTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21423,8 +20462,6 @@ local record CatalogueTypes
       DefaultSceneType: number
       MinigameSceneType: number
    end
-
-   -- blizzard:ClientSettingsDocumentation.lua
 
    -- blizzard:ClientSettingsDocumentation.lua
    record Enum_ClientSettingsConfigFlagMeta_Values
@@ -21445,8 +20482,6 @@ local record CatalogueTypes
       ClientSettingsConfigTest: number
       ClientSettingsConfigTestRetail: number
    end
-
-   -- blizzard:ClubDocumentation.lua
 
    -- blizzard:ClubDocumentation.lua
    record Enum_ClubActionTypeMeta_Values
@@ -21485,8 +20520,6 @@ local record CatalogueTypes
       ErrorClubActionRevokeInvitation: number
       ErrorClubActionSubscribe: number
    end
-
-   -- blizzard:ClubDocumentation.lua
 
    -- blizzard:ClubDocumentation.lua
    record Enum_ClubErrorTypeMeta_Values
@@ -21542,8 +20575,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record Enum_ClubFieldTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21562,8 +20593,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
    record Enum_ClubFinderApplicationUpdateTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21577,8 +20606,6 @@ local record CatalogueTypes
       DeclineInvite: number
       None: number
    end
-
-   -- blizzard:ClubFinderDocumentation.lua
 
    -- blizzard:ClubFinderDocumentation.lua
    record Enum_ClubFinderClubPostingStatusFlagsMeta_Values
@@ -21601,8 +20628,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
    record Enum_ClubFinderDisableReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -21615,8 +20640,6 @@ local record CatalogueTypes
       Silenced: number
       VeteranTrial: number
    end
-
-   -- blizzard:ClubFinderDocumentation.lua
 
    -- blizzard:ClubFinderDocumentation.lua
    record Enum_ClubFinderPostingReportTypeMeta_Values
@@ -21635,8 +20658,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
    record Enum_ClubFinderRequestTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21650,8 +20671,6 @@ local record CatalogueTypes
       Guild: number
       None: number
    end
-
-   -- blizzard:ClubFinderDocumentation.lua
 
    -- blizzard:ClubFinderDocumentation.lua
    record Enum_ClubFinderSettingFlagsMeta_Values
@@ -21691,8 +20710,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record Enum_ClubInvitationCandidateStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -21705,8 +20722,6 @@ local record CatalogueTypes
       Available: number
       InvitePending: number
    end
-
-   -- blizzard:ClubDocumentation.lua
 
    -- blizzard:ClubDocumentation.lua
    record Enum_ClubMemberPresenceMeta_Values
@@ -21726,8 +20741,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record Enum_ClubRemovedReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -21743,8 +20756,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record Enum_ClubRestrictionReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -21756,8 +20767,6 @@ local record CatalogueTypes
       None: number
       Unavailable: number
    end
-
-   -- blizzard:ClubSharedDocumentation.lua
 
    -- blizzard:ClubSharedDocumentation.lua
    record Enum_ClubRoleIdentifierMeta_Values
@@ -21775,8 +20784,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record Enum_ClubStreamNotificationFilterMeta_Values
       MaxValue: number
       MinValue: number
@@ -21789,8 +20796,6 @@ local record CatalogueTypes
       Mention: number
       None: number
    end
-
-   -- blizzard:ClubDocumentation.lua
 
    -- blizzard:ClubDocumentation.lua
    record Enum_ClubStreamTypeMeta_Values
@@ -21809,8 +20814,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubDocumentation.lua
-
-   -- blizzard:ClubDocumentation.lua
    record Enum_ClubTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -21824,8 +20827,6 @@ local record CatalogueTypes
       Guild: number
       Other: number
    end
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
 
    -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_CollationStrengthMeta_Values
@@ -21842,8 +20843,6 @@ local record CatalogueTypes
       Secondary: number
       Tertiary: number
    end
-
-   -- blizzard:ColorOverrideConstantsDocumentation.lua
 
    -- blizzard:ColorOverrideConstantsDocumentation.lua
    record Enum_ColorOverrideMeta_Values
@@ -21865,8 +20864,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertCastStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -21879,8 +20876,6 @@ local record CatalogueTypes
       OnCastEnd: number
       OnCastStart: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertCategoryMeta_Values
@@ -21904,8 +20899,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertDebuffSelfAlertValuesMeta_Values
       MaxValue: number
       MinValue: number
@@ -21917,8 +20910,6 @@ local record CatalogueTypes
       DispelType: number
       Off: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertPartyPercentValuesMeta_Values
@@ -21943,8 +20934,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertPercentValuesMeta_Values
       MaxValue: number
       MinValue: number
@@ -21960,8 +20949,6 @@ local record CatalogueTypes
       Every50Percent: number
       Off: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertPlayerCastFormatValuesMeta_Values
@@ -21980,8 +20967,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertPlayerDebuffFormatValuesMeta_Values
       MaxValue: number
       MinValue: number
@@ -21993,8 +20978,6 @@ local record CatalogueTypes
       Full: number
       NoSpellname: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertPlayerHealthFormatValuesMeta_Values
@@ -22014,8 +20997,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertPlayerResourceFormatValuesMeta_Values
       MaxValue: number
       MinValue: number
@@ -22031,8 +21012,6 @@ local record CatalogueTypes
       ResourceNoPercent: number
       ResourceNoPercentDiv10: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertPulsePercentValuesMeta_Values
@@ -22056,8 +21035,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertSayIfTargetedTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22071,8 +21048,6 @@ local record CatalogueTypes
       Targeted: number
       TargetedBy: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertSpecSettingMeta_Values
@@ -22095,8 +21070,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertTargetCastFormatValuesMeta_Values
       MaxValue: number
       MinValue: number
@@ -22115,8 +21088,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertTargetDeathBehaviorMeta_Values
       MaxValue: number
       MinValue: number
@@ -22128,8 +21099,6 @@ local record CatalogueTypes
       Default: number
       SayTargetDead: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertTargetHealthFormatValuesMeta_Values
@@ -22150,8 +21119,6 @@ local record CatalogueTypes
       TargetNoPercent: number
       TargetNoPercentDiv10: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertThrottleMeta_Values
@@ -22176,8 +21143,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22189,8 +21154,6 @@ local record CatalogueTypes
       Cast: number
       Health: number
    end
-
-   -- blizzard:CombatAudioAlertSharedDocumentation.lua
 
    -- blizzard:CombatAudioAlertSharedDocumentation.lua
    record Enum_CombatAudioAlertUnitMeta_Values
@@ -22206,8 +21169,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatLogSharedDocumentation.lua
-
-   -- blizzard:CombatLogSharedDocumentation.lua
    record Enum_CombatLogMessageOrderMeta_Values
       MaxValue: number
       MinValue: number
@@ -22221,15 +21182,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:CombatLogConstantsDocumentation.lua
-
-   -- blizzard:CombatLogConstantsDocumentation.lua
    record Enum_CombatLogObjectMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:CombatLogConstantsDocumentation.lua
 
    -- blizzard:CombatLogConstantsDocumentation.lua
    record Enum_CombatLogObjectTargetMeta_Values
@@ -22276,8 +21233,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:QuestConstantsDocumentation.lua
    record Enum_CombinedQuestLogStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -22297,8 +21252,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:QuestConstantsDocumentation.lua
    record Enum_CombinedQuestStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -22313,8 +21266,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:VoiceChatDocumentation.lua
-
-   -- blizzard:VoiceChatDocumentation.lua
    record Enum_CommunicationModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22326,8 +21277,6 @@ local record CatalogueTypes
       OpenMic: number
       PushToTalk: number
    end
-
-   -- blizzard:DelvesConstantsDocumentation.lua
 
    -- blizzard:DelvesConstantsDocumentation.lua
    record Enum_CompanionConfigSlotTypesMeta_Values
@@ -22345,8 +21294,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DelvesUIDocumentation.lua
-
-   -- blizzard:DelvesUIDocumentation.lua
    record Enum_CompanionRoleTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22359,8 +21306,6 @@ local record CatalogueTypes
       Heal: number
       Tank: number
    end
-
-   -- blizzard:EncodingUtilDocumentation.lua
 
    -- blizzard:EncodingUtilDocumentation.lua
    record Enum_CompressionLevelMeta_Values
@@ -22377,8 +21322,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncodingUtilDocumentation.lua
-
-   -- blizzard:EncodingUtilDocumentation.lua
    record Enum_CompressionMethodMeta_Values
       MaxValue: number
       MinValue: number
@@ -22391,8 +21334,6 @@ local record CatalogueTypes
       Gzip: number
       Zlib: number
    end
-
-   -- blizzard:ConfigurationWarningConstantsDocumentation.lua
 
    -- blizzard:ConfigurationWarningConstantsDocumentation.lua
    record Enum_ConfigurationWarningMeta_Values
@@ -22414,8 +21355,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SpellConstantsDocumentation.lua
-
-   -- blizzard:SpellConstantsDocumentation.lua
    record Enum_ConfirmationPromptUITypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22432,8 +21371,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:WeeklyRewardsDocumentation.lua
-
-   -- blizzard:WeeklyRewardsDocumentation.lua
    record Enum_ConquestProgressBarDisplayTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22446,8 +21383,6 @@ local record CatalogueTypes
       FirstChest: number
       Seasonal: number
    end
-
-   -- blizzard:ConsoleDocumentation.lua
 
    -- blizzard:ConsoleDocumentation.lua
    record Enum_ConsoleCategoryMeta_Values
@@ -22470,8 +21405,6 @@ local record CatalogueTypes
       Reveal: number
       Sound: number
    end
-
-   -- blizzard:ConsoleDocumentation.lua
 
    -- blizzard:ConsoleDocumentation.lua
    record Enum_ConsoleColorTypeMeta_Values
@@ -22497,8 +21430,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ConsoleDocumentation.lua
-
-   -- blizzard:ConsoleDocumentation.lua
    record Enum_ConsoleCommandTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22512,8 +21443,6 @@ local record CatalogueTypes
       Macro: number
       Script: number
    end
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
 
    -- blizzard:ContentTrackingTypesDocumentation.lua
    record Enum_ContentTrackingErrorMeta_Values
@@ -22530,8 +21459,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ContentTrackingTypesDocumentation.lua
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
    record Enum_ContentTrackingResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -22546,8 +21473,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ContentTrackingTypesDocumentation.lua
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
    record Enum_ContentTrackingStopTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22560,8 +21485,6 @@ local record CatalogueTypes
       Invalidated: number
       Manual: number
    end
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
 
    -- blizzard:ContentTrackingTypesDocumentation.lua
    record Enum_ContentTrackingTargetTypeMeta_Values
@@ -22580,8 +21503,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ContentTrackingTypesDocumentation.lua
-
-   -- blizzard:ContentTrackingTypesDocumentation.lua
    record Enum_ContentTrackingTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22597,8 +21518,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_ContributionAppearanceFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -22609,8 +21528,6 @@ local record CatalogueTypes
    record Enum_ContributionAppearanceFlags_Values
       TooltipUseTimeRemaining: number
    end
-
-   -- blizzard:ContributionCollectorDocumentation.lua
 
    -- blizzard:ContributionCollectorDocumentation.lua
    record Enum_ContributionResultMeta_Values
@@ -22632,8 +21549,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_ContributionStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -22650,16 +21565,12 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_CooldownLayoutAction_Values
       AddAlert: number
       AddLayout: number
       ChangeCategory: number
       ChangeOrder: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_CooldownLayoutStatus_Values
@@ -22673,14 +21584,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_CooldownLayoutType_Values
       Account: number
       Character: number
    end
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_CooldownSetLinkedSpellFlagsMeta_Values
@@ -22693,8 +21600,6 @@ local record CatalogueTypes
    record Enum_CooldownSetLinkedSpellFlags_Values
       UseAsTooltip: number
    end
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_CooldownSetSpellFlagsMeta_Values
@@ -22711,8 +21616,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_CooldownViewerAddAlertStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -22726,8 +21629,6 @@ local record CatalogueTypes
       InvalidEventType: number
       Success: number
    end
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_CooldownViewerAlertEventTypeMeta_Values
@@ -22747,8 +21648,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_CooldownViewerAlertTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22760,8 +21659,6 @@ local record CatalogueTypes
       Sound: number
       Visual: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_CooldownViewerBarContentMeta_Values
@@ -22776,8 +21673,6 @@ local record CatalogueTypes
       IconOnly: number
       NameOnly: number
    end
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_CooldownViewerCategoryMeta_Values
@@ -22800,8 +21695,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_CooldownViewerIconDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -22815,8 +21708,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_CooldownViewerOrientationMeta_Values
       MaxValue: number
       MinValue: number
@@ -22828,8 +21719,6 @@ local record CatalogueTypes
       Horizontal: number
       Vertical: number
    end
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_CooldownViewerSoundMeta_Values
@@ -22937,8 +21826,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_CooldownViewerVisibleSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -22951,8 +21838,6 @@ local record CatalogueTypes
       Hidden: number
       InCombat: number
    end
-
-   -- blizzard:HousingNeighborhoodUIDocumentation.lua
 
    -- blizzard:HousingNeighborhoodUIDocumentation.lua
    record Enum_CornerstonePurchaseModeMeta_Values
@@ -22969,8 +21854,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CovenantsConstantsDocumentation.lua
-
-   -- blizzard:CovenantsConstantsDocumentation.lua
    record Enum_CovenantAbilityTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -22983,8 +21866,6 @@ local record CatalogueTypes
       Signature: number
       Soulbind: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_CovenantSkillMeta_Values
@@ -23000,8 +21881,6 @@ local record CatalogueTypes
       NightFae: number
       Venthyr: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_CovenantTypeMeta_Values
@@ -23020,8 +21899,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CraftingOrderUIConstantsDocumentation.lua
-
-   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
    record Enum_CraftingOrderCustomerCategoryTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23036,8 +21913,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderDurationMeta_Values
       MaxValue: number
       MinValue: number
@@ -23050,8 +21925,6 @@ local record CatalogueTypes
       Medium: number
       Short: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderFlagsMeta_Values
@@ -23071,8 +21944,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderItemFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -23085,8 +21956,6 @@ local record CatalogueTypes
       None: number
       NpcProvided: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderItemTypeMeta_Values
@@ -23106,8 +21975,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderReagentSourceMeta_Values
       MaxValue: number
       MinValue: number
@@ -23123,8 +21990,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CraftingOrderUIConstantsDocumentation.lua
-
-   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
    record Enum_CraftingOrderReagentsTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23137,8 +22002,6 @@ local record CatalogueTypes
       None: number
       Some: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderResultMeta_Values
@@ -23201,8 +22064,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderSortTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23220,8 +22081,6 @@ local record CatalogueTypes
       TimeRemaining: number
       Tip: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderStateMeta_Values
@@ -23251,8 +22110,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingOrderTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23268,8 +22125,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_CraftingReagentItemFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -23280,8 +22135,6 @@ local record CatalogueTypes
    record Enum_CraftingReagentItemFlag_Values
       TooltipShowsAsStatModifications: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_CraftingReagentTypeMeta_Values
@@ -23297,8 +22150,6 @@ local record CatalogueTypes
       Finishing: number
       Modifying: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_CreateAllAccountData_Values
@@ -23353,8 +22204,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingUIDocumentation.lua
-
-   -- blizzard:HousingUIDocumentation.lua
    record Enum_CreateNeighborhoodErrorTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23368,8 +22217,6 @@ local record CatalogueTypes
       Profanity: number
       UndersizedGuild: number
    end
-
-   -- blizzard:DelvesConstantsDocumentation.lua
 
    -- blizzard:DelvesConstantsDocumentation.lua
    record Enum_CurioRarityMeta_Values
@@ -23388,8 +22235,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DelvesUIDocumentation.lua
-
-   -- blizzard:DelvesUIDocumentation.lua
    record Enum_CurioTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23401,8 +22246,6 @@ local record CatalogueTypes
       Combat: number
       Utility: number
    end
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
 
    -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_CurrencyConversionResultMeta_Values
@@ -23417,8 +22260,6 @@ local record CatalogueTypes
       NoConversion: number
       SkippedAccountCurrency: number
    end
-
-   -- blizzard:CurrencyConstants_MainlineDocumentation.lua
 
    -- blizzard:CurrencyConstants_MainlineDocumentation.lua
    record Enum_CurrencyDestroyReasonMeta_Values
@@ -23450,8 +22291,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_CurrencyFilterTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23464,10 +22303,6 @@ local record CatalogueTypes
       DiscoveredOnly: number
       None: number
    end
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
 
    -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_CurrencyFlagsBMeta_Values
@@ -23536,8 +22371,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_CurrencyGainFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -23554,8 +22387,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_CurrencyNameStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -23570,8 +22401,6 @@ local record CatalogueTypes
       Symbol: number
       VariantSymbol: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_CurrencySource_Values
@@ -23646,8 +22475,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_CurrencyTokenCategoryFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -23664,8 +22491,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:MoneyConstantsDocumentation.lua
-
-   -- blizzard:MoneyConstantsDocumentation.lua
    record Enum_CurrencyTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23680,8 +22505,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CursorConstDocumentation.lua
-
-   -- blizzard:CursorConstDocumentation.lua
    record Enum_CursorStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -23693,8 +22516,6 @@ local record CatalogueTypes
       Crosshair: number
       Mouse: number
    end
-
-   -- blizzard:CursorConstDocumentation.lua
 
    -- blizzard:CursorConstDocumentation.lua
    record Enum_CursormodeMeta_Values
@@ -23800,8 +22621,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuraContainerSharedDocumentation.lua
-
-   -- blizzard:AuraContainerSharedDocumentation.lua
    record Enum_CustomAuraButtonDispelTypeStealableFilterMeta_Values
       MaxValue: number
       MinValue: number
@@ -23813,8 +22632,6 @@ local record CatalogueTypes
       NotStealable: number
       Stealable: number
    end
-
-   -- blizzard:AuraContainerSharedDocumentation.lua
 
    -- blizzard:AuraContainerSharedDocumentation.lua
    record Enum_CustomAuraButtonDispelTypeTextureStyleMeta_Values
@@ -23833,8 +22650,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuraContainerSharedDocumentation.lua
-
-   -- blizzard:AuraContainerSharedDocumentation.lua
    record Enum_CustomAuraButtonUpdateModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23848,8 +22663,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:KeyBindingsDocumentation.lua
-
-   -- blizzard:KeyBindingsDocumentation.lua
    record Enum_CustomBindingTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23860,8 +22673,6 @@ local record CatalogueTypes
    record Enum_CustomBindingType_Values
       VoicePushToTalk: number
    end
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
 
    -- blizzard:DamageMeterConstantsDocumentation.lua
    record Enum_DamageMeterCombineSessionTypeMeta_Values
@@ -23879,8 +22690,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_DamageMeterNumbersMeta_Values
       MaxValue: number
       MinValue: number
@@ -23893,8 +22702,6 @@ local record CatalogueTypes
       Complete: number
       Minimal: number
    end
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
 
    -- blizzard:DamageMeterConstantsDocumentation.lua
    record Enum_DamageMeterOverrideTypeMeta_Values
@@ -23913,8 +22720,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
    record Enum_DamageMeterSessionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23927,8 +22732,6 @@ local record CatalogueTypes
       Expired: number
       Overall: number
    end
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
 
    -- blizzard:DamageMeterConstantsDocumentation.lua
    record Enum_DamageMeterSourceDisplayTypeMeta_Values
@@ -23945,8 +22748,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DamageMeterConstantsDocumentation.lua
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
    record Enum_DamageMeterSpellDetailsDisplayTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -23961,8 +22762,6 @@ local record CatalogueTypes
       SpellCasted: number
       UnitSpecificSpellCasted: number
    end
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
 
    -- blizzard:DamageMeterConstantsDocumentation.lua
    record Enum_DamageMeterStorageTypeMeta_Values
@@ -23985,8 +22784,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_DamageMeterStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -24000,8 +22797,6 @@ local record CatalogueTypes
       FullBackground: number
       Thin: number
    end
-
-   -- blizzard:DamageMeterConstantsDocumentation.lua
 
    -- blizzard:DamageMeterConstantsDocumentation.lua
    record Enum_DamageMeterTypeMeta_Values
@@ -24026,8 +22821,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_DamageMeterVisibilityMeta_Values
       MaxValue: number
       MinValue: number
@@ -24043,15 +22836,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:DamageConstantsDocumentation.lua
    record Enum_DamageclassMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:DamageConstantsDocumentation.lua
 
    -- blizzard:DamageConstantsDocumentation.lua
    record Enum_DamageclassTypeMeta_Values
@@ -24117,8 +22906,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_DateTimeStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -24133,8 +22920,6 @@ local record CatalogueTypes
       None: number
       Short: number
    end
-
-   -- blizzard:AccountConstantsDocumentation.lua
 
    -- blizzard:AccountConstantsDocumentation.lua
    record Enum_DisableAccountProfilesFlagsMeta_Values
@@ -24155,8 +22940,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DiscordConstantsDocumentation.lua
-
-   -- blizzard:DiscordConstantsDocumentation.lua
    record Enum_DiscordAccountTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -24168,8 +22951,6 @@ local record CatalogueTypes
       Normal: number
       Provisional: number
    end
-
-   -- blizzard:DiscordConstantsDocumentation.lua
 
    -- blizzard:DiscordConstantsDocumentation.lua
    record Enum_DiscordDisplayNameTypeMeta_Values
@@ -24186,8 +22967,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DiscordConstantsDocumentation.lua
-
-   -- blizzard:DiscordConstantsDocumentation.lua
    record Enum_DiscordGuildSettingsMeta_Values
       MaxValue: number
       MinValue: number
@@ -24198,8 +22977,6 @@ local record CatalogueTypes
    record Enum_DiscordGuildSettings_Values
       SeparateStream: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_DungeonEncounterFlags_Values
@@ -24216,8 +22993,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_DungeonEncounterTriggerType_Values
       Invalid: number
       OnComplete: number
@@ -24227,15 +23002,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_DungeonEncounterXCreatureFlags_Values
       BossCreature: number
       DoNotDespawnOnSuccess: number
       DropLootImmediately: number
    end
-
-   -- blizzard:DurationTextBindingSharedDocumentation.lua
 
    -- blizzard:DurationTextBindingSharedDocumentation.lua
    record Enum_DurationTextBindingPropertyMeta_Values
@@ -24256,8 +23027,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LuaDurationObjectSharedDocumentation.lua
-
-   -- blizzard:LuaDurationObjectSharedDocumentation.lua
    record Enum_DurationTimeModifierMeta_Values
       MaxValue: number
       MinValue: number
@@ -24269,8 +23038,6 @@ local record CatalogueTypes
       BaseTime: number
       RealTime: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeAccountSettingMeta_Values
@@ -24320,8 +23087,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeActionBarSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24341,8 +23106,6 @@ local record CatalogueTypes
       Orientation: number
       VisibleSetting: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeActionBarSystemIndicesMeta_Values
@@ -24367,8 +23130,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeArchaeologyBarSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24379,8 +23140,6 @@ local record CatalogueTypes
    record Enum_EditModeArchaeologyBarSetting_Values
       Size: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeAuraFrameSettingMeta_Values
@@ -24405,8 +23164,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeAuraFrameSystemIndicesMeta_Values
       MaxValue: number
       MinValue: number
@@ -24419,8 +23176,6 @@ local record CatalogueTypes
       DebuffFrame: number
       ExternalDefensivesFrame: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeBagsSettingMeta_Values
@@ -24438,8 +23193,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeCastBarSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24454,14 +23207,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_EditModeChatFrameDisplayOnlySetting_Values
       Height: number
       Width: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeChatFrameSettingMeta_Values
@@ -24477,8 +23226,6 @@ local record CatalogueTypes
       WidthHundreds: number
       WidthTensAndOnes: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeCooldownViewerSettingMeta_Values
@@ -24504,8 +23251,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeCooldownViewerSystemIndicesMeta_Values
       MaxValue: number
       MinValue: number
@@ -24519,8 +23264,6 @@ local record CatalogueTypes
       Essential: number
       Utility: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeDamageMeterSettingMeta_Values
@@ -24547,8 +23290,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeDurabilityFrameSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24559,8 +23300,6 @@ local record CatalogueTypes
    record Enum_EditModeDurabilityFrameSetting_Values
       Size: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeEncounterEventsSettingMeta_Values
@@ -24588,8 +23327,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeEncounterEventsSystemIndicesMeta_Values
       MaxValue: number
       MinValue: number
@@ -24603,8 +23340,6 @@ local record CatalogueTypes
       NormalWarnings: number
       Timeline: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeLayoutTypeMeta_Values
@@ -24622,8 +23357,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeLossOfControlSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24634,8 +23367,6 @@ local record CatalogueTypes
    record Enum_EditModeLossOfControlSetting_Values
       Size: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeMicroMenuSettingMeta_Values
@@ -24653,8 +23384,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeMinimapSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24670,8 +23399,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeObjectiveTrackerSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24684,8 +23411,6 @@ local record CatalogueTypes
       Opacity: number
       TextSize: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModePersonalResourceDisplaySettingMeta_Values
@@ -24714,8 +23439,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModePresetLayoutsMeta_Values
       MaxValue: number
       MinValue: number
@@ -24727,8 +23450,6 @@ local record CatalogueTypes
       Classic: number
       Modern: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeRaidWarningSettingMeta_Values
@@ -24743,8 +23464,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeSettingDisplayTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -24757,8 +23476,6 @@ local record CatalogueTypes
       Dropdown: number
       Slider: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeStatusTrackingBarSettingMeta_Values
@@ -24776,8 +23493,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeStatusTrackingBarSystemIndicesMeta_Values
       MaxValue: number
       MinValue: number
@@ -24789,8 +23504,6 @@ local record CatalogueTypes
       StatusTrackingBar1: number
       StatusTrackingBar2: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeSystemMeta_Values
@@ -24831,8 +23544,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeTimerBarsSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24843,8 +23554,6 @@ local record CatalogueTypes
    record Enum_EditModeTimerBarsSetting_Values
       Size: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeUnitFrameSettingMeta_Values
@@ -24881,8 +23590,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeUnitFrameSystemIndicesMeta_Values
       MaxValue: number
       MinValue: number
@@ -24902,8 +23609,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EditModeVehicleSeatIndicatorSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -24914,8 +23619,6 @@ local record CatalogueTypes
    record Enum_EditModeVehicleSeatIndicatorSetting_Values
       Size: number
    end
-
-   -- blizzard:DungeonEncounterConstantsDocumentation.lua
 
    -- blizzard:DungeonEncounterConstantsDocumentation.lua
    record Enum_EncounterEventCastStateMeta_Values
@@ -24932,8 +23635,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterEventsSharedDocumentation.lua
-
-   -- blizzard:EncounterEventsSharedDocumentation.lua
    record Enum_EncounterEventColorTriggerMeta_Values
       MaxValue: number
       MinValue: number
@@ -24948,14 +23649,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_EncounterEventFlags_Values
       Disabled: number
       IgnoreCastConsume: number
    end
-
-   -- blizzard:DungeonEncounterConstantsDocumentation.lua
 
    -- blizzard:DungeonEncounterConstantsDocumentation.lua
    record Enum_EncounterEventIconmaskMeta_Values
@@ -24979,8 +23676,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DungeonEncounterConstantsDocumentation.lua
-
-   -- blizzard:DungeonEncounterConstantsDocumentation.lua
    record Enum_EncounterEventSeverityMeta_Values
       MaxValue: number
       MinValue: number
@@ -24995,8 +23690,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterEventsSharedDocumentation.lua
-
-   -- blizzard:EncounterEventsSharedDocumentation.lua
    record Enum_EncounterEventSoundTriggerMeta_Values
       MaxValue: number
       MinValue: number
@@ -25009,8 +23702,6 @@ local record CatalogueTypes
       OnTimelineEventFinished: number
       OnTimelineEventHighlight: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EncounterEventsIconDirectionMeta_Values
@@ -25028,8 +23719,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EncounterEventsOrientationMeta_Values
       MaxValue: number
       MinValue: number
@@ -25041,8 +23730,6 @@ local record CatalogueTypes
       Horizontal: number
       Vertical: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EncounterEventsTooltipAnchorMeta_Values
@@ -25059,8 +23746,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EncounterEventsViewTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -25072,8 +23757,6 @@ local record CatalogueTypes
       Bars: number
       Timeline: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_EncounterEventsVisibilityMeta_Values
@@ -25088,8 +23771,6 @@ local record CatalogueTypes
       DeprecatedHidden: number
       InEncounter: number
    end
-
-   -- blizzard:LootHistoryDocumentation.lua
 
    -- blizzard:LootHistoryDocumentation.lua
    record Enum_EncounterLootDropRollStateMeta_Values
@@ -25109,8 +23790,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    record Enum_EncounterTimelineEventSortDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -25122,8 +23801,6 @@ local record CatalogueTypes
       Ascending: number
       Descending: number
    end
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
 
    -- blizzard:EncounterTimelineConstantsDocumentation.lua
    record Enum_EncounterTimelineEventSourceMeta_Values
@@ -25140,8 +23817,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    record Enum_EncounterTimelineEventStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -25155,8 +23830,6 @@ local record CatalogueTypes
       Finished: number
       Paused: number
    end
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
 
    -- blizzard:EncounterTimelineConstantsDocumentation.lua
    record Enum_EncounterTimelineIconSetMeta_Values
@@ -25176,15 +23849,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    record Enum_EncounterTimelineTrackMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
 
    -- blizzard:EncounterTimelineConstantsDocumentation.lua
    record Enum_EncounterTimelineTrackTypeMeta_Values
@@ -25210,8 +23879,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterTimelineConstantsDocumentation.lua
-
-   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    record Enum_EncounterTimelineViewTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -25224,8 +23891,6 @@ local record CatalogueTypes
       None: number
       Timeline: number
    end
-
-   -- blizzard:EndOfMatchUIDocumentation.lua
 
    -- blizzard:EndOfMatchUIDocumentation.lua
    record Enum_EndOfMatchTypeMeta_Values
@@ -25241,8 +23906,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:DamageConstantsDocumentation.lua
    record Enum_EnvironmentalDamageFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -25254,8 +23917,6 @@ local record CatalogueTypes
       DmgIsPct: number
       OneTime: number
    end
-
-   -- blizzard:DamageConstantsDocumentation.lua
 
    -- blizzard:DamageConstantsDocumentation.lua
    record Enum_EnvironmentaldamagetypeMeta_Values
@@ -25275,15 +23936,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ErrorDomain_Values
       Assert: number
       AssertData: number
       Frame: number
    end
-
-   -- blizzard:GameRulesConstantsDocumentation.lua
 
    -- blizzard:GameRulesConstantsDocumentation.lua
    record Enum_EventRealmQueuesMeta_Values
@@ -25300,8 +23957,6 @@ local record CatalogueTypes
       PlunderstormTraining: number
       PlunderstormTrio: number
    end
-
-   -- blizzard:UIEventToastConstantsDocumentation.lua
 
    -- blizzard:UIEventToastConstantsDocumentation.lua
    record Enum_EventToastDisplayTypeMeta_Values
@@ -25329,8 +23984,6 @@ local record CatalogueTypes
       WeeklyRewardUnlock: number
       WeeklyRewardUpgrade: number
    end
-
-   -- blizzard:UIEventToastConstantsDocumentation.lua
 
    -- blizzard:UIEventToastConstantsDocumentation.lua
    record Enum_EventToastEventTypeMeta_Values
@@ -25372,8 +24025,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIEventToastConstantsDocumentation.lua
-
-   -- blizzard:UIEventToastConstantsDocumentation.lua
    record Enum_EventToastFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -25384,8 +24035,6 @@ local record CatalogueTypes
    record Enum_EventToastFlags_Values
       DisableRightClickDismiss: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
 
    -- blizzard:ChatConstantsDocumentation.lua
    record Enum_ExcludedCensorSourcesMeta_Values
@@ -25409,8 +24058,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ExpansionLandingPageConstantsDocumentation.lua
-
-   -- blizzard:ExpansionLandingPageConstantsDocumentation.lua
    record Enum_ExpansionLandingPageTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -25422,8 +24069,6 @@ local record CatalogueTypes
       Midnight: number
       None: number
    end
-
-   -- blizzard:ExpansionLevelConstantsDocumentation.lua
 
    -- blizzard:ExpansionLevelConstantsDocumentation.lua
    record Enum_ExpansionLevelMeta_Values
@@ -25450,8 +24095,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TaxiMapDocumentation.lua
-
-   -- blizzard:TaxiMapDocumentation.lua
    record Enum_FlightPathFactionMeta_Values
       MaxValue: number
       MinValue: number
@@ -25466,8 +24109,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TaxiMapDocumentation.lua
-
-   -- blizzard:TaxiMapDocumentation.lua
    record Enum_FlightPathStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -25480,8 +24121,6 @@ local record CatalogueTypes
       Reachable: number
       Unreachable: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_FollowerAbilityCastResultMeta_Values
@@ -25510,8 +24149,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UISharedDocumentation.lua
-
-   -- blizzard:UISharedDocumentation.lua
    record Enum_FontStringScaleAnimationModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -25523,8 +24160,6 @@ local record CatalogueTypes
       FontSize: number
       Vertex: number
    end
-
-   -- blizzard:ForbiddenAspectConstantsDocumentation.lua
 
    -- blizzard:ForbiddenAspectConstantsDocumentation.lua
    record Enum_ForbiddenAspectMeta_Values
@@ -25551,8 +24186,6 @@ local record CatalogueTypes
       UntrustedLayoutScriptExecution: number
       UntrustedScriptExecution: number
    end
-
-   -- blizzard:WowCSConstantsDocumentation.lua
 
    -- blizzard:WowCSConstantsDocumentation.lua
    record Enum_FragmentIDMeta_Values
@@ -25644,8 +24277,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TutorialDocumentation.lua
-
-   -- blizzard:TutorialDocumentation.lua
    record Enum_FrameTutorialAccountMeta_Values
       MaxValue: number
       MinValue: number
@@ -25708,15 +24339,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_GameMode_Values
       Plunderstorm: number
       Standard: number
       WoWHack: number
    end
-
-   -- blizzard:GamePadConstDocumentation.lua
 
    -- blizzard:GamePadConstDocumentation.lua
    record Enum_GamePadPowerLevelMeta_Values
@@ -25735,10 +24362,6 @@ local record CatalogueTypes
       Wired: number
    end
 
-   -- questie:Data/Enum.lua
-
-   -- blizzard:GameRulesConstantsDocumentation.lua
-
    -- blizzard:GameRulesConstantsDocumentation.lua
    record Enum_GameRuleFlagsMeta_Values
       MaxValue: number
@@ -25752,8 +24375,6 @@ local record CatalogueTypes
       None: number
       RequiresDefault: number
    end
-
-   -- blizzard:GameRulesConstantsDocumentation.lua
 
    -- blizzard:GameRulesConstantsDocumentation.lua
    record Enum_GameRuleTypeMeta_Values
@@ -25913,8 +24534,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrAutoBoardIndexMeta_Values
       MaxValue: number
       MinValue: number
@@ -25940,8 +24559,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrAutoCombatSpellTutorialFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -25956,8 +24573,6 @@ local record CatalogueTypes
       Row: number
       Single: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrAutoCombatTutorialMeta_Values
@@ -25982,8 +24597,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrAutoCombatantRoleMeta_Values
       MaxValue: number
       MinValue: number
@@ -26001,8 +24614,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrAutoEventFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -26016,8 +24627,6 @@ local record CatalogueTypes
       None: number
       Passive: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrAutoMissionEventTypeMeta_Values
@@ -26041,8 +24650,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrAutoPreviewTargetTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26059,8 +24666,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrFollowerMissionCompleteStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -26074,8 +24679,6 @@ local record CatalogueTypes
       OutOfDurability: number
       SavedByPreventDeath: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrFollowerQualityMeta_Values
@@ -26096,8 +24699,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentCostTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26111,8 +24712,6 @@ local record CatalogueTypes
       Respec: number
       TreeReset: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentFeatureSubtypeMeta_Values
@@ -26129,8 +24728,6 @@ local record CatalogueTypes
       Maldraxxus: number
       Revendreth: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentFeatureTypeMeta_Values
@@ -26153,8 +24750,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentResearchCostSourceMeta_Values
       MaxValue: number
       MinValue: number
@@ -26166,8 +24761,6 @@ local record CatalogueTypes
       Talent: number
       Tree: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentSocketTypeMeta_Values
@@ -26184,8 +24777,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentTreeTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26197,8 +24788,6 @@ local record CatalogueTypes
       Classic: number
       Tiers: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentTypeMeta_Values
@@ -26216,8 +24805,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrTalentUIMeta_Values
       MaxValue: number
       MinValue: number
@@ -26231,8 +24818,6 @@ local record CatalogueTypes
       Generic: number
       SoulBinds: number
    end
-
-   -- blizzard:GARRISON_FOLLOWER_TYPEConstantsDocumentation.lua
 
    -- blizzard:GARRISON_FOLLOWER_TYPEConstantsDocumentation.lua
    record Enum_GarrisonFollowerTypeMeta_Values
@@ -26249,8 +24834,6 @@ local record CatalogueTypes
       FollowerType_8_0_GarrisonFollower: number
       FollowerType_9_0_GarrisonFollower: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonConstantsDocumentation.lua
    record Enum_GarrisonTalentAvailabilityMeta_Values
@@ -26273,8 +24856,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GARRISON_TYPEConstantsDocumentation.lua
-
-   -- blizzard:GARRISON_TYPEConstantsDocumentation.lua
    record Enum_GarrisonTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26288,10 +24869,6 @@ local record CatalogueTypes
       Type_8_0_Garrison: number
       Type_9_0_Garrison: number
    end
-
-   -- blizzard:GossipConstantsDocumentation.lua
-
-   -- blizzard:GossipConstantsDocumentation.lua
 
    -- blizzard:GossipConstantsDocumentation.lua
    record Enum_GossipNpcOptionDisplayFlagsMeta_Values
@@ -26385,8 +24962,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GossipConstantsDocumentation.lua
-
-   -- blizzard:GossipConstantsDocumentation.lua
    record Enum_GossipOptionRecFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -26401,8 +24976,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GossipInfoDocumentation.lua
-
-   -- blizzard:GossipInfoDocumentation.lua
    record Enum_GossipOptionRewardTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26414,8 +24987,6 @@ local record CatalogueTypes
       Currency: number
       Item: number
    end
-
-   -- blizzard:GossipInfoDocumentation.lua
 
    -- blizzard:GossipInfoDocumentation.lua
    record Enum_GossipOptionStatusMeta_Values
@@ -26433,8 +25004,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:GossipInfoDocumentation.lua
-
-   -- blizzard:GossipInfoDocumentation.lua
    record Enum_GossipOptionUIWidgetSetTypesMeta_Values
       MaxValue: number
       MinValue: number
@@ -26446,8 +25015,6 @@ local record CatalogueTypes
       Background: number
       Modifiers: number
    end
-
-   -- blizzard:VideoDocumentation.lua
 
    -- blizzard:VideoDocumentation.lua
    record Enum_GraphicsValidationResultMeta_Values
@@ -26504,8 +25071,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CooldownViewerConstantsDocumentation.lua
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
    record Enum_GroupBuffItemFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -26516,8 +25081,6 @@ local record CatalogueTypes
    record Enum_GroupBuffItemFlags_Values
       HideByDefault: number
    end
-
-   -- blizzard:GuildConstantsDocumentation.lua
 
    -- blizzard:GuildConstantsDocumentation.lua
    record Enum_GuildErrorTypeMeta_Values
@@ -26584,8 +25147,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_HolidayCalendarFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -26597,8 +25158,6 @@ local record CatalogueTypes
       Alliance: number
       Horde: number
    end
-
-   -- blizzard:CalendarConstantsDocumentation.lua
 
    -- blizzard:CalendarConstantsDocumentation.lua
    record Enum_HolidayFlagsMeta_Values
@@ -26619,8 +25178,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HouseEditingContextMeta_Values
       MaxValue: number
       MinValue: number
@@ -26634,8 +25191,6 @@ local record CatalogueTypes
       None: number
       Room: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HouseEditorModeMeta_Values
@@ -26656,8 +25211,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HouseEditorUIDocumentation.lua
-
-   -- blizzard:HouseEditorUIDocumentation.lua
    record Enum_HouseEditorPlayerTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26670,8 +25223,6 @@ local record CatalogueTypes
       Owner: number
       Visitor: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HouseExteriorWMODataFlagsMeta_Values
@@ -26688,8 +25239,6 @@ local record CatalogueTypes
       None: number
       UnlockedByDefault: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HouseFinderSuggestionReasonMeta_Values
@@ -26712,8 +25261,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingUISharedDocumentation.lua
-
-   -- blizzard:HousingUISharedDocumentation.lua
    record Enum_HouseLevelRewardTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26725,8 +25272,6 @@ local record CatalogueTypes
       Object: number
       Value: number
    end
-
-   -- blizzard:HousingUISharedDocumentation.lua
 
    -- blizzard:HousingUISharedDocumentation.lua
    record Enum_HouseLevelRewardValueTypeMeta_Values
@@ -26744,8 +25289,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HouseOwnerErrorMeta_Values
       MaxValue: number
       MinValue: number
@@ -26759,8 +25302,6 @@ local record CatalogueTypes
       Guild: number
       None: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_HouseSettingFlags_Values
@@ -26778,8 +25319,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingUISharedDocumentation.lua
-
-   -- blizzard:HousingUISharedDocumentation.lua
    record Enum_HouseVisitTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26795,8 +25334,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingBasicModeUIDocumentation.lua
-
-   -- blizzard:HousingBasicModeUIDocumentation.lua
    record Enum_HousingBasicModeTargetTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26809,8 +25346,6 @@ local record CatalogueTypes
       House: number
       None: number
    end
-
-   -- blizzard:HousingBlueprintConstantsDocumentation.lua
 
    -- blizzard:HousingBlueprintConstantsDocumentation.lua
    record Enum_HousingBlueprintContentTypeMeta_Values
@@ -26831,8 +25366,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingBlueprintFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -26844,8 +25377,6 @@ local record CatalogueTypes
       AutomaticBackup: number
       None: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingBlueprintTypeMeta_Values
@@ -26862,8 +25393,6 @@ local record CatalogueTypes
       None: number
       Room: number
    end
-
-   -- blizzard:HousingBlueprintConstantsDocumentation.lua
 
    -- blizzard:HousingBlueprintConstantsDocumentation.lua
    record Enum_HousingBlueprintUnmetRequirementFlagsMeta_Values
@@ -26885,8 +25414,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingBudgetTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26899,8 +25426,6 @@ local record CatalogueTypes
       PetDecor: number
       RoomPlacement: number
    end
-
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
 
    -- blizzard:HousingCatalogConstantsDocumentation.lua
    record Enum_HousingCatalogEntryModelScenePresetsMeta_Values
@@ -26924,8 +25449,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingCatalogConstantsDocumentation.lua
-
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
    record Enum_HousingCatalogEntrySizeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26943,8 +25466,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingCatalogConstantsDocumentation.lua
-
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
    record Enum_HousingCatalogEntryTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26959,8 +25480,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingCatalogConstantsDocumentation.lua
-
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
    record Enum_HousingCatalogSortTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -26972,8 +25491,6 @@ local record CatalogueTypes
       Alphabetical: number
       DateAdded: number
    end
-
-   -- blizzard:HousingCleanupModeUIDocumentation.lua
 
    -- blizzard:HousingCleanupModeUIDocumentation.lua
    record Enum_HousingCleanupModeTargetTypeMeta_Values
@@ -26990,8 +25507,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingCustomizeModeUIDocumentation.lua
-
-   -- blizzard:HousingCustomizeModeUIDocumentation.lua
    record Enum_HousingCustomizeModeTargetTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27005,8 +25520,6 @@ local record CatalogueTypes
       None: number
       RoomComponent: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_HousingDecorActionFlags_Values
@@ -27026,15 +25539,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_HousingDecorModelType_Values
       M2: number
       None: number
       WMO: number
    end
-
-   -- blizzard:HousingDecorSharedDocumentation.lua
 
    -- blizzard:HousingDecorSharedDocumentation.lua
    record Enum_HousingDecorPlacementRestrictionMeta_Values
@@ -27055,8 +25564,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingDecorThemeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27074,8 +25581,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_HousingDecorType_Values
       Ceiling: number
       Floor: number
@@ -27083,8 +25588,6 @@ local record CatalogueTypes
       None: number
       Wall: number
    end
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
 
    -- blizzard:HousingExpertModeUIDocumentation.lua
    record Enum_HousingExpertModeTargetTypeMeta_Values
@@ -27099,8 +25602,6 @@ local record CatalogueTypes
       House: number
       None: number
    end
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
 
    -- blizzard:HousingExpertModeUIDocumentation.lua
    record Enum_HousingExpertSubmodeRestrictionMeta_Values
@@ -27118,8 +25619,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_HousingFavorUpdateSource_Values
       DecorCollection: number
       DeferredRewards: number
@@ -27132,15 +25631,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_HousingFavorUpdateType_Values
       Add: number
       InitiativeAdd: number
       Set: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingFixtureDecorActionMeta_Values
@@ -27154,8 +25649,6 @@ local record CatalogueTypes
       Detach: number
       Store: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingFixtureFlagsMeta_Values
@@ -27172,8 +25665,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingFixtureSizeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27188,8 +25679,6 @@ local record CatalogueTypes
       None: number
       Small: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingFixtureTypeMeta_Values
@@ -27212,8 +25701,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingHouseScopeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27226,8 +25713,6 @@ local record CatalogueTypes
       Interior: number
       None: number
    end
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
 
    -- blizzard:HousingExpertModeUIDocumentation.lua
    record Enum_HousingIncrementTypeMeta_Values
@@ -27251,8 +25736,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingUIDocumentation.lua
-
-   -- blizzard:HousingUIDocumentation.lua
    record Enum_HousingItemToastTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27267,8 +25750,6 @@ local record CatalogueTypes
       HouseType: number
       Room: number
    end
-
-   -- blizzard:HousingLayoutUITypesDocumentation.lua
 
    -- blizzard:HousingLayoutUITypesDocumentation.lua
    record Enum_HousingLayoutCameraDirectionMeta_Values
@@ -27287,8 +25768,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingLayoutUITypesDocumentation.lua
-
-   -- blizzard:HousingLayoutUITypesDocumentation.lua
    record Enum_HousingLayoutPinTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27300,8 +25779,6 @@ local record CatalogueTypes
       Door: number
       Room: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingLayoutRestrictionMeta_Values
@@ -27325,8 +25802,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingLayoutUITypesDocumentation.lua
-
-   -- blizzard:HousingLayoutUITypesDocumentation.lua
    record Enum_HousingLayoutStairDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -27340,8 +25815,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingPetBehaviorTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27353,8 +25826,6 @@ local record CatalogueTypes
       Stationary: number
       Wander: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingPlotOwnerTypeMeta_Values
@@ -27372,8 +25843,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingExpertModeUIDocumentation.lua
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
    record Enum_HousingPrecisionSubmodeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27386,8 +25855,6 @@ local record CatalogueTypes
       Scale: number
       Translate: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingResultMeta_Values
@@ -27514,8 +25981,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentCeilingTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27527,8 +25992,6 @@ local record CatalogueTypes
       Flat: number
       Vaulted: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentDoorTypeMeta_Values
@@ -27545,8 +26008,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -27560,8 +26021,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentFloorTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27572,8 +26031,6 @@ local record CatalogueTypes
    record Enum_HousingRoomComponentFloorType_Values
       Floor: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentOptionFlagsMeta_Values
@@ -27589,8 +26046,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentOptionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27603,8 +26058,6 @@ local record CatalogueTypes
       Doorway: number
       DoorwayWall: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentStairTypeMeta_Values
@@ -27623,8 +26076,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentTextureFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -27636,8 +26087,6 @@ local record CatalogueTypes
       None: number
       UnlockedByDefault: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomComponentTypeMeta_Values
@@ -27659,8 +26108,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingRoomFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -27675,8 +26122,6 @@ local record CatalogueTypes
       None: number
       UnlockedByDefault: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_HousingTeleportReason_Values
@@ -27695,8 +26140,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingThemeFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -27709,8 +26152,6 @@ local record CatalogueTypes
       ShowInStyleSelector: number
       UnlockedByDefault: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_HousingThrottleTypeMeta_Values
@@ -27726,8 +26167,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_IconAndTextShiftTextTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -27739,8 +26178,6 @@ local record CatalogueTypes
       None: number
       ShiftText: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_IconAndTextWidgetStateMeta_Values
@@ -27758,8 +26195,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_IconStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -27772,8 +26207,6 @@ local record CatalogueTypes
       ShowState1: number
       ShowState2: number
    end
-
-   -- blizzard:ImageSharingConstantsDocumentation.lua
 
    -- blizzard:ImageSharingConstantsDocumentation.lua
    record Enum_ImageSharingResultMeta_Values
@@ -27802,8 +26235,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_InitiativeMilestoneFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -27816,8 +26247,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_InitiativeRewardFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -27828,8 +26257,6 @@ local record CatalogueTypes
    record Enum_InitiativeRewardFlags_Values
       PermanentWorldState: number
    end
-
-   -- blizzard:InputConstantsDocumentation.lua
 
    -- blizzard:InputConstantsDocumentation.lua
    record Enum_InputContextMeta_Values
@@ -27847,8 +26274,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_InvalidPlotScreenshotReason_Values
       Facing: number
       NoActivePlayer: number
@@ -27856,8 +26281,6 @@ local record CatalogueTypes
       None: number
       OutOfBounds: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_InventoryTypeMeta_Values
@@ -27906,8 +26329,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemArmorSubclassMeta_Values
       MaxValue: number
       MinValue: number
@@ -27931,8 +26352,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemBindMeta_Values
       MaxValue: number
       MinValue: number
@@ -27952,8 +26371,6 @@ local record CatalogueTypes
       Unused1: number
       Unused2: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemClassMeta_Values
@@ -27988,8 +26405,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
    record Enum_ItemCollectionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -28015,8 +26430,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:AuctionHouseDocumentation.lua
-
-   -- blizzard:AuctionHouseDocumentation.lua
    record Enum_ItemCommodityStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -28029,8 +26442,6 @@ local record CatalogueTypes
       Item: number
       Unknown: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemConsumableSubclassMeta_Values
@@ -28057,8 +26468,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemConversionFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28069,8 +26478,6 @@ local record CatalogueTypes
    record Enum_ItemConversionFlags_Values
       UseInputItemStats: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_ItemCreationContext_Values
@@ -28264,8 +26671,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ItemDisplayTextDisplayStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -28281,8 +26686,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ItemDisplayTooltipEnabledTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -28294,8 +26697,6 @@ local record CatalogueTypes
       Disabled: number
       Enabled: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemGemColorMeta_Values
@@ -28340,8 +26741,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstants_MainlineDocumentation.lua
-
-   -- blizzard:ItemConstants_MainlineDocumentation.lua
    record Enum_ItemGemSubclassMeta_Values
       MaxValue: number
       MinValue: number
@@ -28365,8 +26764,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemHousingSubclassMeta_Values
       MaxValue: number
       MinValue: number
@@ -28382,8 +26779,6 @@ local record CatalogueTypes
       RoomCustomization: number
       ServiceItem: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemMiscellaneousSubclassMeta_Values
@@ -28402,8 +26797,6 @@ local record CatalogueTypes
       Other: number
       Reagent: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_ItemModification_Values
@@ -28474,8 +26867,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemProfessionSubclassMeta_Values
       MaxValue: number
       MinValue: number
@@ -28501,8 +26892,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemQualitiesDocumentation.lua
-
-   -- blizzard:ItemQualitiesDocumentation.lua
    record Enum_ItemQualityMeta_Values
       MaxValue: number
       MinValue: number
@@ -28523,8 +26912,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemReagentSubclassMeta_Values
       MaxValue: number
       MinValue: number
@@ -28537,8 +26924,6 @@ local record CatalogueTypes
       Keystone: number
       Reagent: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemRecipeSubclassMeta_Values
@@ -28564,8 +26949,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_ItemRecraftFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28576,8 +26959,6 @@ local record CatalogueTypes
    record Enum_ItemRecraftFlags_Values
       Invalid: number
    end
-
-   -- blizzard:ItemConstants_MainlineDocumentation.lua
 
    -- blizzard:ItemConstants_MainlineDocumentation.lua
    record Enum_ItemRedundancySlotMeta_Values
@@ -28608,8 +26989,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterJournalDocumentation.lua
-
-   -- blizzard:EncounterJournalDocumentation.lua
    record Enum_ItemSlotFilterTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -28637,8 +27016,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemSocketInfoDocumentation.lua
-
-   -- blizzard:ItemSocketInfoDocumentation.lua
    record Enum_ItemSocketInfoUITypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -28649,8 +27026,6 @@ local record CatalogueTypes
    record Enum_ItemSocketInfoUIType_Values
       Default: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemSocketTypeMeta_Values
@@ -28695,16 +27070,12 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ItemSoundType_Values
       Close: number
       Drop: number
       Pickup: number
       Use: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemSubclassDisplayMeta_Values
@@ -28719,8 +27090,6 @@ local record CatalogueTypes
       HideSubclassInTooltips: number
       ShowItemCount: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemSubclassFlagMeta_Values
@@ -28745,8 +27114,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIModelInfoSharedDocumentation.lua
-
-   -- blizzard:UIModelInfoSharedDocumentation.lua
    record Enum_ItemTryOnReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -28760,8 +27127,6 @@ local record CatalogueTypes
       Success: number
       WrongRace: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemWeaponSubclassMeta_Values
@@ -28796,8 +27161,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemclassfilterflagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28827,8 +27190,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_ItemsetflagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28841,8 +27202,6 @@ local record CatalogueTypes
       RequiresPvPTalentsActive: number
       UseItemHistorySetSlots: number
    end
-
-   -- blizzard:ScenarioInfoDocumentation.lua
 
    -- blizzard:ScenarioInfoDocumentation.lua
    record Enum_JailersTowerTypeMeta_Values
@@ -28871,8 +27230,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalEncounterFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28889,8 +27246,6 @@ local record CatalogueTypes
       NoMap: number
       Obsolete: number
    end
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalEncounterIconFlagsMeta_Values
@@ -28918,8 +27273,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalEncounterItemFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28936,8 +27289,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalEncounterLocFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28948,8 +27299,6 @@ local record CatalogueTypes
    record Enum_JournalEncounterLocFlags_Values
       Primary: number
    end
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalEncounterSecTypesMeta_Values
@@ -28967,8 +27316,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalEncounterSectionFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -28980,8 +27327,6 @@ local record CatalogueTypes
       LimitDifficulties: number
       StartExpanded: number
    end
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalInstanceFlagsMeta_Values
@@ -28998,8 +27343,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
    record Enum_JournalLinkTypesMeta_Values
       MaxValue: number
       MinValue: number
@@ -29013,8 +27356,6 @@ local record CatalogueTypes
       Section: number
       Tier: number
    end
-
-   -- blizzard:LFGConstantsDocumentation.lua
 
    -- blizzard:LFGConstantsDocumentation.lua
    record Enum_LFGEntryGeneralPlaystyleMeta_Values
@@ -29033,8 +27374,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LFGConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
    record Enum_LFGEntryPlaystyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -29048,8 +27387,6 @@ local record CatalogueTypes
       None: number
       Standard: number
    end
-
-   -- blizzard:LFGConstantsDocumentation.lua
 
    -- blizzard:LFGConstantsDocumentation.lua
    record Enum_LFGListDisplayTypeMeta_Values
@@ -29067,8 +27404,6 @@ local record CatalogueTypes
       RoleCount: number
       RoleEnumerate: number
    end
-
-   -- blizzard:LFGConstantsDocumentation.lua
 
    -- blizzard:LFGConstantsDocumentation.lua
    record Enum_LFGListFilterMeta_Values
@@ -29090,8 +27425,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LFGConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
    record Enum_LFGRoleMeta_Values
       MaxValue: number
       MinValue: number
@@ -29104,8 +27437,6 @@ local record CatalogueTypes
       Healer: number
       Tank: number
    end
-
-   -- blizzard:LFGConstantsDocumentation.lua
 
    -- blizzard:LFGConstantsDocumentation.lua
    record Enum_LFGSlotInvalidReasonMeta_Values
@@ -29139,8 +27470,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
    record Enum_LanguageFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -29153,8 +27482,6 @@ local record CatalogueTypes
       HideLanguageNameInChat: number
       IsExotic: number
    end
-
-   -- blizzard:PartyInfoDocumentation.lua
 
    -- blizzard:PartyInfoDocumentation.lua
    record Enum_LeavePartyConfirmReasonMeta_Values
@@ -29170,14 +27497,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_LgVendorPurchaseSettlementState_Values
       NotSettled: number
       Settled: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_LgVendorPurchaseSqlResults_Values
@@ -29193,14 +27516,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_LgVendorPurchaseState_Values
       NotOwned: number
       Owned: number
    end
-
-   -- blizzard:HousingDecorUIDocumentation.lua
 
    -- blizzard:HousingDecorUIDocumentation.lua
    record Enum_LightRadiusIndicatorTypeMeta_Values
@@ -29215,8 +27534,6 @@ local record CatalogueTypes
       Never: number
       Overlap: number
    end
-
-   -- blizzard:LimitedInputDocumentation.lua
 
    -- blizzard:LimitedInputDocumentation.lua
    record Enum_LimitedInputTypeMeta_Values
@@ -29234,8 +27551,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_LinkedCurrencyFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -29251,8 +27566,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClassTalentsDocumentation.lua
-
-   -- blizzard:ClassTalentsDocumentation.lua
    record Enum_LoadConfigResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -29266,8 +27579,6 @@ local record CatalogueTypes
       NoChangesNecessary: number
       Ready: number
    end
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
 
    -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_LocaleTransformMeta_Values
@@ -29289,8 +27600,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LogConstantsDocumentation.lua
-
-   -- blizzard:LogConstantsDocumentation.lua
    record Enum_LogPriorityMeta_Values
       MaxValue: number
       MinValue: number
@@ -29308,8 +27617,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LogicConstantsDocumentation.lua
-
-   -- blizzard:LogicConstantsDocumentation.lua
    record Enum_LogicLogicopMeta_Values
       MaxValue: number
       MinValue: number
@@ -29323,8 +27630,6 @@ local record CatalogueTypes
       Or: number
       Xor: number
    end
-
-   -- blizzard:LogicConstantsDocumentation.lua
 
    -- blizzard:LogicConstantsDocumentation.lua
    record Enum_LogicMathopMeta_Values
@@ -29342,8 +27647,6 @@ local record CatalogueTypes
       Plus: number
       Times: number
    end
-
-   -- blizzard:LogicConstantsDocumentation.lua
 
    -- blizzard:LogicConstantsDocumentation.lua
    record Enum_LogicRelopMeta_Values
@@ -29364,8 +27667,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_LoginTicketLicensesMeta_Values
       MaxValue: number
       MinValue: number
@@ -29378,15 +27679,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:LootConstantsDocumentation.lua
-
-   -- blizzard:LootConstantsDocumentation.lua
    record Enum_LootMethodMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:LootConstantsDocumentation.lua
 
    -- blizzard:LootConstantsDocumentation.lua
    record Enum_LootMethodStylesMeta_Values
@@ -29412,8 +27709,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LootConstantsDocumentation.lua
-
-   -- blizzard:LootConstantsDocumentation.lua
    record Enum_LootSlotTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -29427,8 +27722,6 @@ local record CatalogueTypes
       Money: number
       None: number
    end
-
-   -- blizzard:LuaCurveObjectConstantsDocumentation.lua
 
    -- blizzard:LuaCurveObjectConstantsDocumentation.lua
    record Enum_LuaCurveTypeMeta_Values
@@ -29446,8 +27739,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:MajorFactionsConstantsDocumentation.lua
-
-   -- blizzard:MajorFactionsConstantsDocumentation.lua
    record Enum_MajorFactionFeatureAbilityMeta_Values
       MaxValue: number
       MinValue: number
@@ -29460,8 +27751,6 @@ local record CatalogueTypes
       Generic: number
       Hunts: number
    end
-
-   -- blizzard:MajorFactionsConstantsDocumentation.lua
 
    -- blizzard:MajorFactionsConstantsDocumentation.lua
    record Enum_MajorFactionTypeMeta_Values
@@ -29480,16 +27769,12 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ManipulatorEventType_Values
       Complete: number
       Delete: number
       Move: number
       Start: number
    end
-
-   -- blizzard:MapConstantsDocumentation.lua
 
    -- blizzard:MapConstantsDocumentation.lua
    record Enum_MapCanvasPositionMeta_Values
@@ -29508,8 +27793,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_MapIconUIWidgetSetTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -29522,8 +27805,6 @@ local record CatalogueTypes
       BehindIcon: number
       Tooltip: number
    end
-
-   -- blizzard:QuestLogDocumentation.lua
 
    -- blizzard:QuestLogDocumentation.lua
    record Enum_MapOverlayDisplayLocationMeta_Values
@@ -29543,8 +27824,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_MapPinAnimationTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -29558,8 +27837,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:MapConstantsDocumentation.lua
-
-   -- blizzard:MapConstantsDocumentation.lua
    record Enum_MapobjEventTypesMeta_Values
       MaxValue: number
       MinValue: number
@@ -29571,8 +27848,6 @@ local record CatalogueTypes
       PlayAnim: number
       SetAnimSpeed: number
    end
-
-   -- blizzard:EndOfMatchUIDocumentation.lua
 
    -- blizzard:EndOfMatchUIDocumentation.lua
    record Enum_MatchDetailTypeMeta_Values
@@ -29589,8 +27864,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_MicroMenuOrderMeta_Values
       MaxValue: number
       MinValue: number
@@ -29604,8 +27877,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_MicroMenuOrientationMeta_Values
       MaxValue: number
       MinValue: number
@@ -29617,8 +27888,6 @@ local record CatalogueTypes
       Horizontal: number
       Vertical: number
    end
-
-   -- blizzard:MinimapConstantsDocumentation.lua
 
    -- blizzard:MinimapConstantsDocumentation.lua
    record Enum_MinimapTrackingFilterMeta_Values
@@ -29656,8 +27925,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ModelAnimationSharedDocumentation.lua
-
-   -- blizzard:ModelAnimationSharedDocumentation.lua
    record Enum_ModelBlendOperationMeta_Values
       MaxValue: number
       MinValue: number
@@ -29669,8 +27936,6 @@ local record CatalogueTypes
       Anim: number
       None: number
    end
-
-   -- blizzard:FrameAPIModelSceneFrameSharedDocumentation.lua
 
    -- blizzard:FrameAPIModelSceneFrameSharedDocumentation.lua
    record Enum_ModelLightTypeMeta_Values
@@ -29686,8 +27951,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIModelInfoSharedDocumentation.lua
-
-   -- blizzard:UIModelInfoSharedDocumentation.lua
    record Enum_ModelSceneSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -29698,8 +27961,6 @@ local record CatalogueTypes
    record Enum_ModelSceneSetting_Values
       AlignLightToOrbitDelta: number
    end
-
-   -- blizzard:UIModelInfoSharedDocumentation.lua
 
    -- blizzard:UIModelInfoSharedDocumentation.lua
    record Enum_ModelSceneTypeMeta_Values
@@ -29733,8 +27994,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ModelSoundOverrideType_Values
       Mute: number
       UseOverride: number
@@ -29742,16 +28001,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ModelSoundTagType_Values
       Looping: number
       Oneshot: number
    end
-
-   -- blizzard:MountConstantsDocumentation.lua
-
-   -- blizzard:MountConstantsDocumentation.lua
 
    -- blizzard:MountConstantsDocumentation.lua
    record Enum_MountTypeFlagMeta_Values
@@ -29785,8 +28038,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateCastBarDisplayMeta_Values
       MaxValue: number
       MinValue: number
@@ -29804,8 +28055,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateEnemyNpcAuraDisplayMeta_Values
       MaxValue: number
       MinValue: number
@@ -29819,8 +28068,6 @@ local record CatalogueTypes
       Debuffs: number
       None: number
    end
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
 
    -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateEnemyPlayerAuraDisplayMeta_Values
@@ -29838,8 +28085,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateFriendlyPlayerAuraDisplayMeta_Values
       MaxValue: number
       MinValue: number
@@ -29855,8 +28100,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateInfoDisplayMeta_Values
       MaxValue: number
       MinValue: number
@@ -29870,8 +28113,6 @@ local record CatalogueTypes
       None: number
       RarityIcon: number
    end
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
 
    -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateSimplifiedTypeMeta_Values
@@ -29890,8 +28131,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateSizeMeta_Values
       MaxValue: number
       MinValue: number
@@ -29908,8 +28147,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateStackTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -29922,8 +28159,6 @@ local record CatalogueTypes
       Friendly: number
       None: number
    end
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
 
    -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateStyleMeta_Values
@@ -29944,8 +28179,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateThreatDisplayMeta_Values
       MaxValue: number
       MinValue: number
@@ -29961,8 +28194,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
    record Enum_NamePlateTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -29974,8 +28205,6 @@ local record CatalogueTypes
       Enemy: number
       Friendly: number
    end
-
-   -- blizzard:InGameNavigationDocumentation.lua
 
    -- blizzard:InGameNavigationDocumentation.lua
    record Enum_NavigationStateMeta_Values
@@ -29993,8 +28222,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_NeighborhoodFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -30007,8 +28234,6 @@ local record CatalogueTypes
       OpenToPublic: number
       PoolParent: number
    end
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_NeighborhoodInitiativeChestResultMeta_Values
@@ -30028,8 +28253,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_NeighborhoodInitiativeFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -30042,8 +28265,6 @@ local record CatalogueTypes
       NoAbandon: number
       NoRepeat: number
    end
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_NeighborhoodInitiativeNeighborhoodTypesMeta_Values
@@ -30059,8 +28280,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_NeighborhoodInitiativeTaskTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -30073,8 +28292,6 @@ local record CatalogueTypes
       RepeatableInfinite: number
       Single: number
    end
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_NeighborhoodInitiativeUpdateStatusMeta_Values
@@ -30092,8 +28309,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    record Enum_NeighborhoodInitiativesCompletionStatesMeta_Values
       MaxValue: number
       MinValue: number
@@ -30106,8 +28321,6 @@ local record CatalogueTypes
       NiCompletionStatePlayerCompleted: number
       NiCompletionStateSystemAbandoned: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_NeighborhoodInviteResultMeta_Values
@@ -30133,8 +28346,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_NeighborhoodMapFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -30150,8 +28361,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_NeighborhoodOwnerType_Values
       Charter: number
       Guild: number
@@ -30159,15 +28368,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_NeighborhoodType_Values
       Open: number
       Private: number
       Public: number
    end
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
 
    -- blizzard:CharacterCustomizationSharedDocumentation.lua
    record Enum_NewCharGearMeta_Values
@@ -30181,8 +28386,6 @@ local record CatalogueTypes
       Preview: number
       Start: number
    end
-
-   -- blizzard:CharacterServicesConstantsDocumentation.lua
 
    -- blizzard:CharacterServicesConstantsDocumentation.lua
    record Enum_NoRPEReasonMeta_Values
@@ -30204,8 +28407,6 @@ local record CatalogueTypes
       Timerunner: number
       UpgradeInProgress: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_NodeOpFailureReasonMeta_Values
@@ -30246,8 +28447,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_NormalizationFormMeta_Values
       MaxValue: number
       MinValue: number
@@ -30263,8 +28462,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_NpcCraftingOrderSetFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -30276,8 +28473,6 @@ local record CatalogueTypes
       AllowDuplicate: number
       AllowMultiple: number
    end
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
 
    -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_NumberStyleMeta_Values
@@ -30295,8 +28490,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:NumericRuleFormatterSharedDocumentation.lua
-
-   -- blizzard:NumericRuleFormatterSharedDocumentation.lua
    record Enum_NumericRuleFormatRoundingMeta_Values
       MaxValue: number
       MinValue: number
@@ -30309,8 +28502,6 @@ local record CatalogueTypes
       Nearest: number
       Up: number
    end
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
 
    -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    record Enum_OnUpdateModeMeta_Values
@@ -30329,16 +28520,12 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PartyPlaylistEntry_Values
       DuoGameMode: number
       SoloGameMode: number
       TrainingGameMode: number
       TrioGameMode: number
    end
-
-   -- blizzard:PartyPoseUIConstantsDocumentation.lua
 
    -- blizzard:PartyPoseUIConstantsDocumentation.lua
    record Enum_PartyPoseFlagsMeta_Values
@@ -30351,8 +28538,6 @@ local record CatalogueTypes
    record Enum_PartyPoseFlags_Values
       HideLeaveInstanceButton: number
    end
-
-   -- blizzard:PartyConstantsDocumentation.lua
 
    -- blizzard:PartyConstantsDocumentation.lua
    record Enum_PartyRequestJoinRelationMeta_Values
@@ -30369,8 +28554,6 @@ local record CatalogueTypes
       None: number
       RecentAllies: number
    end
-
-   -- blizzard:PerksVendorConstantsDocumentation.lua
 
    -- blizzard:PerksVendorConstantsDocumentation.lua
    record Enum_PerksVendorCategoryTypeMeta_Values
@@ -30396,8 +28579,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
    record Enum_PermanentChatChannelTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -30411,8 +28592,6 @@ local record CatalogueTypes
       None: number
       Zone: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_PersonalResourceDisplayVisibleSettingMeta_Values
@@ -30429,8 +28608,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
    record Enum_PetActionFeedbackMeta_Values
       MaxValue: number
       MinValue: number
@@ -30445,8 +28622,6 @@ local record CatalogueTypes
       NoPath: number
       Success: number
    end
-
-   -- blizzard:PetConstantsDocumentation.lua
 
    -- blizzard:PetConstantsDocumentation.lua
    record Enum_PetActionbuttonTypeMeta_Values
@@ -30478,8 +28653,6 @@ local record CatalogueTypes
       Spell: number
       VehicleAction: number
    end
-
-   -- blizzard:PetBattleConstantsDocumentation.lua
 
    -- blizzard:PetBattleConstantsDocumentation.lua
    record Enum_PetBattleQueueStatusMeta_Values
@@ -30515,8 +28688,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PetJournalInfoDocumentation.lua
-
-   -- blizzard:PetJournalInfoDocumentation.lua
    record Enum_PetJournalErrorMeta_Values
       MaxValue: number
       MinValue: number
@@ -30534,8 +28705,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
    record Enum_PetModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -30549,8 +28718,6 @@ local record CatalogueTypes
       Defensive: number
       Passive: number
    end
-
-   -- blizzard:PetConstantsDocumentation.lua
 
    -- blizzard:PetConstantsDocumentation.lua
    record Enum_PetOrdersMeta_Values
@@ -30569,8 +28736,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
    record Enum_PetOverrideMeta_Values
       MaxValue: number
       MinValue: number
@@ -30586,8 +28751,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PetbattleAuraStateFlags_Values
       Canceled: number
       CountdownFirstRound: number
@@ -30599,14 +28762,10 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PetbattleCheatFlags_Values
       AutoPlay: number
       None: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_PetbattleEffectFlags_Values
@@ -30626,8 +28785,6 @@ local record CatalogueTypes
       Unkillable: number
       Weak: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_PetbattleEffectType_Values
@@ -30652,8 +28809,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PetbattleEnviros_Values
       Pad0: number
       Pad1: number
@@ -30661,15 +28816,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PetbattleInputMoveMsgDebugFlag_Values
       DontValidate: number
       EnemyCast: number
       None: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_PetbattleMoveType_Values
@@ -30680,8 +28831,6 @@ local record CatalogueTypes
       Swap: number
       Trap: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_PetbattlePboid_Values
@@ -30697,8 +28846,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PetbattlePetStatus_Values
       FlagNone: number
       FlagTrapped: number
@@ -30706,10 +28853,6 @@ local record CatalogueTypes
       SwapInLocked: number
       SwapOutLocked: number
    end
-
-   -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_PetbattlePlayerInputFlags_Values
@@ -30725,8 +28868,6 @@ local record CatalogueTypes
       Player_0: number
       Player_1: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_PetbattleResult_Values
@@ -30756,10 +28897,6 @@ local record CatalogueTypes
       Success: number
    end
 
-   -- blizzard:PetBattleConstantsDocumentation.lua
-
-   -- questie:Data/Enum.lua
-
    -- questie:Data/Enum.lua
    record Enum_PetbattleSlotAbility_Values
       Ability_0: number
@@ -30773,8 +28910,6 @@ local record CatalogueTypes
       MinValue: number
       NumValues: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_PetbattleSlotResult_Values
@@ -30797,8 +28932,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PetBattleConstantsDocumentation.lua
-
-   -- blizzard:PetBattleConstantsDocumentation.lua
    record Enum_PetbattleStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -30817,8 +28950,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PetbattleTrapstatus_Values
       CanTrap: number
       CantTrapNewbie: number
@@ -30832,16 +28963,12 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PetbattleType_Values
       Lfpb: number
       Npc: number
       PvE: number
       PvP: number
    end
-
-   -- blizzard:PetConstantsDocumentation.lua
 
    -- blizzard:PetConstantsDocumentation.lua
    record Enum_PettameresultMeta_Values
@@ -30871,8 +28998,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitDocumentation.lua
-
-   -- blizzard:UnitDocumentation.lua
    record Enum_PhaseReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -30887,8 +29012,6 @@ local record CatalogueTypes
       TimerunningHwt: number
       WarMode: number
    end
-
-   -- blizzard:ImageSharingConstantsDocumentation.lua
 
    -- blizzard:ImageSharingConstantsDocumentation.lua
    record Enum_PhotoSharingStatusMeta_Values
@@ -30909,8 +29032,6 @@ local record CatalogueTypes
       ParentalControl: number
       TrialOrVeteran: number
    end
-
-   -- blizzard:ImageSharingConstantsDocumentation.lua
 
    -- blizzard:ImageSharingConstantsDocumentation.lua
    record Enum_PhotoSharingUploadStatusMeta_Values
@@ -30954,8 +29075,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
    record Enum_PingModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -30967,8 +29086,6 @@ local record CatalogueTypes
       ClickDrag: number
       KeyDown: number
    end
-
-   -- blizzard:PingConstantsDocumentation.lua
 
    -- blizzard:PingConstantsDocumentation.lua
    record Enum_PingResultMeta_Values
@@ -30991,8 +29108,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
    record Enum_PingSetTargetStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -31005,8 +29120,6 @@ local record CatalogueTypes
       FailedSilent: number
       Ok: number
    end
-
-   -- blizzard:PingConstantsDocumentation.lua
 
    -- blizzard:PingConstantsDocumentation.lua
    record Enum_PingSubjectTypeMeta_Values
@@ -31030,8 +29143,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
    record Enum_PingTargetOptionMeta_Values
       MaxValue: number
       MinValue: number
@@ -31044,8 +29155,6 @@ local record CatalogueTypes
       Environment: number
       Units: number
    end
-
-   -- blizzard:PingConstantsDocumentation.lua
 
    -- blizzard:PingConstantsDocumentation.lua
    record Enum_PingTargetTypeMeta_Values
@@ -31062,8 +29171,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SharedScriptObjectUnitPositionFrameDocumentation.lua
-
-   -- blizzard:SharedScriptObjectUnitPositionFrameDocumentation.lua
    record Enum_PingTextureTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -31078,8 +29185,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
    record Enum_PingTypeFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -31090,8 +29195,6 @@ local record CatalogueTypes
    record Enum_PingTypeFlags_Values
       DefaultPing: number
    end
-
-   -- blizzard:PlayerChoiceConstantsDocumentation.lua
 
    -- blizzard:PlayerChoiceConstantsDocumentation.lua
    record Enum_PlayerChoiceFlagsMeta_Values
@@ -31114,8 +29217,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerChoiceConstantsDocumentation.lua
-
-   -- blizzard:PlayerChoiceConstantsDocumentation.lua
    record Enum_PlayerChoiceLayoutMeta_Values
       MaxValue: number
       MinValue: number
@@ -31131,8 +29232,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerChoiceDocumentation.lua
-
-   -- blizzard:PlayerChoiceDocumentation.lua
    record Enum_PlayerChoiceRarityMeta_Values
       MaxValue: number
       MinValue: number
@@ -31146,8 +29245,6 @@ local record CatalogueTypes
       Rare: number
       Uncommon: number
    end
-
-   -- blizzard:PlayerChoiceConstantsDocumentation.lua
 
    -- blizzard:PlayerChoiceConstantsDocumentation.lua
    record Enum_PlayerChoiceResponseFlagsMeta_Values
@@ -31171,8 +29268,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:ClubFinderDocumentation.lua
    record Enum_PlayerClubRequestStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -31192,8 +29287,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DelvesConstantsDocumentation.lua
-
-   -- blizzard:DelvesConstantsDocumentation.lua
    record Enum_PlayerCompanionInfoFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -31204,10 +29297,6 @@ local record CatalogueTypes
    record Enum_PlayerCompanionInfoFlags_Values
       IgnoreSeasonInScenarios: number
    end
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
 
    -- blizzard:CurrencyConstantsDocumentation.lua
    record Enum_PlayerCurrencyFlagsDbFlagsMeta_Values
@@ -31239,8 +29328,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerDataConstantsDocumentation.lua
-
-   -- blizzard:PlayerDataConstantsDocumentation.lua
    record Enum_PlayerDataElementAccountFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -31251,8 +29338,6 @@ local record CatalogueTypes
    record Enum_PlayerDataElementAccountFlags_Values
       Log: number
    end
-
-   -- blizzard:PlayerDataConstantsDocumentation.lua
 
    -- blizzard:PlayerDataConstantsDocumentation.lua
    record Enum_PlayerDataElementCharacterFlagsMeta_Values
@@ -31267,8 +29352,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerDataConstantsDocumentation.lua
-
-   -- blizzard:PlayerDataConstantsDocumentation.lua
    record Enum_PlayerDataElementTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -31280,8 +29363,6 @@ local record CatalogueTypes
       Float: number
       Int: number
    end
-
-   -- blizzard:PlayerInteractionManagerConstantsDocumentation.lua
 
    -- blizzard:PlayerInteractionManagerConstantsDocumentation.lua
    record Enum_PlayerInteractionTypeMeta_Values
@@ -31376,8 +29457,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerMentorshipConstantsDocumentation.lua
-
-   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
    record Enum_PlayerMentorshipApplicationResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -31392,8 +29471,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerMentorshipConstantsDocumentation.lua
-
-   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
    record Enum_PlayerMentorshipStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -31406,8 +29483,6 @@ local record CatalogueTypes
       Newcomer: number
       None: number
    end
-
-   -- blizzard:LobbyMatchmakerInfoDocumentation.lua
 
    -- blizzard:LobbyMatchmakerInfoDocumentation.lua
    record Enum_PlunderstormQueueStateMeta_Values
@@ -31425,8 +29500,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
    record Enum_PluralTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -31440,15 +29513,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:PowerTypeConstantsDocumentation.lua
-
-   -- blizzard:PowerTypeConstantsDocumentation.lua
    record Enum_PowerTypeMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:PowerTypeConstantsDocumentation.lua
 
    -- blizzard:PowerTypeConstantsDocumentation.lua
    record Enum_PowerTypeSignMeta_Values
@@ -31463,8 +29532,6 @@ local record CatalogueTypes
       None: number
       Positive: number
    end
-
-   -- blizzard:PowerTypeConstantsDocumentation.lua
 
    -- blizzard:PowerTypeConstantsDocumentation.lua
    record Enum_PowerTypeSlotMeta_Values
@@ -31522,8 +29589,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LFGConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
    record Enum_PremadeGroupFinderStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -31536,8 +29601,6 @@ local record CatalogueTypes
       Mainline: number
       Vanilla: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_PreyHuntProgressStateMeta_Values
@@ -31555,8 +29618,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProceduralSpawnConstantsDocumentation.lua
-
-   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
    record Enum_ProceduralSpawnInteractionModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -31569,8 +29630,6 @@ local record CatalogueTypes
       None: number
       Paint: number
    end
-
-   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
 
    -- blizzard:ProceduralSpawnConstantsDocumentation.lua
    record Enum_ProceduralSpawnVolumeChunkFlagsMeta_Values
@@ -31586,8 +29645,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionSpecConstantsDocumentation.lua
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    record Enum_ProfTraitPerkNodeFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -31601,10 +29658,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_ProfessionActionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -31616,8 +29669,6 @@ local record CatalogueTypes
       Craft: number
       Gather: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_ProfessionEffectMeta_Values
@@ -31669,15 +29720,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_ProfessionRatingMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_ProfessionRatingTypeMeta_Values
@@ -31725,8 +29772,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionSpecConstantsDocumentation.lua
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    record Enum_ProfessionsSpecPathStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -31739,8 +29784,6 @@ local record CatalogueTypes
       Locked: number
       Progressing: number
    end
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
 
    -- blizzard:ProfessionSpecConstantsDocumentation.lua
    record Enum_ProfessionsSpecPerkStateMeta_Values
@@ -31757,8 +29800,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ProfessionSpecConstantsDocumentation.lua
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    record Enum_ProfessionsSpecTabStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -31773,8 +29814,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_PurchaseHouseDisabledReason_Values
       CharterLockout: number
       GuildLockout: number
@@ -31787,8 +29826,6 @@ local record CatalogueTypes
       WrongFaction: number
       WrongGuild: number
    end
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
 
    -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_PurchaseResultMeta_Values
@@ -31874,8 +29911,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PvPFactionConstantsDocumentation.lua
-
-   -- blizzard:PvPFactionConstantsDocumentation.lua
    record Enum_PvPFactionMeta_Values
       MaxValue: number
       MinValue: number
@@ -31887,8 +29922,6 @@ local record CatalogueTypes
       Alliance: number
       Horde: number
    end
-
-   -- blizzard:PvpInfoDocumentation.lua
 
    -- blizzard:PvpInfoDocumentation.lua
    record Enum_PvPMatchStateMeta_Values
@@ -31908,8 +29941,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PVPMgrConstantsDocumentation.lua
-
-   -- blizzard:PVPMgrConstantsDocumentation.lua
    record Enum_PvPMatchmakingTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -31921,8 +29952,6 @@ local record CatalogueTypes
       Arena: number
       Battleground: number
    end
-
-   -- blizzard:PvpInfoConstantsDocumentation.lua
 
    -- blizzard:PvpInfoConstantsDocumentation.lua
    record Enum_PvPRanksMeta_Values
@@ -31955,8 +29984,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitDocumentation.lua
-
-   -- blizzard:UnitDocumentation.lua
    record Enum_PvPUnitClassificationMeta_Values
       MaxValue: number
       MinValue: number
@@ -31979,8 +30006,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestInfoSharedDocumentation.lua
-
-   -- blizzard:QuestInfoSharedDocumentation.lua
    record Enum_QuestClassificationMeta_Values
       MaxValue: number
       MinValue: number
@@ -32001,8 +30026,6 @@ local record CatalogueTypes
       Threat: number
       WorldQuest: number
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
 
    -- blizzard:QuestConstantsDocumentation.lua
    record Enum_QuestCompleteSpellTypeMeta_Values
@@ -32028,8 +30051,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestLogDocumentation.lua
-
-   -- blizzard:QuestLogDocumentation.lua
    record Enum_QuestFrequencyMeta_Values
       MaxValue: number
       MinValue: number
@@ -32045,8 +30066,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestLineInfoDocumentation.lua
-
-   -- blizzard:QuestLineInfoDocumentation.lua
    record Enum_QuestLineFloorLocationMeta_Values
       MaxValue: number
       MinValue: number
@@ -32059,8 +30078,6 @@ local record CatalogueTypes
       Below: number
       Same: number
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
 
    -- blizzard:QuestConstantsDocumentation.lua
    record Enum_QuestRepeatabilityMeta_Values
@@ -32079,8 +30096,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:QuestConstantsDocumentation.lua
    record Enum_QuestRewardContextFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -32093,8 +30108,6 @@ local record CatalogueTypes
       None: number
       RepeatCompletionBonus: number
    end
-
-   -- blizzard:QuestSessionConstantsDocumentation.lua
 
    -- blizzard:QuestSessionConstantsDocumentation.lua
    record Enum_QuestSessionCommandMeta_Values
@@ -32110,8 +30123,6 @@ local record CatalogueTypes
       Start: number
       Stop: number
    end
-
-   -- blizzard:QuestSessionConstantsDocumentation.lua
 
    -- blizzard:QuestSessionConstantsDocumentation.lua
    record Enum_QuestSessionResultMeta_Values
@@ -32160,15 +30171,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestLogDocumentation.lua
-
-   -- blizzard:QuestLogDocumentation.lua
    record Enum_QuestTagMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
 
    -- blizzard:QuestConstantsDocumentation.lua
    record Enum_QuestTagTypeMeta_Values
@@ -32218,8 +30225,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:QuestConstantsDocumentation.lua
    record Enum_QuestTreasurePickerTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32234,8 +30239,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:QuestLogDocumentation.lua
-
-   -- blizzard:QuestLogDocumentation.lua
    record Enum_QuestWatchTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32247,8 +30250,6 @@ local record CatalogueTypes
       Automatic: number
       Manual: number
    end
-
-   -- blizzard:RecruitAFriendSharedDocumentation.lua
 
    -- blizzard:RecruitAFriendSharedDocumentation.lua
    record Enum_RafLinkTypeMeta_Values
@@ -32266,8 +30267,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RecruitAFriendDocumentation.lua
-
-   -- blizzard:RecruitAFriendDocumentation.lua
    record Enum_RafRecruitActivityStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -32282,8 +30281,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RecruitAFriendDocumentation.lua
-
-   -- blizzard:RecruitAFriendDocumentation.lua
    record Enum_RafRecruitSubStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -32296,8 +30293,6 @@ local record CatalogueTypes
       Inactive: number
       Trial: number
    end
-
-   -- blizzard:RecruitAFriendDocumentation.lua
 
    -- blizzard:RecruitAFriendDocumentation.lua
    record Enum_RafRewardTypeMeta_Values
@@ -32319,8 +30314,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_RaidAuraOrganizationTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32333,8 +30326,6 @@ local record CatalogueTypes
       BuffsTopDebuffsBottom: number
       Legacy: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_RaidDispelDisplayTypeMeta_Values
@@ -32351,8 +30342,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_RaidDispelOverlayTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32365,8 +30354,6 @@ local record CatalogueTypes
       UseBlack: number
       UseDebuffColor: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_RaidGroupDisplayTypeMeta_Values
@@ -32382,8 +30369,6 @@ local record CatalogueTypes
       SeparateGroupsHorizontal: number
       SeparateGroupsVertical: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_RcoCloseReasonMeta_Values
@@ -32404,8 +30389,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RecentAlliesConstantsDocumentation.lua
-
-   -- blizzard:RecentAlliesConstantsDocumentation.lua
    record Enum_RecentAlliesFriendTagMeta_Values
       MaxValue: number
       MinValue: number
@@ -32423,8 +30406,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RecentAlliesConstantsDocumentation.lua
-
-   -- blizzard:RecentAlliesConstantsDocumentation.lua
    record Enum_RecentAllyPinResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -32436,8 +30417,6 @@ local record CatalogueTypes
       ServerError: number
       Success: number
    end
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_RecipeRequirementTypeMeta_Values
@@ -32452,8 +30431,6 @@ local record CatalogueTypes
       SpellFocus: number
       Totem: number
    end
-
-   -- blizzard:RecruitAFriendSharedDocumentation.lua
 
    -- blizzard:RecruitAFriendSharedDocumentation.lua
    record Enum_RecruitAFriendFailureMeta_Values
@@ -32478,8 +30455,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RecruitAFriendSharedDocumentation.lua
-
-   -- blizzard:RecruitAFriendSharedDocumentation.lua
    record Enum_RecruitAFriendRewardsVersionMeta_Values
       MaxValue: number
       MinValue: number
@@ -32495,8 +30470,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
    record Enum_RegisterAddonMessagePrefixResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -32510,8 +30483,6 @@ local record CatalogueTypes
       MaxPrefixes: number
       Success: number
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
 
    -- blizzard:QuestConstantsDocumentation.lua
    record Enum_RelativeContentDifficultyMeta_Values
@@ -32530,8 +30501,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ExpansionConstantsDocumentation.lua
-
-   -- blizzard:ExpansionConstantsDocumentation.lua
    record Enum_ReleaseTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32543,8 +30512,6 @@ local record CatalogueTypes
       Classic: number
       Original: number
    end
-
-   -- blizzard:RenownConstantsDocumentation.lua
 
    -- blizzard:RenownConstantsDocumentation.lua
    record Enum_RenownRewardDisplayTypeMeta_Values
@@ -32568,8 +30535,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RenownConstantsDocumentation.lua
-
-   -- blizzard:RenownConstantsDocumentation.lua
    record Enum_RenownRewardsFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -32585,8 +30550,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_ReportEvidenceTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32599,8 +30562,6 @@ local record CatalogueTypes
       HouseScreenshot: number
       Invalid: number
    end
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_ReportMajorCategoryMeta_Values
@@ -32618,8 +30579,6 @@ local record CatalogueTypes
       InappropriateDecor: number
       InappropriateName: number
    end
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_ReportMinorCategoryMeta_Values
@@ -32654,8 +30613,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_ReportSubComplaintTypesMeta_Values
       MaxValue: number
       MinValue: number
@@ -32667,8 +30624,6 @@ local record CatalogueTypes
       Advertising: number
       Inappropriate: number
    end
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_ReportThrottleTypeMeta_Values
@@ -32683,8 +30638,6 @@ local record CatalogueTypes
       General: number
       Invalid: number
    end
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_ReportTypeMeta_Values
@@ -32720,8 +30673,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ReputationInfoDocumentation.lua
-
-   -- blizzard:ReputationInfoDocumentation.lua
    record Enum_ReputationSortTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32736,8 +30687,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ReservationFlags_Values
       Canceled: number
       None: number
@@ -32746,15 +30695,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ResidentType_Values
       Manager: number
       Owner: number
       Resident: number
    end
-
-   -- blizzard:PartyConstantsDocumentation.lua
 
    -- blizzard:PartyConstantsDocumentation.lua
    record Enum_RestrictPingsToMeta_Values
@@ -32770,8 +30715,6 @@ local record CatalogueTypes
       None: number
       TankHealer: number
    end
-
-   -- blizzard:CharacterCreationConstantsDocumentation.lua
 
    -- blizzard:CharacterCreationConstantsDocumentation.lua
    record Enum_RestrictionTypeMeta_Values
@@ -32790,8 +30733,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_RetroactiveDecorRewardFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -32803,8 +30744,6 @@ local record CatalogueTypes
       AllCriteriaRequired: number
       None: number
    end
-
-   -- blizzard:RolodexConstantsDocumentation.lua
 
    -- blizzard:RolodexConstantsDocumentation.lua
    record Enum_RolodexContactMigrationResultMeta_Values
@@ -32820,16 +30759,12 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_RolodexContextIDType_Values
       AreaID: number
       ItemID: number
       MapID: number
       None: number
    end
-
-   -- blizzard:RolodexConstantsDocumentation.lua
 
    -- blizzard:RolodexConstantsDocumentation.lua
    record Enum_RolodexContextLevelTypeMeta_Values
@@ -32847,8 +30782,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RolodexConstantsDocumentation.lua
-
-   -- blizzard:RolodexConstantsDocumentation.lua
    record Enum_RolodexDbFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -32860,10 +30793,6 @@ local record CatalogueTypes
       None: number
       PromotedFromContact: number
    end
-
-   -- blizzard:RolodexConstantsDocumentation.lua
-
-   -- blizzard:RolodexConstantsDocumentation.lua
 
    -- blizzard:RolodexConstantsDocumentation.lua
    record Enum_RolodexTypeFlagsMeta_Values
@@ -32912,8 +30841,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
    record Enum_RoomConnectionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -32925,8 +30852,6 @@ local record CatalogueTypes
       All: number
       None: number
    end
-
-   -- blizzard:LegendaryCraftingTypesDocumentation.lua
 
    -- blizzard:LegendaryCraftingTypesDocumentation.lua
    record Enum_RuneforgePowerFilterMeta_Values
@@ -32944,8 +30869,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:LegendaryCraftingTypesDocumentation.lua
-
-   -- blizzard:LegendaryCraftingTypesDocumentation.lua
    record Enum_RuneforgePowerStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -32958,8 +30881,6 @@ local record CatalogueTypes
       Invalid: number
       Unavailable: number
    end
-
-   -- blizzard:ScreenLocationConstantsDocumentation.lua
 
    -- blizzard:ScreenLocationConstantsDocumentation.lua
    record Enum_ScreenLocationTypeMeta_Values
@@ -32985,8 +30906,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_ScreenshotSourceMeta_Values
       MaxValue: number
       MinValue: number
@@ -32999,8 +30918,6 @@ local record CatalogueTypes
       Cheat: number
       PlayerReport: number
    end
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
 
    -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    record Enum_ScriptBindingTypeMeta_Values
@@ -33017,8 +30934,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    record Enum_ScriptObjectAccessRestrictionMeta_Values
       MaxValue: number
       MinValue: number
@@ -33029,8 +30944,6 @@ local record CatalogueTypes
    record Enum_ScriptObjectAccessRestriction_Values
       DenyTaintedAccessWhenAurasAreSecret: number
    end
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
 
    -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    record Enum_ScriptObjectMetatableMeta_Values
@@ -33046,8 +30959,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    record Enum_ScriptObjectPartitionMeta_Values
       MaxValue: number
       MinValue: number
@@ -33061,8 +30972,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    record Enum_ScriptObjectPropagationPathMeta_Values
       MaxValue: number
       MinValue: number
@@ -33074,8 +30983,6 @@ local record CatalogueTypes
       Hierarchy: number
       Layout: number
    end
-
-   -- blizzard:ScriptedAnimationsDocumentation.lua
 
    -- blizzard:ScriptedAnimationsDocumentation.lua
    record Enum_ScriptedAnimationBehaviorMeta_Values
@@ -33095,8 +31002,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ScriptedAnimationsDocumentation.lua
-
-   -- blizzard:ScriptedAnimationsDocumentation.lua
    record Enum_ScriptedAnimationFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -33107,8 +31012,6 @@ local record CatalogueTypes
    record Enum_ScriptedAnimationFlags_Values
       UseTargetAsSource: number
    end
-
-   -- blizzard:ScriptedAnimationsDocumentation.lua
 
    -- blizzard:ScriptedAnimationsDocumentation.lua
    record Enum_ScriptedAnimationTrajectoryMeta_Values
@@ -33129,8 +31032,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ValidateNameConstantsDocumentation.lua
-
-   -- blizzard:ValidateNameConstantsDocumentation.lua
    record Enum_ScrubStringFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -33144,8 +31045,6 @@ local record CatalogueTypes
       StripControlCodes: number
       TruncateNewLines: number
    end
-
-   -- blizzard:SeasonsConstantsDocumentation.lua
 
    -- blizzard:SeasonsConstantsDocumentation.lua
    record Enum_SeasonIDMeta_Values
@@ -33165,15 +31064,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_SecondsFormatterAbbrevation_Values
       None: number
       OneLetter: number
       Truncate: number
    end
-
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
 
    -- blizzard:SecondsFormatterSharedDocumentation.lua
    record Enum_SecondsFormatterAbbreviationMeta_Values
@@ -33190,15 +31085,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:SecondsFormatterSharedDocumentation.lua
-
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
    record Enum_SecondsFormatterIntervalMeta_Values
       MaxValue: number
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
 
    -- blizzard:SecondsFormatterSharedDocumentation.lua
    record Enum_SecondsFormatterIntervalWhitespaceMeta_Values
@@ -33223,8 +31114,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SecondsFormatterSharedDocumentation.lua
-
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
    record Enum_SecondsFormatterRoundingMeta_Values
       MaxValue: number
       MinValue: number
@@ -33236,8 +31125,6 @@ local record CatalogueTypes
       RoundUp: number
       Truncate: number
    end
-
-   -- blizzard:SecretWrapperConstantsDocumentation.lua
 
    -- blizzard:SecretWrapperConstantsDocumentation.lua
    record Enum_SecrecyLevelMeta_Values
@@ -33252,8 +31139,6 @@ local record CatalogueTypes
       ContextuallySecret: number
       NeverSecret: number
    end
-
-   -- blizzard:SecretAspectConstantsDocumentation.lua
 
    -- blizzard:SecretAspectConstantsDocumentation.lua
    record Enum_SecretAspectMeta_Values
@@ -33297,8 +31182,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DeathInfoDocumentation.lua
-
-   -- blizzard:DeathInfoDocumentation.lua
    record Enum_SelfResurrectOptionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33310,8 +31193,6 @@ local record CatalogueTypes
       Item: number
       Spell: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
 
    -- blizzard:ChatConstantsDocumentation.lua
    record Enum_SendAddonMessageResultMeta_Values
@@ -33338,8 +31219,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
    record Enum_SendReportResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -33357,8 +31236,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_SharedStringFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -33371,8 +31248,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_ShutdownSessionReason_Values
       AccountLoginCommand: number
       Error: number
@@ -33382,8 +31257,6 @@ local record CatalogueTypes
       RestartSessionCommand: number
       SessionEnded: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_Si3UISoundSubType_Values
@@ -33398,8 +31271,6 @@ local record CatalogueTypes
       ScriptTalkingHead: number
       VocalError: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_Siflag_Values
@@ -33424,8 +31295,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_SimpleOrderStatusMeta_Values
       MaxValue: number
       MinValue: number
@@ -33440,8 +31309,6 @@ local record CatalogueTypes
       Invalid: number
       Success: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:ProfessionConstantsDocumentation.lua
    record Enum_SkinningStateMeta_Values
@@ -33460,8 +31327,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_SleevesGeoRangeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33476,10 +31341,6 @@ local record CatalogueTypes
       PandaCollar: number
       Puffy: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_SlotRegionMaskMeta_Values
@@ -33516,8 +31377,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SocialUIDocumentation.lua
-
-   -- blizzard:SocialUIDocumentation.lua
    record Enum_SocialSystemTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33534,8 +31393,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SocialUIDocumentation.lua
-
-   -- blizzard:SocialUIDocumentation.lua
    record Enum_SocialUIBlockTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33548,8 +31405,6 @@ local record CatalogueTypes
       Ignore: number
       None: number
    end
-
-   -- blizzard:SocialUIDocumentation.lua
 
    -- blizzard:SocialUIDocumentation.lua
    record Enum_SocialUIPresenceTypeMeta_Values
@@ -33569,8 +31424,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SocialConstantsDocumentation.lua
-
-   -- blizzard:SocialConstantsDocumentation.lua
    record Enum_SocialWhoOriginMeta_Values
       MaxValue: number
       MinValue: number
@@ -33584,8 +31437,6 @@ local record CatalogueTypes
       Social: number
       Unknown: number
    end
-
-   -- blizzard:SoftTargetConstantsDocumentation.lua
 
    -- blizzard:SoftTargetConstantsDocumentation.lua
    record Enum_SoftTargetEnableFlagsMeta_Values
@@ -33603,8 +31454,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_SortPlayersByMeta_Values
       MaxValue: number
       MinValue: number
@@ -33619,8 +31468,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SoulbindsConstantsDocumentation.lua
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
    record Enum_SoulbindConduitFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -33631,8 +31478,6 @@ local record CatalogueTypes
    record Enum_SoulbindConduitFlags_Values
       VisibleToGetallsoulbindconduitScript: number
    end
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
 
    -- blizzard:SoulbindsConstantsDocumentation.lua
    record Enum_SoulbindConduitInstallResultMeta_Values
@@ -33653,8 +31498,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SoulbindsConstantsDocumentation.lua
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
    record Enum_SoulbindConduitTransactionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33666,8 +31509,6 @@ local record CatalogueTypes
       Install: number
       Uninstall: number
    end
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
 
    -- blizzard:SoulbindsConstantsDocumentation.lua
    record Enum_SoulbindConduitTypeMeta_Values
@@ -33685,8 +31526,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SoulbindsConstantsDocumentation.lua
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
    record Enum_SoulbindNodeStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -33702,13 +31541,9 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_SoundBusFlag_Values
       Disablepositionallpf: number
    end
-
-   -- blizzard:SpecializationSharedDocumentation.lua
 
    -- blizzard:SpecializationSharedDocumentation.lua
    record Enum_SpecializationSystemMeta_Values
@@ -33724,8 +31559,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SpellConstantsDocumentation.lua
-
-   -- blizzard:SpellConstantsDocumentation.lua
    record Enum_SpellAuraVisibilityTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33738,8 +31571,6 @@ local record CatalogueTypes
       RaidInCombat: number
       RaidOutOfCombat: number
    end
-
-   -- blizzard:SpellBookConstantsDocumentation.lua
 
    -- blizzard:SpellBookConstantsDocumentation.lua
    record Enum_SpellBookItemTypeMeta_Values
@@ -33758,8 +31589,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SpellBookConstantsDocumentation.lua
-
-   -- blizzard:SpellBookConstantsDocumentation.lua
    record Enum_SpellBookSkillLineIndexMeta_Values
       MaxValue: number
       MinValue: number
@@ -33775,8 +31604,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SpellBookConstantsDocumentation.lua
-
-   -- blizzard:SpellBookConstantsDocumentation.lua
    record Enum_SpellBookSpellBankMeta_Values
       MaxValue: number
       MinValue: number
@@ -33788,8 +31615,6 @@ local record CatalogueTypes
       Pet: number
       Player: number
    end
-
-   -- blizzard:SpellDiminishConstantsDocumentation.lua
 
    -- blizzard:SpellDiminishConstantsDocumentation.lua
    record Enum_SpellDiminishCategoryMeta_Values
@@ -33811,8 +31636,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SpellDiminishConstantsDocumentation.lua
-
-   -- blizzard:SpellDiminishConstantsDocumentation.lua
    record Enum_SpellDiminishRulesetMeta_Values
       MaxValue: number
       MinValue: number
@@ -33825,8 +31648,6 @@ local record CatalogueTypes
       PvE: number
       PvP: number
    end
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_SpellDisplayBorderColorMeta_Values
@@ -33849,8 +31670,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_SpellDisplayIconDisplayTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33866,8 +31685,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_SpellDisplayTextShownStateTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33879,8 +31696,6 @@ local record CatalogueTypes
       Hidden: number
       Shown: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_SpellDisplayTintMeta_Values
@@ -33896,8 +31711,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SplashScreenConstantsDocumentation.lua
-
-   -- blizzard:SplashScreenConstantsDocumentation.lua
    record Enum_SplashScreenTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33909,8 +31722,6 @@ local record CatalogueTypes
       SeasonRollOver: number
       WhatsNew: number
    end
-
-   -- blizzard:PetConstantsDocumentation.lua
 
    -- blizzard:PetConstantsDocumentation.lua
    record Enum_StableResultMeta_Values
@@ -33941,8 +31752,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TimerConstantsDocumentation.lua
-
-   -- blizzard:TimerConstantsDocumentation.lua
    record Enum_StartTimerTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -33956,8 +31765,6 @@ local record CatalogueTypes
       PlunderstormCountdown: number
       PvPBeginTimer: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_StatusBarColorTintValueMeta_Values
@@ -33980,8 +31787,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    record Enum_StatusBarFillStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -33997,8 +31802,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    record Enum_StatusBarInterpolationMeta_Values
       MaxValue: number
       MinValue: number
@@ -34010,8 +31813,6 @@ local record CatalogueTypes
       ExponentialEaseOut: number
       Immediate: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_StatusBarOverrideBarTextShownTypeMeta_Values
@@ -34029,8 +31830,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    record Enum_StatusBarRenderModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34044,8 +31843,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    record Enum_StatusBarTimerDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -34057,8 +31854,6 @@ local record CatalogueTypes
       ElapsedTime: number
       RemainingTime: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_StatusBarValueTextTypeMeta_Values
@@ -34077,8 +31872,6 @@ local record CatalogueTypes
       ValueOverMax: number
       ValueOverMaxNormalized: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_SubcontainerTypeMeta_Values
@@ -34133,8 +31926,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ExpansionDocumentation.lua
-
-   -- blizzard:ExpansionDocumentation.lua
    record Enum_SubscriptionInterstitialResponseTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34147,8 +31938,6 @@ local record CatalogueTypes
       Closed: number
       WebRedirect: number
    end
-
-   -- blizzard:ExpansionDocumentation.lua
 
    -- blizzard:ExpansionDocumentation.lua
    record Enum_SubscriptionInterstitialTypeMeta_Values
@@ -34165,8 +31954,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SummonConstantsDocumentation.lua
-
-   -- blizzard:SummonConstantsDocumentation.lua
    record Enum_SummonReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -34178,8 +31965,6 @@ local record CatalogueTypes
       Scenario: number
       Spell: number
    end
-
-   -- blizzard:IncomingSummonDocumentation.lua
 
    -- blizzard:IncomingSummonDocumentation.lua
    record Enum_SummonStatusMeta_Values
@@ -34197,8 +31982,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:SuperTrackManagerSharedDocumentation.lua
-
-   -- blizzard:SuperTrackManagerSharedDocumentation.lua
    record Enum_SuperTrackingMapPinTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34213,8 +31996,6 @@ local record CatalogueTypes
       QuestOffer: number
       TaxiNode: number
    end
-
-   -- blizzard:SuperTrackManagerSharedDocumentation.lua
 
    -- blizzard:SuperTrackManagerSharedDocumentation.lua
    record Enum_SuperTrackingTypeMeta_Values
@@ -34236,8 +32017,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:WowSurveyConstantsDocumentation.lua
-
-   -- blizzard:WowSurveyConstantsDocumentation.lua
    record Enum_SurveyDeliveryFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -34253,8 +32032,6 @@ local record CatalogueTypes
       PvPUnratedOnly: number
       PvPWinOnly: number
    end
-
-   -- blizzard:WowSurveyConstantsDocumentation.lua
 
    -- blizzard:WowSurveyConstantsDocumentation.lua
    record Enum_SurveyDeliveryMomentMeta_Values
@@ -34276,8 +32053,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:FrameScriptDocumentation.lua
-
-   -- blizzard:FrameScriptDocumentation.lua
    record Enum_TableSecurityOptionMeta_Values
       MaxValue: number
       MinValue: number
@@ -34290,8 +32065,6 @@ local record CatalogueTypes
       DisallowTaintedAccess: number
       SecretWrapContents: number
    end
-
-   -- blizzard:DelvesUIDocumentation.lua
 
    -- blizzard:DelvesUIDocumentation.lua
    record Enum_TieredEntranceRewardTypeMeta_Values
@@ -34307,8 +32080,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DelvesConstantsDocumentation.lua
-
-   -- blizzard:DelvesConstantsDocumentation.lua
    record Enum_TieredEntranceTierFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -34319,8 +32090,6 @@ local record CatalogueTypes
    record Enum_TieredEntranceTierFlag_Values
       IsLFG: number
    end
-
-   -- blizzard:DelvesConstantsDocumentation.lua
 
    -- blizzard:DelvesConstantsDocumentation.lua
    record Enum_TieredEntranceTypeMeta_Values
@@ -34341,8 +32110,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DateAndTimeDocumentation.lua
-
-   -- blizzard:DateAndTimeDocumentation.lua
    record Enum_TimeEventFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -34355,8 +32122,6 @@ local record CatalogueTypes
       GlueScreenShortcut: number
       WeeklyReset: number
    end
-
-   -- blizzard:TextureUtilsDocumentation.lua
 
    -- blizzard:TextureUtilsDocumentation.lua
    record Enum_TitleIconVersionMeta_Values
@@ -34373,8 +32138,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TooltipComparisonDocumentation.lua
-
-   -- blizzard:TooltipComparisonDocumentation.lua
    record Enum_TooltipComparisonMethodMeta_Values
       MaxValue: number
       MinValue: number
@@ -34388,8 +32151,6 @@ local record CatalogueTypes
       WithBagOffHandItem: number
       WithBothHands: number
    end
-
-   -- blizzard:TooltipInfoSharedDocumentation.lua
 
    -- blizzard:TooltipInfoSharedDocumentation.lua
    record Enum_TooltipDataItemBindingMeta_Values
@@ -34412,8 +32173,6 @@ local record CatalogueTypes
       Quest: number
       Soulbound: number
    end
-
-   -- blizzard:TooltipInfoSharedDocumentation.lua
 
    -- blizzard:TooltipInfoSharedDocumentation.lua
    record Enum_TooltipDataLineTypeMeta_Values
@@ -34479,8 +32238,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TooltipInfoSharedDocumentation.lua
-
-   -- blizzard:TooltipInfoSharedDocumentation.lua
    record Enum_TooltipDataTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34520,8 +32277,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TooltipInfoSharedDocumentation.lua
-
-   -- blizzard:TooltipInfoSharedDocumentation.lua
    record Enum_TooltipDataUsageRequirementTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34550,8 +32305,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TooltipConstantsDocumentation.lua
-
-   -- blizzard:TooltipConstantsDocumentation.lua
    record Enum_TooltipSideMeta_Values
       MaxValue: number
       MinValue: number
@@ -34565,8 +32318,6 @@ local record CatalogueTypes
       Right: number
       Top: number
    end
-
-   -- blizzard:TooltipConstantsDocumentation.lua
 
    -- blizzard:TooltipConstantsDocumentation.lua
    record Enum_TooltipTextureAnchorMeta_Values
@@ -34587,8 +32338,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TooltipConstantsDocumentation.lua
-
-   -- blizzard:TooltipConstantsDocumentation.lua
    record Enum_TooltipTextureRelativeRegionMeta_Values
       MaxValue: number
       MinValue: number
@@ -34600,8 +32349,6 @@ local record CatalogueTypes
       LeftLine: number
       RightLine: number
    end
-
-   -- blizzard:CommentatorSharedDocumentation.lua
 
    -- blizzard:CommentatorSharedDocumentation.lua
    record Enum_TrackedSpellCategoryMeta_Values
@@ -34620,8 +32367,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CommentatorFrameDocumentation.lua
-
-   -- blizzard:CommentatorFrameDocumentation.lua
    record Enum_TrackedSpellsResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -34635,8 +32380,6 @@ local record CatalogueTypes
       PlayerNotFound: number
       Success: number
    end
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_TradeskillOrderDurationMeta_Values
@@ -34653,8 +32396,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_TradeskillOrderRecipientMeta_Values
       MaxValue: number
       MinValue: number
@@ -34667,8 +32408,6 @@ local record CatalogueTypes
       Private: number
       Public: number
    end
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_TradeskillOrderStatusMeta_Values
@@ -34686,8 +32425,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_TradeskillRecipeTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34701,8 +32438,6 @@ local record CatalogueTypes
       Item: number
       Salvage: number
    end
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_TradeskillRelativeDifficultyMeta_Values
@@ -34720,8 +32455,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
    record Enum_TradeskillSlotDataTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34734,8 +32467,6 @@ local record CatalogueTypes
       ModifiedReagent: number
       Reagent: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitCombatConfigFlagsMeta_Values
@@ -34752,8 +32483,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitCondFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -34766,8 +32495,6 @@ local record CatalogueTypes
       IsGate: number
       IsSufficient: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitConditionTypeMeta_Values
@@ -34787,8 +32514,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitConfigDbStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -34802,8 +32527,6 @@ local record CatalogueTypes
       Ready: number
       Removed: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitConfigTypeMeta_Values
@@ -34821,8 +32544,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitCurrencyFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -34836,8 +32557,6 @@ local record CatalogueTypes
       UseClassIcon: number
       UseSpecIcon: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitCurrencyTypeMeta_Values
@@ -34855,8 +32574,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitDefinitionSubTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -34871,8 +32588,6 @@ local record CatalogueTypes
       DragonflightGreen: number
       DragonflightRed: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitEdgeTypeMeta_Values
@@ -34892,8 +32607,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitEdgeVisualStyleMeta_Values
       MaxValue: number
       MinValue: number
@@ -34905,8 +32618,6 @@ local record CatalogueTypes
       None: number
       Straight: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitNodeEntryTypeMeta_Values
@@ -34935,8 +32646,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitNodeFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -34957,8 +32666,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitNodeGroupFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -34969,8 +32676,6 @@ local record CatalogueTypes
    record Enum_TraitNodeGroupFlag_Values
       AvailableByDefault: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitNodeTypeMeta_Values
@@ -34988,8 +32693,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitPointsOperationTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35002,8 +32705,6 @@ local record CatalogueTypes
       None: number
       Set: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitSystemFlagMeta_Values
@@ -35021,8 +32722,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitSystemVariationTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35034,8 +32733,6 @@ local record CatalogueTypes
       None: number
       Spec: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:TraitConstantsDocumentation.lua
    record Enum_TraitTreeFlagMeta_Values
@@ -35051,8 +32748,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransformManipulatorConstantsDocumentation.lua
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    record Enum_TransformManipulatorAxisMeta_Values
       MaxValue: number
       MinValue: number
@@ -35065,8 +32760,6 @@ local record CatalogueTypes
       Y: number
       Z: number
    end
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
 
    -- blizzard:TransformManipulatorConstantsDocumentation.lua
    record Enum_TransformManipulatorControlStateMeta_Values
@@ -35087,8 +32780,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransformManipulatorConstantsDocumentation.lua
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    record Enum_TransformManipulatorDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -35100,8 +32791,6 @@ local record CatalogueTypes
       Negative: number
       Positive: number
    end
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
 
    -- blizzard:TransformManipulatorConstantsDocumentation.lua
    record Enum_TransformManipulatorEventMeta_Values
@@ -35122,8 +32811,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransformManipulatorConstantsDocumentation.lua
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    record Enum_TransformManipulatorModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35138,8 +32825,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogItemsDocumentation.lua
-
-   -- blizzard:TransmogItemsDocumentation.lua
    record Enum_TransmogCameraVariationMeta_Values
       MaxValue: number
       MinValue: number
@@ -35152,8 +32837,6 @@ local record CatalogueTypes
       None: number
       RightShoulder: number
    end
-
-   -- blizzard:TransmogSharedDocumentation.lua
 
    -- blizzard:TransmogSharedDocumentation.lua
    record Enum_TransmogCollectionTypeMeta_Values
@@ -35197,8 +32880,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
    record Enum_TransmogIllusionFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -35214,8 +32895,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
    record Enum_TransmogModificationMeta_Values
       MaxValue: number
       MinValue: number
@@ -35227,8 +32906,6 @@ local record CatalogueTypes
       Main: number
       Secondary: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitCostModifiersAppliedMeta_Values
@@ -35246,8 +32923,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitDataFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -35258,8 +32933,6 @@ local record CatalogueTypes
    record Enum_TransmogOutfitDataFlags_Values
       IsCachedLocally: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitDisplayTypeMeta_Values
@@ -35276,8 +32949,6 @@ local record CatalogueTypes
       Hidden: number
       Unassigned: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitEntryFlagsMeta_Values
@@ -35297,8 +32968,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitEntrySourceMeta_Values
       MaxValue: number
       MinValue: number
@@ -35311,8 +32980,6 @@ local record CatalogueTypes
       PlayerPurchased: number
       StampedSource: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitEquipActionMeta_Values
@@ -35332,8 +32999,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSetTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35346,10 +33011,6 @@ local record CatalogueTypes
       Equipped: number
       Outfit: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSlotErrorMeta_Values
@@ -35378,8 +33039,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSlotFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -35401,10 +33060,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSlotOptionFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -35424,8 +33079,6 @@ local record CatalogueTypes
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSlotOptionSheatheCategoryMeta_Values
@@ -35459,8 +33112,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSlotPositionMeta_Values
       MaxValue: number
       MinValue: number
@@ -35475,8 +33126,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSlotSaveFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -35487,8 +33136,6 @@ local record CatalogueTypes
    record Enum_TransmogOutfitSlotSaveFlags_Values
       AppearanceIsNotValid: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitSlotWarningMeta_Values
@@ -35527,8 +33174,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitTransactionFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -35550,8 +33195,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogOutfitTransactionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35566,8 +33209,6 @@ local record CatalogueTypes
       UpdateSituations: number
       UpdateSlots: number
    end
-
-   -- blizzard:TransmogDocumentation.lua
 
    -- blizzard:TransmogDocumentation.lua
    record Enum_TransmogPendingTypeMeta_Values
@@ -35585,8 +33226,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
    record Enum_TransmogSearchTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35599,10 +33238,6 @@ local record CatalogueTypes
       Items: number
       UsableSets: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogSituationFlagsMeta_Values
@@ -35623,8 +33258,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogSituationGroupFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -35642,10 +33275,6 @@ local record CatalogueTypes
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogSituationTriggerFlagsMeta_Values
@@ -35669,8 +33298,6 @@ local record CatalogueTypes
       MinValue: number
       NumValues: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogSituationTriggerTypeMeta_Values
@@ -35739,8 +33366,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogConstantsDocumentation.lua
-
-   -- blizzard:TransmogConstantsDocumentation.lua
    record Enum_TransmogSlotMeta_Values
       MaxValue: number
       MinValue: number
@@ -35765,8 +33390,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
    record Enum_TransmogSourceMeta_Values
       MaxValue: number
       MinValue: number
@@ -35789,8 +33412,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    record Enum_TransmogTimeOfDayCategoryMeta_Values
       MaxValue: number
       MinValue: number
@@ -35806,8 +33427,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
    record Enum_TransmogTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35819,8 +33438,6 @@ local record CatalogueTypes
       Appearance: number
       Illusion: number
    end
-
-   -- blizzard:TransmogSharedDocumentation.lua
 
    -- blizzard:TransmogSharedDocumentation.lua
    record Enum_TransmogUseErrorTypeMeta_Values
@@ -35845,8 +33462,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
    record Enum_TtsBoolSettingMeta_Values
       MaxValue: number
       MinValue: number
@@ -35863,8 +33478,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
    record Enum_TtsVoiceTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35876,8 +33489,6 @@ local record CatalogueTypes
       Alternate: number
       Standard: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_TugOfWarMarkerArrowShownStateMeta_Values
@@ -35894,8 +33505,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_TugOfWarStyleValueMeta_Values
       MaxValue: number
       MinValue: number
@@ -35907,8 +33516,6 @@ local record CatalogueTypes
       ArchaeologyBrown: number
       DefaultYellow: number
    end
-
-   -- blizzard:KeyBindingsDocumentation.lua
 
    -- blizzard:KeyBindingsDocumentation.lua
    record Enum_TurnStrafeStyleMeta_Values
@@ -35925,8 +33532,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIActionConstantsDocumentation.lua
-
-   -- blizzard:UIActionConstantsDocumentation.lua
    record Enum_UIActionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -35938,8 +33543,6 @@ local record CatalogueTypes
       DefaultAction: number
       UpdateMapSystem: number
    end
-
-   -- blizzard:UICovenantDisplayInfoConstantsDocumentation.lua
 
    -- blizzard:UICovenantDisplayInfoConstantsDocumentation.lua
    record Enum_UICovenantDisplayInfoFlagsMeta_Values
@@ -35954,8 +33557,6 @@ local record CatalogueTypes
       UseJourneyRewardTrack: number
       UseJourneyUnlockToastText: number
    end
-
-   -- blizzard:CursorConstDocumentation.lua
 
    -- blizzard:CursorConstDocumentation.lua
    record Enum_UICursorTypeMeta_Values
@@ -35991,8 +33592,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIFrameManagerDocumentation.lua
-
-   -- blizzard:UIFrameManagerDocumentation.lua
    record Enum_UIFrameTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36004,8 +33603,6 @@ local record CatalogueTypes
       InterruptTutorial: number
       JailersTowerBuffs: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:ItemConstantsDocumentation.lua
    record Enum_UIItemInteractionFlagsMeta_Values
@@ -36025,8 +33622,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_UIItemInteractionTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36041,8 +33636,6 @@ local record CatalogueTypes
       None: number
       RunecarverScrapping: number
    end
-
-   -- blizzard:MapConstantsDocumentation.lua
 
    -- blizzard:MapConstantsDocumentation.lua
    record Enum_UIMapFlagMeta_Values
@@ -36078,8 +33671,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:MapConstantsDocumentation.lua
-
-   -- blizzard:MapConstantsDocumentation.lua
    record Enum_UIMapGroupFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -36090,8 +33681,6 @@ local record CatalogueTypes
    record Enum_UIMapGroupFlag_Values
       ShowIconsAcrossFloors: number
    end
-
-   -- blizzard:MapConstantsDocumentation.lua
 
    -- blizzard:MapConstantsDocumentation.lua
    record Enum_UIMapSystemMeta_Values
@@ -36107,8 +33696,6 @@ local record CatalogueTypes
       Taxi: number
       World: number
    end
-
-   -- blizzard:MapConstantsDocumentation.lua
 
    -- blizzard:MapConstantsDocumentation.lua
    record Enum_UIMapTypeMeta_Values
@@ -36129,8 +33716,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIModelInfoSharedDocumentation.lua
-
-   -- blizzard:UIModelInfoSharedDocumentation.lua
    record Enum_UIModelSceneActorFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -36146,8 +33731,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UiModelSceneConstantsDocumentation.lua
-
-   -- blizzard:UiModelSceneConstantsDocumentation.lua
    record Enum_UIModelSceneContextMeta_Values
       MaxValue: number
       MinValue: number
@@ -36159,8 +33742,6 @@ local record CatalogueTypes
       None: number
       PerksProgram: number
    end
-
-   -- blizzard:UiModelSceneConstantsDocumentation.lua
 
    -- blizzard:UiModelSceneConstantsDocumentation.lua
    record Enum_UIModelSceneFlagsMeta_Values
@@ -36178,8 +33759,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UISystemVisibilityManagerDocumentation.lua
-
-   -- blizzard:UISystemVisibilityManagerDocumentation.lua
    record Enum_UISystemTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36190,8 +33769,6 @@ local record CatalogueTypes
    record Enum_UISystemType_Values
       InGameNavigation: number
    end
-
-   -- blizzard:UITextureConstantsDocumentation.lua
 
    -- blizzard:UITextureConstantsDocumentation.lua
    record Enum_UITextureSliceModeMeta_Values
@@ -36207,8 +33784,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetBlendModeTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36222,8 +33797,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetButtonEnabledStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -36235,8 +33808,6 @@ local record CatalogueTypes
       Disabled: number
       Enabled: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetButtonIconTypeMeta_Values
@@ -36255,8 +33826,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_UIWidgetFlagMeta_Values
       MaxValue: number
       MinValue: number
@@ -36267,8 +33836,6 @@ local record CatalogueTypes
    record Enum_UIWidgetFlag_Values
       UniversalWidget: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetFontTypeMeta_Values
@@ -36285,8 +33852,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_UIWidgetHorizontalDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -36298,8 +33863,6 @@ local record CatalogueTypes
       LeftToRight: number
       RightToLeft: number
    end
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_UIWidgetLayoutDirectionMeta_Values
@@ -36318,8 +33881,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_UIWidgetModelSceneLayerMeta_Values
       MaxValue: number
       MinValue: number
@@ -36332,8 +33893,6 @@ local record CatalogueTypes
       Front: number
       None: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetMotionTypeMeta_Values
@@ -36349,8 +33908,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetOverrideStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -36362,8 +33919,6 @@ local record CatalogueTypes
       Active: number
       Inactive: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetRewardShownStateMeta_Values
@@ -36378,8 +33933,6 @@ local record CatalogueTypes
       ShownEarned: number
       ShownUnearned: number
    end
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_UIWidgetScaleMeta_Values
@@ -36409,8 +33962,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_UIWidgetSetLayoutDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -36423,8 +33974,6 @@ local record CatalogueTypes
       Overlap: number
       Vertical: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetSpellButtonCooldownTypeMeta_Values
@@ -36441,8 +33990,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetTextFormatTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36456,8 +34003,6 @@ local record CatalogueTypes
       TimeOneLevel: number
       TimeTwoLevel: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetTextSizeTypeMeta_Values
@@ -36480,8 +34025,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetTextureAndTextSizeTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36497,8 +34040,6 @@ local record CatalogueTypes
       Small: number
       Standard: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetTooltipLocationMeta_Values
@@ -36521,8 +34062,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_UIWidgetUpdateAnimTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36535,8 +34074,6 @@ local record CatalogueTypes
       FlashAndAnimateNumber: number
       None: number
    end
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
 
    -- blizzard:UIWidgetManagerSharedDocumentation.lua
    record Enum_UIWidgetVisualizationTypeMeta_Values
@@ -36582,8 +34119,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitAuraSharedDocumentation.lua
-
-   -- blizzard:UnitAuraSharedDocumentation.lua
    record Enum_UnitAuraSortDirectionMeta_Values
       MaxValue: number
       MinValue: number
@@ -36595,8 +34130,6 @@ local record CatalogueTypes
       Normal: number
       Reverse: number
    end
-
-   -- blizzard:UnitAuraSharedDocumentation.lua
 
    -- blizzard:UnitAuraSharedDocumentation.lua
    record Enum_UnitAuraSortRuleMeta_Values
@@ -36617,8 +34150,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitAuraConstantsDocumentation.lua
-
-   -- blizzard:UnitAuraConstantsDocumentation.lua
    record Enum_UnitAuraSoundTriggerMeta_Values
       MaxValue: number
       MinValue: number
@@ -36631,8 +34162,6 @@ local record CatalogueTypes
       ApplicationsIncreased: number
       Removed: number
    end
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
 
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record Enum_UnitDamageAbsorbClampModeMeta_Values
@@ -36649,8 +34178,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record Enum_UnitHealAbsorbClampModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36662,8 +34189,6 @@ local record CatalogueTypes
       CurrentHealth: number
       MaximumHealth: number
    end
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
 
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record Enum_UnitHealAbsorbModeMeta_Values
@@ -36679,8 +34204,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record Enum_UnitIncomingHealClampModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36694,8 +34217,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record Enum_UnitMaximumHealthModeMeta_Values
       MaxValue: number
       MinValue: number
@@ -36707,8 +34228,6 @@ local record CatalogueTypes
       Default: number
       WithAbsorbs: number
    end
-
-   -- blizzard:PetConstantsDocumentation.lua
 
    -- blizzard:PetConstantsDocumentation.lua
    record Enum_UnitMirrorPetFlagsMeta_Values
@@ -36727,8 +34246,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitSexConstantsDocumentation.lua
-
-   -- blizzard:UnitSexConstantsDocumentation.lua
    record Enum_UnitSexMeta_Values
       MaxValue: number
       MinValue: number
@@ -36743,8 +34260,6 @@ local record CatalogueTypes
       Neutral: number
       None: number
    end
-
-   -- blizzard:UnitSharedDocumentation.lua
 
    -- blizzard:UnitSharedDocumentation.lua
    record Enum_UnitTokenTypeMeta_Values
@@ -37120,8 +34635,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TextureUtilsDocumentation.lua
-
-   -- blizzard:TextureUtilsDocumentation.lua
    record Enum_UrlTextureResultMeta_Values
       MaxValue: number
       MinValue: number
@@ -37135,8 +34648,6 @@ local record CatalogueTypes
       NotFound: number
       Requested: number
    end
-
-   -- blizzard:ValidateNameConstantsDocumentation.lua
 
    -- blizzard:ValidateNameConstantsDocumentation.lua
    record Enum_ValidateNameResultMeta_Values
@@ -37168,8 +34679,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_VasPurchaseProgress_Values
       ApplyingLicense: number
       Complete: number
@@ -37180,8 +34689,6 @@ local record CatalogueTypes
       Ready: number
       WaitingOnQueue: number
    end
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
 
    -- blizzard:BattlepayConstantsDocumentation.lua
    record Enum_VasTransactionPurchaseResultMeta_Values
@@ -37340,8 +34847,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_ViewArenaSizeMeta_Values
       MaxValue: number
       MinValue: number
@@ -37353,8 +34858,6 @@ local record CatalogueTypes
       Three: number
       Two: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- blizzard:EditModeManagerConstantsDocumentation.lua
    record Enum_ViewRaidSizeMeta_Values
@@ -37371,8 +34874,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:VignetteConstantsDocumentation.lua
-
-   -- blizzard:VignetteConstantsDocumentation.lua
    record Enum_VignetteObjectiveTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -37385,8 +34886,6 @@ local record CatalogueTypes
       DefeatShowRemainingHealth: number
       None: number
    end
-
-   -- blizzard:VignetteConstantsDocumentation.lua
 
    -- blizzard:VignetteConstantsDocumentation.lua
    record Enum_VignetteTypeMeta_Values
@@ -37403,8 +34902,6 @@ local record CatalogueTypes
       Torghast: number
       Treasure: number
    end
-
-   -- blizzard:VisualAlertConstantsDocumentation.lua
 
    -- blizzard:VisualAlertConstantsDocumentation.lua
    record Enum_VisualAlertTypeMeta_Values
@@ -37426,8 +34923,6 @@ local record CatalogueTypes
       MarchingAntsGreen: number
       MarchingAntsRed: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_Vocalerrorsounds_Values
@@ -37502,8 +34997,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:VoiceChatDocumentation.lua
-
-   -- blizzard:VoiceChatDocumentation.lua
    record Enum_VoiceChannelErrorReasonMeta_Values
       MaxValue: number
       MinValue: number
@@ -37515,8 +35008,6 @@ local record CatalogueTypes
       IsBattleNetChannel: number
       Unknown: number
    end
-
-   -- blizzard:VoiceChatDocumentation.lua
 
    -- blizzard:VoiceChatDocumentation.lua
    record Enum_VoiceChatStatusCodeMeta_Values
@@ -37556,8 +35047,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:VoiceChatDocumentation.lua
-
-   -- blizzard:VoiceChatDocumentation.lua
    record Enum_VoiceTtsStatusCodeMeta_Values
       MaxValue: number
       MinValue: number
@@ -37583,8 +35072,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    record Enum_WarbandEventStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -37604,8 +35091,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    record Enum_WarbandGroupFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -37617,8 +35102,6 @@ local record CatalogueTypes
       Collapsed: number
       None: number
    end
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
 
    -- blizzard:CharacterSelectionConstantsDocumentation.lua
    record Enum_WarbandPlacementDisplayInfoTypeMeta_Values
@@ -37633,8 +35116,6 @@ local record CatalogueTypes
       Item: number
       Model: number
    end
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
 
    -- blizzard:CharacterSelectionConstantsDocumentation.lua
    record Enum_WarbandSceneAnimationEventMeta_Values
@@ -37658,8 +35139,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    record Enum_WarbandSceneAnimationSheatheStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -37672,10 +35151,6 @@ local record CatalogueTypes
       SheatheWeapons: number
       ShowWeapons: number
    end
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
 
    -- blizzard:CharacterSelectionConstantsDocumentation.lua
    record Enum_WarbandSceneAnimationStandStateFlagsMeta_Values
@@ -37718,8 +35193,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:WarbandSceneInfoConstantsDocumentation.lua
-
-   -- blizzard:WarbandSceneInfoConstantsDocumentation.lua
    record Enum_WarbandSceneFlagsMeta_Values
       MaxValue: number
       MinValue: number
@@ -37736,8 +35209,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    record Enum_WarbandScenePlacementTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -37752,8 +35223,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
    record Enum_WeaponSlotMeta_Values
       MaxValue: number
       MinValue: number
@@ -37765,8 +35234,6 @@ local record CatalogueTypes
       MainHand: number
       OffHand: number
    end
-
-   -- blizzard:WeatherConstantsDocumentation.lua
 
    -- blizzard:WeatherConstantsDocumentation.lua
    record Enum_WeatherTypeMeta_Values
@@ -37785,15 +35252,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_WeeklyRewardChestActivityType_Values
       LFGDungeons: number
       Scenario: number
       World: number
    end
-
-   -- questie:Data/Enum.lua
 
    -- questie:Data/Enum.lua
    record Enum_WeeklyRewardChestClaimRewardResult_Values
@@ -37808,8 +35271,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_WeeklyRewardChestThresholdType_Values
       Activities: number
       AlsoReceive: number
@@ -37821,8 +35282,6 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_WeeklyRewardProgressResult_Values
       DbError: number
       NoPlayer: number
@@ -37830,8 +35289,6 @@ local record CatalogueTypes
       Success: number
       TimedOut: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetAnimationTypeMeta_Values
@@ -37847,8 +35304,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetCurrencyClassMeta_Values
       MaxValue: number
       MinValue: number
@@ -37860,8 +35315,6 @@ local record CatalogueTypes
       Currency: number
       Item: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetEnabledStateMeta_Values
@@ -37883,8 +35336,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetGlowAnimTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -37896,8 +35347,6 @@ local record CatalogueTypes
       None: number
       Pulse: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetIconSizeTypeMeta_Values
@@ -37915,8 +35364,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetIconSourceTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -37928,8 +35375,6 @@ local record CatalogueTypes
       Item: number
       Spell: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetOpacityTypeMeta_Values
@@ -37954,8 +35399,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetShowGlowStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -37969,8 +35412,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetShownStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -37982,8 +35423,6 @@ local record CatalogueTypes
       Hidden: number
       Shown: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetTextHorizontalAlignmentTypeMeta_Values
@@ -38000,8 +35439,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_WidgetUnitPowerBarFlashMomentTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -38014,8 +35451,6 @@ local record CatalogueTypes
       FlashWhenMin: number
       NeverFlash: number
    end
-
-   -- blizzard:CursorConstDocumentation.lua
 
    -- blizzard:CursorConstDocumentation.lua
    record Enum_WoWClientCursorSizeMeta_Values
@@ -38032,8 +35467,6 @@ local record CatalogueTypes
       Medium: number
       Standard: number
    end
-
-   -- blizzard:WowEntitlementInfoDocumentation.lua
 
    -- blizzard:WowEntitlementInfoDocumentation.lua
    record Enum_WoWEntitlementTypeMeta_Values
@@ -38057,15 +35490,11 @@ local record CatalogueTypes
    end
 
    -- questie:Data/Enum.lua
-
-   -- questie:Data/Enum.lua
    record Enum_WoWLabsAreaType_Values
       PlunderstormDropDense: number
       PlunderstormDropMedium: number
       PlunderstormDropSparse: number
    end
-
-   -- blizzard:CursorConstDocumentation.lua
 
    -- blizzard:CursorConstDocumentation.lua
    record Enum_WorldCursorAnchorTypeMeta_Values
@@ -38083,8 +35512,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:WorldElapsedTimerConstantsDocumentation.lua
-
-   -- blizzard:WorldElapsedTimerConstantsDocumentation.lua
    record Enum_WorldElapsedTimerTypesMeta_Values
       MaxValue: number
       MinValue: number
@@ -38097,8 +35524,6 @@ local record CatalogueTypes
       None: number
       ProvingGround: number
    end
-
-   -- blizzard:QuestLogDocumentation.lua
 
    -- blizzard:QuestLogDocumentation.lua
    record Enum_WorldQuestQualityMeta_Values
@@ -38115,8 +35540,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:DelvesConstantsDocumentation.lua
-
-   -- blizzard:DelvesConstantsDocumentation.lua
    record Enum_WorldTierDifficultyMeta_Values
       MaxValue: number
       MinValue: number
@@ -38131,8 +35554,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ZoneControlActiveStateMeta_Values
       MaxValue: number
       MinValue: number
@@ -38144,8 +35565,6 @@ local record CatalogueTypes
       Active: number
       Inactive: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ZoneControlDangerFlashTypeMeta_Values
@@ -38163,8 +35582,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ZoneControlFillTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -38180,8 +35597,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ZoneControlLeadingEdgeTypeMeta_Values
       MaxValue: number
       MinValue: number
@@ -38193,8 +35608,6 @@ local record CatalogueTypes
       NoLeadingEdge: number
       UseLeadingEdge: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ZoneControlModeMeta_Values
@@ -38210,8 +35623,6 @@ local record CatalogueTypes
       State1IsGood: number
       State2IsGood: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record Enum_ZoneControlStateMeta_Values
@@ -40048,12 +37459,6 @@ local record CatalogueTypes
       ZoneControlStateMeta: Enum_ZoneControlStateMeta_Values
    end
 
-   -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:DamageConstantsDocumentation.lua
-
-   -- blizzard:FrameScriptDocumentation.lua
-
    -- blizzard:EventSchedulerUIDocumentation.lua
    record EventDisplayInfo
       hideDescription: boolean
@@ -40076,8 +37481,6 @@ local record CatalogueTypes
       is EventFrameMixin, Frame
    end
 
-   -- blizzard:GameRulesConstantsDocumentation.lua
-
    -- questie:FrameXML/Blizzard_SharedXML/GlobalCallbackRegistry.lua
    record EventRegistry
       is CallbackRegistryMixin
@@ -40089,12 +37492,6 @@ local record CatalogueTypes
       UnregisterFrameEvent: function(self, string)
       UnregisterFrameEventAndCallback: function(self, string, any...)
    end
-
-   -- blizzard:UIEventToastConstantsDocumentation.lua
-
-   -- blizzard:UIEventToastConstantsDocumentation.lua
-
-   -- blizzard:UIEventToastConstantsDocumentation.lua
 
    -- blizzard:UIEventToastManagerDocumentation.lua
    record EventToastInfo
@@ -40124,8 +37521,6 @@ local record CatalogueTypes
       uiWidgetSetID: number
    end
 
-   -- blizzard:ChatConstantsDocumentation.lua
-
    -- blizzard:ExpansionDocumentation.lua
    record ExpansionDisplayInfo
       banner: string
@@ -40144,10 +37539,6 @@ local record CatalogueTypes
       icon: number
       text: string
    end
-
-   -- blizzard:ExpansionLandingPageConstantsDocumentation.lua
-
-   -- blizzard:ExpansionLevelConstantsDocumentation.lua
 
    -- questie:Widget/Animation/FlipBook.lua
    interface FlipBook
@@ -40384,8 +37775,6 @@ local record CatalogueTypes
       name: string
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:UIWidgetManagerDocumentation.lua
    record FillUpFramesWidgetVisualizationInfo
       fillMax: number
@@ -40411,14 +37800,6 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- questie:Widget/UIType/UIType.lua
-
-   -- blizzard:HousingFixturePointFrameAPIDocumentation.lua
-
-   -- blizzard:TaxiMapDocumentation.lua
-
-   -- blizzard:TaxiMapDocumentation.lua
-
    -- blizzard:FogOfWarDocumentation.lua
    record FogOfWarInfo
       backgroundAtlas: string
@@ -40426,8 +37807,6 @@ local record CatalogueTypes
       maskAtlas: string
       maskScalar: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonInfoDocumentation.lua
    record FollowerAutoCombatStatsInfo
@@ -40528,14 +37907,6 @@ local record CatalogueTypes
       SetTextColor: function(self, number, number, number, ? number)
    end
 
-   -- questie:Widget/UIType/UIType.lua
-
-   -- reviewed override
-
-   -- questie:Widget/UIType/Font.lua
-
-   -- questie:Widget/UIType/Font.lua
-
    -- blizzard:FontDocumentation.lua
    record FontScriptInfo
       canBeUserScaled: boolean
@@ -40552,64 +37923,6 @@ local record CatalogueTypes
       x: number
       y: number
    end
-
-   -- blizzard:UISharedDocumentation.lua
-
-   -- blizzard:ForbiddenAspectConstantsDocumentation.lua
-
-   -- Lua 5.1 string.format argument
-
-   -- blizzard:WowCSConstantsDocumentation.lua
-
-   -- blizzard:FrameAPIArchaeologyDigsiteDocumentation.lua
-
-   -- blizzard:FrameAPIBlobDocumentation.lua
-
-   -- blizzard:FrameAPICharacterModelBaseDocumentation.lua
-
-   -- blizzard:FrameAPICinematicModelDocumentation.lua
-
-   -- blizzard:FrameAPICooldownDocumentation.lua
-
-   -- blizzard:FrameAPIDressUpModelDocumentation.lua
-
-   -- blizzard:FrameAPIFogOfWarFrameDocumentation.lua
-
-   -- blizzard:FrameAPIModelSceneFrameDocumentation.lua
-
-   -- blizzard:FrameAPIModelSceneFrameActorDocumentation.lua
-
-   -- blizzard:FrameAPIModelSceneFrameActorBaseDocumentation.lua
-
-   -- blizzard:FrameAPINamePlateDocumentation.lua
-
-   -- blizzard:FrameAPIQuestPOIDocumentation.lua
-
-   -- blizzard:FrameAPIScenarioPOIDocumentation.lua
-
-   -- blizzard:FrameAPISimpleCheckoutDocumentation.lua
-
-   -- blizzard:FrameAPITabardModelDocumentation.lua
-
-   -- blizzard:FrameAPITabardModelBaseDocumentation.lua
-
-   -- blizzard:FrameAPITooltipDocumentation.lua
-
-   -- blizzard:FrameAPIUnitPositionFrameDocumentation.lua
-
-   -- questie:Data/Event.lua
-
-   -- blizzard:SimpleFrameAPIDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:TutorialDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
 
    -- reviewed literal factory
    interface Frame_BackdropTemplate
@@ -40797,8 +38110,6 @@ local record CatalogueTypes
       is GameTooltip
    end
 
-   -- Questie numeric enum name
-
    -- blizzard:GameRulesDocumentation.lua
    record GameModeDisplayInfo
       characterCreateExtraHeight: number
@@ -40852,8 +38163,6 @@ local record CatalogueTypes
       sticks: {GamePadStick}
    end
 
-   -- blizzard:GamePadConstDocumentation.lua
-
    -- blizzard:GamePadDocumentation.lua
    record GamePadRawAxisMapping
       axis: string
@@ -40899,12 +38208,6 @@ local record CatalogueTypes
       stick: string
    end
 
-   -- Questie numeric enum name
-
-   -- blizzard:GameRulesConstantsDocumentation.lua
-
-   -- blizzard:GameRulesConstantsDocumentation.lua
-
    -- reviewed FrameXML supplement
    interface TooltipDataHandlerMixin
       IsTooltipType: function(self, number): boolean
@@ -40919,20 +38222,6 @@ local record CatalogueTypes
    interface GameTooltipTemplate
       is GameTooltip, GameTooltipDataMixin
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- questie:Data/Wiki.lua
    interface GarrFollowerInfo
@@ -40963,26 +38252,6 @@ local record CatalogueTypes
       status: string
       xp: number
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonInfoDocumentation.lua
    record GarrisonAbilityCounterInfo
@@ -41034,8 +38303,6 @@ local record CatalogueTypes
       textureKit: string
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:GarrisonSharedDocumentation.lua
    record GarrisonFollowerAbilityInfo
       category: string
@@ -41056,8 +38323,6 @@ local record CatalogueTypes
       state: number
    end
 
-   -- blizzard:GARRISON_FOLLOWER_TYPEConstantsDocumentation.lua
-
    -- blizzard:GarrisonInfoDocumentation.lua
    record GarrisonMechanicInfo
       ability: GarrisonAbilityInfo
@@ -41075,8 +38340,6 @@ local record CatalogueTypes
       name: string
       position: Vector2DMixin
    end
-
-   -- blizzard:GarrisonConstantsDocumentation.lua
 
    -- blizzard:GarrisonSharedDocumentation.lua
    record GarrisonTalentCurrencyCostInfo
@@ -41134,8 +38397,6 @@ local record CatalogueTypes
       treeID: number
    end
 
-   -- blizzard:GARRISON_TYPEConstantsDocumentation.lua
-
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record GatheringOperationBonusStatInfo
       bonusRatingPct: number
@@ -41165,14 +38426,6 @@ local record CatalogueTypes
       uiWidgetSetID: number
    end
 
-   -- blizzard:TextureUtilsDocumentation.lua
-
-   -- blizzard:GossipConstantsDocumentation.lua
-
-   -- blizzard:GossipConstantsDocumentation.lua
-
-   -- blizzard:GossipConstantsDocumentation.lua
-
    -- blizzard:GossipInfoDocumentation.lua
    record GossipOptionRewardInfo
       context: number
@@ -41180,10 +38433,6 @@ local record CatalogueTypes
       quantity: number
       rewardType: number
    end
-
-   -- blizzard:GossipInfoDocumentation.lua
-
-   -- blizzard:GossipInfoDocumentation.lua
 
    -- blizzard:GossipInfoDocumentation.lua
    record GossipOptionUIInfo
@@ -41205,8 +38454,6 @@ local record CatalogueTypes
       uiWidgetSetID: number
       widgetType: number
    end
-
-   -- blizzard:GossipInfoDocumentation.lua
 
    -- blizzard:GossipInfoDocumentation.lua
    record GossipPoiInfo
@@ -41232,8 +38479,6 @@ local record CatalogueTypes
       title: string
    end
 
-   -- blizzard:VideoDocumentation.lua
-
    -- blizzard:DeathInfoDocumentation.lua
    record GraveyardMapInfo
       areaPoiID: number
@@ -41252,8 +38497,6 @@ local record CatalogueTypes
       name: string
       spellID: number
    end
-
-   -- blizzard:CooldownViewerConstantsDocumentation.lua
 
    -- blizzard:UnitConstantsDocumentation.lua
    record GroupBuffVisualAlertInfo
@@ -41290,8 +38533,6 @@ local record CatalogueTypes
       useDungeonRoleExpectations: boolean
       useHonorLevel: boolean
    end
-
-   -- blizzard:GuildConstantsDocumentation.lua
 
    -- blizzard:GuildInfoDocumentation.lua
    record GuildNewsInfo
@@ -41347,8 +38588,6 @@ local record CatalogueTypes
       ["type"]: W.MaybeSecret<string>
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- questie:Libraries/HereBeDragons-2.0/HereBeDragons-2.0.lua
    interface HereBeDragons_2_0
       GetAllMapIDs: function(self): {number}
@@ -41385,14 +38624,6 @@ local record CatalogueTypes
       SetMinimapObject: function(self, ? Minimap)
    end
 
-   -- questie:Libraries/HereBeDragons-2.0/HereBeDragons-Pins-2.0.lua
-
-   -- questie:Libraries/HereBeDragons-2.0/HereBeDragons-2.0.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
-   -- blizzard:CalendarConstantsDocumentation.lua
-
    -- blizzard:PvpInfoDocumentation.lua
    record HonorRewardInfo
       achievementRewardedID: number
@@ -41418,12 +38649,6 @@ local record CatalogueTypes
       widgetSizeSetting: number
       widgetTag: string
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:HouseEditorUIDocumentation.lua
 
    -- blizzard:HouseExteriorConstantsDocumentation.lua
    record HouseExteriorSizeOption
@@ -41452,10 +38677,6 @@ local record CatalogueTypes
       options: {HouseExteriorTypeOption}
       selectedExteriorType: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:HousingUISharedDocumentation.lua
    record HouseInfo
@@ -41500,10 +38721,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingUISharedDocumentation.lua
-
-   -- blizzard:HousingUISharedDocumentation.lua
-
-   -- blizzard:HousingUISharedDocumentation.lua
    record HouseOwnerCharacterInfo
       characterName: string
       classID: number
@@ -41511,19 +38728,11 @@ local record CatalogueTypes
       playerGUID: string
    end
 
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- Questie numeric enum name
-
-   -- blizzard:HousingUISharedDocumentation.lua
-
    -- blizzard:HousingUISharedDocumentation.lua
    record HouseholdMemberInfo
       characterName: string
       classID: number
    end
-
-   -- blizzard:HousingBasicModeUIDocumentation.lua
 
    -- blizzard:HousingBlueprintConstantsDocumentation.lua
    record HousingBlueprintBudgetEntry
@@ -41572,10 +38781,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingBlueprintConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:HousingBlueprintConstantsDocumentation.lua
    record HousingBlueprintGroup
       entries: {HousingBlueprintInfo}
       name: string
@@ -41590,12 +38795,6 @@ local record CatalogueTypes
       name: string
       shareCode: string
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:HousingBlueprintConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:HousingCatalogUIDocumentation.lua
    record HousingBundleDecorEntryInfo
@@ -41659,12 +38858,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:HousingCatalogConstantsDocumentation.lua
-
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
-
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
-
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
    record HousingCatalogEntryVariantID
       entryType: number
       recordID: number
@@ -41692,8 +38885,6 @@ local record CatalogueTypes
       tagID: number
       tagName: string
    end
-
-   -- blizzard:HousingCatalogSearcherAPIDocumentation.lua
 
    -- questie:ScriptObject/HousingCatalogSearcher.lua
    interface HousingCatalogSearcher
@@ -41798,8 +38989,6 @@ local record CatalogueTypes
       ToggleUncollected: function(self)
    end
 
-   -- blizzard:HousingCatalogConstantsDocumentation.lua
-
    -- blizzard:HousingCatalogUIDocumentation.lua
    record HousingCatalogSubcategoryInfo
       ID: number
@@ -41817,8 +39006,6 @@ local record CatalogueTypes
       withStoredEntriesOnly: boolean
    end
 
-   -- blizzard:HousingCleanupModeUIDocumentation.lua
-
    -- blizzard:HouseExteriorConstantsDocumentation.lua
    record HousingCoreFixtureInfo
       currentStyleVariantOptions: {HousingFixtureOption}
@@ -41826,8 +39013,6 @@ local record CatalogueTypes
       selectedVariantFixtureID: number
       styleOptions: {HousingFixtureOption}
    end
-
-   -- blizzard:HousingCustomizeModeUIDocumentation.lua
 
    -- blizzard:HousingDecorSharedDocumentation.lua
    record HousingDecorDyeSlot
@@ -41862,14 +39047,6 @@ local record CatalogueTypes
       name: string
    end
 
-   -- blizzard:HousingDecorSharedDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
-
    -- blizzard:HousingCatalogUIDocumentation.lua
    record HousingFeaturedSmallProductInfo
       canPreview: boolean
@@ -41878,10 +39055,6 @@ local record CatalogueTypes
       price: number
       productID: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:HouseExteriorConstantsDocumentation.lua
    record HousingFixtureOption
@@ -41916,18 +39089,6 @@ local record CatalogueTypes
       ownerHash: number
       selectedFixtureID: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
-
-   -- blizzard:HousingUIDocumentation.lua
-
-   -- blizzard:HousingLayoutUITypesDocumentation.lua
 
    -- questie:ScriptObject/HousingLayoutPinFrame.lua
    interface HousingLayoutPinFrame
@@ -41967,24 +39128,12 @@ local record CatalogueTypes
       SetUpdateCallback: function(self, function())
    end
 
-   -- blizzard:HousingLayoutUITypesDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:HousingLayoutUITypesDocumentation.lua
-
    -- blizzard:HousingCatalogUIDocumentation.lua
    record HousingMarketInfo
       bundleIDs: {number}
       price: number
       productID: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:HousingExpertModeUIDocumentation.lua
 
    -- blizzard:HousingCatalogUIDocumentation.lua
    record HousingPreviewItemData
@@ -42001,16 +39150,6 @@ local record CatalogueTypes
       salePrice: number
    end
 
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
    -- blizzard:HousingCustomizeModeUIDocumentation.lua
    record HousingRoomComponentInstanceInfo
       availableThemeSets: {number}
@@ -42024,30 +39163,6 @@ local record CatalogueTypes
       roomGUID: string
       ["type"]: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- questie:Type/Type.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record IconAndTextWidgetVisualizationInfo
@@ -42070,8 +39185,6 @@ local record CatalogueTypes
       widgetSizeSetting: number
       widgetTag: string
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record IconTextAndBackgroundWidgetVisualizationInfo
@@ -42115,8 +39228,6 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- blizzard:ImageSharingConstantsDocumentation.lua
-
    -- blizzard:ClassTalentsDocumentation.lua
    record ImportLoadoutEntryInfo
       nodeID: number
@@ -42149,8 +39260,6 @@ local record CatalogueTypes
       taskActivity: {InitiativeActivityLogEntry}
    end
 
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
    -- blizzard:NeighborhoodInitiativeDocumentation.lua
    record InitiativeMilestoneInfo
       milestoneOrderIndex: number
@@ -42168,8 +39277,6 @@ local record CatalogueTypes
       rewardQuestID: number
       title: string
    end
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
 
    -- blizzard:NeighborhoodInitiativeDocumentation.lua
    record InitiativeTaskInfo
@@ -42193,12 +39300,6 @@ local record CatalogueTypes
    record InitiativeTasksTracked
       trackedIDs: {number}
    end
-
-   -- blizzard:KeyBindingsDocumentation.lua
-
-   -- blizzard:InputConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
 
    -- blizzard:PaperDollInfoDocumentation.lua
    record InspectGuildInfo
@@ -42239,8 +39340,6 @@ local record CatalogueTypes
       name: string
    end
 
-   -- Questie numeric enum name
-
    -- blizzard:InvasionInfoDocumentation.lua
    record InvasionMapInfo
       atlasName: string
@@ -42249,12 +39348,6 @@ local record CatalogueTypes
       position: Vector2DMixin
       rewardQuestID: number
    end
-
-   -- questie:Type/Type.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
 
    -- blizzard:IslandsQueueUIDocumentation.lua
    record IslandsQueueDifficultyInfo
@@ -42270,26 +39363,6 @@ local record CatalogueTypes
       CreateFromItemLink: function(self, string): ItemMixin
       CreateFromItemLocation: function(self, ItemLocation): ItemMixin
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:AccountConstantsDocumentation.lua
-
-   -- blizzard:AuctionHouseDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- Questie numeric enum name
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record ItemDisplayVisualizationInfo
@@ -42309,14 +39382,6 @@ local record CatalogueTypes
       widgetSizeSetting: number
       widgetTag: string
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstants_MainlineDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:ItemDocumentation.lua
    record ItemInfoResult
@@ -42419,8 +39484,6 @@ local record CatalogueTypes
       CreateFromEquipmentSlot: function(self, number): ItemLocation
    end
 
-   -- blizzard:ItemConstantsDocumentation.lua
-
    -- questie:FrameXML/Blizzard_ObjectAPI/Item.lua
    interface ItemMixin
       Clear: function(self)
@@ -42452,8 +39515,6 @@ local record CatalogueTypes
       UnlockItem: function(self)
    end
 
-   -- blizzard:ItemConstantsDocumentation.lua
-
    -- blizzard:ContainerDocumentation.lua
    record ItemPurchaseCurrency
       currencyCount: number
@@ -42477,22 +39538,12 @@ local record CatalogueTypes
       itemCount: number
    end
 
-   -- blizzard:ItemQualitiesDocumentation.lua
-
    -- blizzard:ContainerDocumentation.lua
    record ItemQuestInfo
       isActive: boolean
       isQuestItem: boolean
       questID: number
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ItemConstants_MainlineDocumentation.lua
 
    -- blizzard:AuctionHouseDocumentation.lua
    record ItemSearchResultInfo
@@ -42513,20 +39564,6 @@ local record CatalogueTypes
       totalNumberOfOwners: number
    end
 
-   -- blizzard:EncounterJournalDocumentation.lua
-
-   -- blizzard:ItemSocketInfoDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- Questie numeric enum name
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- questie:Type/Mixin.lua
-
    -- questie:FrameXML/Blizzard_FrameXML/ItemUtil.lua
    interface ItemTransmogInfoMixin
       Clear: function(self)
@@ -42536,8 +39573,6 @@ local record CatalogueTypes
       IsMainHandIndividualWeapon: function(self): boolean
       IsMainHandPairedWeapon: function(self): boolean
    end
-
-   -- blizzard:UIModelInfoSharedDocumentation.lua
 
    -- blizzard:ItemUpgradeDocumentation.lua
    record ItemUpgradeCostDiscountInfo
@@ -42614,42 +39649,10 @@ local record CatalogueTypes
       statValue: number
    end
 
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
    -- blizzard:EncodingUtilDocumentation.lua
    record JSONSerializationOptions
       ignoreSerializationErrors: boolean
    end
-
-   -- blizzard:ScenarioInfoDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- blizzard:EncounterJournalConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
-   -- Blizzard Discord user-name text carrier
-
-   -- questie:Widget/UIType/ScriptType.lua
 
    -- blizzard:LFGInfoDocumentation.lua
    record LFGDungeonInfo
@@ -42657,14 +39660,6 @@ local record CatalogueTypes
       link: string
       name: string
    end
-
-   -- blizzard:LFGConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
 
    -- blizzard:LFGInfoDocumentation.lua
    record LFGLockInfo
@@ -42674,15 +39669,11 @@ local record CatalogueTypes
    end
 
    -- blizzard:LFGConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
    record LFGRoles
       dps: W.MaybeSecret<boolean>
       healer: W.MaybeSecret<boolean>
       tank: W.MaybeSecret<boolean>
    end
-
-   -- blizzard:LFGConstantsDocumentation.lua
 
    -- questie:Widget/Base/TextureBase.lua
    interface TextureBase
@@ -42820,10 +39811,6 @@ local record CatalogueTypes
    interface LINE
       is Line
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:PartyInfoDocumentation.lua
 
    -- blizzard:PvpInfoDocumentation.lua
    record LevelUpBattlegroundInfo
@@ -42968,8 +39955,6 @@ local record CatalogueTypes
    end
 
    -- questie:Libraries/LibDBIcon-1.0/LibDBIcon-1.0.lua
-
-   -- questie:Libraries/LibDBIcon-1.0/LibDBIcon-1.0.lua
    interface LibDBIcon_button
       is Button
    end
@@ -43046,8 +40031,6 @@ local record CatalogueTypes
    end
 
    -- questie:Libraries/LibDataBroker-1.1/LibDataBroker-1.1.lua
-
-   -- questie:Libraries/LibDataBroker-1.1/LibDataBroker-1.1.lua
    interface LibDataBroker_QuickLauncher
       is LibDataBroker_DataObjectCommonFields, TableVariants_c75555b0a664
       OnClick: Callback_cadd0f36726f
@@ -43083,8 +40066,6 @@ local record CatalogueTypes
       Decode: function(self, string): string
       Encode: function(self, string): string
    end
-
-   -- questie:Libraries/LibDeflate/LibDeflate.lua
 
    -- questie:Libraries/LibDialog-1.0/LibDialog-1.0.lua
    interface LibDialog_1_0
@@ -43190,8 +40171,6 @@ local record CatalogueTypes
    end
 
    -- questie:Libraries/LibQTip-1.0/LibQTip-1.0.lua
-
-   -- questie:Libraries/LibQTip-1.0/LibQTip-1.0.lua
    interface LibQTip_Tooltip
       is BackdropTemplate, Frame
       AddColumn: function(self, ? Literal_3be0cb965eac)
@@ -43241,8 +40220,6 @@ local record CatalogueTypes
    end
 
    -- questie:Libraries/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
-
-   -- questie:Libraries/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
    record LibSharedMedia_Namespace
       LOCALE_BIT_koKR: number
       LOCALE_BIT_ruRU: number
@@ -43284,10 +40261,6 @@ local record CatalogueTypes
       String: function(self, ? string): string
    end
 
-   -- blizzard:HousingDecorUIDocumentation.lua
-
-   -- blizzard:LimitedInputDocumentation.lua
-
    -- questie:Widget/Animation/Scale.lua
    interface Scale
       is Animation
@@ -43328,226 +40301,6 @@ local record CatalogueTypes
       is Translation
    end
 
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- interned LuaLS string literals
-
-   -- blizzard:ClassTalentsDocumentation.lua
-
    -- blizzard:LobbyMatchmakerInfoDocumentation.lua
    record LobbyMatchmakerQueueInfo
       isQueueActive: boolean
@@ -43562,20 +40315,6 @@ local record CatalogueTypes
       localeName: string
    end
 
-   -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:LogConstantsDocumentation.lua
-
-   -- blizzard:LogicConstantsDocumentation.lua
-
-   -- blizzard:LogicConstantsDocumentation.lua
-
-   -- blizzard:LogicConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
    -- blizzard:LootJournalDocumentation.lua
    record LootJournalItemInfo
       icon: number
@@ -43589,12 +40328,6 @@ local record CatalogueTypes
       name: string
       setID: number
    end
-
-   -- blizzard:LootConstantsDocumentation.lua
-
-   -- blizzard:LootConstantsDocumentation.lua
-
-   -- blizzard:LootConstantsDocumentation.lua
 
    -- blizzard:LoreTextDocumentation.lua
    record LoreTextEntry
@@ -43617,23 +40350,11 @@ local record CatalogueTypes
       timeRemaining: W.MaybeSecret<number>
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:LuaColorCurveObjectAPIDocumentation.lua
    record LuaColorCurvePoint
       x: W.MaybeSecret<number>
       y: colorRGBA
    end
-
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:LuaCurveObjectConstantsDocumentation.lua
-
-   -- reviewed override
 
    -- blizzard:LuaDurationClockAPIDocumentation.lua
    interface LuaDurationClockObject
@@ -43654,12 +40375,6 @@ local record CatalogueTypes
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted"}
       SetTime: function(self, number)
    end
-
-   -- questie:Type/BlizzardType.lua
-
-   -- Blizzard metadata primitive
-
-   -- reviewed override
 
    -- blizzard:LuaLocaleContextAPIDocumentation.lua
    interface LuaLocaleContext
@@ -43709,10 +40424,6 @@ local record CatalogueTypes
       -- {"Environment": "All", "SecretArguments": "AllowedWhenTainted"}
       TransformLocale: function(self, W.MaybeSecret<number>): string
    end
-
-   -- questie:Type/BlizzardType.lua
-
-   -- reviewed override
 
    -- questie:Widget/Texture/Texture.lua
    interface MaskTexture
@@ -43927,8 +40638,6 @@ local record CatalogueTypes
       is MovieFrame
    end
 
-   -- blizzard:UIMacrosDocumentation.lua
-
    -- blizzard:SecureTransferDocumentation.lua
    record MailInfo
       sendMoney: number
@@ -43962,8 +40671,6 @@ local record CatalogueTypes
       unlockDescription: string
       useJourneyUnlockToast: boolean
    end
-
-   -- blizzard:MajorFactionsConstantsDocumentation.lua
 
    -- blizzard:MajorFactionsDocumentation.lua
    record MajorFactionRenownInfo
@@ -44000,8 +40707,6 @@ local record CatalogueTypes
       transmogSetID: number
       uiOrder: number
    end
-
-   -- blizzard:MajorFactionsConstantsDocumentation.lua
 
    -- blizzard:MapDocumentation.lua
    record MapBannerInfo
@@ -44050,10 +40755,6 @@ local record CatalogueTypes
       is Frame, MapCanvasPinMixin
    end
 
-   -- blizzard:MapConstantsDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
    -- blizzard:MapDocumentation.lua
    record MapLinkInfo
       areaPoiID: number
@@ -44062,10 +40763,6 @@ local record CatalogueTypes
       name: string
       position: Vector2DMixin
    end
-
-   -- blizzard:QuestLogDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record MapPinAnimationWidgetVisualizationInfo
@@ -44120,15 +40817,11 @@ local record CatalogueTypes
       textureKit: string
    end
 
-   -- blizzard:MapConstantsDocumentation.lua
-
    -- blizzard:EndOfMatchUIDocumentation.lua
    record MatchDetail
       ["type"]: number
       value: number
    end
-
-   -- blizzard:EndOfMatchUIDocumentation.lua
 
    -- blizzard:EndOfMatchUIDocumentation.lua
    record MatchDetails
@@ -44157,12 +40850,6 @@ local record CatalogueTypes
       PopulateDescription: function(Callback_e7176cc03c05, Region, RootMenuDescriptionProxy, any...)
       PrintOpenMenuTags: function()
    end
-
-   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
-
-   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
-
-   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
 
    -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    interface MenuInputData
@@ -44195,12 +40882,6 @@ local record CatalogueTypes
       SetClosedCallback: function(self, Callback_e00847e9e259)
       SetMenuDescription: function(self, any)
    end
-
-   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
-
-   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
-
-   -- reviewed override
 
    -- questie:FrameXML/Blizzard_Menu/MenuUtil.lua
    record MenuUtil
@@ -44248,12 +40929,6 @@ local record CatalogueTypes
       stackCount: number
       texture: number
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- reviewed override
 
    -- questie:Widget/Frame/Minimap.lua
    interface Minimap
@@ -44326,8 +41001,6 @@ local record CatalogueTypes
       UpdateBlips: function(self)
    end
 
-   -- blizzard:MinimapFrameAPIDocumentation.lua
-
    -- blizzard:MinimapDocumentation.lua
    record MinimapScriptTrackingFilter
       filterID: number
@@ -44343,8 +41016,6 @@ local record CatalogueTypes
       texture: number
       ["type"]: string
    end
-
-   -- blizzard:MinimapConstantsDocumentation.lua
 
    -- blizzard:MirrorTimerDocumentation.lua
    record MirrorTimerInfo
@@ -44439,10 +41110,6 @@ local record CatalogueTypes
       title: string
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:ModelAnimationSharedDocumentation.lua
-
    -- blizzard:SimpleModelFFXAPIDocumentation.lua
    interface ModelFFX
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted"}
@@ -44464,8 +41131,6 @@ local record CatalogueTypes
       omnidirectional: boolean
       point: Vector3DMixin
    end
-
-   -- blizzard:FrameAPIModelSceneFrameSharedDocumentation.lua
 
    -- questie:Widget/Frame/ModelSceneActor.lua
    interface ModelSceneActor
@@ -44600,8 +41265,6 @@ local record CatalogueTypes
       Show: function(self)
       StopAnimationKit: function(self)
    end
-
-   -- questie:Widget/UIType/FrameType.lua
 
    -- questie:Widget/Base/ModelSceneFrameActorBase.lua
    interface ModelSceneFrameActorBase
@@ -44773,10 +41436,6 @@ local record CatalogueTypes
       UseUnitSheatheCategory: function(self, boolean)
    end
 
-   -- blizzard:UIModelInfoSharedDocumentation.lua
-
-   -- blizzard:UIModelInfoSharedDocumentation.lua
-
    -- blizzard:UIModifiedInstanceDocumentation.lua
    record ModifiedInstanceInfo
       description: string
@@ -44822,12 +41481,6 @@ local record CatalogueTypes
       spellVisualKitID: number
       uiModelSceneID: number
    end
-
-   -- blizzard:MountConstantsDocumentation.lua
-
-   -- blizzard:MountConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
 
    -- blizzard:MythicPlusInfoSharedDocumentation.lua
    record MythicPlusAffixScoreInfo
@@ -44946,36 +41599,14 @@ local record CatalogueTypes
       OnSizeChanged: function(self)
    end
 
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
    -- questie:FrameXML/Blizzard_NamePlates/Blizzard_NamePlates.lua
    interface NamePlateDriverFrame
    end
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
 
    -- questie:FrameXML/Blizzard_NamePlates/Blizzard_NamePlates.lua
    interface NamePlateFrame
       is Frame, NamePlateBaseMixin
    end
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
-
-   -- blizzard:NamePlateConstantsDocumentation.lua
 
    -- reviewed FrameXML supplement
    interface NamePlateUnitFrame
@@ -44983,12 +41614,6 @@ local record CatalogueTypes
       displayedUnit: string
       unitExists: boolean
    end
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:InGameNavigationDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:HousingUISharedDocumentation.lua
    record NeighborhoodInfo
@@ -45001,10 +41626,6 @@ local record CatalogueTypes
       ownerName: string
       suggestionReason: number
    end
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
 
    -- blizzard:NeighborhoodInitiativeDocumentation.lua
    record NeighborhoodInitiativeInfo
@@ -45021,20 +41642,6 @@ local record CatalogueTypes
       tasks: {InitiativeTaskInfo}
       title: string
    end
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
-   -- Questie numeric enum name
 
    -- blizzard:HousingUISharedDocumentation.lua
    record NeighborhoodPlotMapInfo
@@ -45063,10 +41670,6 @@ local record CatalogueTypes
       residentType: number
    end
 
-   -- Questie numeric enum name
-
-   -- blizzard:CharacterCustomizationSharedDocumentation.lua
-
    -- blizzard:CraftingOrderUISharedDocumentation.lua
    record NewCraftingOrderInfo
       craftingReagentItems: {CraftingReagentInfo}
@@ -45080,16 +41683,6 @@ local record CatalogueTypes
       skillLineAbilityID: number
       tipAmount: number
    end
-
-   -- blizzard:CharacterServicesConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:LocalizationDocumentation.lua
    record NumberAbbrevOptions
@@ -45106,8 +41699,6 @@ local record CatalogueTypes
       fractionDivisor: number
       significandDivisor: number
    end
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
 
    -- blizzard:NumericFormatterAPIDocumentation.lua
    interface NumericFormatter
@@ -45134,8 +41725,6 @@ local record CatalogueTypes
       rounding: number
       step: number
    end
-
-   -- blizzard:NumericRuleFormatterSharedDocumentation.lua
 
    -- blizzard:NumericRuleFormatterAPIDocumentation.lua
    interface NumericRuleFormatter
@@ -45172,16 +41761,12 @@ local record CatalogueTypes
       UsesNPOT: function(self): boolean
    end
 
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
    -- blizzard:EventSchedulerUIDocumentation.lua
    record OngoingEventInfo
       areaPoiID: number
       displayInfo: EventDisplayInfo
       rewardsClaimed: boolean
    end
-
-   -- questie:Widget/UIType/UIType.lua
 
    -- blizzard:AuctionHouseDocumentation.lua
    record OwnedAuctionInfo
@@ -45301,10 +41886,6 @@ local record CatalogueTypes
       size: number
    end
 
-   -- Questie numeric enum name
-
-   -- blizzard:PartyPoseUIConstantsDocumentation.lua
-
    -- blizzard:PartyPoseUIDocumentation.lua
    record PartyPoseInfo
       defeatModelSceneID: number
@@ -45319,10 +41900,6 @@ local record CatalogueTypes
       victorySoundKitID: number
       widgetSetID: number
    end
-
-   -- blizzard:PartyConstantsDocumentation.lua
-
-   -- blizzard:PingManagerSecureDocumentation.lua
 
    -- blizzard:PerksActivitiesDocumentation.lua
    record PerksActivitiesInfo
@@ -45410,8 +41987,6 @@ local record CatalogueTypes
       displayName: string
    end
 
-   -- blizzard:PerksVendorConstantsDocumentation.lua
-
    -- blizzard:PerksProgramDocumentation.lua
    record PerksVendorItemInfo
       description: string
@@ -45456,21 +42031,11 @@ local record CatalogueTypes
       quality: number
    end
 
-   -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- blizzard:PetJournalInfoDocumentation.lua
    record PetAbilityLevelInfo
       abilityID: number
       level: number
    end
-
-   -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:PetBattleConstantsDocumentation.lua
 
    -- blizzard:StableInfoDocumentation.lua
    record PetInfo
@@ -45491,8 +42056,6 @@ local record CatalogueTypes
       ["type"]: string
       uiModelSceneID: number
    end
-
-   -- blizzard:PetJournalInfoDocumentation.lua
 
    -- blizzard:PetJournalInfoDocumentation.lua
    record PetJournalPetInfo
@@ -45518,12 +42081,6 @@ local record CatalogueTypes
       xp: number
    end
 
-   -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
-
    -- blizzard:StableInfoDocumentation.lua
    record PetSpecInfo
       specID: number
@@ -45539,20 +42096,6 @@ local record CatalogueTypes
       position: Vector2DMixin
       textureIndex: number
    end
-
-   -- blizzard:PetBattleConstantsDocumentation.lua
-
-   -- blizzard:PetBattleConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
-
-   -- blizzard:UnitDocumentation.lua
-
-   -- blizzard:ImageSharingConstantsDocumentation.lua
-
-   -- blizzard:ImageSharingConstantsDocumentation.lua
-
-   -- blizzard:HousingLayoutUITypesDocumentation.lua
 
    -- blizzard:PingManagerSecureDocumentation.lua
    record PingActionCooldownUIInfo
@@ -45575,8 +42118,6 @@ local record CatalogueTypes
       startTimeMs: number
    end
 
-   -- blizzard:PingManagerSecureDocumentation.lua
-
    -- blizzard:PingManagerSharedDocumentation.lua
    record PingMacroInfo
       itemID: number
@@ -45585,33 +42126,9 @@ local record CatalogueTypes
       ["type"]: number
    end
 
-   -- blizzard:PingConstantsDocumentation.lua
-
    -- blizzard:PingPinFrameAPIDocumentation.lua
    interface PingPinFrame
    end
-
-   -- blizzard:PingManagerSecureDocumentation.lua
-
-   -- blizzard:PingManagerSecureDocumentation.lua
-
-   -- blizzard:PingManagerSecureDocumentation.lua
-
-   -- blizzard:PingManagerSecureDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
-
-   -- blizzard:SharedScriptObjectUnitPositionFrameDocumentation.lua
-
-   -- blizzard:PingConstantsDocumentation.lua
 
    -- blizzard:PingManagerDocumentation.lua
    record PingTypeInfo
@@ -45645,8 +42162,6 @@ local record CatalogueTypes
       rangedAttackPower: number
    end
 
-   -- blizzard:PlayerChoiceConstantsDocumentation.lua
-
    -- blizzard:PlayerChoiceDocumentation.lua
    record PlayerChoiceInfo
       choiceID: number
@@ -45663,8 +42178,6 @@ local record CatalogueTypes
       soundKitID: number
       uiTextureKit: string
    end
-
-   -- blizzard:PlayerChoiceConstantsDocumentation.lua
 
    -- blizzard:PlayerChoiceDocumentation.lua
    record PlayerChoiceOptionButtonInfo
@@ -45711,10 +42224,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:PlayerChoiceDocumentation.lua
-
-   -- blizzard:PlayerChoiceConstantsDocumentation.lua
-
-   -- blizzard:PlayerChoiceDocumentation.lua
    record PlayerChoiceRewardCurrencyInfo
       currencyId: number
       currencyTexture: number
@@ -45736,26 +42245,12 @@ local record CatalogueTypes
       quantity: number
    end
 
-   -- blizzard:ClubFinderDocumentation.lua
-
-   -- blizzard:DelvesConstantsDocumentation.lua
-
    -- blizzard:CurrencyInfoDocumentation.lua
    record PlayerCurrencyCategoryInfo
       categoryName: string
       childCategories: {number}
       currencyTypes: {number}
    end
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:CurrencyConstantsDocumentation.lua
-
-   -- blizzard:PlayerDataConstantsDocumentation.lua
-
-   -- blizzard:PlayerDataConstantsDocumentation.lua
-
-   -- blizzard:PlayerDataConstantsDocumentation.lua
 
    -- blizzard:PlayerInfoSharedDocumentation.lua
    record PlayerInfoCharacterData
@@ -45765,8 +42260,6 @@ local record CatalogueTypes
       name: string
       sex: number
    end
-
-   -- blizzard:PlayerInteractionManagerConstantsDocumentation.lua
 
    -- questie:FrameXML/Blizzard_ObjectAPI/PlayerLocation.lua
    record PlayerLocation
@@ -45813,35 +42306,17 @@ local record CatalogueTypes
       SetVoiceID: function(self, number, number)
    end
 
-   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
-
-   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
-
-   -- blizzard:LobbyMatchmakerInfoDocumentation.lua
-
-   -- blizzard:IntlSharedTypesDocumentation.lua
-
-   -- blizzard:PowerTypeConstantsDocumentation.lua
-
    -- blizzard:SpellDocumentation.lua
    record PowerTypeChange
       amount: number
       powerType: number
    end
 
-   -- blizzard:PowerTypeConstantsDocumentation.lua
-
-   -- blizzard:PowerTypeConstantsDocumentation.lua
-
-   -- blizzard:LFGConstantsDocumentation.lua
-
    -- blizzard:HousingCustomizeModeUIDocumentation.lua
    record PreviewDyeSlotInfo
       dyeColorID: number
       dyeSlotID: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record PreyHuntProgressWidgetVisualizationInfo
@@ -45871,10 +42346,6 @@ local record CatalogueTypes
       iconWidth: number
    end
 
-   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
-
-   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
-
    -- blizzard:ProfessionSpecConstantsDocumentation.lua
    record ProfTabHighlight
       description: string
@@ -45888,14 +42359,6 @@ local record CatalogueTypes
       rootIconID: number
       rootNodeID: number
    end
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
 
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record ProfessionInfo
@@ -45912,16 +42375,6 @@ local record CatalogueTypes
       sourceCounter: number
    end
 
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
-
-   -- blizzard:ProfessionSpecConstantsDocumentation.lua
-
    -- blizzard:BankDocumentation.lua
    record PurchasableBankTabData
       canAfford: boolean
@@ -45930,20 +42383,6 @@ local record CatalogueTypes
       purchasePromptTitle: string
       tabCost: number
    end
-
-   -- Questie numeric enum name
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- blizzard:PvPFactionConstantsDocumentation.lua
-
-   -- blizzard:PvpInfoDocumentation.lua
-
-   -- blizzard:PVPMgrConstantsDocumentation.lua
-
-   -- blizzard:PvpInfoConstantsDocumentation.lua
-
-   -- blizzard:UnitDocumentation.lua
 
    -- blizzard:PvpInfoDocumentation.lua
    record PvpBrawlInfo
@@ -46046,12 +42485,6 @@ local record CatalogueTypes
       is QuestPOIFrame
    end
 
-   -- blizzard:QuestInfoSharedDocumentation.lua
-
-   -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:QuestLogDocumentation.lua
-
    -- blizzard:QuestLogDocumentation.lua
    record QuestInfo
       campaignID: number
@@ -46082,8 +42515,6 @@ local record CatalogueTypes
       title: string
       useMinimalHeader: boolean
    end
-
-   -- blizzard:QuestLineInfoDocumentation.lua
 
    -- blizzard:QuestLineInfoDocumentation.lua
    record QuestLineInfo
@@ -46118,8 +42549,6 @@ local record CatalogueTypes
       ["type"]: string
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:QuestInfoSharedDocumentation.lua
    record QuestPOIMapInfo
       childDepth: number
@@ -46137,8 +42566,6 @@ local record CatalogueTypes
       y: number
    end
 
-   -- blizzard:QuestConstantsDocumentation.lua
-
    -- blizzard:QuestOfferDocumentation.lua
    record QuestRequiredCurrencyInfo
       currencyID: number
@@ -46147,8 +42574,6 @@ local record CatalogueTypes
       requiredAmount: number
       texture: number
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
 
    -- blizzard:QuestRewardsDocumentation.lua
    record QuestRewardCurrencyInfo
@@ -46181,17 +42606,11 @@ local record CatalogueTypes
       ["type"]: number
    end
 
-   -- blizzard:QuestSessionConstantsDocumentation.lua
-
    -- blizzard:QuestSessionDocumentation.lua
    record QuestSessionPlayerDetails
       guid: string
       name: string
    end
-
-   -- blizzard:QuestSessionConstantsDocumentation.lua
-
-   -- blizzard:QuestLogDocumentation.lua
 
    -- blizzard:QuestLogDocumentation.lua
    record QuestTagInfo
@@ -46204,8 +42623,6 @@ local record CatalogueTypes
       worldQuestType: number
    end
 
-   -- blizzard:QuestConstantsDocumentation.lua
-
    -- blizzard:QuestLogDocumentation.lua
    record QuestTheme
       background: string
@@ -46214,10 +42631,6 @@ local record CatalogueTypes
       seal: string
       signature: string
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:QuestLogDocumentation.lua
 
    -- blizzard:QueueSpecificDocumentation.lua
    record QueueSpecificInfo
@@ -46300,8 +42713,6 @@ local record CatalogueTypes
       versions: {RafVersionInfo}
    end
 
-   -- blizzard:RecruitAFriendSharedDocumentation.lua
-
    -- blizzard:RecruitAFriendDocumentation.lua
    record RafMonthCount
       availableMonths: number
@@ -46344,10 +42755,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RecruitAFriendDocumentation.lua
-
-   -- blizzard:RecruitAFriendDocumentation.lua
-
-   -- blizzard:RecruitAFriendDocumentation.lua
    record RafRecruitmentinfo
       expireTime: number
       recruitmentCode: string
@@ -46383,8 +42790,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:RecruitAFriendDocumentation.lua
-
-   -- blizzard:RecruitAFriendDocumentation.lua
    record RafSystemInfo
       daysInCycle: number
       maxRecruitMonths: number
@@ -46406,14 +42811,6 @@ local record CatalogueTypes
       rafVersion: number
       rewards: {RafReward}
    end
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
 
    -- reviewed FrameXML supplement
    interface RaidWarningFrameMixin
@@ -46458,10 +42855,6 @@ local record CatalogueTypes
       weeklyMostPlayedSpecID: number
       weeklyMostPlayedSpecRounds: number
    end
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:RecentAlliesConstantsDocumentation.lua
 
    -- blizzard:RecentAlliesDocumentation.lua
    record RecentAlliesSearchInfo
@@ -46514,8 +42907,6 @@ local record CatalogueTypes
       note: string
    end
 
-   -- blizzard:RecentAlliesConstantsDocumentation.lua
-
    -- blizzard:RecentAlliesDocumentation.lua
    record RecentAllyStateData
       currentLocation: string
@@ -46526,14 +42917,6 @@ local record CatalogueTypes
       isOnline: boolean
       pinExpirationDate: number
    end
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:RecruitAFriendSharedDocumentation.lua
-
-   -- blizzard:RecruitAFriendSharedDocumentation.lua
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:ClubFinderDocumentation.lua
    record RecruitingClubInfo
@@ -46567,17 +42950,11 @@ local record CatalogueTypes
       timeRemainingSeconds: number
    end
 
-   -- blizzard:ChatConstantsDocumentation.lua
-
    -- blizzard:TradeSkillUITypesDocumentation.lua
    record RegularReagentInfo
       quantity: number
       reagent: CraftingReagent
    end
-
-   -- blizzard:QuestConstantsDocumentation.lua
-
-   -- blizzard:ExpansionConstantsDocumentation.lua
 
    -- blizzard:RemixArtifactUIDocumentation.lua
    record RemixArtifactAppearanceInfo
@@ -46611,10 +42988,6 @@ local record CatalogueTypes
       title: string
    end
 
-   -- blizzard:RenownConstantsDocumentation.lua
-
-   -- blizzard:RenownConstantsDocumentation.lua
-
    -- blizzard:AuctionHouseDocumentation.lua
    record ReplicateItemInfo
       bidAmount: number
@@ -46637,10 +43010,6 @@ local record CatalogueTypes
       usable: boolean
    end
 
-   -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- questie:Type/Mixin.lua
-
    -- questie:FrameXML/Blizzard_FrameXML/ReportFrame.lua
    interface ReportInfoMixin
       Clear: function(self)
@@ -46657,26 +43026,6 @@ local record CatalogueTypes
       SetReportType: function(self, number)
    end
 
-   -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- blizzard:ReputationInfoDocumentation.lua
-
-   -- Questie numeric enum name
-
-   -- blizzard:PartyConstantsDocumentation.lua
-
-   -- blizzard:CharacterCreationConstantsDocumentation.lua
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
-
    -- blizzard:PvpInfoDocumentation.lua
    record RoleShortageReward
       rewardItemID: number
@@ -46684,23 +43033,11 @@ local record CatalogueTypes
       validRoles: {string}
    end
 
-   -- blizzard:RolodexConstantsDocumentation.lua
-
-   -- blizzard:RolodexConstantsDocumentation.lua
-
-   -- blizzard:RolodexConstantsDocumentation.lua
-
-   -- blizzard:RolodexConstantsDocumentation.lua
-
-   -- blizzard:RolodexConstantsDocumentation.lua
-
    -- blizzard:HousingCustomizeModeUIDocumentation.lua
    record RoomComponentWallpaper
       name: string
       roomComponentTextureRecID: number
    end
-
-   -- blizzard:PlayerHousingConstantsDocumentation.lua
 
    -- blizzard:HousingLayoutUITypesDocumentation.lua
    record RoomOptionInfo
@@ -46756,10 +43093,6 @@ local record CatalogueTypes
       specName: string
       state: number
    end
-
-   -- blizzard:LegendaryCraftingTypesDocumentation.lua
-
-   -- blizzard:LegendaryCraftingTypesDocumentation.lua
 
    -- questie:Widget/Animation/Scale.lua
    interface SCALE
@@ -47131,18 +43464,6 @@ local record CatalogueTypes
       startTime: number
    end
 
-   -- blizzard:ScreenLocationConstantsDocumentation.lua
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
    -- blizzard:FrameScriptDocumentation.lua
    record ScriptBucketThrottleLimits
       luaScriptBucketThrottleMaxMsBurstNormal: number
@@ -47150,52 +43471,6 @@ local record CatalogueTypes
       luaScriptBucketThrottleMaxMsPerSecondNormal: number
       luaScriptBucketThrottleMaxMsPerSecondRestricted: number
    end
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- questie:Widget/UIType/ScriptType.lua
-
-   -- reviewed override
-
-   -- blizzard:ScriptedAnimationsDocumentation.lua
 
    -- blizzard:ScriptedAnimationsDocumentation.lua
    record ScriptedAnimationEffect
@@ -47228,10 +43503,6 @@ local record CatalogueTypes
       yawRadians: number
    end
 
-   -- blizzard:ScriptedAnimationsDocumentation.lua
-
-   -- blizzard:ScriptedAnimationsDocumentation.lua
-
    -- reviewed literal factory
    interface ScrollFrame_BackdropTemplate
       is ScrollFrame, BackdropTemplate
@@ -47243,18 +43514,12 @@ local record CatalogueTypes
       AddMessage: function(self, string, ? number, ? number, ? number, any...)
    end
 
-   -- blizzard:ValidateNameConstantsDocumentation.lua
-
-   -- blizzard:SeasonsConstantsDocumentation.lua
-
    -- blizzard:MythicPlusInfoDocumentation.lua
    record SeasonTimeInfo
       bestTime: number
       lastTime: number
       medal: number
    end
-
-   -- Blizzard metadata primitive
 
    -- blizzard:SecondsFormatterAPIDocumentation.lua
    interface SecondsFormatter
@@ -47331,18 +43596,6 @@ local record CatalogueTypes
       SetStripIntervalWhitespace: function(self, number)
    end
 
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
-
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
-
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
-
-   -- blizzard:SecondsFormatterSharedDocumentation.lua
-
-   -- blizzard:SecretWrapperConstantsDocumentation.lua
-
-   -- blizzard:SecretAspectConstantsDocumentation.lua
-
    -- blizzard:FrameScriptDocumentation.lua
    record SecureCopyOptions
       maxTraversalDepth: number
@@ -47365,10 +43618,6 @@ local record CatalogueTypes
       priority: number
    end
 
-   -- blizzard:DeathInfoDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
-
    -- blizzard:ChatInfoDocumentation.lua
    record SendChatMessageParams
       chatType: Literal_62300f6ce66d
@@ -47377,17 +43626,11 @@ local record CatalogueTypes
       target: string
    end
 
-   -- questie:Type/Type.lua
-
-   -- blizzard:PingManagerSecureDocumentation.lua
-
    -- blizzard:PingManagerSecureDocumentation.lua
    record SendPingResult
       result: number
       ["type"]: number
    end
-
-   -- blizzard:ReportSystemConstantsDocumentation.lua
 
    -- reviewed FrameXML supplement
    interface SettingsCanvasLayoutMixin
@@ -47424,44 +43667,6 @@ local record CatalogueTypes
       strlen: integer
    end
 
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleAnimRadialProgressAPIDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleAnimatableObjectAPIDocumentation.lua
-
-   -- blizzard:SimpleBrowserAPIDocumentation.lua
-
-   -- blizzard:SimpleButtonAPIDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
    -- blizzard:FrameAPISimpleCheckoutDocumentation.lua
    interface SimpleCheckout
       -- {"Environment": "All", "HasRestrictions": true}
@@ -47482,78 +43687,10 @@ local record CatalogueTypes
       SetZoom: function(self, number)
    end
 
-   -- blizzard:SimpleColorSelectAPIDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleEditBoxAPIDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleFrameScriptObjectAPIDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleMapSceneAPIDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleMessageFrameAPIDocumentation.lua
-
-   -- blizzard:SimpleModelAPIDocumentation.lua
-
-   -- blizzard:SimpleModelFFXAPIDocumentation.lua
-
-   -- blizzard:SimpleMovieAPIDocumentation.lua
-
-   -- blizzard:SimpleObjectAPIDocumentation.lua
-
-   -- blizzard:SimpleOffScreenFrameAPIDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleScriptRegionAPIDocumentation.lua
-
-   -- blizzard:SimpleScriptRegionResizingAPIDocumentation.lua
-
-   -- blizzard:SimpleScrollFrameAPIDocumentation.lua
-
-   -- blizzard:SimpleSliderAPIDocumentation.lua
-
-   -- blizzard:SimpleStatusBarAPIDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- blizzard:SimpleTextureBaseAPIDocumentation.lua
-
-   -- blizzard:SimpleVectorGraphicsAPIDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:ProfessionConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
    -- reviewed literal factory
    interface Slider_BackdropTemplate
       is Slider, BackdropTemplate
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- questie:Widget/UIType/UIType.lua
 
    -- blizzard:SocialQueueDocumentation.lua
    record SocialQueueConfig
@@ -47611,14 +43748,6 @@ local record CatalogueTypes
       guid: string
    end
 
-   -- blizzard:SocialUIDocumentation.lua
-
-   -- blizzard:SocialUIDocumentation.lua
-
-   -- blizzard:SocialUIDocumentation.lua
-
-   -- blizzard:SocialConstantsDocumentation.lua
-
    -- blizzard:ItemSocketInfoDocumentation.lua
    record SocketInfo
       gemMatchesSocket: boolean
@@ -47633,23 +43762,11 @@ local record CatalogueTypes
       quality: number
    end
 
-   -- blizzard:SoftTargetConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- blizzard:SoulbindsDocumentation.lua
    record SoulbindConduitData
       conduitID: number
       conduitRank: number
    end
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
-
-   -- blizzard:SoulbindsConstantsDocumentation.lua
 
    -- blizzard:SoulbindsDocumentation.lua
    record SoulbindData
@@ -47689,15 +43806,11 @@ local record CatalogueTypes
       state: number
    end
 
-   -- blizzard:SoulbindsConstantsDocumentation.lua
-
    -- blizzard:SoulbindsDocumentation.lua
    record SoulbindTree
       editable: boolean
       nodes: {SoulbindNode}
    end
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record SpacerVisualizationInfo
@@ -47768,8 +43881,6 @@ local record CatalogueTypes
       role: string
    end
 
-   -- blizzard:SpecializationSharedDocumentation.lua
-
    -- blizzard:ProfessionSpecConstantsDocumentation.lua
    record SpecializationTabInfo
       enabled: boolean
@@ -47780,8 +43891,6 @@ local record CatalogueTypes
    record Spell
       CreateFromSpellID: function(self, number): SpellMixin
    end
-
-   -- blizzard:SpellConstantsDocumentation.lua
 
    -- blizzard:SpellBookDocumentation.lua
    record SpellBookItemInfo
@@ -47796,10 +43905,6 @@ local record CatalogueTypes
       subName: string
    end
 
-   -- blizzard:SpellBookConstantsDocumentation.lua
-
-   -- blizzard:SpellBookConstantsDocumentation.lua
-
    -- blizzard:SpellBookDocumentation.lua
    record SpellBookSkillLineInfo
       iconID: number
@@ -47811,8 +43916,6 @@ local record CatalogueTypes
       shouldHide: boolean
       specID: number
    end
-
-   -- blizzard:SpellBookConstantsDocumentation.lua
 
    -- blizzard:SpellSharedDocumentation.lua
    record SpellChargeInfo
@@ -47836,16 +43939,12 @@ local record CatalogueTypes
       timeUntilEndOfStartRecovery: W.MaybeSecret<number>
    end
 
-   -- blizzard:SpellDiminishConstantsDocumentation.lua
-
    -- blizzard:SpellDiminishUIDocumentation.lua
    record SpellDiminishCategoryInfo
       category: number
       icon: number
       name: string
    end
-
-   -- blizzard:SpellDiminishConstantsDocumentation.lua
 
    -- blizzard:SpellDiminishUIDocumentation.lua
    record SpellDiminishTrackerInfo
@@ -47855,14 +43954,6 @@ local record CatalogueTypes
       showCountdown: boolean
       startTime: number
    end
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record SpellDisplayVisualizationInfo
@@ -47881,8 +43972,6 @@ local record CatalogueTypes
       widgetSizeSetting: number
       widgetTag: string
    end
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:SpellDocumentation.lua
    record SpellInfo
@@ -47950,10 +44039,6 @@ local record CatalogueTypes
       topLeftFeatureTitle: string
    end
 
-   -- blizzard:SplashScreenConstantsDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
-
    -- blizzard:UIWidgetManagerDocumentation.lua
    record StackedResourceTrackerWidgetVisualizationInfo
       frameTextureKit: string
@@ -47972,22 +44057,6 @@ local record CatalogueTypes
       widgetSizeSetting: number
       widgetTag: string
    end
-
-   -- blizzard:TimerConstantsDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record StatusBarWidgetVisualizationInfo
@@ -48033,8 +44102,6 @@ local record CatalogueTypes
       is StatusBar, BackdropTemplate
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:StringUtilDocumentation.lua
    record StripHyperlinkOptions
       maintainAtlases: boolean
@@ -48043,24 +44110,6 @@ local record CatalogueTypes
       maintainTextures: boolean
       stripNewlines: boolean
    end
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ExpansionDocumentation.lua
-
-   -- blizzard:ExpansionDocumentation.lua
-
-   -- blizzard:SummonConstantsDocumentation.lua
-
-   -- blizzard:IncomingSummonDocumentation.lua
-
-   -- blizzard:SuperTrackManagerSharedDocumentation.lua
-
-   -- blizzard:SuperTrackManagerSharedDocumentation.lua
-
-   -- blizzard:WowSurveyConstantsDocumentation.lua
-
-   -- blizzard:WowSurveyConstantsDocumentation.lua
 
    -- questie:Widget/Base/TabardModelBase.lua
    interface TabardModelBase
@@ -48103,8 +44152,6 @@ local record CatalogueTypes
       is TabardModel
    end
 
-   -- questie:Widget/UIType/UIType.lua
-
    -- questie:Widget/Texture/Texture.lua
    interface TEXTURE
       is Texture
@@ -48128,8 +44175,6 @@ local record CatalogueTypes
    interface TRANSLATION
       is Translation
    end
-
-   -- blizzard:FrameScriptDocumentation.lua
 
    -- blizzard:SpecializationInfoDocumentation.lua
    record TalentInfoQuery
@@ -48184,8 +44229,6 @@ local record CatalogueTypes
       playerIndex: number
       teamIndex: number
    end
-
-   -- questie:Widget/UIType/Template.lua
 
    -- blizzard:PaperDollInfoDocumentation.lua
    record TemporaryItemEnchantInfo
@@ -48333,10 +44376,6 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
    -- questie:Widget/Frame/GameTooltip.lua
    interface TextureInfoTable
       anchor: number
@@ -48372,8 +44411,6 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- reviewed timer callback/handle carrier
-
    -- blizzard:DelvesUIDocumentation.lua
    record TieredEntranceRewardInfo
       context: number
@@ -48381,10 +44418,6 @@ local record CatalogueTypes
       quantity: number
       rewardType: number
    end
-
-   -- blizzard:DelvesUIDocumentation.lua
-
-   -- blizzard:DelvesConstantsDocumentation.lua
 
    -- blizzard:DelvesUIDocumentation.lua
    record TieredEntranceTierInfo
@@ -48399,10 +44432,6 @@ local record CatalogueTypes
       tierDescription: string
       unlocked: boolean
    end
-
-   -- blizzard:DelvesConstantsDocumentation.lua
-
-   -- blizzard:DateAndTimeDocumentation.lua
 
    -- blizzard:TimedSignalMapAPIDocumentation.lua
    interface TimedSignalMap
@@ -48426,22 +44455,10 @@ local record CatalogueTypes
    end
 
    -- blizzard:TimedSignalMapSharedDocumentation.lua
-
-   -- blizzard:TimedSignalMapSharedDocumentation.lua
    record TimedSignalMapEntry
       key: number
       time: number
    end
-
-   -- blizzard:UITimerDocumentation.lua
-
-   -- blizzard:TextureUtilsDocumentation.lua
-
-   -- blizzard:PingManagerSecureDocumentation.lua
-
-   -- questie:Widget/UIType/FrameType.lua
-
-   -- questie:Widget/UIType/UIType.lua
 
    -- questie:Type/Structure.lua
    interface TooltipComparisonItem
@@ -48455,8 +44472,6 @@ local record CatalogueTypes
       color: colorRGB
       text: string
    end
-
-   -- blizzard:TooltipComparisonDocumentation.lua
 
    -- questie:Type/Structure.lua
    interface TooltipData
@@ -48484,8 +44499,6 @@ local record CatalogueTypes
       stringVal: string
    end
 
-   -- blizzard:TooltipInfoSharedDocumentation.lua
-
    -- questie:Type/Structure.lua
    interface TooltipDataLine
       bonding: W.MaybeSecret<number>
@@ -48502,24 +44515,12 @@ local record CatalogueTypes
       wrapText: W.MaybeSecret<boolean>
    end
 
-   -- blizzard:TooltipInfoSharedDocumentation.lua
-
-   -- blizzard:TooltipInfoSharedDocumentation.lua
-
-   -- blizzard:TooltipInfoSharedDocumentation.lua
-
    -- blizzard:TooltipComparisonDocumentation.lua
    record TooltipItemComparisonInfo
       additionalItems: {TooltipComparisonItem}
       item: TooltipComparisonItem
       method: number
    end
-
-   -- blizzard:TooltipConstantsDocumentation.lua
-
-   -- blizzard:TooltipConstantsDocumentation.lua
-
-   -- blizzard:TooltipConstantsDocumentation.lua
 
    -- blizzard:TotemDocumentation.lua
    record TotemInfoScript
@@ -48531,10 +44532,6 @@ local record CatalogueTypes
       startTime: number
       totemName: string
    end
-
-   -- blizzard:CommentatorSharedDocumentation.lua
-
-   -- blizzard:CommentatorFrameDocumentation.lua
 
    -- questie:Data/Wiki.lua
    interface TradeSkillCategoryInfo
@@ -48595,22 +44592,6 @@ local record CatalogueTypes
       unlockedRecipeLevel: number
    end
 
-   -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TradeSkillUITypesDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitCondInfo
       achievementID: number
@@ -48630,10 +44611,6 @@ local record CatalogueTypes
       ["type"]: number
    end
 
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitConfigInfo
       ID: number
@@ -48643,17 +44620,11 @@ local record CatalogueTypes
       usesSharedActionBars: boolean
    end
 
-   -- blizzard:TraitConstantsDocumentation.lua
-
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitCurrencyCost
       ID: number
       amount: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitDefinitionInfo
@@ -48665,12 +44636,6 @@ local record CatalogueTypes
       spellID: number
       subType: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitEntryInfo
@@ -48694,12 +44659,6 @@ local record CatalogueTypes
       conditionID: number
       topLeftNodeID: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitNodeInfo
@@ -48749,8 +44708,6 @@ local record CatalogueTypes
       subTreeActive: boolean
    end
 
-   -- blizzard:TraitConstantsDocumentation.lua
-
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitOutEdgeInfo
       isActive: boolean
@@ -48758,8 +44715,6 @@ local record CatalogueTypes
       ["type"]: number
       visualStyle: number
    end
-
-   -- blizzard:TraitConstantsDocumentation.lua
 
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitSubTreeInfo
@@ -48774,12 +44729,6 @@ local record CatalogueTypes
       traitCurrencyID: number
    end
 
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
-   -- blizzard:TraitConstantsDocumentation.lua
-
    -- blizzard:SharedTraitsDocumentation.lua
    record TraitTreeInfo
       ID: number
@@ -48789,16 +44738,6 @@ local record CatalogueTypes
       titleText: string
       uiTextureKit: string
    end
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
-
-   -- blizzard:TransformManipulatorConstantsDocumentation.lua
 
    -- blizzard:SimpleAnimTranslationLineAPIDocumentation.lua
    interface TranslationLine
@@ -48851,8 +44790,6 @@ local record CatalogueTypes
    end
 
    -- blizzard:TransmogItemsDocumentation.lua
-
-   -- blizzard:TransmogItemsDocumentation.lua
    record TransmogCategoryAppearanceInfo
       alwaysShowItem: boolean
       canDisplayOnPlayer: boolean
@@ -48877,15 +44814,11 @@ local record CatalogueTypes
       name: string
    end
 
-   -- blizzard:TransmogSharedDocumentation.lua
-
    -- blizzard:TransmogItemsDocumentation.lua
    record TransmogCustomSetInfo
       icon: number
       name: string
    end
-
-   -- blizzard:TransmogSharedDocumentation.lua
 
    -- blizzard:TransmogItemsDocumentation.lua
    record TransmogIllusionInfo
@@ -48896,8 +44829,6 @@ local record CatalogueTypes
       sourceID: number
       visualID: number
    end
-
-   -- questie:Type/Mixin.lua
 
    -- questie:FrameXML/Blizzard_FrameXML/TransmogUtil.lua
    interface TransmogLocationType
@@ -48923,16 +44854,6 @@ local record CatalogueTypes
       Set: function(self, number, number, number)
    end
 
-   -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record TransmogOutfitEntryInfo
       icon: number
@@ -48943,10 +44864,6 @@ local record CatalogueTypes
       playerFacingOutfitIndex: number
       situationCategories: {string}
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record TransmogOutfitLinkedSlotInfo
@@ -48959,14 +44876,6 @@ local record CatalogueTypes
       categoryName: string
       sheatheCategory: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record TransmogOutfitSlotGroup
@@ -48984,22 +44893,6 @@ local record CatalogueTypes
       ["type"]: number
    end
 
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record TransmogOutfitWeaponCollectionInfo
       canHaveIllusions: boolean
@@ -49014,16 +44907,10 @@ local record CatalogueTypes
       weaponOption: number
    end
 
-   -- questie:Type/Mixin.lua
-
    -- questie:FrameXML/Blizzard_FrameXML/TransmogUtil.lua
    interface TransmogPendingInfoMixin
       Init: function(self, number, number, number)
    end
-
-   -- blizzard:TransmogDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
 
    -- blizzard:TransmogSetsDocumentation.lua
    record TransmogSetInfo
@@ -49059,8 +44946,6 @@ local record CatalogueTypes
       collected: boolean
    end
 
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record TransmogSituationCategory
       description: string
@@ -49070,16 +44955,12 @@ local record CatalogueTypes
       triggerID: number
    end
 
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record TransmogSituationGroup
       groupID: number
       optionData: {TransmogSituationOptionData}
       secondaryID: number
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
 
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record TransmogSituationOption
@@ -49095,14 +44976,6 @@ local record CatalogueTypes
       option: TransmogSituationOption
       value: boolean
    end
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogConstantsDocumentation.lua
 
    -- blizzard:TransmogDocumentation.lua
    record TransmogSlotInfo
@@ -49129,14 +45002,6 @@ local record CatalogueTypes
       pendingVisualID: number
    end
 
-   -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogOutfitConstantsDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
-
-   -- blizzard:TransmogSharedDocumentation.lua
-
    -- blizzard:SharedTraitsDocumentation.lua
    record TreeCurrencyInfo
       maxQuantity: number
@@ -49144,14 +45009,6 @@ local record CatalogueTypes
       spent: number
       traitCurrencyID: number
    end
-
-   -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:ChatConstantsDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record TugOfWarWidgetVisualizationInfo
@@ -49182,10 +45039,6 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- blizzard:KeyBindingsDocumentation.lua
-
-   -- blizzard:UIActionConstantsDocumentation.lua
-
    -- blizzard:UIButtonSharedDocumentation.lua
    record UIButtonInfo
       highlight: string
@@ -49206,20 +45059,6 @@ local record CatalogueTypes
       title: string
    end
 
-   -- blizzard:UICovenantDisplayInfoConstantsDocumentation.lua
-
-   -- blizzard:CursorConstDocumentation.lua
-
-   -- blizzard:UIFrameManagerDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:ItemConstantsDocumentation.lua
-
-   -- blizzard:MapConstantsDocumentation.lua
-
-   -- blizzard:MapConstantsDocumentation.lua
-
    -- blizzard:UIMapPinSharedDocumentation.lua
    record UIMapPinInfo
       button: UIButtonInfo
@@ -49227,10 +45066,6 @@ local record CatalogueTypes
       outerGlow: string
       underlay: string
    end
-
-   -- blizzard:MapConstantsDocumentation.lua
-
-   -- blizzard:MapConstantsDocumentation.lua
 
    -- blizzard:UIModelInfoDocumentation.lua
    record UIModelSceneActorDisplayInfo
@@ -49242,8 +45077,6 @@ local record CatalogueTypes
       scale: number
       spellVisualKitID: number
    end
-
-   -- blizzard:UIModelInfoSharedDocumentation.lua
 
    -- blizzard:UIModelInfoDocumentation.lua
    record UIModelSceneActorInfo
@@ -49279,20 +45112,12 @@ local record CatalogueTypes
       zoomedYawOffset: number
    end
 
-   -- blizzard:UiModelSceneConstantsDocumentation.lua
-
-   -- blizzard:UiModelSceneConstantsDocumentation.lua
-
    -- questie:FrameXML/Blizzard_FrameXML/UIParent.lua
    interface UIParent
       is Frame
       firstTimeLoaded: number
       variablesLoaded: boolean
    end
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:UISystemVisibilityManagerDocumentation.lua
 
    -- blizzard:UITextureConstantsDocumentation.lua
    record UITextureSliceData
@@ -49311,14 +45136,6 @@ local record CatalogueTypes
       top: number
    end
 
-   -- blizzard:UITextureConstantsDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
    -- blizzard:UIWidgetManagerDocumentation.lua
    record UIWidgetCurrencyInfo
       iconFileID: number
@@ -49332,12 +45149,6 @@ local record CatalogueTypes
       tooltip: string
       updateAnimType: number
    end
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record UIWidgetIconInfo
@@ -49376,14 +45187,6 @@ local record CatalogueTypes
       tooltipEnabled: boolean
    end
 
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
    -- blizzard:UIWidgetManagerDocumentation.lua
    record UIWidgetRewardInfo
       earnedTooltip: string
@@ -49392,18 +45195,10 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record UIWidgetSetInfo
       layoutDirection: number
       verticalPadding: number
    end
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record UIWidgetSpellButtonInfo
@@ -49442,22 +45237,10 @@ local record CatalogueTypes
    end
 
    -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
    record UIWidgetTextTooltipPair
       text: string
       tooltip: string
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerSharedDocumentation.lua
 
    -- questie:Widget/Frame/UnitPositionFrame.lua
    interface UnitPositionFrame
@@ -49566,10 +45349,6 @@ local record CatalogueTypes
       CreateFromVector3D: Callback_def77e0306d5
    end
 
-   -- blizzard:UnitAuraSharedDocumentation.lua
-
-   -- blizzard:UnitAuraSharedDocumentation.lua
-
    -- blizzard:UnitConstantsDocumentation.lua
    record UnitAuraSoundInfo
       outputChannel: string
@@ -49580,8 +45359,6 @@ local record CatalogueTypes
       unitToken: string
    end
 
-   -- blizzard:UnitAuraConstantsDocumentation.lua
-
    -- blizzard:UnitConstantsDocumentation.lua
    record UnitAuraUpdateInfo
       addedAuras: {AuraData}
@@ -49589,8 +45366,6 @@ local record CatalogueTypes
       removedAuraInstanceIDs: {number}
       updatedAuraInstanceIDs: {number}
    end
-
-   -- reviewed override
 
    -- blizzard:UnitDocumentation.lua
    record UnitCastingInfoResult
@@ -49635,22 +45410,16 @@ local record CatalogueTypes
    end
 
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record UnitDamageAbsorbInfo
       amount: number
       clamped: boolean
    end
 
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record UnitHealAbsorbInfo
       amount: number
       clamped: boolean
    end
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
 
    -- questie:ScriptObject/UnitHealPredictionCalculator.lua
    interface UnitHealPredictionCalculator
@@ -49737,10 +45506,6 @@ local record CatalogueTypes
       totalIncomingHealsFromHealer: number
    end
 
-   -- questie:Type/Type.lua
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
-
    -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    record UnitIncomingHealInfo
       amount: number
@@ -49748,10 +45513,6 @@ local record CatalogueTypes
       amountFromOthers: number
       clamped: boolean
    end
-
-   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
-
-   -- blizzard:PetConstantsDocumentation.lua
 
    -- blizzard:UnitDocumentation.lua
    record UnitPowerBarInfo
@@ -49828,37 +45589,11 @@ local record CatalogueTypes
       unitToken: string
    end
 
-   -- blizzard:UnitSexConstantsDocumentation.lua
-
-   -- questie:Type/UnitToken.lua
-
-   -- questie:Type/UnitId.lua
-
-   -- questie:Type/UnitId.lua
-
-   -- questie:Type/UnitId.lua
-
-   -- questie:Type/UnitId.lua
-
-   -- questie:Type/UnitId.lua
-
-   -- questie:Type/UnitToken.lua
-
-   -- questie:Type/UnitToken.lua
-
-   -- questie:Type/UnitToken.lua
-
-   -- Blizzard metadata primitive
-
-   -- Blizzard metadata primitive
-
    -- blizzard:AzeriteItemDocumentation.lua
    record UnlockedAzeriteEmpoweredItems
       tierIndex: number
       unlockedItem: ItemLocation
    end
-
-   -- blizzard:TextureUtilsDocumentation.lua
 
    -- questie:Widget/Animation/VertexColor.lua
    interface VertexColor
@@ -49877,10 +45612,6 @@ local record CatalogueTypes
    interface VERTEXCOLOR
       is VertexColor
    end
-
-   -- blizzard:ValidateNameConstantsDocumentation.lua
-
-   -- blizzard:BattlepayConstantsDocumentation.lua
 
    -- questie:FrameXML/Blizzard_SharedXML/Vector2D.lua
    interface Vector2DType
@@ -49954,10 +45685,6 @@ local record CatalogueTypes
       zoneName: string
    end
 
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
-   -- blizzard:EditModeManagerConstantsDocumentation.lua
-
    -- blizzard:TransmogOutfitInfoDocumentation.lua
    record ViewedTransmogOutfitSlotInfo
       canTransmogrify: boolean
@@ -49997,14 +45724,6 @@ local record CatalogueTypes
       zoneInfiniteAOI: boolean
    end
 
-   -- blizzard:VignetteConstantsDocumentation.lua
-
-   -- blizzard:VignetteConstantsDocumentation.lua
-
-   -- blizzard:VisualAlertConstantsDocumentation.lua
-
-   -- Questie numeric enum name
-
    -- blizzard:VoiceChatDocumentation.lua
    record VoiceAudioDevice
       deviceID: string
@@ -50013,8 +45732,6 @@ local record CatalogueTypes
       isCommsDefault: boolean
       isSystemDefault: boolean
    end
-
-   -- blizzard:VoiceChatDocumentation.lua
 
    -- blizzard:VoiceChatDocumentation.lua
    record VoiceChatChannel
@@ -50048,32 +45765,10 @@ local record CatalogueTypes
    end
 
    -- blizzard:VoiceChatDocumentation.lua
-
-   -- blizzard:VoiceChatDocumentation.lua
-
-   -- blizzard:VoiceChatDocumentation.lua
    record VoiceTtsVoiceType
       name: string
       voiceID: number
    end
-
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
 
    -- blizzard:WarbandSceneInfoDocumentation.lua
    record WarbandSceneEntry
@@ -50088,25 +45783,17 @@ local record CatalogueTypes
       warbandSceneID: number
    end
 
-   -- blizzard:WarbandSceneInfoConstantsDocumentation.lua
-
-   -- blizzard:CharacterSelectionConstantsDocumentation.lua
-
    -- blizzard:WarbandSceneInfoDocumentation.lua
    record WarbandSceneSearchInfo
       favoritesOnly: boolean
       ownedOnly: boolean
    end
 
-   -- blizzard:ItemConstantsDocumentation.lua
-
    -- blizzard:WeatherScriptDocumentation.lua
    record WeatherInfo
       intensity: number
       ["type"]: number
    end
-
-   -- blizzard:WeatherConstantsDocumentation.lua
 
    -- blizzard:WeeklyRewardsDocumentation.lua
    record WeeklyRewardActivityEncounterInfo
@@ -50145,10 +45832,6 @@ local record CatalogueTypes
       numPoints: number
    end
 
-   -- Questie numeric enum name
-
-   -- questie:Type/BlizzardType.lua
-
    -- blizzard:FriendListDocumentation.lua
    record WhoInfo
       area: string
@@ -50161,36 +45844,6 @@ local record CatalogueTypes
       raceStr: string
       timerunningSeasonID: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:CursorConstDocumentation.lua
-
-   -- blizzard:WowEntitlementInfoDocumentation.lua
-
-   -- blizzard:CursorConstDocumentation.lua
-
-   -- blizzard:WorldElapsedTimerConstantsDocumentation.lua
 
    -- blizzard:WorldLootObjectDocumentation.lua
    record WorldLootObjectInfo
@@ -50211,8 +45864,6 @@ local record CatalogueTypes
       startTime: number
    end
 
-   -- blizzard:QuestLogDocumentation.lua
-
    -- blizzard:WorldSafeLocsUIInternalDocumentation.lua
    record WorldSafeLocInfo
       continent: number
@@ -50220,10 +45871,6 @@ local record CatalogueTypes
       loc: Vector3DMixin
       name: string
    end
-
-   -- blizzard:DelvesConstantsDocumentation.lua
-
-   -- questie:Type/Type.lua
 
    -- blizzard:LFGListInfoDocumentation.lua
    record WowLocale
@@ -50239,8 +45886,6 @@ local record CatalogueTypes
       zhCN: boolean
       zhTW: boolean
    end
-
-   -- questie:Widget/UIType/UIType.lua
 
    -- blizzard:XMLUtilDocumentation.lua
    record XMLTemplateInfo
@@ -50274,18 +45919,6 @@ local record CatalogueTypes
       uiPriority: number
       zoneAbilityID: number
    end
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
-
-   -- blizzard:UIWidgetManagerDocumentation.lua
 
    -- blizzard:UIWidgetManagerDocumentation.lua
    record ZoneControlVisualizationInfo
@@ -50360,8 +45993,6 @@ local record CatalogueTypes
       top: number
    end
 
-   -- Blizzard metadata primitive
-
    -- questie:Widget/Frame/Button/Button.lua
    interface button
       is Button
@@ -50411,8 +46042,6 @@ local record CatalogueTypes
       is Cooldown
    end
 
-   -- Blizzard metadata primitive
-
    -- questie:Widget/Frame/Model/DressUpModel.lua
    interface dressupmodel
       is DressUpModel
@@ -50422,8 +46051,6 @@ local record CatalogueTypes
    interface editbox
       is EditBox
    end
-
-   -- Lua 5.1 numeric asset-ID carrier; native ID validation still applies
 
    -- questie:Widget/Animation/FlipBook.lua
    interface flipbook
@@ -50450,22 +46077,10 @@ local record CatalogueTypes
       is GameTooltip
    end
 
-   -- reviewed override
-
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
    -- questie:Widget/Texture/Line.lua
    interface line
       is Line
    end
-
-   -- questie:Type/BlizzardType.lua
-
-   -- Blizzard metadata primitive
 
    -- questie:Widget/Texture/Texture.lua
    interface masktexture
@@ -50513,14 +46128,10 @@ local record CatalogueTypes
       is ModelScene
    end
 
-   -- questie:Widget/UIType/UIType.lua
-
    -- questie:Widget/Frame/MovieFrame.lua
    interface movieframe
       is MovieFrame
    end
-
-   -- questie:Type/BlizzardType.lua
 
    -- questie:Widget/Animation/Path.lua
    interface path
@@ -50562,8 +46173,6 @@ local record CatalogueTypes
       is SimpleHTML
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- questie:Widget/Frame/Slider.lua
    interface slider
       is Slider
@@ -50589,8 +46198,6 @@ local record CatalogueTypes
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted"}
       trim: function(string, ? string): string
    end
-
-   -- questie:Type/BlizzardType.lua
 
    -- questie:Widget/Frame/Model/TabardModel.lua
    interface tabardmodel
@@ -50640,23 +46247,15 @@ local record CatalogueTypes
       is Texture
    end
 
-   -- questie:Type/BlizzardType.lua
-
    -- questie:Widget/Animation/TextureCoordTranslation.lua
    interface textureCoordTranslation
       is TextureCoordTranslation
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
    -- questie:Widget/Animation/Translation.lua
    interface translation
       is Translation
    end
-
-   -- questie:Type/BlizzardType.lua
 
    -- blizzard:UISharedDocumentation.lua
    record uiBoundsRect
@@ -50666,4224 +46265,6317 @@ local record CatalogueTypes
       width: W.MaybeSecret<number>
    end
 
-   -- questie:Type/BlizzardType.lua
-
-   -- questie:Type/BlizzardType.lua
-
    -- questie:Widget/Frame/UnitPositionFrame.lua
    interface unitpositionframe
       is UnitPositionFrame
    end
-
-   -- questie:Type/Mixin.lua
-
-   -- questie:Type/Mixin.lua
 
    -- questie:Widget/Animation/VertexColor.lua
    interface vertexcolor
       is VertexColor
    end
 
+   -- blizzard:LocalizationSharedDocumentation.lua
    type AbbreviationDataError = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type AccountCurrencyTransferResult = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type AccountData = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type AccountDataUpdateStatus = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type AccountExportResult = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type AccountGetListRequestType = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type AccountSequenceCacheType = number
 
+   -- Questie numeric enum name
    type AccountStoreCategoryType = number
 
+   -- Questie numeric enum name
    type AccountStoreItemFlag = number
 
+   -- Questie numeric enum name
    type AccountStoreItemMode = number
 
+   -- Questie numeric enum name
    type AccountStoreItemStatus = number
 
+   -- Questie numeric enum name
    type AccountStoreState = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type AccountTransType = number
 
+   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
    type AceConfig_OptionsTable_ChildGroup = Literal_8617e67e98d9
 
+   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
    type AceConfig_OptionsTable_DescStyle = Literal_186b928995f7
 
+   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
    type AceConfig_OptionsTable_Type = Literal_5f63e5fe342c
 
+   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua
    type AceConfig_OptionsTable_Width = number | Literal_18f964a7429c
 
+   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
    type AceConfigRegistry_OptionsGenerator = Callback_ad6e0666d24b
 
+   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
    type AceConfigRegistry_OptionsGetter = Callback_a7bf358ce778
 
+   -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
    type AceConfigRegistry_UIType = Literal_3a064e09ef93
 
+   -- questie:Libraries/Ace3/AceDB-3.0.lua
    type AceDB_EventName = Literal_48840cc66c6a
 
+   -- questie:Libraries/Ace3/AceGUI-3.0/AceGUI-3.0.lua
    type AceGUIContainerType = Literal_472c04684756
 
+   -- questie:Libraries/Ace3/AceGUI-3.0/AceGUI-3.0.lua
    type AceGUILayoutType = Literal_ec5fe0086554
 
+   -- questie:Libraries/Ace3/AceGUI-3.0/AceGUI-3.0.lua
    type AceGUIWidgetType = Literal_0c77bd0575f5
 
+   -- questie:Libraries/Ace3/AceLocale-3.0.lua
    type AceLocale_LocaleCode = Literal_4d29e10a1d47
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type ActionBarOrientation = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type ActionBarVisibleSetting = number
 
+   -- blizzard:AddOnsDocumentation.lua
    type AddOnEnableState = number
 
+   -- blizzard:AddOnProfilerConstantsDocumentation.lua
    type AddOnPerformanceMessageType = number
 
+   -- blizzard:AddOnProfilerConstantsDocumentation.lua
    type AddOnProfilerMetric = number
 
+   -- blizzard:RestrictedActionsConstantsDocumentation.lua
    type AddOnRestrictionState = number
 
+   -- blizzard:RestrictedActionsConstantsDocumentation.lua
    type AddOnRestrictionType = number
 
+   -- blizzard:AddOnsDocumentation.lua
    type AddOnSecurityStatus = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type AddSoulbindConduitReason = number
 
+   -- blizzard:AnimaDiversionUIDocumentation.lua
    type AnimaDiversionNodeState = number
 
+   -- questie:Type/BlizzardType.lua
    type AnimationDataEnum = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type AnimationType = Literal_0839f8b7ee27
 
+   -- blizzard:ArrowCalloutConstantsDocumentation.lua
    type ArrowCalloutDirection = number
 
+   -- blizzard:ArrowCalloutConstantsDocumentation.lua
    type ArrowCalloutType = number
 
+   -- questie:Type/BlizzardType.lua
    type ArtifactTiers = number
 
+   -- blizzard:AsyncAssistActionsConstantsDocumentation.lua
    type AssistActionType = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseCommoditySortOrder = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseError = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseExtraColumn = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseFilter = number
 
+   -- blizzard:AuctionHouseDocumentation.lua
    type AuctionHouseFilterCategory = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseItemSortOrder = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseNotification = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseSortOrder = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type AuctionHouseTimeLeftBand = number
 
+   -- blizzard:AuctionHouseDocumentation.lua
    type AuctionStatus = number
 
+   -- questie:Type/BlizzardType.lua
    type AuraFilters = string
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type AuraFrameIconDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type AuraFrameIconWrap = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type AuraFrameOrientation = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type AuraFrameVisibleSetting = number
 
+   -- blizzard:AutoCompleteSharedDocumentation.lua
    type AutoCompleteEntryFlag = number
 
+   -- blizzard:AutoCompleteSharedDocumentation.lua
    type AutoCompletePriority = number
 
+   -- blizzard:PartyConstantsDocumentation.lua
    type AvgItemLevelCategories = number
 
+   -- questie:Type/Mixin.lua
    type AzeriteEmpoweredItemLocation = ItemLocation
 
+   -- blizzard:AzeriteConstantsDocumentation.lua
    type AzeriteEssenceSlot = number
 
+   -- questie:Type/Mixin.lua
    type AzeriteItemLocation = ItemLocation
 
+   -- blizzard:AzeriteEmpoweredItemDocumentation.lua
    type AzeritePowerLevel = number
 
+   -- blizzard:BagConstantsDocumentation.lua
    type BagFlag = number
 
+   -- blizzard:BagIndexConstantsDocumentation.lua
    type BagIndex = number
 
+   -- blizzard:BagConstantsDocumentation.lua
    type BagSlotFlags = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type BagsDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type BagsOrientation = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type BalanceType = number
 
+   -- blizzard:BankDocumentation.lua
    type BankLockedReason = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type BankType = number
 
+   -- blizzard:EncodingUtilDocumentation.lua
    type Base64Variant = number
 
+   -- blizzard:BattleNetSharedDocumentation.lua
    type BattleNetFriendLevel = number
 
+   -- blizzard:BattleNetSharedDocumentation.lua
    type BattleNetFriendTag = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type BattlePetAction = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type BattlePetBreedQuality = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type BattlePetOwner = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type BattlePetSources = number
 
+   -- questie:Type/BlizzardType.lua
    type BigInteger = number
 
+   -- questie:Type/BlizzardType.lua
    type BigUInteger = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type BindingContext = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type BindingSet = number
 
+   -- questie:Widget/UIType/UIType.lua
    type BlendMode = Literal_0dc23621406b
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type BnetAccountFlag = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type BonusStatIndex = number
 
+   -- blizzard:PvpInfoDocumentation.lua
    type BrawlType = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type BreakType = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type BulkPurchaseResult = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type BulkPurchaseStatus = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type BulkRefundResult = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type CScriptObject = Object
 
+   -- questie:Data/CVar.lua
    type CVar = string
 
+   -- reviewed override
    type CVarValue = string | number
 
+   -- Questie numeric enum name
    type CachedRewardType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarCommandType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarErrorType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarEventBits = number
 
+   -- questie:Type/BlizzardType.lua
    type CalendarEventID = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarEventRepeatOptions = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarEventType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarFilterFlags = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarGetEventType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarHolidayFilterType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarInviteBits = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarInviteSortType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarInviteType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarModeratorStatus = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarStatus = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarTexturesType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type CalendarWebActionType = number
 
+   -- blizzard:CovenantCallingsConstantsDocumentation.lua
    type CallingStates = number
 
+   -- blizzard:CameraConstantsDocumentation.lua
    type CameraModeAspectRatio = number
 
+   -- blizzard:WarCampaignDocumentation.lua
    type CampaignState = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type CanRedeemTokenForBalanceResult = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type CaptureBarWidgetFillDirectionType = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Causeofdeath = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type CauseofdeathFlags = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type ChallengeModeHistoryFlags = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type ChallengeModeHistoryResult = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type ChallengeModeHistoryStatus = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type ChannelPlayerFlags = number
 
+   -- blizzard:CharacterCreationConstantsDocumentation.lua
    type CharCreateAnimTurnType = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type CharCustomizationType = number
 
+   -- blizzard:CharacterCreationConstantsDocumentation.lua
    type CharSectionCondition = number
 
+   -- blizzard:CharacterServicesConstantsDocumentation.lua
    type CharacterServiceInfoFlag = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type ChatBubbleFrame = Frame
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type ChatChannelRuleset = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type ChatChannelType = number
 
+   -- questie:Libraries/ChatThrottleLib/ChatThrottleLib.lua
    type ChatThrottleLib_prio = Literal_2ace0779ab46
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type ChatToxityFilterOptOut = number
 
+   -- questie:Type/Type.lua
    type ChatType = Literal_62300f6ce66d
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type ChatWhisperTargetStatus = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type ChrCustomizationCategoryFlag = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type ChrCustomizationOptionType = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type ChrModelFeatureFlags = number
 
+   -- blizzard:CinematicConstantsDocumentation.lua
    type CinematicType = number
 
+   -- questie:Type/Type.lua
    type ClassFile = Literal_8c18208578b0
 
+   -- blizzard:ClickBindingsConstantsDocumentation.lua
    type ClickBindingInteraction = number
 
+   -- blizzard:ClickBindingsConstantsDocumentation.lua
    type ClickBindingType = number
 
+   -- questie:Widget/UIType/UIType.lua
    type ClickButton = Literal_ce140696dff0
 
+   -- blizzard:PlatformDocumentation.lua
    type ClientPlatformType = number
 
+   -- blizzard:ClientSceneDocumentation.lua
    type ClientSceneType = number
 
+   -- blizzard:ClientSettingsDocumentation.lua
    type ClientSettingsConfigFlag = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubActionType = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubErrorType = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubFieldType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type ClubFinderApplicationUpdateType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type ClubFinderClubPostingStatusFlags = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type ClubFinderDisableReason = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type ClubFinderPostingReportType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type ClubFinderRequestType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type ClubFinderSettingFlags = number
 
+   -- questie:Type/BlizzardType.lua
    type ClubId = string
 
+   -- blizzard:ClubDocumentation.lua
    type ClubInvitationCandidateStatus = number
 
+   -- questie:Type/BlizzardType.lua
    type ClubInvitationId = string
 
+   -- reviewed override
    type ClubMemberOpaqueId = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubMemberPresence = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubRemovedReason = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubRestrictionReason = number
 
+   -- blizzard:ClubSharedDocumentation.lua
    type ClubRoleIdentifier = number
 
+   -- questie:Type/BlizzardType.lua
    type ClubStreamId = string
 
+   -- blizzard:ClubDocumentation.lua
    type ClubStreamNotificationFilter = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubStreamType = number
 
+   -- blizzard:ClubDocumentation.lua
    type ClubType = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type CollationStrength = number
 
+   -- blizzard:ColorOverrideConstantsDocumentation.lua
    type ColorOverride = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertCastState = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertCategory = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertDebuffSelfAlertValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertPartyPercentValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertPercentValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertPlayerCastFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertPlayerDebuffFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertPlayerHealthFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertPlayerResourceFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertPulsePercentValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertSayIfTargetedType = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertSpecSetting = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertTargetCastFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertTargetDeathBehavior = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertTargetHealthFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertThrottle = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertType = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type CombatAudioAlertUnit = number
 
+   -- blizzard:CombatLogSharedDocumentation.lua
    type CombatLogMessageOrder = number
 
+   -- blizzard:CombatLogConstantsDocumentation.lua
    type CombatLogObject = number
 
+   -- blizzard:CombatLogConstantsDocumentation.lua
    type CombatLogObjectTarget = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type CombinedQuestLogStatus = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type CombinedQuestStatus = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type CommunicationMode = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type CompanionConfigSlotTypes = number
 
+   -- blizzard:DelvesUIDocumentation.lua
    type CompanionRoleType = number
 
+   -- blizzard:EncodingUtilDocumentation.lua
    type CompressionLevel = number
 
+   -- blizzard:EncodingUtilDocumentation.lua
    type CompressionMethod = number
 
+   -- blizzard:ConfigurationWarningConstantsDocumentation.lua
    type ConfigurationWarning = number
 
+   -- blizzard:SpellConstantsDocumentation.lua
    type ConfirmationPromptUIType = number
 
+   -- questie:Type/BlizzardType.lua
    type ConnectionIptype = number
 
+   -- reviewed override
    type ConnectionProtocol = number
 
+   -- blizzard:WeeklyRewardsDocumentation.lua
    type ConquestProgressBarDisplayType = number
 
+   -- blizzard:ConsoleDocumentation.lua
    type ConsoleCategory = number
 
+   -- blizzard:ConsoleDocumentation.lua
    type ConsoleColorType = number
 
+   -- blizzard:ConsoleDocumentation.lua
    type ConsoleCommandType = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type ContentTrackingError = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type ContentTrackingResult = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type ContentTrackingStopType = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type ContentTrackingTargetType = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type ContentTrackingType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type ContributionAppearanceFlags = number
 
+   -- blizzard:ContributionCollectorDocumentation.lua
    type ContributionResult = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type ContributionState = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type CooldownFrame = Cooldown
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type CooldownSetLinkedSpellFlags = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type CooldownSetSpellFlags = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type CooldownViewerAddAlertStatus = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type CooldownViewerAlertEventType = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type CooldownViewerAlertType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type CooldownViewerBarContent = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type CooldownViewerCategory = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type CooldownViewerIconDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type CooldownViewerOrientation = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type CooldownViewerSound = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type CooldownViewerVisibleSetting = number
 
+   -- blizzard:HousingNeighborhoodUIDocumentation.lua
    type CornerstonePurchaseMode = number
 
+   -- blizzard:CovenantsConstantsDocumentation.lua
    type CovenantAbilityType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type CovenantSkill = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type CovenantType = number
 
+   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
    type CraftingOrderCustomerCategoryType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderDuration = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderFlags = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderItemFlags = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderItemType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderReagentSource = number
 
+   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
    type CraftingOrderReagentsType = number
 
+   -- blizzard:CraftingOrderUISharedDocumentation.lua
    type CraftingOrderRequestCallback = function(number, number, boolean, boolean, number, boolean)
 
+   -- blizzard:CraftingOrderUISharedDocumentation.lua
    type CraftingOrderRequestMyOrdersCallback = function(number, boolean, number, boolean)
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderResult = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderSortType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderState = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingOrderType = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type CraftingReagentItemFlag = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type CraftingReagentType = number
 
+   -- blizzard:HousingUIDocumentation.lua
    type CreateNeighborhoodErrorType = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type CurioRarity = number
 
+   -- blizzard:DelvesUIDocumentation.lua
    type CurioType = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type CurrencyConversionResult = number
 
+   -- blizzard:CurrencyConstants_MainlineDocumentation.lua
    type CurrencyDestroyReason = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type CurrencyFilterType = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type CurrencyFlags = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type CurrencyFlagsB = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type CurrencyGainFlags = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type CurrencyNameStyle = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type CurrencyTokenCategoryFlags = number
 
+   -- blizzard:MoneyConstantsDocumentation.lua
    type CurrencyType = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type CursorStyle = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type Cursormode = number
 
+   -- questie:Widget/UIType/UIType.lua
    type CurveType = Literal_b86caeddf0d0
 
+   -- blizzard:AuraContainerSharedDocumentation.lua
    type CustomAuraButtonDispelTypeStealableFilter = number
 
+   -- blizzard:AuraContainerSharedDocumentation.lua
    type CustomAuraButtonDispelTypeTextureStyle = number
 
+   -- blizzard:AuraContainerSharedDocumentation.lua
    type CustomAuraButtonUpdateMode = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type CustomBindingType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type DamageMeterCombineSessionType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type DamageMeterNumbers = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type DamageMeterOverrideType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type DamageMeterSessionType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type DamageMeterSourceDisplayType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type DamageMeterSpellDetailsDisplayType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type DamageMeterStorageType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type DamageMeterStyle = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type DamageMeterType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type DamageMeterVisibility = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Damageclass = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type DamageclassType = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type DateTimeStyle = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type DisableAccountProfilesFlags = number
 
+   -- blizzard:DiscordConstantsDocumentation.lua
    type DiscordAccountType = number
 
+   -- blizzard:DiscordConstantsDocumentation.lua
    type DiscordDisplayNameType = number
 
+   -- blizzard:DiscordConstantsDocumentation.lua
    type DiscordGuildSettings = number
 
+   -- questie:Widget/UIType/UIType.lua
    type DrawLayer = Literal_243b9650451a
 
+   -- questie:Type/BlizzardType.lua
    type DurationSeconds = number
 
+   -- reviewed override
    type DurationTextBinding = DurationTextBindingObject
 
+   -- blizzard:DurationTextBindingSharedDocumentation.lua
    type DurationTextBindingProperty = number
 
+   -- blizzard:LuaDurationObjectSharedDocumentation.lua
    type DurationTimeModifier = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeAccountSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeActionBarSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeActionBarSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeArchaeologyBarSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeAuraFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeAuraFrameSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeBagsSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeCastBarSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeChatFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeCooldownViewerSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeCooldownViewerSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeDamageMeterSetting = number
 
+   -- reviewed FrameXML supplement
    type EditModeDialogMode = {string: W.Data}
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeDurabilityFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeEncounterEventsSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeEncounterEventsSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeLayoutType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeLossOfControlSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeMicroMenuSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeMinimapSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeObjectiveTrackerSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModePersonalResourceDisplaySetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModePresetLayouts = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeRaidWarningSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeSettingDisplayType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeStatusTrackingBarSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeStatusTrackingBarSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeSystem = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeTimerBarsSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeUnitFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeUnitFrameSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EditModeVehicleSeatIndicatorSetting = number
 
+   -- questie:Type/EmoteToken.lua
    type EmoteToken = string
 
+   -- questie:Type/Mixin.lua
    type EmptiableItemLocation = ItemLocation
 
+   -- blizzard:DungeonEncounterConstantsDocumentation.lua
    type EncounterEventCastState = number
 
+   -- blizzard:EncounterEventsSharedDocumentation.lua
    type EncounterEventColorTrigger = number
 
+   -- blizzard:DungeonEncounterConstantsDocumentation.lua
    type EncounterEventIconmask = number
 
+   -- blizzard:DungeonEncounterConstantsDocumentation.lua
    type EncounterEventSeverity = number
 
+   -- blizzard:EncounterEventsSharedDocumentation.lua
    type EncounterEventSoundTrigger = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EncounterEventsIconDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EncounterEventsOrientation = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EncounterEventsTooltipAnchor = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EncounterEventsViewType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type EncounterEventsVisibility = number
 
+   -- blizzard:LootHistoryDocumentation.lua
    type EncounterLootDropRollState = number
 
+   -- questie:Type/BlizzardType.lua
    type EncounterTimelineEventID = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type EncounterTimelineEventSortDirection = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type EncounterTimelineEventSource = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type EncounterTimelineEventState = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type EncounterTimelineIconSet = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type EncounterTimelineTrack = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type EncounterTimelineTrackType = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type EncounterTimelineViewType = number
 
+   -- blizzard:EndOfMatchUIDocumentation.lua
    type EndOfMatchType = number
 
+   -- blizzard:LocalizationSharedDocumentation.lua
    type Enum_AbbreviationDataError = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_AccountCurrencyTransferResult = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_AccountData = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_AccountDataUpdateStatus = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_AccountExportResult = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_AccountGetListRequestType = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_AccountSequenceCacheType = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStateFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStateLoadedFlags = string
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreCategoryType = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreFrontFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreItemFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreItemMode = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreItemRewardType = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreItemStatus = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreSettlementAction = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreState = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreTransactionResult = number
 
+   -- questie:Data/Enum.lua
    type Enum_AccountStoreTransactionType = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_AccountTransType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_ActionBarOrientation = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_ActionBarVisibleSetting = number
 
+   -- blizzard:AddOnsDocumentation.lua
    type Enum_AddOnEnableState = number
 
+   -- blizzard:AddOnProfilerConstantsDocumentation.lua
    type Enum_AddOnPerformanceMessageType = number
 
+   -- blizzard:AddOnProfilerConstantsDocumentation.lua
    type Enum_AddOnProfilerMetric = number
 
+   -- blizzard:RestrictedActionsConstantsDocumentation.lua
    type Enum_AddOnRestrictionState = number
 
+   -- blizzard:RestrictedActionsConstantsDocumentation.lua
    type Enum_AddOnRestrictionType = number
 
+   -- blizzard:AddOnsDocumentation.lua
    type Enum_AddOnSecurityStatus = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type Enum_AddSoulbindConduitReason = number
 
+   -- blizzard:AnimaDiversionUIDocumentation.lua
    type Enum_AnimaDiversionNodeState = number
 
+   -- blizzard:ArrowCalloutConstantsDocumentation.lua
    type Enum_ArrowCalloutDirection = number
 
+   -- blizzard:ArrowCalloutConstantsDocumentation.lua
    type Enum_ArrowCalloutType = number
 
+   -- questie:Data/Enum.lua
    type Enum_AssertDomain = number
 
+   -- blizzard:AsyncAssistActionsConstantsDocumentation.lua
    type Enum_AssistActionType = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseCommoditySortOrder = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseError = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseExtraColumn = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseFilter = number
 
+   -- blizzard:AuctionHouseDocumentation.lua
    type Enum_AuctionHouseFilterCategory = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseItemSortOrder = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseNotification = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseSortOrder = number
 
+   -- blizzard:AuctionHouseEnumsDocumentation.lua
    type Enum_AuctionHouseTimeLeftBand = number
 
+   -- blizzard:AuctionHouseDocumentation.lua
    type Enum_AuctionStatus = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_AuraFrameIconDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_AuraFrameIconWrap = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_AuraFrameOrientation = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_AuraFrameVisibleSetting = number
 
+   -- blizzard:AutoCompleteSharedDocumentation.lua
    type Enum_AutoCompleteEntryFlag = number
 
+   -- blizzard:AutoCompleteSharedDocumentation.lua
    type Enum_AutoCompletePriority = number
 
+   -- blizzard:PartyConstantsDocumentation.lua
    type Enum_AvgItemLevelCategories = number
 
+   -- blizzard:AzeriteConstantsDocumentation.lua
    type Enum_AzeriteEssenceSlot = number
 
+   -- blizzard:AzeriteEmpoweredItemDocumentation.lua
    type Enum_AzeritePowerLevel = number
 
+   -- blizzard:BagConstantsDocumentation.lua
    type Enum_BagFlag = number
 
+   -- blizzard:BagIndexConstantsDocumentation.lua
    type Enum_BagIndex = number
 
+   -- blizzard:BagConstantsDocumentation.lua
    type Enum_BagSlotFlags = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_BagsDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_BagsOrientation = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type Enum_BalanceType = number
 
+   -- blizzard:BankDocumentation.lua
    type Enum_BankLockedReason = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_BankType = number
 
+   -- blizzard:EncodingUtilDocumentation.lua
    type Enum_Base64Variant = number
 
+   -- blizzard:BattleNetSharedDocumentation.lua
    type Enum_BattleNetFriendLevel = number
 
+   -- blizzard:BattleNetSharedDocumentation.lua
    type Enum_BattleNetFriendTag = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetAbilityFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetAbilitySlot = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetAbilityTargets = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetAbilityTurnFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetAbilityTurnType = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetAbilityType = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type Enum_BattlePetAction = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type Enum_BattlePetBreedQuality = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetEffectFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetEffectParamType = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetEvent = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetNpcEmote = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetNpcTeamFlag = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type Enum_BattlePetOwner = number
 
+   -- blizzard:BattlePetConstantsDocumentation.lua
    type Enum_BattlePetSources = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetSpeciesFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetStateFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetTypes = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetVisualFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlePetVisualRange = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlepayLicenseSynthesisFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlepayProductChoiceType = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlepayShopEntryBannerType = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlepayShopEntryFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlepetDbFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlepetDeletedReason = number
 
+   -- questie:Data/Enum.lua
    type Enum_BattlepetSlotLockCheat = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type Enum_BindingContext = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type Enum_BindingSet = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_BnetAccountFlag = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_BonusStatIndex = number
 
+   -- blizzard:PvpInfoDocumentation.lua
    type Enum_BrawlType = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_BreakType = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_BulkPurchaseResult = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_BulkPurchaseStatus = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_BulkRefundResult = number
 
+   -- questie:Data/Enum.lua
    type Enum_CDMLayoutMode = number
 
+   -- questie:Data/Enum.lua
    type Enum_CachedRewardType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarCommandType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarErrorType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarEventBits = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarEventRepeatOptions = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarEventType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarFilterFlags = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarGetEventType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarHolidayFilterType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarInviteBits = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarInviteSortType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarInviteType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarModeratorStatus = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarStatus = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarTexturesType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_CalendarWebActionType = number
 
+   -- blizzard:CovenantCallingsConstantsDocumentation.lua
    type Enum_CallingStates = number
 
+   -- blizzard:CameraConstantsDocumentation.lua
    type Enum_CameraModeAspectRatio = number
 
+   -- blizzard:WarCampaignDocumentation.lua
    type Enum_CampaignState = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_CanRedeemTokenForBalanceResult = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_CaptureBarWidgetFillDirectionType = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Enum_Causeofdeath = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Enum_CauseofdeathFlags = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_ChallengeModeHistoryFlags = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_ChallengeModeHistoryResult = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_ChallengeModeHistoryStatus = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_ChannelPlayerFlags = number
 
+   -- blizzard:CharacterCreationConstantsDocumentation.lua
    type Enum_CharCreateAnimTurnType = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type Enum_CharCustomizationType = number
 
+   -- blizzard:CharacterCreationConstantsDocumentation.lua
    type Enum_CharSectionCondition = number
 
+   -- blizzard:CharacterServicesConstantsDocumentation.lua
    type Enum_CharacterServiceInfoFlag = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_ChatChannelRuleset = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_ChatChannelType = number
 
+   -- questie:Data/Enum.lua
    type Enum_ChatMessagingLockdownRestriction = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_ChatToxityFilterOptOut = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_ChatWhisperTargetStatus = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type Enum_ChrCustomizationCategoryFlag = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type Enum_ChrCustomizationOptionType = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type Enum_ChrModelFeatureFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_ChrRacesAllianceType = number
 
+   -- blizzard:CinematicConstantsDocumentation.lua
    type Enum_CinematicType = number
 
+   -- blizzard:ClickBindingsConstantsDocumentation.lua
    type Enum_ClickBindingInteraction = number
 
+   -- blizzard:ClickBindingsConstantsDocumentation.lua
    type Enum_ClickBindingType = number
 
+   -- questie:Data/Enum.lua
    type Enum_ClientDebugAISpellReadyStatus = number
 
+   -- blizzard:PlatformDocumentation.lua
    type Enum_ClientPlatformType = number
 
+   -- blizzard:ClientSceneDocumentation.lua
    type Enum_ClientSceneType = number
 
+   -- blizzard:ClientSettingsDocumentation.lua
    type Enum_ClientSettingsConfigFlag = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubActionType = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubErrorType = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubFieldType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type Enum_ClubFinderApplicationUpdateType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type Enum_ClubFinderClubPostingStatusFlags = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type Enum_ClubFinderDisableReason = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type Enum_ClubFinderPostingReportType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type Enum_ClubFinderRequestType = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type Enum_ClubFinderSettingFlags = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubInvitationCandidateStatus = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubMemberPresence = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubRemovedReason = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubRestrictionReason = number
 
+   -- blizzard:ClubSharedDocumentation.lua
    type Enum_ClubRoleIdentifier = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubStreamNotificationFilter = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubStreamType = number
 
+   -- blizzard:ClubDocumentation.lua
    type Enum_ClubType = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_CollationStrength = number
 
+   -- blizzard:ColorOverrideConstantsDocumentation.lua
    type Enum_ColorOverride = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertCastState = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertCategory = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertDebuffSelfAlertValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertPartyPercentValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertPercentValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertPlayerCastFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertPlayerDebuffFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertPlayerHealthFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertPlayerResourceFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertPulsePercentValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertSayIfTargetedType = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertSpecSetting = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertTargetCastFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertTargetDeathBehavior = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertTargetHealthFormatValues = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertThrottle = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertType = number
 
+   -- blizzard:CombatAudioAlertSharedDocumentation.lua
    type Enum_CombatAudioAlertUnit = number
 
+   -- blizzard:CombatLogSharedDocumentation.lua
    type Enum_CombatLogMessageOrder = number
 
+   -- blizzard:CombatLogConstantsDocumentation.lua
    type Enum_CombatLogObject = number
 
+   -- blizzard:CombatLogConstantsDocumentation.lua
    type Enum_CombatLogObjectTarget = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_CombinedQuestLogStatus = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_CombinedQuestStatus = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type Enum_CommunicationMode = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type Enum_CompanionConfigSlotTypes = number
 
+   -- blizzard:DelvesUIDocumentation.lua
    type Enum_CompanionRoleType = number
 
+   -- blizzard:EncodingUtilDocumentation.lua
    type Enum_CompressionLevel = number
 
+   -- blizzard:EncodingUtilDocumentation.lua
    type Enum_CompressionMethod = number
 
+   -- blizzard:ConfigurationWarningConstantsDocumentation.lua
    type Enum_ConfigurationWarning = number
 
+   -- blizzard:SpellConstantsDocumentation.lua
    type Enum_ConfirmationPromptUIType = number
 
+   -- blizzard:WeeklyRewardsDocumentation.lua
    type Enum_ConquestProgressBarDisplayType = number
 
+   -- blizzard:ConsoleDocumentation.lua
    type Enum_ConsoleCategory = number
 
+   -- blizzard:ConsoleDocumentation.lua
    type Enum_ConsoleColorType = number
 
+   -- blizzard:ConsoleDocumentation.lua
    type Enum_ConsoleCommandType = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type Enum_ContentTrackingError = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type Enum_ContentTrackingResult = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type Enum_ContentTrackingStopType = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type Enum_ContentTrackingTargetType = number
 
+   -- blizzard:ContentTrackingTypesDocumentation.lua
    type Enum_ContentTrackingType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_ContributionAppearanceFlags = number
 
+   -- blizzard:ContributionCollectorDocumentation.lua
    type Enum_ContributionResult = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_ContributionState = number
 
+   -- questie:Data/Enum.lua
    type Enum_CooldownLayoutAction = number
 
+   -- questie:Data/Enum.lua
    type Enum_CooldownLayoutStatus = number
 
+   -- questie:Data/Enum.lua
    type Enum_CooldownLayoutType = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_CooldownSetLinkedSpellFlags = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_CooldownSetSpellFlags = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_CooldownViewerAddAlertStatus = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_CooldownViewerAlertEventType = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_CooldownViewerAlertType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_CooldownViewerBarContent = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_CooldownViewerCategory = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_CooldownViewerIconDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_CooldownViewerOrientation = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_CooldownViewerSound = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_CooldownViewerVisibleSetting = number
 
+   -- blizzard:HousingNeighborhoodUIDocumentation.lua
    type Enum_CornerstonePurchaseMode = number
 
+   -- blizzard:CovenantsConstantsDocumentation.lua
    type Enum_CovenantAbilityType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_CovenantSkill = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_CovenantType = number
 
+   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
    type Enum_CraftingOrderCustomerCategoryType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderDuration = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderFlags = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderItemFlags = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderItemType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderReagentSource = number
 
+   -- blizzard:CraftingOrderUIConstantsDocumentation.lua
    type Enum_CraftingOrderReagentsType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderResult = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderSortType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderState = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingOrderType = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_CraftingReagentItemFlag = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_CraftingReagentType = number
 
+   -- questie:Data/Enum.lua
    type Enum_CreateAllAccountData = string
 
+   -- blizzard:HousingUIDocumentation.lua
    type Enum_CreateNeighborhoodErrorType = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type Enum_CurioRarity = number
 
+   -- blizzard:DelvesUIDocumentation.lua
    type Enum_CurioType = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_CurrencyConversionResult = number
 
+   -- blizzard:CurrencyConstants_MainlineDocumentation.lua
    type Enum_CurrencyDestroyReason = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_CurrencyFilterType = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_CurrencyFlags = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_CurrencyFlagsB = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_CurrencyGainFlags = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_CurrencyNameStyle = number
 
+   -- questie:Data/Enum.lua
    type Enum_CurrencySource = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_CurrencyTokenCategoryFlags = number
 
+   -- blizzard:MoneyConstantsDocumentation.lua
    type Enum_CurrencyType = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type Enum_CursorStyle = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type Enum_Cursormode = number
 
+   -- blizzard:AuraContainerSharedDocumentation.lua
    type Enum_CustomAuraButtonDispelTypeStealableFilter = number
 
+   -- blizzard:AuraContainerSharedDocumentation.lua
    type Enum_CustomAuraButtonDispelTypeTextureStyle = number
 
+   -- blizzard:AuraContainerSharedDocumentation.lua
    type Enum_CustomAuraButtonUpdateMode = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type Enum_CustomBindingType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type Enum_DamageMeterCombineSessionType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_DamageMeterNumbers = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type Enum_DamageMeterOverrideType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type Enum_DamageMeterSessionType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type Enum_DamageMeterSourceDisplayType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type Enum_DamageMeterSpellDetailsDisplayType = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type Enum_DamageMeterStorageType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_DamageMeterStyle = number
 
+   -- blizzard:DamageMeterConstantsDocumentation.lua
    type Enum_DamageMeterType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_DamageMeterVisibility = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Enum_Damageclass = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Enum_DamageclassType = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_DateTimeStyle = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_DisableAccountProfilesFlags = number
 
+   -- blizzard:DiscordConstantsDocumentation.lua
    type Enum_DiscordAccountType = number
 
+   -- blizzard:DiscordConstantsDocumentation.lua
    type Enum_DiscordDisplayNameType = number
 
+   -- blizzard:DiscordConstantsDocumentation.lua
    type Enum_DiscordGuildSettings = number
 
+   -- questie:Data/Enum.lua
    type Enum_DungeonEncounterFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_DungeonEncounterTriggerType = number
 
+   -- questie:Data/Enum.lua
    type Enum_DungeonEncounterXCreatureFlags = number
 
+   -- blizzard:DurationTextBindingSharedDocumentation.lua
    type Enum_DurationTextBindingProperty = number
 
+   -- blizzard:LuaDurationObjectSharedDocumentation.lua
    type Enum_DurationTimeModifier = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeAccountSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeActionBarSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeActionBarSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeArchaeologyBarSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeAuraFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeAuraFrameSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeBagsSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeCastBarSetting = number
 
+   -- questie:Data/Enum.lua
    type Enum_EditModeChatFrameDisplayOnlySetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeChatFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeCooldownViewerSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeCooldownViewerSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeDamageMeterSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeDurabilityFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeEncounterEventsSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeEncounterEventsSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeLayoutType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeLossOfControlSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeMicroMenuSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeMinimapSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeObjectiveTrackerSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModePersonalResourceDisplaySetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModePresetLayouts = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeRaidWarningSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeSettingDisplayType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeStatusTrackingBarSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeStatusTrackingBarSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeSystem = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeTimerBarsSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeUnitFrameSetting = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeUnitFrameSystemIndices = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EditModeVehicleSeatIndicatorSetting = number
 
+   -- blizzard:DungeonEncounterConstantsDocumentation.lua
    type Enum_EncounterEventCastState = number
 
+   -- blizzard:EncounterEventsSharedDocumentation.lua
    type Enum_EncounterEventColorTrigger = number
 
+   -- questie:Data/Enum.lua
    type Enum_EncounterEventFlags = number
 
+   -- blizzard:DungeonEncounterConstantsDocumentation.lua
    type Enum_EncounterEventIconmask = number
 
+   -- blizzard:DungeonEncounterConstantsDocumentation.lua
    type Enum_EncounterEventSeverity = number
 
+   -- blizzard:EncounterEventsSharedDocumentation.lua
    type Enum_EncounterEventSoundTrigger = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EncounterEventsIconDirection = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EncounterEventsOrientation = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EncounterEventsTooltipAnchor = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EncounterEventsViewType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_EncounterEventsVisibility = number
 
+   -- blizzard:LootHistoryDocumentation.lua
    type Enum_EncounterLootDropRollState = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type Enum_EncounterTimelineEventSortDirection = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type Enum_EncounterTimelineEventSource = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type Enum_EncounterTimelineEventState = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type Enum_EncounterTimelineIconSet = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type Enum_EncounterTimelineTrack = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type Enum_EncounterTimelineTrackType = number
 
+   -- blizzard:EncounterTimelineConstantsDocumentation.lua
    type Enum_EncounterTimelineViewType = number
 
+   -- blizzard:EndOfMatchUIDocumentation.lua
    type Enum_EndOfMatchType = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Enum_EnvironmentalDamageFlags = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Enum_Environmentaldamagetype = number
 
+   -- questie:Data/Enum.lua
    type Enum_ErrorDomain = number
 
+   -- blizzard:GameRulesConstantsDocumentation.lua
    type Enum_EventRealmQueues = number
 
+   -- blizzard:UIEventToastConstantsDocumentation.lua
    type Enum_EventToastDisplayType = number
 
+   -- blizzard:UIEventToastConstantsDocumentation.lua
    type Enum_EventToastEventType = number
 
+   -- blizzard:UIEventToastConstantsDocumentation.lua
    type Enum_EventToastFlags = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_ExcludedCensorSources = number
 
+   -- blizzard:ExpansionLandingPageConstantsDocumentation.lua
    type Enum_ExpansionLandingPageType = number
 
+   -- blizzard:ExpansionLevelConstantsDocumentation.lua
    type Enum_ExpansionLevel = number
 
+   -- blizzard:TaxiMapDocumentation.lua
    type Enum_FlightPathFaction = number
 
+   -- blizzard:TaxiMapDocumentation.lua
    type Enum_FlightPathState = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_FollowerAbilityCastResult = number
 
+   -- blizzard:UISharedDocumentation.lua
    type Enum_FontStringScaleAnimationMode = number
 
+   -- blizzard:ForbiddenAspectConstantsDocumentation.lua
    type Enum_ForbiddenAspect = number
 
+   -- blizzard:WowCSConstantsDocumentation.lua
    type Enum_FragmentID = number
 
+   -- blizzard:TutorialDocumentation.lua
    type Enum_FrameTutorialAccount = number
 
+   -- questie:Data/Enum.lua
    type Enum_GameMode = number
 
+   -- blizzard:GamePadConstDocumentation.lua
    type Enum_GamePadPowerLevel = number
 
+   -- questie:Data/Enum.lua
    type Enum_GameRule = number
 
+   -- blizzard:GameRulesConstantsDocumentation.lua
    type Enum_GameRuleFlags = number
 
+   -- blizzard:GameRulesConstantsDocumentation.lua
    type Enum_GameRuleType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrAutoBoardIndex = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrAutoCombatSpellTutorialFlag = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrAutoCombatTutorial = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrAutoCombatantRole = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrAutoEventFlags = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrAutoMissionEventType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrAutoPreviewTargetType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrFollowerMissionCompleteState = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrFollowerQuality = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentCostType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentFeatureSubtype = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentFeatureType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentResearchCostSource = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentSocketType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentTreeType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrTalentUI = number
 
+   -- blizzard:GARRISON_FOLLOWER_TYPEConstantsDocumentation.lua
    type Enum_GarrisonFollowerType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type Enum_GarrisonTalentAvailability = number
 
+   -- blizzard:GARRISON_TYPEConstantsDocumentation.lua
    type Enum_GarrisonType = number
 
+   -- blizzard:GossipConstantsDocumentation.lua
    type Enum_GossipNpcOption = number
 
+   -- blizzard:GossipConstantsDocumentation.lua
    type Enum_GossipNpcOptionDisplayFlags = number
 
+   -- blizzard:GossipConstantsDocumentation.lua
    type Enum_GossipOptionRecFlags = number
 
+   -- blizzard:GossipInfoDocumentation.lua
    type Enum_GossipOptionRewardType = number
 
+   -- blizzard:GossipInfoDocumentation.lua
    type Enum_GossipOptionStatus = number
 
+   -- blizzard:GossipInfoDocumentation.lua
    type Enum_GossipOptionUIWidgetSetTypes = number
 
+   -- blizzard:VideoDocumentation.lua
    type Enum_GraphicsValidationResult = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type Enum_GroupBuffItemFlags = number
 
+   -- blizzard:GuildConstantsDocumentation.lua
    type Enum_GuildErrorType = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_HolidayCalendarFlags = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type Enum_HolidayFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HouseEditingContext = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HouseEditorMode = number
 
+   -- blizzard:HouseEditorUIDocumentation.lua
    type Enum_HouseEditorPlayerType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HouseExteriorWMODataFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HouseFinderSuggestionReason = number
 
+   -- blizzard:HousingUISharedDocumentation.lua
    type Enum_HouseLevelRewardType = number
 
+   -- blizzard:HousingUISharedDocumentation.lua
    type Enum_HouseLevelRewardValueType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HouseOwnerError = number
 
+   -- questie:Data/Enum.lua
    type Enum_HouseSettingFlags = number
 
+   -- blizzard:HousingUISharedDocumentation.lua
    type Enum_HouseVisitType = number
 
+   -- blizzard:HousingBasicModeUIDocumentation.lua
    type Enum_HousingBasicModeTargetType = number
 
+   -- blizzard:HousingBlueprintConstantsDocumentation.lua
    type Enum_HousingBlueprintContentType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingBlueprintFlag = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingBlueprintType = number
 
+   -- blizzard:HousingBlueprintConstantsDocumentation.lua
    type Enum_HousingBlueprintUnmetRequirementFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingBudgetType = number
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type Enum_HousingCatalogEntryModelScenePresets = number
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type Enum_HousingCatalogEntrySize = number
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type Enum_HousingCatalogEntryType = number
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type Enum_HousingCatalogSortType = number
 
+   -- blizzard:HousingCleanupModeUIDocumentation.lua
    type Enum_HousingCleanupModeTargetType = number
 
+   -- blizzard:HousingCustomizeModeUIDocumentation.lua
    type Enum_HousingCustomizeModeTargetType = number
 
+   -- questie:Data/Enum.lua
    type Enum_HousingDecorActionFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_HousingDecorModelType = number
 
+   -- blizzard:HousingDecorSharedDocumentation.lua
    type Enum_HousingDecorPlacementRestriction = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingDecorTheme = number
 
+   -- questie:Data/Enum.lua
    type Enum_HousingDecorType = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type Enum_HousingExpertModeTargetType = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type Enum_HousingExpertSubmodeRestriction = number
 
+   -- questie:Data/Enum.lua
    type Enum_HousingFavorUpdateSource = number
 
+   -- questie:Data/Enum.lua
    type Enum_HousingFavorUpdateType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingFixtureDecorAction = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingFixtureFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingFixtureSize = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingFixtureType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingHouseScope = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type Enum_HousingIncrementType = number
 
+   -- blizzard:HousingUIDocumentation.lua
    type Enum_HousingItemToastType = number
 
+   -- blizzard:HousingLayoutUITypesDocumentation.lua
    type Enum_HousingLayoutCameraDirection = number
 
+   -- blizzard:HousingLayoutUITypesDocumentation.lua
    type Enum_HousingLayoutPinType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingLayoutRestriction = number
 
+   -- blizzard:HousingLayoutUITypesDocumentation.lua
    type Enum_HousingLayoutStairDirection = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingPetBehaviorType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingPlotOwnerType = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type Enum_HousingPrecisionSubmode = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingResult = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentCeilingType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentDoorType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentFloorType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentOptionFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentOptionType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentStairType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentTextureFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomComponentType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingRoomFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_HousingTeleportReason = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingThemeFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_HousingThrottleType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_IconAndTextShiftTextType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_IconAndTextWidgetState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_IconState = number
 
+   -- blizzard:ImageSharingConstantsDocumentation.lua
    type Enum_ImageSharingResult = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_InitiativeMilestoneFlags = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_InitiativeRewardFlags = number
 
+   -- blizzard:InputConstantsDocumentation.lua
    type Enum_InputContext = number
 
+   -- questie:Data/Enum.lua
    type Enum_InvalidPlotScreenshotReason = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_InventoryType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemArmorSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemBind = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemClass = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type Enum_ItemCollectionType = number
 
+   -- blizzard:AuctionHouseDocumentation.lua
    type Enum_ItemCommodityStatus = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemConsumableSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemConversionFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_ItemCreationContext = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ItemDisplayTextDisplayStyle = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ItemDisplayTooltipEnabledType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemGemColor = number
 
+   -- blizzard:ItemConstants_MainlineDocumentation.lua
    type Enum_ItemGemSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemHousingSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemMiscellaneousSubclass = number
 
+   -- questie:Data/Enum.lua
    type Enum_ItemModification = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemProfessionSubclass = number
 
+   -- blizzard:ItemQualitiesDocumentation.lua
    type Enum_ItemQuality = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemReagentSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemRecipeSubclass = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_ItemRecraftFlags = number
 
+   -- blizzard:ItemConstants_MainlineDocumentation.lua
    type Enum_ItemRedundancySlot = number
 
+   -- blizzard:EncounterJournalDocumentation.lua
    type Enum_ItemSlotFilterType = number
 
+   -- blizzard:ItemSocketInfoDocumentation.lua
    type Enum_ItemSocketInfoUIType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemSocketType = number
 
+   -- questie:Data/Enum.lua
    type Enum_ItemSoundType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemSubclassDisplay = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemSubclassFlag = number
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type Enum_ItemTryOnReason = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_ItemWeaponSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_Itemclassfilterflags = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_Itemsetflags = number
 
+   -- blizzard:ScenarioInfoDocumentation.lua
    type Enum_JailersTowerType = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalEncounterFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalEncounterIconFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalEncounterItemFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalEncounterLocFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalEncounterSecTypes = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalEncounterSectionFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalInstanceFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type Enum_JournalLinkTypes = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type Enum_LFGEntryGeneralPlaystyle = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type Enum_LFGEntryPlaystyle = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type Enum_LFGListDisplayType = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type Enum_LFGListFilter = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type Enum_LFGRole = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type Enum_LFGSlotInvalidReason = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_LanguageFlag = number
 
+   -- blizzard:PartyInfoDocumentation.lua
    type Enum_LeavePartyConfirmReason = number
 
+   -- questie:Data/Enum.lua
    type Enum_LgVendorPurchaseSettlementState = number
 
+   -- questie:Data/Enum.lua
    type Enum_LgVendorPurchaseSqlResults = number
 
+   -- questie:Data/Enum.lua
    type Enum_LgVendorPurchaseState = number
 
+   -- blizzard:HousingDecorUIDocumentation.lua
    type Enum_LightRadiusIndicatorType = number
 
+   -- blizzard:LimitedInputDocumentation.lua
    type Enum_LimitedInputType = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_LinkedCurrencyFlags = number
 
+   -- blizzard:ClassTalentsDocumentation.lua
    type Enum_LoadConfigResult = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_LocaleTransform = number
 
+   -- blizzard:LogConstantsDocumentation.lua
    type Enum_LogPriority = number
 
+   -- blizzard:LogicConstantsDocumentation.lua
    type Enum_LogicLogicop = number
 
+   -- blizzard:LogicConstantsDocumentation.lua
    type Enum_LogicMathop = number
 
+   -- blizzard:LogicConstantsDocumentation.lua
    type Enum_LogicRelop = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_LoginTicketLicenses = number
 
+   -- blizzard:LootConstantsDocumentation.lua
    type Enum_LootMethod = number
 
+   -- blizzard:LootConstantsDocumentation.lua
    type Enum_LootMethodStyles = number
 
+   -- blizzard:LootConstantsDocumentation.lua
    type Enum_LootSlotType = number
 
+   -- blizzard:LuaCurveObjectConstantsDocumentation.lua
    type Enum_LuaCurveType = number
 
+   -- blizzard:MajorFactionsConstantsDocumentation.lua
    type Enum_MajorFactionFeatureAbility = number
 
+   -- blizzard:MajorFactionsConstantsDocumentation.lua
    type Enum_MajorFactionType = number
 
+   -- questie:Data/Enum.lua
    type Enum_ManipulatorEventType = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type Enum_MapCanvasPosition = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_MapIconUIWidgetSetType = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type Enum_MapOverlayDisplayLocation = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_MapPinAnimationType = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type Enum_MapobjEventTypes = number
 
+   -- blizzard:EndOfMatchUIDocumentation.lua
    type Enum_MatchDetailType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_MicroMenuOrder = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_MicroMenuOrientation = number
 
+   -- blizzard:MinimapConstantsDocumentation.lua
    type Enum_MinimapTrackingFilter = number
 
+   -- blizzard:ModelAnimationSharedDocumentation.lua
    type Enum_ModelBlendOperation = number
 
+   -- blizzard:FrameAPIModelSceneFrameSharedDocumentation.lua
    type Enum_ModelLightType = number
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type Enum_ModelSceneSetting = number
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type Enum_ModelSceneType = number
 
+   -- questie:Data/Enum.lua
    type Enum_ModelSoundOverrideType = number
 
+   -- questie:Data/Enum.lua
    type Enum_ModelSoundTagType = number
 
+   -- blizzard:MountConstantsDocumentation.lua
    type Enum_MountType = number
 
+   -- blizzard:MountConstantsDocumentation.lua
    type Enum_MountTypeFlag = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateCastBarDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateEnemyNpcAuraDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateEnemyPlayerAuraDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateFriendlyPlayerAuraDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateInfoDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateSimplifiedType = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateSize = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateStackType = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateStyle = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateThreatDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type Enum_NamePlateType = number
 
+   -- blizzard:InGameNavigationDocumentation.lua
    type Enum_NavigationState = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_NeighborhoodFlags = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_NeighborhoodInitiativeChestResult = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_NeighborhoodInitiativeFlags = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_NeighborhoodInitiativeNeighborhoodTypes = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_NeighborhoodInitiativeTaskType = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_NeighborhoodInitiativeUpdateStatus = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type Enum_NeighborhoodInitiativesCompletionStates = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_NeighborhoodInviteResult = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_NeighborhoodMapFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_NeighborhoodOwnerType = number
 
+   -- questie:Data/Enum.lua
    type Enum_NeighborhoodType = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type Enum_NewCharGear = number
 
+   -- blizzard:CharacterServicesConstantsDocumentation.lua
    type Enum_NoRPEReason = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_NodeOpFailureReason = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_NormalizationForm = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_NpcCraftingOrderSetFlags = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_NumberStyle = number
 
+   -- blizzard:NumericRuleFormatterSharedDocumentation.lua
    type Enum_NumericRuleFormatRounding = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type Enum_OnUpdateMode = number
 
+   -- questie:Data/Enum.lua
    type Enum_PartyPlaylistEntry = number
 
+   -- blizzard:PartyPoseUIConstantsDocumentation.lua
    type Enum_PartyPoseFlags = number
 
+   -- blizzard:PartyConstantsDocumentation.lua
    type Enum_PartyRequestJoinRelation = number
 
+   -- blizzard:PerksVendorConstantsDocumentation.lua
    type Enum_PerksVendorCategoryType = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_PermanentChatChannelType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_PersonalResourceDisplayVisibleSetting = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_PetActionFeedback = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_PetActionbuttonType = number
 
+   -- blizzard:PetBattleConstantsDocumentation.lua
    type Enum_PetBattleQueueStatus = number
 
+   -- blizzard:PetJournalInfoDocumentation.lua
    type Enum_PetJournalError = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_PetMode = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_PetOrders = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_PetOverride = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleAuraStateFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleCheatFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleEffectFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleEffectType = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleEnviros = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleInputMoveMsgDebugFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleMoveType = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattlePboid = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattlePetStatus = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattlePlayer = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattlePlayerInputFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleResult = number
 
+   -- blizzard:PetBattleConstantsDocumentation.lua
    type Enum_PetbattleSlot = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleSlotAbility = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleSlotResult = number
 
+   -- blizzard:PetBattleConstantsDocumentation.lua
    type Enum_PetbattleState = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleTrapstatus = number
 
+   -- questie:Data/Enum.lua
    type Enum_PetbattleType = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_Pettameresult = number
 
+   -- blizzard:UnitDocumentation.lua
    type Enum_PhaseReason = number
 
+   -- blizzard:ImageSharingConstantsDocumentation.lua
    type Enum_PhotoSharingStatus = number
 
+   -- blizzard:ImageSharingConstantsDocumentation.lua
    type Enum_PhotoSharingUploadStatus = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type Enum_PingMode = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type Enum_PingResult = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type Enum_PingSetTargetState = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type Enum_PingSubjectType = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type Enum_PingTargetOption = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type Enum_PingTargetType = number
 
+   -- blizzard:SharedScriptObjectUnitPositionFrameDocumentation.lua
    type Enum_PingTextureType = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type Enum_PingTypeFlags = number
 
+   -- blizzard:PlayerChoiceConstantsDocumentation.lua
    type Enum_PlayerChoiceFlags = number
 
+   -- blizzard:PlayerChoiceConstantsDocumentation.lua
    type Enum_PlayerChoiceLayout = number
 
+   -- blizzard:PlayerChoiceDocumentation.lua
    type Enum_PlayerChoiceRarity = number
 
+   -- blizzard:PlayerChoiceConstantsDocumentation.lua
    type Enum_PlayerChoiceResponseFlags = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type Enum_PlayerClubRequestStatus = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type Enum_PlayerCompanionInfoFlags = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_PlayerCurrencyFlags = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type Enum_PlayerCurrencyFlagsDbFlags = number
 
+   -- blizzard:PlayerDataConstantsDocumentation.lua
    type Enum_PlayerDataElementAccountFlags = number
 
+   -- blizzard:PlayerDataConstantsDocumentation.lua
    type Enum_PlayerDataElementCharacterFlags = number
 
+   -- blizzard:PlayerDataConstantsDocumentation.lua
    type Enum_PlayerDataElementType = number
 
+   -- blizzard:PlayerInteractionManagerConstantsDocumentation.lua
    type Enum_PlayerInteractionType = number
 
+   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
    type Enum_PlayerMentorshipApplicationResult = number
 
+   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
    type Enum_PlayerMentorshipStatus = number
 
+   -- blizzard:LobbyMatchmakerInfoDocumentation.lua
    type Enum_PlunderstormQueueState = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type Enum_PluralType = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type Enum_PowerType = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type Enum_PowerTypeSign = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type Enum_PowerTypeSlot = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type Enum_PremadeGroupFinderStyle = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_PreyHuntProgressState = number
 
+   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
    type Enum_ProceduralSpawnInteractionMode = number
 
+   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
    type Enum_ProceduralSpawnVolumeChunkFlags = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type Enum_ProfTraitPerkNodeFlags = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_Profession = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_ProfessionActionType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_ProfessionEffect = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_ProfessionRating = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_ProfessionRatingType = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type Enum_ProfessionsSpecPathState = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type Enum_ProfessionsSpecPerkState = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type Enum_ProfessionsSpecTabState = number
 
+   -- questie:Data/Enum.lua
    type Enum_PurchaseHouseDisabledReason = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_PurchaseResult = number
 
+   -- blizzard:PvPFactionConstantsDocumentation.lua
    type Enum_PvPFaction = number
 
+   -- blizzard:PvpInfoDocumentation.lua
    type Enum_PvPMatchState = number
 
+   -- blizzard:PVPMgrConstantsDocumentation.lua
    type Enum_PvPMatchmakingType = number
 
+   -- blizzard:PvpInfoConstantsDocumentation.lua
    type Enum_PvPRanks = number
 
+   -- blizzard:UnitDocumentation.lua
    type Enum_PvPUnitClassification = number
 
+   -- blizzard:QuestInfoSharedDocumentation.lua
    type Enum_QuestClassification = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_QuestCompleteSpellType = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type Enum_QuestFrequency = number
 
+   -- blizzard:QuestLineInfoDocumentation.lua
    type Enum_QuestLineFloorLocation = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_QuestRepeatability = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_QuestRewardContextFlags = number
 
+   -- blizzard:QuestSessionConstantsDocumentation.lua
    type Enum_QuestSessionCommand = number
 
+   -- blizzard:QuestSessionConstantsDocumentation.lua
    type Enum_QuestSessionResult = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type Enum_QuestTag = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_QuestTagType = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_QuestTreasurePickerType = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type Enum_QuestWatchType = number
 
+   -- blizzard:RecruitAFriendSharedDocumentation.lua
    type Enum_RafLinkType = number
 
+   -- blizzard:RecruitAFriendDocumentation.lua
    type Enum_RafRecruitActivityState = number
 
+   -- blizzard:RecruitAFriendDocumentation.lua
    type Enum_RafRecruitSubStatus = number
 
+   -- blizzard:RecruitAFriendDocumentation.lua
    type Enum_RafRewardType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_RaidAuraOrganizationType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_RaidDispelDisplayType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_RaidDispelOverlayType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_RaidGroupDisplayType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_RcoCloseReason = number
 
+   -- blizzard:RecentAlliesConstantsDocumentation.lua
    type Enum_RecentAlliesFriendTag = number
 
+   -- blizzard:RecentAlliesConstantsDocumentation.lua
    type Enum_RecentAllyPinResult = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_RecipeRequirementType = number
 
+   -- blizzard:RecruitAFriendSharedDocumentation.lua
    type Enum_RecruitAFriendFailure = number
 
+   -- blizzard:RecruitAFriendSharedDocumentation.lua
    type Enum_RecruitAFriendRewardsVersion = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_RegisterAddonMessagePrefixResult = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type Enum_RelativeContentDifficulty = number
 
+   -- blizzard:ExpansionConstantsDocumentation.lua
    type Enum_ReleaseType = number
 
+   -- blizzard:RenownConstantsDocumentation.lua
    type Enum_RenownRewardDisplayType = number
 
+   -- blizzard:RenownConstantsDocumentation.lua
    type Enum_RenownRewardsFlags = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_ReportEvidenceType = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_ReportMajorCategory = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_ReportMinorCategory = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_ReportSubComplaintTypes = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_ReportThrottleType = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_ReportType = number
 
+   -- blizzard:ReputationInfoDocumentation.lua
    type Enum_ReputationSortType = number
 
+   -- questie:Data/Enum.lua
    type Enum_ReservationFlags = number
 
+   -- questie:Data/Enum.lua
    type Enum_ResidentType = number
 
+   -- blizzard:PartyConstantsDocumentation.lua
    type Enum_RestrictPingsTo = number
 
+   -- blizzard:CharacterCreationConstantsDocumentation.lua
    type Enum_RestrictionType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_RetroactiveDecorRewardFlags = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type Enum_RolodexContactMigrationResult = number
 
+   -- questie:Data/Enum.lua
    type Enum_RolodexContextIDType = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type Enum_RolodexContextLevelType = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type Enum_RolodexDbFlags = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type Enum_RolodexType = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type Enum_RolodexTypeFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type Enum_RoomConnectionType = number
 
+   -- blizzard:LegendaryCraftingTypesDocumentation.lua
    type Enum_RuneforgePowerFilter = number
 
+   -- blizzard:LegendaryCraftingTypesDocumentation.lua
    type Enum_RuneforgePowerState = number
 
+   -- blizzard:ScreenLocationConstantsDocumentation.lua
    type Enum_ScreenLocationType = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_ScreenshotSource = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type Enum_ScriptBindingType = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type Enum_ScriptObjectAccessRestriction = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type Enum_ScriptObjectMetatable = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type Enum_ScriptObjectPartition = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type Enum_ScriptObjectPropagationPath = number
 
+   -- blizzard:ScriptedAnimationsDocumentation.lua
    type Enum_ScriptedAnimationBehavior = number
 
+   -- blizzard:ScriptedAnimationsDocumentation.lua
    type Enum_ScriptedAnimationFlags = number
 
+   -- blizzard:ScriptedAnimationsDocumentation.lua
    type Enum_ScriptedAnimationTrajectory = number
 
+   -- blizzard:ValidateNameConstantsDocumentation.lua
    type Enum_ScrubStringFlags = number
 
+   -- blizzard:SeasonsConstantsDocumentation.lua
    type Enum_SeasonID = number
 
+   -- questie:Data/Enum.lua
    type Enum_SecondsFormatterAbbrevation = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type Enum_SecondsFormatterAbbreviation = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type Enum_SecondsFormatterInterval = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type Enum_SecondsFormatterIntervalWhitespace = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type Enum_SecondsFormatterRounding = number
 
+   -- blizzard:SecretWrapperConstantsDocumentation.lua
    type Enum_SecrecyLevel = number
 
+   -- blizzard:SecretAspectConstantsDocumentation.lua
    type Enum_SecretAspect = number
 
+   -- blizzard:DeathInfoDocumentation.lua
    type Enum_SelfResurrectOptionType = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_SendAddonMessageResult = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type Enum_SendReportResult = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_SharedStringFlag = number
 
+   -- questie:Data/Enum.lua
    type Enum_ShutdownSessionReason = number
 
+   -- questie:Data/Enum.lua
    type Enum_Si3UISoundSubType = number
 
+   -- questie:Data/Enum.lua
    type Enum_Siflag = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_SimpleOrderStatus = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Enum_SkinningState = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_SleevesGeoRange = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_SlotRegion = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_SlotRegionMask = number
 
+   -- blizzard:SocialUIDocumentation.lua
    type Enum_SocialSystemType = number
 
+   -- blizzard:SocialUIDocumentation.lua
    type Enum_SocialUIBlockType = number
 
+   -- blizzard:SocialUIDocumentation.lua
    type Enum_SocialUIPresenceType = number
 
+   -- blizzard:SocialConstantsDocumentation.lua
    type Enum_SocialWhoOrigin = number
 
+   -- blizzard:SoftTargetConstantsDocumentation.lua
    type Enum_SoftTargetEnableFlags = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_SortPlayersBy = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type Enum_SoulbindConduitFlags = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type Enum_SoulbindConduitInstallResult = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type Enum_SoulbindConduitTransactionType = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type Enum_SoulbindConduitType = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type Enum_SoulbindNodeState = number
 
+   -- questie:Data/Enum.lua
    type Enum_SoundBusFlag = number
 
+   -- blizzard:SpecializationSharedDocumentation.lua
    type Enum_SpecializationSystem = number
 
+   -- blizzard:SpellConstantsDocumentation.lua
    type Enum_SpellAuraVisibilityType = number
 
+   -- blizzard:SpellBookConstantsDocumentation.lua
    type Enum_SpellBookItemType = number
 
+   -- blizzard:SpellBookConstantsDocumentation.lua
    type Enum_SpellBookSkillLineIndex = number
 
+   -- blizzard:SpellBookConstantsDocumentation.lua
    type Enum_SpellBookSpellBank = number
 
+   -- blizzard:SpellDiminishConstantsDocumentation.lua
    type Enum_SpellDiminishCategory = number
 
+   -- blizzard:SpellDiminishConstantsDocumentation.lua
    type Enum_SpellDiminishRuleset = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_SpellDisplayBorderColor = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_SpellDisplayIconDisplayType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_SpellDisplayTextShownStateType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_SpellDisplayTint = number
 
+   -- blizzard:SplashScreenConstantsDocumentation.lua
    type Enum_SplashScreenType = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_StableResult = number
 
+   -- blizzard:TimerConstantsDocumentation.lua
    type Enum_StartTimerType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_StatusBarColorTintValue = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type Enum_StatusBarFillStyle = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type Enum_StatusBarInterpolation = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_StatusBarOverrideBarTextShownType = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type Enum_StatusBarRenderMode = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type Enum_StatusBarTimerDirection = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_StatusBarValueTextType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_SubcontainerType = number
 
+   -- blizzard:ExpansionDocumentation.lua
    type Enum_SubscriptionInterstitialResponseType = number
 
+   -- blizzard:ExpansionDocumentation.lua
    type Enum_SubscriptionInterstitialType = number
 
+   -- blizzard:SummonConstantsDocumentation.lua
    type Enum_SummonReason = number
 
+   -- blizzard:IncomingSummonDocumentation.lua
    type Enum_SummonStatus = number
 
+   -- blizzard:SuperTrackManagerSharedDocumentation.lua
    type Enum_SuperTrackingMapPinType = number
 
+   -- blizzard:SuperTrackManagerSharedDocumentation.lua
    type Enum_SuperTrackingType = number
 
+   -- blizzard:WowSurveyConstantsDocumentation.lua
    type Enum_SurveyDeliveryFlags = number
 
+   -- blizzard:WowSurveyConstantsDocumentation.lua
    type Enum_SurveyDeliveryMoment = number
 
+   -- blizzard:FrameScriptDocumentation.lua
    type Enum_TableSecurityOption = number
 
+   -- blizzard:DelvesUIDocumentation.lua
    type Enum_TieredEntranceRewardType = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type Enum_TieredEntranceTierFlag = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type Enum_TieredEntranceType = number
 
+   -- blizzard:DateAndTimeDocumentation.lua
    type Enum_TimeEventFlag = number
 
+   -- blizzard:TextureUtilsDocumentation.lua
    type Enum_TitleIconVersion = number
 
+   -- blizzard:TooltipComparisonDocumentation.lua
    type Enum_TooltipComparisonMethod = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type Enum_TooltipDataItemBinding = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type Enum_TooltipDataLineType = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type Enum_TooltipDataType = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type Enum_TooltipDataUsageRequirementType = number
 
+   -- blizzard:TooltipConstantsDocumentation.lua
    type Enum_TooltipSide = number
 
+   -- blizzard:TooltipConstantsDocumentation.lua
    type Enum_TooltipTextureAnchor = number
 
+   -- blizzard:TooltipConstantsDocumentation.lua
    type Enum_TooltipTextureRelativeRegion = number
 
+   -- blizzard:CommentatorSharedDocumentation.lua
    type Enum_TrackedSpellCategory = number
 
+   -- blizzard:CommentatorFrameDocumentation.lua
    type Enum_TrackedSpellsResult = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_TradeskillOrderDuration = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_TradeskillOrderRecipient = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_TradeskillOrderStatus = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_TradeskillRecipeType = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_TradeskillRelativeDifficulty = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type Enum_TradeskillSlotDataType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitCombatConfigFlags = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitCondFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitConditionType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitConfigDbState = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitConfigType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitCurrencyFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitCurrencyType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitDefinitionSubType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitEdgeType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitEdgeVisualStyle = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitNodeEntryType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitNodeFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitNodeGroupFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitNodeType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitPointsOperationType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitSystemFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitSystemVariationType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type Enum_TraitTreeFlag = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type Enum_TransformManipulatorAxis = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type Enum_TransformManipulatorControlState = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type Enum_TransformManipulatorDirection = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type Enum_TransformManipulatorEvent = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type Enum_TransformManipulatorMode = number
 
+   -- blizzard:TransmogItemsDocumentation.lua
    type Enum_TransmogCameraVariation = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type Enum_TransmogCollectionType = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type Enum_TransmogIllusionFlags = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type Enum_TransmogModification = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitCostModifiersApplied = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitDataFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitDisplayType = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitEntryFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitEntrySource = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitEquipAction = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSetType = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlot = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotError = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotOption = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotOptionFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotOptionSheatheCategory = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotPosition = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotSaveFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitSlotWarning = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitTransactionFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogOutfitTransactionType = number
 
+   -- blizzard:TransmogDocumentation.lua
    type Enum_TransmogPendingType = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type Enum_TransmogSearchType = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogSituation = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogSituationFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogSituationGroupFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogSituationTrigger = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogSituationTriggerFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogSituationTriggerType = number
 
+   -- blizzard:TransmogConstantsDocumentation.lua
    type Enum_TransmogSlot = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type Enum_TransmogSource = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type Enum_TransmogTimeOfDayCategory = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type Enum_TransmogType = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type Enum_TransmogUseErrorType = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_TtsBoolSetting = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type Enum_TtsVoiceType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_TugOfWarMarkerArrowShownState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_TugOfWarStyleValue = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type Enum_TurnStrafeStyle = number
 
+   -- blizzard:UIActionConstantsDocumentation.lua
    type Enum_UIActionType = number
 
+   -- blizzard:UICovenantDisplayInfoConstantsDocumentation.lua
    type Enum_UICovenantDisplayInfoFlags = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type Enum_UICursorType = number
 
+   -- blizzard:UIFrameManagerDocumentation.lua
    type Enum_UIFrameType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_UIItemInteractionFlags = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_UIItemInteractionType = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type Enum_UIMapFlag = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type Enum_UIMapGroupFlag = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type Enum_UIMapSystem = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type Enum_UIMapType = number
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type Enum_UIModelSceneActorFlag = number
 
+   -- blizzard:UiModelSceneConstantsDocumentation.lua
    type Enum_UIModelSceneContext = number
 
+   -- blizzard:UiModelSceneConstantsDocumentation.lua
    type Enum_UIModelSceneFlags = number
 
+   -- blizzard:UISystemVisibilityManagerDocumentation.lua
    type Enum_UISystemType = number
 
+   -- blizzard:UITextureConstantsDocumentation.lua
    type Enum_UITextureSliceMode = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetBlendModeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetButtonEnabledState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetButtonIconType = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_UIWidgetFlag = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetFontType = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_UIWidgetHorizontalDirection = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_UIWidgetLayoutDirection = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_UIWidgetModelSceneLayer = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetMotionType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetOverrideState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetRewardShownState = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_UIWidgetScale = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_UIWidgetSetLayoutDirection = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetSpellButtonCooldownType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetTextFormatType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetTextSizeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetTextureAndTextSizeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetTooltipLocation = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_UIWidgetUpdateAnimType = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type Enum_UIWidgetVisualizationType = number
 
+   -- blizzard:UnitAuraSharedDocumentation.lua
    type Enum_UnitAuraSortDirection = number
 
+   -- blizzard:UnitAuraSharedDocumentation.lua
    type Enum_UnitAuraSortRule = number
 
+   -- blizzard:UnitAuraConstantsDocumentation.lua
    type Enum_UnitAuraSoundTrigger = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type Enum_UnitDamageAbsorbClampMode = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type Enum_UnitHealAbsorbClampMode = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type Enum_UnitHealAbsorbMode = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type Enum_UnitIncomingHealClampMode = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type Enum_UnitMaximumHealthMode = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Enum_UnitMirrorPetFlags = number
 
+   -- blizzard:UnitSexConstantsDocumentation.lua
    type Enum_UnitSex = number
 
+   -- blizzard:UnitSharedDocumentation.lua
    type Enum_UnitTokenType = number
 
+   -- blizzard:TextureUtilsDocumentation.lua
    type Enum_UrlTextureResult = number
 
+   -- blizzard:ValidateNameConstantsDocumentation.lua
    type Enum_ValidateNameResult = number
 
+   -- questie:Data/Enum.lua
    type Enum_VasPurchaseProgress = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type Enum_VasTransactionPurchaseResult = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_ViewArenaSize = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type Enum_ViewRaidSize = number
 
+   -- blizzard:VignetteConstantsDocumentation.lua
    type Enum_VignetteObjectiveType = number
 
+   -- blizzard:VignetteConstantsDocumentation.lua
    type Enum_VignetteType = number
 
+   -- blizzard:VisualAlertConstantsDocumentation.lua
    type Enum_VisualAlertType = number
 
+   -- questie:Data/Enum.lua
    type Enum_Vocalerrorsounds = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type Enum_VoiceChannelErrorReason = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type Enum_VoiceChatStatusCode = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type Enum_VoiceTtsStatusCode = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandEventState = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandGroupFlags = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandPlacementDisplayInfoType = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandSceneAnimationEvent = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandSceneAnimationSheatheState = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandSceneAnimationStandState = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandSceneAnimationStandStateFlags = number
 
+   -- blizzard:WarbandSceneInfoConstantsDocumentation.lua
    type Enum_WarbandSceneFlags = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type Enum_WarbandScenePlacementType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Enum_WeaponSlot = number
 
+   -- blizzard:WeatherConstantsDocumentation.lua
    type Enum_WeatherType = number
 
+   -- questie:Data/Enum.lua
    type Enum_WeeklyRewardChestActivityType = number
 
+   -- questie:Data/Enum.lua
    type Enum_WeeklyRewardChestClaimRewardResult = number
 
+   -- questie:Data/Enum.lua
    type Enum_WeeklyRewardChestThresholdType = number
 
+   -- questie:Data/Enum.lua
    type Enum_WeeklyRewardProgressResult = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetAnimationType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetCurrencyClass = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetEnabledState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetGlowAnimType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetIconSizeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetIconSourceType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetOpacityType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetShowGlowState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetShownState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetTextHorizontalAlignmentType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_WidgetUnitPowerBarFlashMomentType = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type Enum_WoWClientCursorSize = number
 
+   -- blizzard:WowEntitlementInfoDocumentation.lua
    type Enum_WoWEntitlementType = number
 
+   -- questie:Data/Enum.lua
    type Enum_WoWLabsAreaType = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type Enum_WorldCursorAnchorType = number
 
+   -- blizzard:WorldElapsedTimerConstantsDocumentation.lua
    type Enum_WorldElapsedTimerTypes = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type Enum_WorldQuestQuality = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type Enum_WorldTierDifficulty = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ZoneControlActiveState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ZoneControlDangerFlashType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ZoneControlFillType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ZoneControlLeadingEdgeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ZoneControlMode = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type Enum_ZoneControlState = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type EnvironmentalDamageFlags = number
 
+   -- blizzard:DamageConstantsDocumentation.lua
    type Environmentaldamagetype = number
 
+   -- blizzard:FrameScriptDocumentation.lua
    type EventCallbackType = function()
 
+   -- blizzard:GameRulesConstantsDocumentation.lua
    type EventRealmQueues = number
 
+   -- blizzard:UIEventToastConstantsDocumentation.lua
    type EventToastDisplayType = number
 
+   -- blizzard:UIEventToastConstantsDocumentation.lua
    type EventToastEventType = number
 
+   -- blizzard:UIEventToastConstantsDocumentation.lua
    type EventToastFlags = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type ExcludedCensorSources = number
 
+   -- blizzard:ExpansionLandingPageConstantsDocumentation.lua
    type ExpansionLandingPageType = number
 
+   -- blizzard:ExpansionLevelConstantsDocumentation.lua
    type ExpansionLevel = number
 
+   -- questie:Type/BlizzardType.lua
    type FileAsset = string
 
+   -- questie:Widget/UIType/UIType.lua
    type FilterMode = Literal_322608a5af35
 
+   -- blizzard:HousingFixturePointFrameAPIDocumentation.lua
    type FixturePointUpdatedCallback = function()
 
+   -- blizzard:TaxiMapDocumentation.lua
    type FlightPathFaction = number
 
+   -- blizzard:TaxiMapDocumentation.lua
    type FlightPathState = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type FollowerAbilityCastResult = number
 
+   -- questie:Widget/UIType/UIType.lua
    type FontAlphabet = Literal_6eeb2006e30b
 
+   -- reviewed override
    type FontAsset = string
 
+   -- questie:Widget/UIType/Font.lua
    type FontFile = string
 
+   -- questie:Widget/UIType/Font.lua
    type FontObject = string | Font
 
+   -- blizzard:UISharedDocumentation.lua
    type FontStringScaleAnimationMode = number
 
+   -- blizzard:ForbiddenAspectConstantsDocumentation.lua
    type ForbiddenAspect = number
 
+   -- Lua 5.1 string.format argument
    type FormatArgument = string | number
 
+   -- blizzard:WowCSConstantsDocumentation.lua
    type FragmentID = number
 
+   -- blizzard:FrameAPIArchaeologyDigsiteDocumentation.lua
    type FrameAPIArchaeologyDigSiteFrame = ArchaeologyDigSiteFrame
 
+   -- blizzard:FrameAPIBlobDocumentation.lua
    type FrameAPIBlob = Blob
 
+   -- blizzard:FrameAPICharacterModelBaseDocumentation.lua
    type FrameAPICharacterModelBase = CharacterModelBase
 
+   -- blizzard:FrameAPICinematicModelDocumentation.lua
    type FrameAPICinematicModel = CinematicModel
 
+   -- blizzard:FrameAPICooldownDocumentation.lua
    type FrameAPICooldown = Cooldown
 
+   -- blizzard:FrameAPIDressUpModelDocumentation.lua
    type FrameAPIDressUpModel = DressUpModel
 
+   -- blizzard:FrameAPIFogOfWarFrameDocumentation.lua
    type FrameAPIFogOfWarFrame = FogOfWarFrame
 
+   -- blizzard:FrameAPIModelSceneFrameDocumentation.lua
    type FrameAPIModelSceneFrame = ModelScene
 
+   -- blizzard:FrameAPIModelSceneFrameActorDocumentation.lua
    type FrameAPIModelSceneFrameActor = ModelSceneFrameActor
 
+   -- blizzard:FrameAPIModelSceneFrameActorBaseDocumentation.lua
    type FrameAPIModelSceneFrameActorBase = ModelSceneFrameActorBase
 
+   -- blizzard:FrameAPINamePlateDocumentation.lua
    type FrameAPINamePlate = NamePlate
 
+   -- blizzard:FrameAPIQuestPOIDocumentation.lua
    type FrameAPIQuestPOI = QuestPOIFrame
 
+   -- blizzard:FrameAPIScenarioPOIDocumentation.lua
    type FrameAPIScenarioPOI = ScenarioPOIFrame
 
+   -- blizzard:FrameAPISimpleCheckoutDocumentation.lua
    type FrameAPISimpleCheckout = SimpleCheckout
 
+   -- blizzard:FrameAPITabardModelDocumentation.lua
    type FrameAPITabardModel = TabardModel
 
+   -- blizzard:FrameAPITabardModelBaseDocumentation.lua
    type FrameAPITabardModelBase = TabardModelBase
 
+   -- blizzard:FrameAPITooltipDocumentation.lua
    type FrameAPITooltip = GameTooltip
 
+   -- blizzard:FrameAPIUnitPositionFrameDocumentation.lua
    type FrameAPIUnitPositionFrame = UnitPositionFrame
 
+   -- questie:Data/Event.lua
    type FrameEvent = string
 
+   -- blizzard:SimpleFrameAPIDocumentation.lua
    type FrameEventCallbackType = function()
 
+   -- questie:Widget/UIType/UIType.lua
    type FramePoint = Literal_73288166ef67
 
+   -- questie:Widget/UIType/UIType.lua
    type FrameStrata = Literal_23f664ad5404
 
+   -- questie:Type/BlizzardType.lua
    type FrameTime = number
 
+   -- blizzard:TutorialDocumentation.lua
    type FrameTutorialAccount = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type FrameType = Literal_87c985dfb48e
 
+   -- Questie numeric enum name
    type GameMode = number
 
+   -- blizzard:GamePadConstDocumentation.lua
    type GamePadPowerLevel = number
 
+   -- Questie numeric enum name
    type GameRule = number
 
+   -- blizzard:GameRulesConstantsDocumentation.lua
    type GameRuleFlags = number
 
+   -- blizzard:GameRulesConstantsDocumentation.lua
    type GameRuleType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrAutoBoardIndex = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrAutoCombatSpellTutorialFlag = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrAutoCombatTutorial = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrAutoCombatantRole = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrAutoEventFlags = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrAutoMissionEventType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrAutoPreviewTargetType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrFollowerMissionCompleteState = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrFollowerQuality = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentCostType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentFeatureSubtype = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentFeatureType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentResearchCostSource = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentSocketType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentTreeType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrTalentUI = number
 
+   -- questie:Type/BlizzardType.lua
    type GarrisonFollower = string
 
+   -- blizzard:GARRISON_FOLLOWER_TYPEConstantsDocumentation.lua
    type GarrisonFollowerType = number
 
+   -- blizzard:GarrisonConstantsDocumentation.lua
    type GarrisonTalentAvailability = number
 
+   -- blizzard:GARRISON_TYPEConstantsDocumentation.lua
    type GarrisonType = number
 
+   -- blizzard:TextureUtilsDocumentation.lua
    type GetTitleIconTextureCallback = function(boolean, number)
 
+   -- blizzard:GossipConstantsDocumentation.lua
    type GossipNpcOption = number
 
+   -- blizzard:GossipConstantsDocumentation.lua
    type GossipNpcOptionDisplayFlags = number
 
+   -- blizzard:GossipConstantsDocumentation.lua
    type GossipOptionRecFlags = number
 
+   -- blizzard:GossipInfoDocumentation.lua
    type GossipOptionRewardType = number
 
+   -- blizzard:GossipInfoDocumentation.lua
    type GossipOptionStatus = number
 
+   -- blizzard:GossipInfoDocumentation.lua
    type GossipOptionUIWidgetSetTypes = number
 
+   -- blizzard:VideoDocumentation.lua
    type GraphicsValidationResult = number
 
+   -- blizzard:CooldownViewerConstantsDocumentation.lua
    type GroupBuffItemFlags = number
 
+   -- blizzard:GuildConstantsDocumentation.lua
    type GuildErrorType = number
 
+   -- questie:Type/BlizzardType.lua
    type HTMLTextType = string
 
+   -- questie:Libraries/HereBeDragons-2.0/HereBeDragons-Pins-2.0.lua
    type HereBeDragons_Pins_2_0_WorldMapShowFlag = number
 
+   -- questie:Libraries/HereBeDragons-2.0/HereBeDragons-2.0.lua
    type HereBeDragons_EventName = Literal_7457e3501e75
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type HolidayCalendarFlags = number
 
+   -- blizzard:CalendarConstantsDocumentation.lua
    type HolidayFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HouseEditingContext = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HouseEditorMode = number
 
+   -- blizzard:HouseEditorUIDocumentation.lua
    type HouseEditorPlayerType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HouseExteriorWMODataFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HouseFinderSuggestionReason = number
 
+   -- blizzard:HousingUISharedDocumentation.lua
    type HouseLevelRewardType = number
 
+   -- blizzard:HousingUISharedDocumentation.lua
    type HouseLevelRewardValueType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HouseOwnerError = number
 
+   -- Questie numeric enum name
    type HouseSettingFlags = number
 
+   -- blizzard:HousingUISharedDocumentation.lua
    type HouseVisitType = number
 
+   -- blizzard:HousingBasicModeUIDocumentation.lua
    type HousingBasicModeTargetType = number
 
+   -- blizzard:HousingBlueprintConstantsDocumentation.lua
    type HousingBlueprintContentType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingBlueprintFlag = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingBlueprintType = number
 
+   -- blizzard:HousingBlueprintConstantsDocumentation.lua
    type HousingBlueprintUnmetRequirementFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingBudgetType = number
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type HousingCatalogEntryModelScenePresets = number
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type HousingCatalogEntrySize = number
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type HousingCatalogEntryType = number
 
+   -- blizzard:HousingCatalogSearcherAPIDocumentation.lua
    type HousingCatalogSearchResultsUpdatedCallback = function()
 
+   -- blizzard:HousingCatalogConstantsDocumentation.lua
    type HousingCatalogSortType = number
 
+   -- blizzard:HousingCleanupModeUIDocumentation.lua
    type HousingCleanupModeTargetType = number
 
+   -- blizzard:HousingCustomizeModeUIDocumentation.lua
    type HousingCustomizeModeTargetType = number
 
+   -- blizzard:HousingDecorSharedDocumentation.lua
    type HousingDecorPlacementRestriction = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingDecorTheme = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type HousingExpertModeTargetType = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type HousingExpertSubmodeRestriction = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingFixtureDecorAction = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingFixtureFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingFixtureSize = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingFixtureType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingHouseScope = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type HousingIncrementType = number
 
+   -- blizzard:HousingUIDocumentation.lua
    type HousingItemToastType = number
 
+   -- blizzard:HousingLayoutUITypesDocumentation.lua
    type HousingLayoutCameraDirection = number
 
+   -- blizzard:HousingLayoutUITypesDocumentation.lua
    type HousingLayoutPinType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingLayoutRestriction = number
 
+   -- blizzard:HousingLayoutUITypesDocumentation.lua
    type HousingLayoutStairDirection = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingPetBehaviorType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingPlotOwnerType = number
 
+   -- blizzard:HousingExpertModeUIDocumentation.lua
    type HousingPrecisionSubmode = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingResult = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentCeilingType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentDoorType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentFloorType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentOptionFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentOptionType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentStairType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentTextureFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomComponentType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingRoomFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingThemeFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type HousingThrottleType = number
 
+   -- questie:Type/Type.lua
    type HyperlinkType = Literal_97e0b5f4a9c9
 
+   -- questie:Type/BlizzardType.lua
    type IDOrLink = number | string
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type IconAndTextShiftTextType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type IconAndTextWidgetState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type IconState = number
 
+   -- blizzard:ImageSharingConstantsDocumentation.lua
    type ImageSharingResult = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type InitiativeMilestoneFlags = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type InitiativeRewardFlags = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type InputCommandCallback = function(string)
 
+   -- blizzard:InputConstantsDocumentation.lua
    type InputContext = number
 
+   -- questie:Widget/UIType/UIType.lua
    type InsertMode = Literal_a2b566dacd52
 
+   -- Questie numeric enum name
    type InvalidPlotScreenshotReason = number
 
+   -- questie:Type/Type.lua
    type InventorySlotName = Literal_7a28f0f291f7
 
+   -- questie:Type/BlizzardType.lua
    type InventorySlots = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type InventoryType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemArmorSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemBind = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemClass = number
 
+   -- blizzard:AccountConstantsDocumentation.lua
    type ItemCollectionType = number
 
+   -- blizzard:AuctionHouseDocumentation.lua
    type ItemCommodityStatus = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemConsumableSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemConversionFlags = number
 
+   -- Questie numeric enum name
    type ItemCreationContext = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ItemDisplayTextDisplayStyle = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ItemDisplayTooltipEnabledType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemGemColor = number
 
+   -- blizzard:ItemConstants_MainlineDocumentation.lua
    type ItemGemSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemHousingSubclass = number
 
+   -- questie:Type/BlizzardType.lua
    type ItemInfo = number | string
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemMiscellaneousSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemProfessionSubclass = number
 
+   -- blizzard:ItemQualitiesDocumentation.lua
    type ItemQuality = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemReagentSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemRecipeSubclass = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type ItemRecraftFlags = number
 
+   -- blizzard:ItemConstants_MainlineDocumentation.lua
    type ItemRedundancySlot = number
 
+   -- blizzard:EncounterJournalDocumentation.lua
    type ItemSlotFilterType = number
 
+   -- blizzard:ItemSocketInfoDocumentation.lua
    type ItemSocketInfoUIType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemSocketType = number
 
+   -- Questie numeric enum name
    type ItemSoundType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemSubclassDisplay = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemSubclassFlag = number
 
+   -- questie:Type/Mixin.lua
    type ItemTransmogInfo = ItemTransmogInfoMixin
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type ItemTryOnReason = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type ItemWeaponSubclass = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Itemclassfilterflags = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type Itemsetflags = number
 
+   -- blizzard:ScenarioInfoDocumentation.lua
    type JailersTowerType = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalEncounterFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalEncounterIconFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalEncounterItemFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalEncounterLocFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalEncounterSecTypes = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalEncounterSectionFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalInstanceFlags = number
 
+   -- blizzard:EncounterJournalConstantsDocumentation.lua
    type JournalLinkTypes = number
 
+   -- questie:Widget/UIType/UIType.lua
    type JustifyHorizontal = Literal_3be0cb965eac
 
+   -- questie:Widget/UIType/UIType.lua
    type JustifyVertical = Literal_0c541190a2ed
 
+   -- Blizzard Discord user-name text carrier
    type KStringDiscordUserName = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type LE_SCRIPT_BINDING_TYPE = Literal_a99fd297b3dc
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type LFGEntryGeneralPlaystyle = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type LFGEntryPlaystyle = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type LFGListDisplayType = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type LFGListFilter = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type LFGRole = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type LFGSlotInvalidReason = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type LanguageFlag = number
 
+   -- blizzard:PartyInfoDocumentation.lua
    type LeavePartyConfirmReason = number
 
+   -- questie:Libraries/LibDBIcon-1.0/LibDBIcon-1.0.lua
    type LibDBIcon_CallbackKey = Literal_ac71681d6ff2
 
+   -- questie:Libraries/LibDataBroker-1.1/LibDataBroker-1.1.lua
    type LibDataBroker_DataObject = TableVariants_c75555b0a664
 
+   -- questie:Libraries/LibDeflate/LibDeflate.lua
    type LibDeflate_Dictionary = Shape_f1aaa7793686
 
+   -- questie:Libraries/LibQTip-1.0/LibQTip-1.0.lua
    type LibQTip_ScriptType = Literal_5fadaef201d5
 
+   -- questie:Libraries/LibSharedMedia-3.0/LibSharedMedia-3.0.lua
    type LibSharedMediaTypes = Literal_900f607657c5
 
+   -- blizzard:HousingDecorUIDocumentation.lua
    type LightRadiusIndicatorType = number
 
+   -- blizzard:LimitedInputDocumentation.lua
    type LimitedInputType = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type LinkedCurrencyFlags = number
 
+   -- blizzard:ClassTalentsDocumentation.lua
    type LoadConfigResult = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type LocaleTransform = number
 
+   -- blizzard:LogConstantsDocumentation.lua
    type LogPriority = number
 
+   -- blizzard:LogicConstantsDocumentation.lua
    type LogicLogicop = number
 
+   -- blizzard:LogicConstantsDocumentation.lua
    type LogicMathop = number
 
+   -- blizzard:LogicConstantsDocumentation.lua
    type LogicRelop = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type LoginTicketLicenses = number
 
+   -- questie:Widget/UIType/UIType.lua
    type LoopType = Literal_1aefd35d9a61
 
+   -- blizzard:LootConstantsDocumentation.lua
    type LootMethod = number
 
+   -- blizzard:LootConstantsDocumentation.lua
    type LootMethodStyles = number
 
+   -- blizzard:LootConstantsDocumentation.lua
    type LootSlotType = number
 
+   -- questie:Type/BlizzardType.lua
    type LuaColorCurveObject = ColorCurveObject
 
+   -- questie:Type/BlizzardType.lua
    type LuaCurveEvaluatedResult = number | colorRGBA
 
+   -- questie:Type/BlizzardType.lua
    type LuaCurveObject = CurveObject
 
+   -- questie:Type/BlizzardType.lua
    type LuaCurveObjectBase = CurveObjectBase
 
+   -- blizzard:LuaCurveObjectConstantsDocumentation.lua
    type LuaCurveType = number
 
+   -- reviewed override
    type LuaDurationClock = LuaDurationClockObject
 
+   -- questie:Type/BlizzardType.lua
    type LuaDurationObject = DurationObject
 
+   -- Blizzard metadata primitive
    type LuaFunctionReference = W.Data
 
+   -- reviewed override
    type LuaInventorySlot = number
 
+   -- questie:Type/BlizzardType.lua
    type LuaValueReference = W.Data
 
+   -- reviewed override
    type LuaValueVariant = W.Data
 
+   -- blizzard:UIMacrosDocumentation.lua
    type MacroExecuteLineCallback = function(string)
 
+   -- blizzard:MajorFactionsConstantsDocumentation.lua
    type MajorFactionFeatureAbility = number
 
+   -- blizzard:MajorFactionsConstantsDocumentation.lua
    type MajorFactionType = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type MapCanvasPosition = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type MapIconUIWidgetSetType = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type MapOverlayDisplayLocation = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type MapPinAnimationType = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type MapobjEventTypes = number
 
+   -- blizzard:EndOfMatchUIDocumentation.lua
    type MatchDetailType = number
 
+   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    type MenuDescriptionInitializer = Callback_a3063ef31ab4
 
+   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    type MenuGridDirection = number
 
+   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    type MenuInputContext = number
 
+   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    type MenuResponder = Callback_3c005cb9052e
 
+   -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    type MenuResponse = number
 
+   -- reviewed override
    type MenuTemplateBase = Frame
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type MicroMenuOrder = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type MicroMenuOrientation = number
 
+   -- reviewed override
    type Milliseconds = number
 
+   -- blizzard:MinimapFrameAPIDocumentation.lua
    type MinimapFrame = Minimap
 
+   -- blizzard:MinimapConstantsDocumentation.lua
    type MinimapTrackingFilter = number
 
+   -- questie:Type/BlizzardType.lua
    type ModelAsset = number
 
+   -- blizzard:ModelAnimationSharedDocumentation.lua
    type ModelBlendOperation = number
 
+   -- blizzard:FrameAPIModelSceneFrameSharedDocumentation.lua
    type ModelLightType = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type ModelSceneFrame = ModelScene
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type ModelSceneSetting = number
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type ModelSceneType = number
 
+   -- blizzard:MountConstantsDocumentation.lua
    type MountType = number
 
+   -- blizzard:MountConstantsDocumentation.lua
    type MountTypeFlag = number
 
+   -- questie:Widget/UIType/UIType.lua
    type MouseButton = Literal_b7e0de2fb994
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateCastBarDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateEnemyNpcAuraDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateEnemyPlayerAuraDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateFriendlyPlayerAuraDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateInfoDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateSimplifiedType = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateSize = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateStackType = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateStyle = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateThreatDisplay = number
 
+   -- blizzard:NamePlateConstantsDocumentation.lua
    type NamePlateType = number
 
+   -- questie:Type/BlizzardType.lua
    type Nameplate = NamePlateFrame
 
+   -- blizzard:InGameNavigationDocumentation.lua
    type NavigationState = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type NeighborhoodFlags = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type NeighborhoodInitiativeChestResult = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type NeighborhoodInitiativeFlags = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type NeighborhoodInitiativeNeighborhoodTypes = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type NeighborhoodInitiativeTaskType = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type NeighborhoodInitiativeUpdateStatus = number
 
+   -- blizzard:NeighborhoodInitiativesConstantsDocumentation.lua
    type NeighborhoodInitiativesCompletionStates = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type NeighborhoodInviteResult = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type NeighborhoodMapFlags = number
 
+   -- Questie numeric enum name
    type NeighborhoodOwnerType = number
 
+   -- Questie numeric enum name
    type NeighborhoodType = number
 
+   -- blizzard:CharacterCustomizationSharedDocumentation.lua
    type NewCharGear = number
 
+   -- blizzard:CharacterServicesConstantsDocumentation.lua
    type NoRPEReason = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type NodeOpFailureReason = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type NormalizationForm = number
 
+   -- questie:Type/BlizzardType.lua
    type NotificationDbId = string
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type NpcCraftingOrderSetFlags = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type NumberStyle = number
 
+   -- blizzard:NumericRuleFormatterSharedDocumentation.lua
    type NumericRuleFormatRounding = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type OnUpdateMode = number
 
+   -- questie:Widget/UIType/UIType.lua
    type Orientation = Literal_39d2acafc60a
 
+   -- Questie numeric enum name
    type PartyPlaylistEntry = number
 
+   -- blizzard:PartyPoseUIConstantsDocumentation.lua
    type PartyPoseFlags = number
 
+   -- blizzard:PartyConstantsDocumentation.lua
    type PartyRequestJoinRelation = number
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type PendingPingOffScreenCallback = function()
 
+   -- blizzard:PerksVendorConstantsDocumentation.lua
    type PerksVendorCategoryType = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type PermanentChatChannelType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type PersonalResourceDisplayVisibleSetting = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type PetActionFeedback = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type PetActionbuttonType = number
 
+   -- blizzard:PetBattleConstantsDocumentation.lua
    type PetBattleQueueStatus = number
 
+   -- blizzard:PetJournalInfoDocumentation.lua
    type PetJournalError = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type PetMode = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type PetOrders = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type PetOverride = number
 
+   -- blizzard:PetBattleConstantsDocumentation.lua
    type PetbattleSlot = number
 
+   -- blizzard:PetBattleConstantsDocumentation.lua
    type PetbattleState = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type Pettameresult = number
 
+   -- blizzard:UnitDocumentation.lua
    type PhaseReason = number
 
+   -- blizzard:ImageSharingConstantsDocumentation.lua
    type PhotoSharingStatus = number
 
+   -- blizzard:ImageSharingConstantsDocumentation.lua
    type PhotoSharingUploadStatus = number
 
+   -- blizzard:HousingLayoutUITypesDocumentation.lua
    type PinUpdatedCallback = function()
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type PingCooldownStartedCallback = function(PingCooldownInfo)
 
+   -- blizzard:PingConstantsDocumentation.lua
    type PingMode = number
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type PingPinFrameAddedCallback = function(ScriptRegion, string, boolean, ? PingActionUIInfo)
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type PingPinFrameRemovedCallback = function(ScriptRegion)
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type PingPinFrameScreenClampStateUpdatedCallback = function(ScriptRegion, boolean)
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type PingRadialWheelCreatedCallback = function(ScriptRegion)
 
+   -- blizzard:PingConstantsDocumentation.lua
    type PingResult = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type PingSetTargetState = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type PingSubjectType = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type PingTargetOption = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type PingTargetType = number
 
+   -- blizzard:SharedScriptObjectUnitPositionFrameDocumentation.lua
    type PingTextureType = number
 
+   -- blizzard:PingConstantsDocumentation.lua
    type PingTypeFlags = number
 
+   -- blizzard:PlayerChoiceConstantsDocumentation.lua
    type PlayerChoiceFlags = number
 
+   -- blizzard:PlayerChoiceConstantsDocumentation.lua
    type PlayerChoiceLayout = number
 
+   -- blizzard:PlayerChoiceDocumentation.lua
    type PlayerChoiceRarity = number
 
+   -- blizzard:PlayerChoiceConstantsDocumentation.lua
    type PlayerChoiceResponseFlags = number
 
+   -- blizzard:ClubFinderDocumentation.lua
    type PlayerClubRequestStatus = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type PlayerCompanionInfoFlags = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type PlayerCurrencyFlags = number
 
+   -- blizzard:CurrencyConstantsDocumentation.lua
    type PlayerCurrencyFlagsDbFlags = number
 
+   -- blizzard:PlayerDataConstantsDocumentation.lua
    type PlayerDataElementAccountFlags = number
 
+   -- blizzard:PlayerDataConstantsDocumentation.lua
    type PlayerDataElementCharacterFlags = number
 
+   -- blizzard:PlayerDataConstantsDocumentation.lua
    type PlayerDataElementType = number
 
+   -- blizzard:PlayerInteractionManagerConstantsDocumentation.lua
    type PlayerInteractionType = number
 
+   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
    type PlayerMentorshipApplicationResult = number
 
+   -- blizzard:PlayerMentorshipConstantsDocumentation.lua
    type PlayerMentorshipStatus = number
 
+   -- blizzard:LobbyMatchmakerInfoDocumentation.lua
    type PlunderstormQueueState = number
 
+   -- blizzard:IntlSharedTypesDocumentation.lua
    type PluralType = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type PowerType = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type PowerTypeSign = number
 
+   -- blizzard:PowerTypeConstantsDocumentation.lua
    type PowerTypeSlot = number
 
+   -- blizzard:LFGConstantsDocumentation.lua
    type PremadeGroupFinderStyle = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type PreyHuntProgressState = number
 
+   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
    type ProceduralSpawnInteractionMode = number
 
+   -- blizzard:ProceduralSpawnConstantsDocumentation.lua
    type ProceduralSpawnVolumeChunkFlags = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type ProfTraitPerkNodeFlags = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type Profession = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type ProfessionActionType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type ProfessionEffect = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type ProfessionRating = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type ProfessionRatingType = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type ProfessionsSpecPathState = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type ProfessionsSpecPerkState = number
 
+   -- blizzard:ProfessionSpecConstantsDocumentation.lua
    type ProfessionsSpecTabState = number
 
+   -- Questie numeric enum name
    type PurchaseHouseDisabledReason = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type PurchaseResult = number
 
+   -- blizzard:PvPFactionConstantsDocumentation.lua
    type PvPFaction = number
 
+   -- blizzard:PvpInfoDocumentation.lua
    type PvPMatchState = number
 
+   -- blizzard:PVPMgrConstantsDocumentation.lua
    type PvPMatchmakingType = number
 
+   -- blizzard:PvpInfoConstantsDocumentation.lua
    type PvPRanks = number
 
+   -- blizzard:UnitDocumentation.lua
    type PvPUnitClassification = number
 
+   -- blizzard:QuestInfoSharedDocumentation.lua
    type QuestClassification = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type QuestCompleteSpellType = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type QuestFrequency = number
 
+   -- blizzard:QuestLineInfoDocumentation.lua
    type QuestLineFloorLocation = number
 
+   -- questie:Type/BlizzardType.lua
    type QuestObjectiveType = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type QuestRepeatability = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type QuestRewardContextFlags = number
 
+   -- blizzard:QuestSessionConstantsDocumentation.lua
    type QuestSessionCommand = number
 
+   -- blizzard:QuestSessionConstantsDocumentation.lua
    type QuestSessionResult = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type QuestTag = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type QuestTagType = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type QuestTreasurePickerType = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type QuestWatchType = number
 
+   -- blizzard:RecruitAFriendSharedDocumentation.lua
    type RafLinkType = number
 
+   -- blizzard:RecruitAFriendDocumentation.lua
    type RafRecruitActivityState = number
 
+   -- blizzard:RecruitAFriendDocumentation.lua
    type RafRecruitSubStatus = number
 
+   -- blizzard:RecruitAFriendDocumentation.lua
    type RafRewardType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type RaidAuraOrganizationType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type RaidDispelDisplayType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type RaidDispelOverlayType = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type RaidGroupDisplayType = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type RcoCloseReason = number
 
+   -- blizzard:RecentAlliesConstantsDocumentation.lua
    type RecentAlliesFriendTag = number
 
+   -- blizzard:RecentAlliesConstantsDocumentation.lua
    type RecentAllyPinResult = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type RecipeRequirementType = number
 
+   -- blizzard:RecruitAFriendSharedDocumentation.lua
    type RecruitAFriendFailure = number
 
+   -- blizzard:RecruitAFriendSharedDocumentation.lua
    type RecruitAFriendRewardsVersion = number
 
+   -- questie:Type/BlizzardType.lua
    type RecruitAcceptanceID = string
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type RegisterAddonMessagePrefixResult = number
 
+   -- blizzard:QuestConstantsDocumentation.lua
    type RelativeContentDifficulty = number
 
+   -- blizzard:ExpansionConstantsDocumentation.lua
    type ReleaseType = number
 
+   -- blizzard:RenownConstantsDocumentation.lua
    type RenownRewardDisplayType = number
 
+   -- blizzard:RenownConstantsDocumentation.lua
    type RenownRewardsFlags = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type ReportEvidenceType = number
 
+   -- questie:Type/Mixin.lua
    type ReportInfo = ReportInfoMixin
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type ReportMajorCategory = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type ReportMinorCategory = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type ReportSubComplaintTypes = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type ReportThrottleType = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type ReportType = number
 
+   -- blizzard:ReputationInfoDocumentation.lua
    type ReputationSortType = number
 
+   -- Questie numeric enum name
    type ResidentType = number
 
+   -- blizzard:PartyConstantsDocumentation.lua
    type RestrictPingsTo = number
 
+   -- blizzard:CharacterCreationConstantsDocumentation.lua
    type RestrictionType = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type RetroactiveDecorRewardFlags = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type RolodexContactMigrationResult = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type RolodexContextLevelType = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type RolodexDbFlags = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type RolodexType = number
 
+   -- blizzard:RolodexConstantsDocumentation.lua
    type RolodexTypeFlags = number
 
+   -- blizzard:PlayerHousingConstantsDocumentation.lua
    type RoomConnectionType = number
 
+   -- blizzard:LegendaryCraftingTypesDocumentation.lua
    type RuneforgePowerFilter = number
 
+   -- blizzard:LegendaryCraftingTypesDocumentation.lua
    type RuneforgePowerState = number
 
+   -- blizzard:ScreenLocationConstantsDocumentation.lua
    type ScreenLocationType = number
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type ScreenshotSource = number
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptAnimation = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptAnimationGroup = string
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type ScriptBindingType = number
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptBrowser = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptButton = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptCheckout = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptCinematicModel = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptColorSelect = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptCooldown = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptDressUpModel = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptEditBox = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptFogOfWarFrame = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptFrame = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptGameTooltip = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptModel = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptModelSceneActor = Literal_6e07064ecc1c
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptMovieFrame = string
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type ScriptObjectAccessRestriction = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type ScriptObjectMetatable = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type ScriptObjectPartition = number
 
+   -- blizzard:SimpleFrameScriptObjectConstantsDocumentation.lua
    type ScriptObjectPropagationPath = number
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptScrollFrame = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptSlider = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptStatusBar = string
 
+   -- questie:Widget/UIType/ScriptType.lua
    type ScriptType = string
 
+   -- reviewed override
    type ScriptTypeName = string
 
+   -- blizzard:ScriptedAnimationsDocumentation.lua
    type ScriptedAnimationBehavior = number
 
+   -- blizzard:ScriptedAnimationsDocumentation.lua
    type ScriptedAnimationFlags = number
 
+   -- blizzard:ScriptedAnimationsDocumentation.lua
    type ScriptedAnimationTrajectory = number
 
+   -- blizzard:ValidateNameConstantsDocumentation.lua
    type ScrubStringFlags = number
 
+   -- blizzard:SeasonsConstantsDocumentation.lua
    type SeasonID = number
 
+   -- Blizzard metadata primitive
    type Seconds = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type SecondsFormatterAbbreviation = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type SecondsFormatterInterval = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type SecondsFormatterIntervalWhitespace = number
 
+   -- blizzard:SecondsFormatterSharedDocumentation.lua
    type SecondsFormatterRounding = number
 
+   -- blizzard:SecretWrapperConstantsDocumentation.lua
    type SecrecyLevel = number
 
+   -- blizzard:SecretAspectConstantsDocumentation.lua
    type SecretAspect = number
 
+   -- blizzard:DeathInfoDocumentation.lua
    type SelfResurrectOptionType = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type SendAddonMessageResult = number
 
+   -- questie:Type/Type.lua
    type SendChatMessageType = Literal_62300f6ce66d
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type SendMacroPingCallback = function(PingMacroInfo)
 
+   -- blizzard:ReportSystemConstantsDocumentation.lua
    type SendReportResult = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type SharedStringFlag = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnim = Animation
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimAlpha = Alpha
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimFlipBook = FlipBook
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimGroup = AnimationGroup
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimPath = Path
 
+   -- blizzard:SimpleAnimRadialProgressAPIDocumentation.lua
    type SimpleAnimRadialProgress = RadialProgress
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimRotation = Rotation
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimScale = Scale
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimScaleLine = LineScale
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimTextureCoordTranslation = TextureCoordTranslation
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimTranslation = Translation
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimTranslationLine = LineTranslation
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleAnimVertexColor = VertexColor
 
+   -- blizzard:SimpleAnimatableObjectAPIDocumentation.lua
    type SimpleAnimatableObject = AnimatableObject
 
+   -- blizzard:SimpleBrowserAPIDocumentation.lua
    type SimpleBrowser = Browser
 
+   -- blizzard:SimpleButtonAPIDocumentation.lua
    type SimpleButton = Button
 
+   -- questie:Widget/UIType/UIType.lua
    type SimpleButtonStateToken = Literal_20b05e0b44f5
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleCheckbox = CheckButton
 
+   -- blizzard:SimpleColorSelectAPIDocumentation.lua
    type SimpleColorSelect = ColorSelect
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleControlPoint = ControlPoint
 
+   -- blizzard:SimpleEditBoxAPIDocumentation.lua
    type SimpleEditBox = EditBox
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleFont = Font
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleFontString = FontString
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleFrame = Frame
 
+   -- blizzard:SimpleFrameScriptObjectAPIDocumentation.lua
    type SimpleFrameScriptObject = FrameScriptObject
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleLine = Line
 
+   -- blizzard:SimpleMapSceneAPIDocumentation.lua
    type SimpleMapScene = MapScene
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleMaskTexture = MaskTexture
 
+   -- blizzard:SimpleMessageFrameAPIDocumentation.lua
    type SimpleMessageFrame = MessageFrame
 
+   -- blizzard:SimpleModelAPIDocumentation.lua
    type SimpleModel = Model
 
+   -- blizzard:SimpleModelFFXAPIDocumentation.lua
    type SimpleModelFFX = ModelFFX
 
+   -- blizzard:SimpleMovieAPIDocumentation.lua
    type SimpleMovie = MovieFrame
 
+   -- blizzard:SimpleObjectAPIDocumentation.lua
    type SimpleObject = Object
 
+   -- blizzard:SimpleOffScreenFrameAPIDocumentation.lua
    type SimpleOffScreenFrame = OffScreenFrame
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type SimpleOrderStatus = number
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimplePathAnim = Path
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleRegion = Region
 
+   -- blizzard:SimpleScriptRegionAPIDocumentation.lua
    type SimpleScriptRegion = ScriptRegion
 
+   -- blizzard:SimpleScriptRegionResizingAPIDocumentation.lua
    type SimpleScriptRegionResizing = ScriptRegionResizing
 
+   -- blizzard:SimpleScrollFrameAPIDocumentation.lua
    type SimpleScrollFrame = ScrollFrame
 
+   -- blizzard:SimpleSliderAPIDocumentation.lua
    type SimpleSlider = Slider
 
+   -- blizzard:SimpleStatusBarAPIDocumentation.lua
    type SimpleStatusBar = StatusBar
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleTexture = Texture
 
+   -- blizzard:SimpleTextureBaseAPIDocumentation.lua
    type SimpleTextureBase = TextureBase
 
+   -- blizzard:SimpleVectorGraphicsAPIDocumentation.lua
    type SimpleVectorGraphics = VectorGraphics
 
+   -- questie:Widget/UIType/FrameType.lua
    type SimpleWindow = W.Data
 
+   -- questie:Type/BlizzardType.lua
    type SingleColorValue = number
 
+   -- blizzard:ProfessionConstantsDocumentation.lua
    type SkinningState = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type SleevesGeoRange = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type SlotRegion = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type SlotRegionMask = number
 
+   -- questie:Widget/UIType/UIType.lua
    type SmoothingType = Literal_e757ffab7460
 
+   -- blizzard:SocialUIDocumentation.lua
    type SocialSystemType = number
 
+   -- blizzard:SocialUIDocumentation.lua
    type SocialUIBlockType = number
 
+   -- blizzard:SocialUIDocumentation.lua
    type SocialUIPresenceType = number
 
+   -- blizzard:SocialConstantsDocumentation.lua
    type SocialWhoOrigin = number
 
+   -- blizzard:SoftTargetConstantsDocumentation.lua
    type SoftTargetEnableFlags = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type SortPlayersBy = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type SoulbindConduitFlags = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type SoulbindConduitInstallResult = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type SoulbindConduitTransactionType = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type SoulbindConduitType = number
 
+   -- blizzard:SoulbindsConstantsDocumentation.lua
    type SoulbindNodeState = number
 
+   -- questie:Type/BlizzardType.lua
    type SoundHandle = number
 
+   -- blizzard:SpecializationSharedDocumentation.lua
    type SpecializationSystem = number
 
+   -- blizzard:SpellConstantsDocumentation.lua
    type SpellAuraVisibilityType = number
 
+   -- blizzard:SpellBookConstantsDocumentation.lua
    type SpellBookItemType = number
 
+   -- blizzard:SpellBookConstantsDocumentation.lua
    type SpellBookSkillLineIndex = number
 
+   -- blizzard:SpellBookConstantsDocumentation.lua
    type SpellBookSpellBank = number
 
+   -- blizzard:SpellDiminishConstantsDocumentation.lua
    type SpellDiminishCategory = number
 
+   -- blizzard:SpellDiminishConstantsDocumentation.lua
    type SpellDiminishRuleset = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type SpellDisplayBorderColor = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type SpellDisplayIconDisplayType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type SpellDisplayTextShownStateType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type SpellDisplayTint = number
 
+   -- questie:Type/BlizzardType.lua
    type SpellIdentifier = number | string
 
+   -- blizzard:SplashScreenConstantsDocumentation.lua
    type SplashScreenType = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type StableResult = number
 
+   -- blizzard:TimerConstantsDocumentation.lua
    type StartTimerType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type StatusBarColorTintValue = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type StatusBarFillStyle = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type StatusBarInterpolation = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type StatusBarOverrideBarTextShownType = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type StatusBarRenderMode = number
 
+   -- blizzard:SimpleStatusBarConstantsDocumentation.lua
    type StatusBarTimerDirection = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type StatusBarValueTextType = number
 
+   -- questie:Type/BlizzardType.lua
    type StoreError = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type SubcontainerType = number
 
+   -- blizzard:ExpansionDocumentation.lua
    type SubscriptionInterstitialResponseType = number
 
+   -- blizzard:ExpansionDocumentation.lua
    type SubscriptionInterstitialType = number
 
+   -- blizzard:SummonConstantsDocumentation.lua
    type SummonReason = number
 
+   -- blizzard:IncomingSummonDocumentation.lua
    type SummonStatus = number
 
+   -- blizzard:SuperTrackManagerSharedDocumentation.lua
    type SuperTrackingMapPinType = number
 
+   -- blizzard:SuperTrackManagerSharedDocumentation.lua
    type SuperTrackingType = number
 
+   -- blizzard:WowSurveyConstantsDocumentation.lua
    type SurveyDeliveryFlags = number
 
+   -- blizzard:WowSurveyConstantsDocumentation.lua
    type SurveyDeliveryMoment = number
 
+   -- questie:Widget/UIType/UIType.lua
    type TBFFlags = Literal_d974b8242f36
 
+   -- blizzard:FrameScriptDocumentation.lua
    type TableSecurityOption = number
 
+   -- questie:Widget/UIType/Template.lua
    type Template = Literal_6efddcdaa800
 
+   -- questie:Type/BlizzardType.lua
    type TextureAsset = number | string | Texture
 
+   -- questie:Type/BlizzardType.lua
    type TextureAssetDisk = number | string
 
+   -- reviewed timer callback/handle carrier
    type TickerCallback = FunctionContainer | Callback_7f32b7c0d06e
 
+   -- blizzard:DelvesUIDocumentation.lua
    type TieredEntranceRewardType = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type TieredEntranceTierFlag = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type TieredEntranceType = number
 
+   -- blizzard:DateAndTimeDocumentation.lua
    type TimeEventFlag = number
 
+   -- blizzard:TimedSignalMapSharedDocumentation.lua
    type TimedSignalMapCallback = function(W.MaybeSecret<number>)
 
+   -- blizzard:UITimerDocumentation.lua
    type TimerCallback = function()
 
+   -- blizzard:TextureUtilsDocumentation.lua
    type TitleIconVersion = number
 
+   -- blizzard:PingManagerSecureDocumentation.lua
    type TogglePingListenerCallback = function(boolean)
 
+   -- questie:Widget/UIType/FrameType.lua
    type Tooltip = GameTooltip
 
+   -- questie:Widget/UIType/UIType.lua
    type TooltipAnchor = Literal_fdca81acebe4
 
+   -- blizzard:TooltipComparisonDocumentation.lua
    type TooltipComparisonMethod = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type TooltipDataItemBinding = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type TooltipDataLineType = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type TooltipDataType = number
 
+   -- blizzard:TooltipInfoSharedDocumentation.lua
    type TooltipDataUsageRequirementType = number
 
+   -- blizzard:TooltipConstantsDocumentation.lua
    type TooltipSide = number
 
+   -- blizzard:TooltipConstantsDocumentation.lua
    type TooltipTextureAnchor = number
 
+   -- blizzard:TooltipConstantsDocumentation.lua
    type TooltipTextureRelativeRegion = number
 
+   -- blizzard:CommentatorSharedDocumentation.lua
    type TrackedSpellCategory = number
 
+   -- blizzard:CommentatorFrameDocumentation.lua
    type TrackedSpellsResult = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type TradeskillOrderDuration = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type TradeskillOrderRecipient = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type TradeskillOrderStatus = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type TradeskillRecipeType = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type TradeskillRelativeDifficulty = number
 
+   -- blizzard:TradeSkillUITypesDocumentation.lua
    type TradeskillSlotDataType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitCombatConfigFlags = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitCondFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitConditionType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitConfigDbState = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitConfigType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitCurrencyFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitCurrencyType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitDefinitionSubType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitEdgeType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitEdgeVisualStyle = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitNodeEntryType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitNodeFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitNodeGroupFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitNodeType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitPointsOperationType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitSystemFlag = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitSystemVariationType = number
 
+   -- blizzard:TraitConstantsDocumentation.lua
    type TraitTreeFlag = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type TransformManipulatorAxis = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type TransformManipulatorControlState = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type TransformManipulatorDirection = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type TransformManipulatorEvent = number
 
+   -- blizzard:TransformManipulatorConstantsDocumentation.lua
    type TransformManipulatorMode = number
 
+   -- blizzard:TransmogItemsDocumentation.lua
    type TransmogCameraVariation = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type TransmogCollectionType = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type TransmogIllusionFlags = number
 
+   -- questie:Type/Mixin.lua
    type TransmogLocation = TransmogLocationType
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type TransmogModification = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitCostModifiersApplied = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitDataFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitDisplayType = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitEntryFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitEntrySource = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitEquipAction = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSetType = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlot = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotError = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotOption = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotOptionFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotOptionSheatheCategory = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotPosition = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotSaveFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitSlotWarning = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitTransactionFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogOutfitTransactionType = number
 
+   -- questie:Type/Mixin.lua
    type TransmogPendingInfo = TransmogPendingInfoMixin
 
+   -- blizzard:TransmogDocumentation.lua
    type TransmogPendingType = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type TransmogSearchType = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogSituation = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogSituationFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogSituationGroupFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogSituationTrigger = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogSituationTriggerFlags = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogSituationTriggerType = number
 
+   -- blizzard:TransmogConstantsDocumentation.lua
    type TransmogSlot = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type TransmogSource = number
 
+   -- blizzard:TransmogOutfitConstantsDocumentation.lua
    type TransmogTimeOfDayCategory = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type TransmogType = number
 
+   -- blizzard:TransmogSharedDocumentation.lua
    type TransmogUseErrorType = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type TtsBoolSetting = number
 
+   -- blizzard:ChatConstantsDocumentation.lua
    type TtsVoiceType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type TugOfWarMarkerArrowShownState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type TugOfWarStyleValue = number
 
+   -- blizzard:KeyBindingsDocumentation.lua
    type TurnStrafeStyle = number
 
+   -- blizzard:UIActionConstantsDocumentation.lua
    type UIActionType = number
 
+   -- blizzard:UICovenantDisplayInfoConstantsDocumentation.lua
    type UICovenantDisplayInfoFlags = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type UICursorType = number
 
+   -- blizzard:UIFrameManagerDocumentation.lua
    type UIFrameType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type UIItemInteractionFlags = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type UIItemInteractionType = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type UIMapFlag = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type UIMapGroupFlag = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type UIMapSystem = number
 
+   -- blizzard:MapConstantsDocumentation.lua
    type UIMapType = number
 
+   -- blizzard:UIModelInfoSharedDocumentation.lua
    type UIModelSceneActorFlag = number
 
+   -- blizzard:UiModelSceneConstantsDocumentation.lua
    type UIModelSceneContext = number
 
+   -- blizzard:UiModelSceneConstantsDocumentation.lua
    type UIModelSceneFlags = number
 
+   -- questie:Type/BlizzardType.lua
    type UISoundSubType = number
 
+   -- blizzard:UISystemVisibilityManagerDocumentation.lua
    type UISystemType = number
 
+   -- blizzard:UITextureConstantsDocumentation.lua
    type UITextureSliceMode = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetBlendModeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetButtonEnabledState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetButtonIconType = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type UIWidgetFlag = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetFontType = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type UIWidgetHorizontalDirection = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type UIWidgetLayoutDirection = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type UIWidgetModelSceneLayer = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetMotionType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetOverrideState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetRewardShownState = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type UIWidgetScale = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type UIWidgetSetLayoutDirection = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetSpellButtonCooldownType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetTextFormatType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetTextSizeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetTextureAndTextSizeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetTooltipLocation = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type UIWidgetUpdateAnimType = number
 
+   -- blizzard:UIWidgetManagerSharedDocumentation.lua
    type UIWidgetVisualizationType = number
 
+   -- blizzard:UnitAuraSharedDocumentation.lua
    type UnitAuraSortDirection = number
 
+   -- blizzard:UnitAuraSharedDocumentation.lua
    type UnitAuraSortRule = number
 
+   -- blizzard:UnitAuraConstantsDocumentation.lua
    type UnitAuraSoundTrigger = number
 
+   -- reviewed override
    type UnitCastBarID = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type UnitDamageAbsorbClampMode = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type UnitHealAbsorbClampMode = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type UnitHealAbsorbMode = number
 
+   -- questie:Type/Type.lua
    type UnitId = string
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type UnitIncomingHealClampMode = number
 
+   -- blizzard:UnitHealPredictionCalculatorSharedDocumentation.lua
    type UnitMaximumHealthMode = number
 
+   -- blizzard:PetConstantsDocumentation.lua
    type UnitMirrorPetFlags = number
 
+   -- blizzard:UnitSexConstantsDocumentation.lua
    type UnitSex = number
 
+   -- questie:Type/UnitToken.lua
    type UnitToken = string
 
+   -- questie:Type/UnitId.lua
    type UnitToken_base = Literal_0b53d6003782
 
+   -- questie:Type/UnitId.lua
    type UnitToken_boss = Literal_783b873487b5
 
+   -- questie:Type/UnitId.lua
    type UnitToken_group = Literal_5f8af3cbf148
 
+   -- questie:Type/UnitId.lua
    type UnitToken_nameplate = Literal_1749b34b7675
 
+   -- questie:Type/UnitId.lua
    type UnitToken_softtarget = Literal_32b7d7cf6025
 
+   -- questie:Type/UnitToken.lua
    type UnitTokenNamePlate = string
 
+   -- questie:Type/UnitToken.lua
    type UnitTokenPvPRestrictedForAddOns = string
 
+   -- questie:Type/UnitToken.lua
    type UnitTokenRestrictedForAddOns = string
 
+   -- Blizzard metadata primitive
    type UnitTokenType = string
 
+   -- Blizzard metadata primitive
    type UnitTokenVariant = string
 
+   -- blizzard:TextureUtilsDocumentation.lua
    type UrlTextureResult = number
 
+   -- blizzard:ValidateNameConstantsDocumentation.lua
    type ValidateNameResult = number
 
+   -- blizzard:BattlepayConstantsDocumentation.lua
    type VasTransactionPurchaseResult = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type ViewArenaSize = number
 
+   -- blizzard:EditModeManagerConstantsDocumentation.lua
    type ViewRaidSize = number
 
+   -- blizzard:VignetteConstantsDocumentation.lua
    type VignetteObjectiveType = number
 
+   -- blizzard:VignetteConstantsDocumentation.lua
    type VignetteType = number
 
+   -- blizzard:VisualAlertConstantsDocumentation.lua
    type VisualAlertType = number
 
+   -- Questie numeric enum name
    type Vocalerrorsounds = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type VoiceChannelErrorReason = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type VoiceChatStatusCode = number
 
+   -- blizzard:VoiceChatDocumentation.lua
    type VoiceTtsStatusCode = number
 
+   -- questie:Type/BlizzardType.lua
    type WOWGUID = string
 
+   -- questie:Type/BlizzardType.lua
    type WOWMONEY = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandEventState = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandGroupFlags = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandPlacementDisplayInfoType = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandSceneAnimationEvent = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandSceneAnimationSheatheState = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandSceneAnimationStandState = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandSceneAnimationStandStateFlags = number
 
+   -- blizzard:WarbandSceneInfoConstantsDocumentation.lua
    type WarbandSceneFlags = number
 
+   -- blizzard:CharacterSelectionConstantsDocumentation.lua
    type WarbandScenePlacementType = number
 
+   -- blizzard:ItemConstantsDocumentation.lua
    type WeaponSlot = number
 
+   -- blizzard:WeatherConstantsDocumentation.lua
    type WeatherType = number
 
+   -- Questie numeric enum name
    type WeeklyRewardChestThresholdType = number
 
+   -- questie:Type/BlizzardType.lua
    type WeeklyRewardItemDBID = string
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetAnimationType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetCurrencyClass = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetEnabledState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetGlowAnimType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetIconSizeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetIconSourceType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetOpacityType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetShowGlowState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetShownState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetTextHorizontalAlignmentType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type WidgetUnitPowerBarFlashMomentType = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type WoWClientCursorSize = number
 
+   -- blizzard:WowEntitlementInfoDocumentation.lua
    type WoWEntitlementType = number
 
+   -- blizzard:CursorConstDocumentation.lua
    type WorldCursorAnchorType = number
 
+   -- blizzard:WorldElapsedTimerConstantsDocumentation.lua
    type WorldElapsedTimerTypes = number
 
+   -- blizzard:QuestLogDocumentation.lua
    type WorldQuestQuality = number
 
+   -- blizzard:DelvesConstantsDocumentation.lua
    type WorldTierDifficulty = number
 
+   -- questie:Type/Type.lua
    type WowEvent = string
 
+   -- questie:Widget/UIType/UIType.lua
    type WrapMode = Literal_61586155aabd
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ZoneControlActiveState = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ZoneControlDangerFlashType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ZoneControlFillType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ZoneControlLeadingEdgeType = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ZoneControlMode = number
 
+   -- blizzard:UIWidgetManagerDocumentation.lua
    type ZoneControlState = number
 
+   -- Blizzard metadata primitive
    type bool = boolean
 
+   -- Blizzard metadata primitive
    type cstring = string
 
+   -- Lua 5.1 numeric asset-ID carrier; native ID validation still applies
    type fileID = number
 
+   -- reviewed override
    type kstringAuroraName = string
 
+   -- questie:Type/BlizzardType.lua
    type kstringClubMessage = string
 
+   -- questie:Type/BlizzardType.lua
    type kstringLfgListApplicant = string
 
+   -- questie:Type/BlizzardType.lua
    type kstringLfgListSearch = string
 
+   -- questie:Type/BlizzardType.lua
    type luaFunction = W.Data
 
+   -- Blizzard metadata primitive
    type luaIndex = number
 
+   -- questie:Widget/UIType/UIType.lua
    type mouseButton = Literal_b7e0de2fb994
 
+   -- questie:Type/BlizzardType.lua
    type normalizedValue = number
 
+   -- questie:Type/BlizzardType.lua
    type size = number
 
+   -- questie:Type/BlizzardType.lua
    type stringView = string
 
+   -- questie:Type/BlizzardType.lua
    type textureAtlas = string
 
+   -- questie:Type/BlizzardType.lua
    type textureKit = string
 
+   -- questie:Type/BlizzardType.lua
    type time_t = number
 
+   -- questie:Type/BlizzardType.lua
    type uiAddon = string | number
 
+   -- questie:Type/BlizzardType.lua
    type uiFontHeight = number
 
+   -- questie:Type/BlizzardType.lua
    type uiUnit = number
 
+   -- questie:Type/Mixin.lua
    type vector2 = Vector2DMixin
 
+   -- questie:Type/Mixin.lua
    type vector3 = Vector3DMixin
 
    type Global_ACCOUNT_WIDE_FONT_COLOR = ColorMixin

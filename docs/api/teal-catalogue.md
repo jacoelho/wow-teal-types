@@ -263,7 +263,9 @@ remain outside this static claim.
   `colorRGBA`, so every `ColorMixin` field is `MaybeSecret<number>`, including
   static constants such as `RAID_CLASS_COLORS[class].r` and
   `GRAY_FONT_COLOR.r`. Arithmetic on them needs the access checks and an `as`
-  unwrap.
+  unwrap. A curve point that is a number or a colour is
+  `MaybeSecret<number> | colorRGBA`: only the primitive member is wrapped, and
+  the colour carries its secrecy in its fields.
   Rejected alternative: a separate plain colour type for FrameXML constants.
   Derived types inherit their base's secrecy, so it would have to duplicate
   `ColorMixin` instead of extending it, and it could not be passed where

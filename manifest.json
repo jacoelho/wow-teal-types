@@ -13,9 +13,9 @@
     "tools/check_runtime_imports.lua": "d522280bcffffe110b18f889e7bd8c5c56070233d3c448dd2667d46083a906c2",
     "tools/check_secrets.lua": "83d924c65566ed1661fbc28f1f72d87fe076db261584c94124504ce251922ef7",
     "tools/wow-teal/main.go": "2ca06d90d252482b62403c7cd61526b2bf2c3ba1358e31b44e224fbcca22159f",
-    "types/wow/call_policy.lua": "2358800143e1961bdfd33be5aafc9456d4113cda22ab82db8437caaaf854b3ba",
+    "types/wow/call_policy.lua": "f4ce607059d427efa73d7a7d8aa0760dd03dc5f3b1173128a45c2df71eaa7d4f",
     "types/wow/native_values.d.tl": "04d41293a124d7546d842f22b9068704d4d4ceb904571516118bdecc90e4e251",
-    "types/wow/wow.d.tl": "374c2b242d8e70a982e8f8d65e10eeb1849af27dda55bf3feeeb5f8f311e1de3",
+    "types/wow/wow.d.tl": "65adaff6498a5183da74542dcf3aab78753701ee9b07b6fcdc451883da4d2344",
     "types/wow/wow_env.d.tl": "9138d91e0e535519dd25943d75a1c9294259a7dd43351ca0781952deefa6cec7",
     "types/wow/wow_secure_env.d.tl": "d56153d08736c12594cbd76dd136fe2b4940694d37964d318b0d33a02d5f75d9"
   },

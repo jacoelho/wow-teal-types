@@ -94,3 +94,36 @@ func TestMultilineSignaturesCannotShiftPolicyOrigins(t *testing.T) {
 		})
 	}
 }
+
+// Each declaration's source comment directly precedes it, whichever pass
+// renders the declaration.
+func TestSourceCommentsPrecedeTheirDeclarations(t *testing.T) {
+	c := newCatalogue()
+	c.setDef("E", &catalogueDefinition{Kind: kindEnum, Values: []string{`"a"`}, Source: "src-enum"})
+	c.setDef("Cb", &catalogueDefinition{Kind: kindCallback, Signature: "function(number): number", Source: "src-callback"})
+	c.aliases["A"] = &catalogueAlias{Expression: "string | number", Source: "src-alias"}
+	c.record("R", "src-record", kindRecord)
+	c.record("I", "src-interface", kindInterface)
+	projection, err := c.finalize(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	lines := strings.Split(string(projection.render()["wow.d.tl"]), "\n")
+	for source, declaration := range map[string]string{
+		"src-enum": "   enum E", "src-callback": "   type Cb", "src-alias": "   type A =",
+		"src-record": "   record R", "src-interface": "   interface I",
+	} {
+		found := 0
+		for i, line := range lines {
+			if line == "   -- "+source {
+				found++
+				if i+1 == len(lines) || !strings.HasPrefix(lines[i+1], declaration) {
+					t.Errorf("-- %s is followed by %q; want %q", source, lines[min(i+1, len(lines)-1)], declaration)
+				}
+			}
+		}
+		if found != 1 {
+			t.Errorf("-- %s appears %d times; want once", source, found)
+		}
+	}
+}
