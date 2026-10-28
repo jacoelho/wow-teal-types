@@ -90,7 +90,7 @@ func generateCandidate(ctx context.Context, root, runDir string, selected consum
 	if e = writeCandidateArtifacts(target, metadata); e != nil {
 		return "", nil, e
 	}
-	example := consumer.Selection{Sources: []string{filepath.Join(target, "examples/minimal")}}
+	example := consumer.Selection{Sources: []string{filepath.Join(target, "examples/WowTealExample/src")}}
 	checks := []struct {
 		name string
 		run  func(io.Writer) error

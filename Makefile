@@ -8,7 +8,7 @@ test:
 	GOTOOLCHAIN=local GOWORK=off go test -C tools/cdn ./...
 
 example:
-	bin/wow-teal build examples/minimal --output build/WowTealExample
+	bin/wow-teal build examples/WowTealExample/src --output examples/WowTealExample/build
 
 package:
 	bin/wow-teal package

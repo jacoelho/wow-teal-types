@@ -27,7 +27,7 @@ func metadataFixture(t *testing.T) string {
 		}
 		fixtureFile(t, root, name, data)
 	}
-	for _, name := range append(consumer.RequiredFiles(), consumer.ManifestFile, "LICENSE", "README.md", "examples/minimal/WowTealExample.toc", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json") {
+	for _, name := range append(consumer.RequiredFiles(), consumer.ManifestFile, "LICENSE", "README.md", "examples/WowTealExample/WowTealExample.toc", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json") {
 		copyFile(name)
 	}
 	return root
@@ -88,14 +88,15 @@ func TestMetadataComparisonRejectsStaleFilesWithoutRefresh(t *testing.T) {
 	if err = compareArtifacts(root, artifacts); err != nil {
 		t.Fatal(err)
 	}
-	stale := strings.Replace(string(artifacts["README.md"]), "Targets Retail **12.1.5.70575**", "Targets Retail **12.1.5.70574**", 1)
-	fixtureFile(t, root, "README.md", []byte(stale))
+	toc := "examples/WowTealExample/WowTealExample.toc"
+	stale := strings.Replace(string(artifacts[toc]), "## Interface: 120105", "## Interface: 120104", 1)
+	fixtureFile(t, root, toc, []byte(stale))
 	before := metadataInputs(t, root)
 	artifacts, err = prepareMetadata(root)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = compareArtifacts(root, artifacts); err == nil || !strings.Contains(err.Error(), "stale generated output: README.md") {
+	if err = compareArtifacts(root, artifacts); err == nil || !strings.Contains(err.Error(), "stale generated output: "+toc) {
 		t.Fatalf("expected stale metadata, got %v", err)
 	}
 	if !maps.Equal(before, metadataInputs(t, root)) {

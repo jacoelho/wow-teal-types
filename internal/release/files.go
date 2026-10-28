@@ -147,8 +147,10 @@ func copyFile(src, dst string) error {
 }
 
 // unmaintainedDir names build and VCS directories that maintained-tree walks skip.
+// Example builds write to examples/WowTealExample/build, inside a maintained
+// directory; reading it would make a concurrent example build abort an update.
 func unmaintainedDir(name string) bool {
-	return name == "target" || name == ".git" || name == "__pycache__"
+	return name == "build" || name == "target" || name == ".git" || name == "__pycache__"
 }
 func copyDirectory(src, dst string) error {
 	total := int64(0)

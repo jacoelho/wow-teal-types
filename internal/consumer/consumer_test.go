@@ -259,7 +259,7 @@ RaidWarningFrame:OnEvent("CHAT_MSG_RAID_WARNING", "message", "sender")
 
 func TestRelocatedAddonBuildAndRepeat(t *testing.T) {
 	f := newAddon(t)
-	f.write(t, "WowTealExample.tl", fileText(t, filepath.Join(repositoryRoot(t), "examples/minimal/WowTealExample.tl")))
+	f.write(t, "WowTealExample.tl", fileText(t, filepath.Join(repositoryRoot(t), "examples/WowTealExample/src/WowTealExample.tl")))
 	writeTest(t, filepath.Join(f.project, "tlconfig.lua"), "error(\"ambient config must not run\")\n")
 	t.Setenv("TL_PATH", "/missing-and-untrusted/?.lua")
 	text := f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
@@ -528,7 +528,7 @@ func TestConsumerCLIUsesAddonWorkingDirectory(t *testing.T) {
 func TestConsumerPackageIsReproducibleAndExcludesProducer(t *testing.T) {
 	f := newAddon(t)
 	repo := repositoryRoot(t)
-	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
+	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "examples/WowTealExample/src/WowTealExample.tl", "examples/WowTealExample/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
 		writeTest(t, filepath.Join(f.root, name), fileText(t, filepath.Join(repo, name)))
 	}
 	first, err := Package(f.root)

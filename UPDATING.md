@@ -16,7 +16,7 @@ external module dependencies.
 Generation acquires the selected client, prepares an isolated candidate, renders
 declarations and native call permissions, runs consumer checks, and repeats
 generation to verify determinism. Only a verified candidate replaces maintained
-outputs. Source locks, package hashes, README target, example TOC and recipe follow
+outputs. Source locks, package hashes, the example TOC interface and recipe follow
 the selected version. Package and compiler versions remain separate.
 
 Annotation revisions stay pinned until explicitly changed. Concurrent updates and

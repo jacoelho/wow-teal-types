@@ -42,12 +42,12 @@ jobs:
           - name: CDN tests
             run: GOTOOLCHAIN=local go test -C tools/cdn ./...
 
-      # Each branch writes its own outputs: build/WowTealExample and dist/, or
+      # Each branch writes its own outputs: examples/WowTealExample/build and dist/, or
       # build/rockspecs/.
       - parallel:
           - name: Consumer archive
             run: |
-              bin/wow-teal build examples/minimal --output build/WowTealExample
+              bin/wow-teal build examples/WowTealExample/src --output examples/WowTealExample/build
               scripts/check-consumer-archive.sh
 
           - name: Rockspecs

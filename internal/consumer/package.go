@@ -22,7 +22,7 @@ func Package(root string) (PackageResult, error) {
 	for name := range manifest.Files {
 		names[name] = true
 	}
-	for _, name := range []string{ManifestFile, "LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "check-all.sh", "Makefile", "rockspecs/wow-tl-type-" + manifest.Version + "-1.rockspec.in"} {
+	for _, name := range []string{ManifestFile, "LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "examples/WowTealExample/src/WowTealExample.tl", "examples/WowTealExample/WowTealExample.toc", "check-all.sh", "Makefile", "rockspecs/wow-tl-type-" + manifest.Version + "-1.rockspec.in"} {
 		names[name] = true
 	}
 	// Tests exercise the same consumer closure without importing producer packages.
@@ -180,7 +180,7 @@ test:
 	GOTOOLCHAIN=local GOWORK=off go test ./...
 
 example:
-	bin/wow-teal build examples/minimal --output build/WowTealExample
+	bin/wow-teal build examples/WowTealExample/src --output examples/WowTealExample/build
 
 package:
 	bin/wow-teal package

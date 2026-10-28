@@ -5,7 +5,7 @@
     "go.mod": "1a80d9449738d1e1c136f56a1828a6a70a785fbc797b348ad083210d1339b43e",
     "internal/consumer/consumer.go": "ba8062995cbd93936d37dde175249f271ee54bd9045f5ef33eb0a11658ac12ef",
     "internal/consumer/files.go": "a5300b826134cd37d0aac0493c2eeeec90c78652956756dcea3aaf8b0055e309",
-    "internal/consumer/package.go": "f2b471b751200d64d4b4e97d29670ffd9373254c8f2eb8dd134300ba912da695",
+    "internal/consumer/package.go": "9fd712865fdb2fe5ea07d7b12e157de7e6a12cb6b782cd8ad8a81e7629b3ad4b",
     "internal/consumer/rockspec.go": "62f239bca939fae2721f8192720b47d27650ec487f863d3a227c434eb49c9133",
     "internal/consumer/schema.go": "de4bcb9001142acdb0647d8ccc767fb25e724281cab6ea6450f2a77b7b6e56c7",
     "internal/consumer/snapshot.go": "466881cdacf3de793d1a3ddf9cbe474c710021f9776cba027527be68817a30ec",

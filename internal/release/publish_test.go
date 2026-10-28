@@ -22,7 +22,7 @@ func fixtureFile(t *testing.T, root, name string, b []byte) {
 }
 
 // fixtureOutputs are the candidate outputs a publication fixture derives.
-var fixtureOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", consumer.ManifestFile, "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
+var fixtureOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "examples/WowTealExample/WowTealExample.toc", consumer.ManifestFile, "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
 
 func publicationFixture(t *testing.T) (string, string, string) {
 	t.Helper()

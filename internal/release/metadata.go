@@ -69,19 +69,11 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 		}
 		return sourcelock.ReadRegular(path, maxPayload)
 	}
-	data, err := read("README.md")
+	data, err := read("examples/WowTealExample/WowTealExample.toc")
 	if err != nil {
 		return nil, err
 	}
-	outputs["README.md"], err = replaceOnce(data, `(?m)^Targets Retail \*\*[^*\r\n]+\*\*`, "Targets Retail **"+selected.Full+"**", "README target-version line")
-	if err != nil {
-		return nil, err
-	}
-	data, err = read("examples/minimal/WowTealExample.toc")
-	if err != nil {
-		return nil, err
-	}
-	outputs["examples/minimal/WowTealExample.toc"], err = replaceOnce(data, `(?m)^## Interface: [^\r\n]+`, fmt.Sprintf("## Interface: %d", selected.Interface), "example TOC interface line")
+	outputs["examples/WowTealExample/WowTealExample.toc"], err = replaceOnce(data, `(?m)^## Interface: [^\r\n]+`, fmt.Sprintf("## Interface: %d", selected.Interface), "example TOC interface line")
 	if err != nil {
 		return nil, err
 	}
