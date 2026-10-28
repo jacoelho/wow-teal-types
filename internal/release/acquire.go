@@ -549,6 +549,7 @@ func normalized(b []byte, count int) []byte {
 	base := bytes.TrimRight(bytes.ReplaceAll(b, []byte("\r\n"), []byte("\n")), "\n")
 	return append(append([]byte{}, base...), bytes.Repeat([]byte("\n"), count)...)
 }
+
 // lockedBytes returns b in the locked representation: unchanged, or with
 // normalized line endings and a final-newline count the lock records.
 func lockedBytes(b []byte, row sourcelock.SourceFile) ([]byte, bool) {
