@@ -339,10 +339,12 @@ types whose base chain reaches its base type, and keeps the native contract of
 the factory for every narrowed overload. `CreateFrame` declares a reviewed
 generic signature, because its source annotation selects the result through a
 string-dependent generic that Teal cannot express. A native-backed factory
-cannot declare one: its fallback is the native signature, and its overload
-pattern must match the native parameters position by position, with literal
-placeholders only where the native takes a string. Native secret permissions
-are granted by position, so this keeps each permission on its own parameter.
+cannot declare one or carry a reviewed signature: its fallback is the native
+signature, and its overload pattern must match the native parameters position
+by position, with literal placeholders only where the native takes a string. A
+template placeholder needs an optional string, because overloads without a
+template leave it optional. Native secret permissions are granted by position,
+so this keeps each permission on its own parameter.
 
 `SetFormattedText` accepts `string | number` format arguments after the format
 string; native metadata omits them. They share the method's secret permission:

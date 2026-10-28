@@ -158,22 +158,30 @@ func TestLiteralFactoryPatternMustMatchNativeParameters(t *testing.T) {
 	for _, test := range []struct {
 		name      string
 		arguments []nativeParameter
+		reviewed  string // a native_contracts signature on the factory
 		factory   literalFactoryOverride
 		reject    string // "" accepts
 		policy    string
+		templated bool // the accepted factory renders a Tpl overload of A
 	}{
-		{name: "more than the native", arguments: []nativeParameter{str}, reject: "Factory.Make", factory: literalFactoryOverride{
+		{name: "more than the native", arguments: []nativeParameter{str}, reject: "does not match native parameters", factory: literalFactoryOverride{
 			Overload: "function(self, {type}, {template}): {result}", Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"A"}}}}},
-		{name: "fewer than the native", arguments: []nativeParameter{str, str}, reject: "Factory.Make", factory: literalFactoryOverride{
+		{name: "fewer than the native", arguments: []nativeParameter{str, str}, reject: "does not match native parameters", factory: literalFactoryOverride{
 			Overload: "function(self, {type}): {result}"}},
-		{name: "placeholder over a non-string native", arguments: []nativeParameter{count, str}, reject: "Factory.Make", factory: literalFactoryOverride{
+		{name: "placeholder over a non-string native", arguments: []nativeParameter{count, str}, reject: "parameter 2 is {type}, native parameter is W.MaybeSecret<number>", factory: literalFactoryOverride{
 			Overload: "function(self, {type}, W.MaybeSecret<string>): {result}"}},
-		{name: "parameter differs from the native", arguments: []nativeParameter{str, flag}, reject: "Factory.Make", factory: literalFactoryOverride{
+		{name: "parameter differs from the native", arguments: []nativeParameter{str, flag}, reject: "parameter 3 is string, native parameter is W.MaybeSecret<boolean>", factory: literalFactoryOverride{
 			Overload: "function(self, {type}, string): {result}"}},
+		{name: "template over a required native string", arguments: []nativeParameter{str, str}, reject: "parameter 3 is {template}, native parameter is W.MaybeSecret<string>", factory: literalFactoryOverride{
+			Overload: "function(self, {type}, {template}): {result}", Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"A"}}}}},
+		{name: "reviewed signature on a native-backed factory", arguments: []nativeParameter{str, optional}, reviewed: "function(self, number): Widget", reject: "reviewed signature", factory: literalFactoryOverride{
+			Overload: "function(self, {type}, {template}): {result}", Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"A"}}}}},
 		{name: "generic on a native-backed factory", arguments: []nativeParameter{str, optional}, reject: "cannot declare a generic fallback", factory: literalFactoryOverride{
 			Generic: "function(self, string, ? string): Widget", Overload: "function(self, {type}, ? W.MaybeSecret<string>): {result}"}},
 		{name: "placeholder over a nilable native string", arguments: []nativeParameter{str, optional}, policy: "secret_parameters = {2, 3}", factory: literalFactoryOverride{
 			Overload: "function(self, W.MaybeSecret<string>, {type}): {result}"}},
+		{name: "template over a nilable native string", arguments: []nativeParameter{str, optional}, policy: "secret_parameters = {2, 3}", templated: true, factory: literalFactoryOverride{
+			Overload: "function(self, {type}, {template}): {result}", Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"A"}}}}},
 		{name: "parameter equal to the native", arguments: []nativeParameter{str, count}, policy: "secret_parameters = {2, 3}", factory: literalFactoryOverride{
 			Overload: "function(self, {type}, W.MaybeSecret<number>): {result}"}},
 	} {
@@ -182,11 +190,15 @@ func TestLiteralFactoryPatternMustMatchNativeParameters(t *testing.T) {
 			c.record("Widget", "fixture", kindRecord)
 			c.record("A", "fixture", kindRecord).Bases = []string{"Widget"}
 			c.record("Tpl", "fixture", kindInterface)
-			c.record("Factory", "fixture", kindRecord).Methods["Make"] = &catalogueFunction{Source: "fixture", Method: true, Native: &nativeFunction{
+			made := &catalogueFunction{Source: "fixture", Method: true, Native: &nativeFunction{
 				Arguments: test.arguments,
 				Returns:   []nativeParameter{{Name: "made", Type: "Widget"}},
 				Policy:    nativePolicy{SecretArguments: new("AllowedWhenTainted")},
 			}}
+			if test.reviewed != "" {
+				made.ResolvedSignature = new(test.reviewed)
+			}
+			c.record("Factory", "fixture", kindRecord).Methods["Make"] = made
 			factory := test.factory
 			factory.Symbol, factory.Base, factory.Types = "Factory.Make", "Widget", []string{"A"}
 			var projection declarationProjection
@@ -206,8 +218,20 @@ func TestLiteralFactoryPatternMustMatchNativeParameters(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if policy := string(projection.render()["call_policy.lua"]); strings.Count(policy, test.policy) != 2 {
-				t.Errorf("want the narrowed overload and the fallback to carry %s:\n%s", test.policy, policy)
+			outputs := projection.render()
+			if policy := string(outputs["call_policy.lua"]); strings.Count(policy, test.policy) < 2 || strings.Count(policy, test.policy) != strings.Count(policy, `symbol = "Factory.Make"`) {
+				t.Errorf("want every Factory.Make overload, including the fallback, to carry %s:\n%s", test.policy, policy)
+			}
+			if test.templated {
+				literal := func(value string) string { return c.literal([]string{value}) }
+				for _, want := range []string{
+					"function(self, " + literal("A") + ", " + literal("Tpl") + "): A_Tpl",
+					"function(self, " + literal("A") + ", ? string): A",
+				} {
+					if !strings.Contains(string(outputs["wow.d.tl"]), "\n      Make: "+want+"\n") {
+						t.Errorf("missing overload %s", want)
+					}
+				}
 			}
 		})
 	}

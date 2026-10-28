@@ -370,7 +370,13 @@ func (c *catalogue) applyLiteralFactory(factory literalFactoryOverride) {
 // native parameters. Native permissions are granted by position, so a pattern
 // may only replace a native string parameter with a literal placeholder; every
 // other parameter must render exactly as the native does at that position.
+// {template} must sit over a nilable string, because overloads without a
+// template render it as one. A reviewed signature would stand in for the native
+// parameters, so a factory cannot carry one.
 func (c *catalogue) checkNativeFactoryParameters(symbol string, item *catalogueFunction, pattern string) {
+	if item.ResolvedSignature != nil {
+		reject(fmt.Sprintf("literal factory %s has a reviewed signature and cannot be checked against its native parameters", symbol))
+	}
 	reference := item.clone()
 	reference.Variants = nil
 	native := c.signatureValue(reference, "")
@@ -380,8 +386,8 @@ func (c *catalogue) checkNativeFactoryParameters(symbol string, item *catalogueF
 		reject(fmt.Sprintf("literal factory %s overload %s does not match native parameters %s", symbol, pattern, native))
 	}
 	for i, parameter := range got {
-		native := strings.TrimPrefix(want[i], "? ")
-		literal := (parameter == "{type}" || parameter == "{template}") && (native == "string" || native == maybeSecretOf("string"))
+		native, nilable := strings.CutPrefix(want[i], "? ")
+		literal := (parameter == "{type}" || parameter == "{template}" && nilable) && (native == "string" || native == maybeSecretOf("string"))
 		if parameter != want[i] && !literal {
 			reject(fmt.Sprintf("literal factory %s overload parameter %d is %s, native parameter is %s", symbol, i+1, parameter, want[i]))
 		}
