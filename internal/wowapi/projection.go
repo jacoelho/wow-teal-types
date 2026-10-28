@@ -138,7 +138,7 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 	}
 	exports := map[string]bool{}
 	for _, name := range slices.Concat(slices.Collect(maps.Keys(c.defs)), slices.Collect(maps.Keys(c.aliases))) {
-		if slices.Contains(nativeValueExports, ident(name)) {
+		if isNativeValue(ident(name)) {
 			reject(fmt.Sprintf("catalogue type %s collides with a native value export", name))
 		}
 		exports[ident(name)] = true

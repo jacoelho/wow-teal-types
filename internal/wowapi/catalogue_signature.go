@@ -26,7 +26,7 @@ func (c *catalogue) projectSecret(expression string, position typePosition) stri
 		switch {
 		case member == "nil":
 			nilable = true
-		case member == "any" || member == secretDataType || strings.HasPrefix(member, "W.MaybeSecret<") || strings.HasPrefix(member, "W.Secret<"):
+		case member == "any" || member == secretDataType || strings.HasPrefix(member, maybeSecretPrefix) || strings.HasPrefix(member, secretPrefix):
 			kept = append(kept, member)
 		case member == dataType || primitive == "any" || strings.HasPrefix(member, "function"):
 			plain = append(plain, dataType)
@@ -39,7 +39,7 @@ func (c *catalogue) projectSecret(expression string, position typePosition) stri
 				kept = append(kept, secretTableType)
 			}
 		case c.isUserdata(name):
-			kept = append(kept, "W.Secret<"+member+">")
+			kept = append(kept, secretOf(member))
 		default:
 			kept = append(kept, member)
 		}
@@ -56,10 +56,10 @@ func (c *catalogue) projectSecret(expression string, position typePosition) stri
 		// Secret<T> is invariant, so Secret<A | B> rejects Secret<A>; an input
 		// accepts each member's secret separately.
 		for _, member := range plain {
-			projected = append(projected, "W.MaybeSecret<"+member+">")
+			projected = append(projected, maybeSecretOf(member))
 		}
 	} else if len(plain) > 0 {
-		projected = append(projected, "W.MaybeSecret<"+strings.Join(plain, " | ")+">")
+		projected = append(projected, maybeSecretOf(strings.Join(plain, " | ")))
 	}
 	projected = append(projected, uniqueStrings(kept)...)
 	if nilable {
@@ -134,7 +134,7 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 			}
 			value := c.nativeTypeValue(argument, acceptsSecret && c.primitive(raw) != "", inputPosition)
 			if acceptsSecret && slices.Contains([]string{"TextureAsset", "TextureAssetDisk"}, raw) {
-				value += " | W.Secret<number>"
+				value += " | " + secretOf("number")
 			}
 			if enabled(argument.Nilable) || argument.HasDefault {
 				value = "? " + strings.TrimSuffix(value, " | nil")

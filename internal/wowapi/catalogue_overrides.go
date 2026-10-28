@@ -435,5 +435,5 @@ func (c *catalogue) applySecureCallContracts() {
 		reject("review changed securecall callback/name contract")
 	}
 	argument.Type = members[1]
-	item.Variants = append(item.Variants, &catalogueFunction{ResolvedSignature: new("function(string, any...): W.Data..."), Source: item.Source})
+	item.Variants = append(item.Variants, &catalogueFunction{ResolvedSignature: new("function(string, any...): " + dataType + "..."), Source: item.Source})
 }

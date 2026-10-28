@@ -84,8 +84,8 @@ func (p declarationProjection) render() map[string][]byte {
 	for _, global := range p.globals {
 		wow.signature("   type Global_"+ident(global.name)+" = ", global.expression, global.policy)
 	}
-	for _, name := range nativeValueExports {
-		wow.append("   type " + name + nativeValueParameters[name] + " = W." + name + nativeValueParameters[name])
+	for _, v := range nativeValues {
+		wow.append("   type " + v.name + v.parameters + " = W." + v.name + v.parameters)
 	}
 	wow.append("end", "", "return CatalogueTypes")
 	files := map[string][]byte{"wow.d.tl": wow.bytes()}
@@ -118,12 +118,6 @@ func aliasLine(declaration projectedDeclaration) string {
 	}
 	return "   type " + declaration.name + parameters + " = " + declaration.expression
 }
-
-// nativeValueExports are the native_values.d.tl types re-exported by wow, so
-// generated environment files and addons name them through the wow module.
-var nativeValueExports = []string{"Data", "Atom", "SecretData", "SecretTable", "MaybeSecret", "Secret"}
-
-var nativeValueParameters = map[string]string{"MaybeSecret": "<T>", "Secret": "<T>"}
 
 var qualifyName = regexp.MustCompile(`[A-Za-z_]\w*`)
 

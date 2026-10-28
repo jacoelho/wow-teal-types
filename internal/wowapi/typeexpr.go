@@ -223,12 +223,28 @@ const (
 	outputPosition
 )
 
-// Native value types re-exported from native_values.d.tl through W.
+// nativeValue is a native_values.d.tl type that wow re-exports, so generated
+// environment files and addons name it through the W alias of the wow module.
+type nativeValue struct{ name, parameters string }
+
+// nativeValues are every re-exported native value type, in declaration order.
+var nativeValues = []nativeValue{{"Data", ""}, {"Atom", ""}, {"SecretData", ""}, {"SecretTable", ""}, {"MaybeSecret", "<T>"}, {"Secret", "<T>"}}
+
+func isNativeValue(name string) bool {
+	return slices.ContainsFunc(nativeValues, func(v nativeValue) bool { return v.name == name })
+}
+
+// Generated spellings of the native value types.
 const (
-	dataType        = "W.Data"
-	secretDataType  = "W.SecretData"
-	secretTableType = "W.Secret<W.SecretTable>"
+	dataType          = "W.Data"
+	secretDataType    = "W.SecretData"
+	secretTableType   = "W.Secret<W.SecretTable>"
+	secretPrefix      = "W.Secret<"
+	maybeSecretPrefix = "W.MaybeSecret<"
 )
+
+func secretOf(t string) string      { return secretPrefix + t + ">" }
+func maybeSecretOf(t string) string { return maybeSecretPrefix + t + ">" }
 
 func (p typePosition) flip() typePosition {
 	if p == inputPosition {
