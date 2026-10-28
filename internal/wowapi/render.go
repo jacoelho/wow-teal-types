@@ -63,14 +63,14 @@ func (p declarationProjection) render() map[string][]byte {
 				wow.append("      is " + strings.Join(declaration.bases, ", "))
 			}
 			for _, field := range declaration.fields {
-				wow.append("      " + field.name + ": " + field.expression)
+				wow.append("      " + field.name + ": " + string(field.expression))
 			}
 			for _, method := range declaration.methods {
 				if method.restrictions != "" {
 					wow.append("      -- " + method.restrictions)
 				}
 				for _, signature := range method.signatures {
-					wow.signature("      "+method.name+": ", signature.expression, signature.policy)
+					wow.signature("      "+method.name+": ", string(signature.expression), signature.policy)
 				}
 			}
 			wow.append("   end", "")
@@ -82,7 +82,7 @@ func (p declarationProjection) render() map[string][]byte {
 		}
 	}
 	for _, global := range p.globals {
-		wow.signature("   type Global_"+ident(global.name)+" = ", global.expression, global.policy)
+		wow.signature("   type Global_"+ident(global.name)+" = ", string(global.expression), global.policy)
 	}
 	for _, v := range nativeValues {
 		wow.append("   type " + v.name + v.parameters + " = W." + v.name + v.parameters)
@@ -116,7 +116,7 @@ func aliasLine(declaration projectedDeclaration) string {
 	if len(declaration.generics) > 0 {
 		parameters = "<" + strings.Join(declaration.generics, ", ") + ">"
 	}
-	return "   type " + declaration.name + parameters + " = " + declaration.expression
+	return "   type " + declaration.name + parameters + " = " + string(declaration.expression)
 }
 
 var qualifyName = regexp.MustCompile(`[A-Za-z_]\w*`)

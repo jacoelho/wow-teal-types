@@ -20,13 +20,21 @@ const (
 	declarationInterface
 )
 
+// projectedType is a generated type expression in its declared form: nil
+// union members are removed (see omitNil). Overload identity and rendering
+// both use this form, so variants that differ only by nil are one overload.
+type projectedType string
+
+func projectType(expression string) projectedType { return projectedType(omitNil(expression)) }
+
 type projectedSignature struct {
-	expression string
+	expression projectedType
 	policy     *callPolicy
 }
 
 type projectedField struct {
-	name, expression string
+	name       string
+	expression projectedType
 }
 type projectedMethod struct {
 	name, restrictions string
@@ -35,16 +43,17 @@ type projectedMethod struct {
 type projectedDeclaration struct {
 	kind             declarationKind
 	name, source     string
-	expression       string
+	expression       projectedType
 	generics, values []string
 	bases            []string
 	fields           []projectedField
 	methods          []projectedMethod
 }
 type projectedGlobal struct {
-	name, expression, ambientExpression string
-	policy                              *callPolicy
-	public                              bool
+	name, ambientExpression string
+	expression              projectedType
+	policy                  *callPolicy
+	public                  bool
 }
 
 // declarationProjection owns the normalized values consumed by rendering and
@@ -149,24 +158,22 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 				reject(fmt.Sprintf("unrepresentable global %s", name))
 			}
 			item := c.globals[name]
-			value := item.TypeName
-			if value != "" {
-				value = ident(value)
-			} else {
-				value = omitNil(c.signatureValue(item, ""))
+			value := projectedType(ident(item.TypeName))
+			if item.TypeName == "" {
+				value = projectType(c.signatureValue(item, ""))
 			}
 			global := projectedGlobal{name: name, expression: value, public: !slices.Contains([]string{"math", "string", "table"}, name) && !c.secureGlobals[name] && !strings.HasPrefix(item.Source, "questie:Libraries/")}
 			direct := value
-			if def := c.defs[value]; def != nil && def.Signature != "" {
-				direct = omitNil(def.Signature)
+			if def := c.defs[string(value)]; def != nil && def.Signature != "" {
+				direct = projectType(def.Signature)
 			}
-			if strings.HasPrefix(direct, "function") {
-				global.ambientExpression = qualifyExports(direct, exports)
+			if strings.HasPrefix(string(direct), "function") {
+				global.ambientExpression = qualifyExports(string(direct), exports)
 			} else {
 				global.ambientExpression = "W.Global_" + ident(name)
 			}
 			if item.TypeName == "" {
-				global.policy = c.signaturePolicy(item, name, value)
+				global.policy = c.signaturePolicy(item, name, string(value))
 			}
 			projection.globals = append(projection.globals, global)
 		})
@@ -219,9 +226,9 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 		}
 		declaration.kind, declaration.source = declarationAlias, alias.Source
 		if value := alias.Signature; value != nil {
-			declaration.expression = omitNil(c.signatureValue(value, ""))
+			declaration.expression = projectType(c.signatureValue(value, ""))
 		} else {
-			declaration.expression = omitNil(c.tealValue(alias.Expression, "", nil, outputPosition))
+			declaration.expression = projectType(c.tealValue(alias.Expression, "", nil, outputPosition))
 		}
 		return declaration, true
 	}
@@ -237,7 +244,7 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 		declaration.kind = declarationCallback
 		declaration.name = name
 		declaration.generics = slices.Clone(item.Generics)
-		declaration.expression = omitNil(item.Signature)
+		declaration.expression = projectType(item.Signature)
 	case kindRecord, kindInterface, kindConvertedRecord:
 		declaration.kind = declarationRecord
 		if kind == kindInterface {
@@ -273,7 +280,7 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 			if !plainIdentifier.MatchString(nameOfField) || tealKeywords[nameOfField] {
 				nameOfField = "[" + luaQuote(strings.Trim(nameOfField, "[]\"'")) + "]"
 			}
-			declaration.fields = append(declaration.fields, projectedField{name: nameOfField, expression: omitNil(expression)})
+			declaration.fields = append(declaration.fields, projectedField{name: nameOfField, expression: projectType(expression)})
 		}
 		for _, nameOfMethod := range slices.Sorted(maps.Keys(methods)) {
 			method := methods[nameOfMethod]

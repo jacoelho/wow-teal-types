@@ -28,11 +28,10 @@ func (p *callPolicy) equal(other *callPolicy) bool {
 
 func (c *catalogue) projectCallable(item *catalogueFunction, owner, symbol string) []projectedSignature {
 	out := []projectedSignature{}
-	seen := map[string]int{}
+	seen := map[projectedType]int{}
 	for _, choice := range c.signatureChoices(item, owner) {
-		// Variants that differ only by nil members are one overload.
-		expression := omitNil(choice.expression)
-		policy := c.signaturePolicy(choice.contract, symbol, expression)
+		expression := projectType(choice.expression)
+		policy := c.signaturePolicy(choice.contract, symbol, string(expression))
 		if index, ok := seen[expression]; ok {
 			if !out[index].policy.equal(policy) {
 				reject(fmt.Sprintf("ambiguous permissions for identical overload: %s", symbol))
