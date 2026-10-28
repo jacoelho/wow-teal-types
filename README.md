@@ -23,7 +23,7 @@ make example
 This checks [examples/WowTealExample/src](examples/WowTealExample/src) and
 writes `examples/WowTealExample/build/WowTealExample.lua`. The
 `examples/WowTealExample` folder is then a complete addon: link it into
-`Interface/AddOns` (see [Load it in WoW](#load-it-in-wow)) and it shows a
+`Interface/AddOns` (see [step 6](#6-load-it-in-wow)) and it shows a
 small panel with a health bar.
 
 ## Set up your addon
@@ -68,7 +68,7 @@ disappears from the generated Lua. There is no runtime `wow` module, so a plain
 
 ### 4. List the generated Lua in your TOC
 
-`MyAddon.toc` lists the compiled files, not the `.tl` sources:
+`MyAddon.toc` lists every compiled file, in load order, not the `.tl` sources:
 
 ```text
 ## Interface: <interface number>
@@ -93,6 +93,17 @@ vendor/wow-teal-types/bin/wow-teal build src --output build
 then writes Lua, keeping the directory structure: `src/Main.tl` →
 `build/Main.lua`, `src/ui/Panel.tl` → `build/ui/Panel.lua`. A failed build
 leaves the previous output in place.
+
+WoW has no `require`, and `wow-teal` rejects only runtime imports of its own
+declaration modules, so a runtime `require` of your own module type-checks but
+fails in game. Share code between files the WoW way:
+
+- **Types:** `local type Panel = require("ui.Panel")` imports types only and is
+  erased, like `wow`.
+- **Values:** use the addon namespace that WoW passes to every file
+  (`local _, ns = ...`), or globals you declare (see
+  [Addon globals](#addon-globals)).
+- List each generated file in the TOC so that a file loads after those it uses.
 
 ### 6. Load it in WoW
 

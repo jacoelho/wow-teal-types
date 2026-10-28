@@ -411,3 +411,52 @@ func TestRecoveryRejectsForeignJournalLocation(t *testing.T) {
 		})
 	}
 }
+
+// Build and cache directories under maintained directories are not update
+// inputs: an example build during an update neither aborts it nor reaches the
+// candidate workspace.
+func TestMaintainedWalksSkipBuildAndCacheDirectories(t *testing.T) {
+	root, next, run := publicationFixture(t)
+	source := "examples/WowTealExample/src/WowTealExample.tl"
+	fixtureFile(t, root, source, []byte("local x = 1\n"))
+	skipped := []string{"examples/WowTealExample/build", "examples/x/__pycache__", "internal/x/target"}
+	for _, dir := range skipped {
+		fixtureFile(t, root, dir+"/generated.lua", []byte("generated\n"))
+		// Maintained walks reject symlinks, so reaching one proves the walk entered.
+		if e := os.Symlink(filepath.Join(root, source), filepath.Join(root, dir, "link")); e != nil {
+			t.Fatal(e)
+		}
+	}
+	inputs, e := captureInputs(root)
+	if e != nil {
+		t.Fatal(e)
+	}
+	if _, ok := inputs[source]; !ok {
+		t.Fatalf("inputs omit maintained %s", source)
+	}
+	for name := range inputs {
+		for _, dir := range skipped {
+			if strings.HasPrefix(name, dir+"/") {
+				t.Errorf("inputs include %s", name)
+			}
+		}
+	}
+
+	workspace := filepath.Join(t.TempDir(), "workspace")
+	if e = copyMaintained(root, workspace); e != nil {
+		t.Fatal(e)
+	}
+	if b, e := os.ReadFile(filepath.Join(workspace, source)); e != nil || string(b) != "local x = 1\n" {
+		t.Fatalf("workspace %s = %q, %v", source, b, e)
+	}
+	for _, dir := range skipped {
+		if exists(filepath.Join(workspace, dir)) {
+			t.Errorf("workspace includes %s", dir)
+		}
+	}
+
+	fixtureFile(t, root, "examples/WowTealExample/build/generated.lua", []byte("rebuilt\n"))
+	if _, e = publish(t.Context(), root, next, run, fixtureOutputs, inputs, os.Rename); e != nil {
+		t.Fatalf("publish after an example rebuild: %v", e)
+	}
+}
