@@ -185,7 +185,7 @@ func TestVerifyUsesPackageWithoutCompiler(t *testing.T) {
 	f.verify(t, "package integrity mismatch")
 }
 
-func TestNativeFrameFactoryContracts(t *testing.T) {
+func TestNativeLiteralFactoryContracts(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Main.tl", `local type W = require("wow")
 local frame:W.Frame = CreateFrame("Frame")
@@ -200,6 +200,12 @@ backdropButton:Click()
 local kind:string = "Frame"
 local any:W.Frame = CreateFrame(kind)
 print(button, any)
+local group:W.AnimationGroup = frame:CreateAnimationGroup()
+local fade:W.Alpha = group:CreateAnimation("Alpha")
+local progress:W.RadialProgress = group:CreateAnimation("RadialProgress", "Named", "Template")
+local animation:string = "Alpha"
+local generic:W.Animation = group:CreateAnimation(animation)
+print(fade, progress, generic)
 `)
 	f.check(t, Selection{Sources: []string{f.source}}, "")
 	for _, test := range []struct{ source, reject string }{
@@ -210,6 +216,14 @@ local function construct(kind:string):W.StatusBar return CreateFrame(kind) end`,
 		// BackdropTemplate narrows only the listed frame types and exact template name.
 		{`CreateFrame("Cooldown", nil, nil, "BackdropTemplate"):SetBackdrop({})`, "SetBackdrop"},
 		{`CreateFrame("Frame", nil, nil, "OtherTemplate"):SetBackdrop({})`, "SetBackdrop"},
+		// Animation literals select the subtype exactly and case-sensitively;
+		// any other string yields only Animation.
+		{`local type W = require("wow")
+local fade:W.Alpha = CreateFrame("Frame"):CreateAnimationGroup():CreateAnimation("Scale")`, "Alpha"},
+		{`local type W = require("wow")
+local function construct(kind:string):W.Alpha return CreateFrame("Frame"):CreateAnimationGroup():CreateAnimation(kind) end`, "Alpha"},
+		{`local type W = require("wow")
+local fade:W.Alpha = CreateFrame("Frame"):CreateAnimationGroup():CreateAnimation("ALPHA")`, "Alpha"},
 	} {
 		f.write(t, "Main.tl", test.source)
 		f.check(t, Selection{Sources: []string{f.source}}, test.reject)

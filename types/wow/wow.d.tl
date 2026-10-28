@@ -204,6 +204,10 @@ local record CatalogueTypes
       "Model"
    end
 
+   enum Literal_0733e92fb285
+      "Translation"
+   end
+
    enum Literal_0839f8b7ee27
       "Alpha"
       "Animation"
@@ -227,6 +231,10 @@ local record CatalogueTypes
 
    enum Literal_0951f225dd42
       "QuestPOIFrame"
+   end
+
+   enum Literal_0a276f097cda
+      "Scale"
    end
 
    enum Literal_0b53d6003782
@@ -411,6 +419,10 @@ local record CatalogueTypes
       "OnExternalLink"
    end
 
+   enum Literal_35e64d0ac750
+      "LineTranslation"
+   end
+
    enum Literal_39d2acafc60a
       "HORIZONTAL"
       "VERTICAL"
@@ -490,8 +502,16 @@ local record CatalogueTypes
       "ModelScene"
    end
 
+   enum Literal_523360ace038
+      "TextureCoordTranslation"
+   end
+
    enum Literal_560997e63a80
       "ScrollFrame"
+   end
+
+   enum Literal_567e9c9b1c74
+      "Rotation"
    end
 
    enum Literal_56e4228fc780
@@ -850,6 +870,10 @@ local record CatalogueTypes
       "ColorSelect"
    end
 
+   enum Literal_959b44ebcdbd
+      "Alpha"
+   end
+
    enum Literal_95a18fa8a2fa
       "Button"
    end
@@ -915,6 +939,10 @@ local record CatalogueTypes
       "OnCooldownDone"
    end
 
+   enum Literal_a7a093b4a6c5
+      "FlipBook"
+   end
+
    enum Literal_a99fd297b3dc
       "LE_SCRIPT_BINDING_TYPE_EXTRINSIC"
       "LE_SCRIPT_BINDING_TYPE_INTRINSIC_POSTCALL"
@@ -944,6 +972,10 @@ local record CatalogueTypes
    enum Literal_b86caeddf0d0
       "NONE"
       "SMOOTH"
+   end
+
+   enum Literal_bcc5ca793eac
+      "LineScale"
    end
 
    enum Literal_bfcc1ce0f6be
@@ -1057,6 +1089,10 @@ local record CatalogueTypes
       "OnStop"
    end
 
+   enum Literal_e4c7e1d2ab4d
+      "Path"
+   end
+
    enum Literal_e757ffab7460
       "IN"
       "IN_OUT"
@@ -1082,6 +1118,10 @@ local record CatalogueTypes
 
    enum Literal_f30e5d98d4db
       "SimpleHTML"
+   end
+
+   enum Literal_f90ae02847e6
+      "VertexColor"
    end
 
    enum Literal_fa1b0bd6dc9b
@@ -1276,6 +1316,16 @@ local record CatalogueTypes
    interface AnimationGroup
       is Object
       -- {"ChecksForbiddenAspects": [{"Argument": "self", "Aspect": {"$ref": "Enum.ForbiddenAspect.AddAnimations"}}], "Environment": "All", "SecretArguments": "NotAllowed"}
+      CreateAnimation: function(self, Literal_959b44ebcdbd, ? string, ? string): Alpha
+      CreateAnimation: function(self, Literal_0a276f097cda, ? string, ? string): Scale
+      CreateAnimation: function(self, Literal_bcc5ca793eac, ? string, ? string): LineScale
+      CreateAnimation: function(self, Literal_0733e92fb285, ? string, ? string): Translation
+      CreateAnimation: function(self, Literal_35e64d0ac750, ? string, ? string): LineTranslation
+      CreateAnimation: function(self, Literal_567e9c9b1c74, ? string, ? string): Rotation
+      CreateAnimation: function(self, Literal_e4c7e1d2ab4d, ? string, ? string): Path
+      CreateAnimation: function(self, Literal_a7a093b4a6c5, ? string, ? string): FlipBook
+      CreateAnimation: function(self, Literal_523360ace038, ? string, ? string): TextureCoordTranslation
+      CreateAnimation: function(self, Literal_f90ae02847e6, ? string, ? string): VertexColor
       CreateAnimation: function(self, Literal_1969a2b6f35c, ? string, ? string): RadialProgress
       CreateAnimation: function(self, ? string, ? string, ? string): Animation
       -- {"Environment": "All"}
@@ -3871,7 +3921,7 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    interface Button_BackdropTemplate
       is Button, BackdropTemplate
    end
@@ -14826,7 +14876,7 @@ local record CatalogueTypes
 
    -- blizzard:CalendarConstantsDocumentation.lua
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    record Callable_CreateFrame
       metamethod __call: function(self, Literal_6545a2fa310a, ? string, ? Frame, Literal_6fb6981bef02, ? number): Frame_BackdropTemplate
       metamethod __call: function(self, Literal_95a18fa8a2fa, ? string, ? Frame, Literal_6fb6981bef02, ? number): Button_BackdropTemplate
@@ -15602,7 +15652,7 @@ local record CatalogueTypes
 
    -- blizzard:ChatConstantsDocumentation.lua
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    interface CheckButton_BackdropTemplate
       is CheckButton, BackdropTemplate
    end
@@ -18132,7 +18182,7 @@ local record CatalogueTypes
       is EditBox
    end
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    interface EditBox_BackdropTemplate
       is EditBox, BackdropTemplate
    end
@@ -40561,7 +40611,7 @@ local record CatalogueTypes
 
    -- questie:Widget/UIType/FrameType.lua
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    interface Frame_BackdropTemplate
       is Frame, BackdropTemplate
    end
@@ -43279,6 +43329,26 @@ local record CatalogueTypes
    end
 
    -- blizzard:CurrencyConstantsDocumentation.lua
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
+
+   -- interned LuaLS string literals
 
    -- interned LuaLS string literals
 
@@ -47162,7 +47232,7 @@ local record CatalogueTypes
 
    -- blizzard:ScriptedAnimationsDocumentation.lua
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    interface ScrollFrame_BackdropTemplate
       is ScrollFrame, BackdropTemplate
    end
@@ -47474,7 +47544,7 @@ local record CatalogueTypes
 
    -- blizzard:ItemConstantsDocumentation.lua
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    interface Slider_BackdropTemplate
       is Slider, BackdropTemplate
    end
@@ -47958,7 +48028,7 @@ local record CatalogueTypes
       widgetTag: string
    end
 
-   -- reviewed native frame factory
+   -- reviewed literal factory
    interface StatusBar_BackdropTemplate
       is StatusBar, BackdropTemplate
    end

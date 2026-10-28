@@ -15,22 +15,29 @@ type catalogueOverrides struct {
 	NativeContracts              []nativeContractOverride    `json:"native_contracts"`
 	SupplementalMethodExclusions []supplementalExclusion     `json:"supplemental_method_exclusions"`
 	ReceiverHierarchy            []receiverHierarchyOverride `json:"receiver_hierarchy"`
-	FrameFactory                 frameFactoryOverride        `json:"frame_factory"`
+	LiteralFactories             []literalFactoryOverride    `json:"literal_factories"`
 }
 
-// frameFactoryOverride lists the CreateFrame frame types and templates whose
-// literal names select a narrower result than Frame.
-type frameFactoryOverride struct {
-	FrameTypes []string                `json:"frame_types"`
-	Templates  []frameTemplateOverride `json:"templates"`
+// literalFactoryOverride narrows a factory's result by the string literal that
+// selects the created type, and optionally by a template literal. Overload is
+// the signature pattern of a narrowed overload: {type}, {template} and
+// {result} stand for the literals and the selected type. Generic, when set,
+// replaces an unrepresentable source contract as the fallback overload.
+type literalFactoryOverride struct {
+	Symbol    string                    `json:"symbol"`
+	Base      string                    `json:"base"`
+	Generic   string                    `json:"generic"`
+	Overload  string                    `json:"overload"`
+	Types     []string                  `json:"types"`
+	Templates []literalTemplateOverride `json:"templates"`
 }
 
-// frameTemplateOverride applies the template's mixin Type to frames of the
-// listed types created with exactly that template name.
-type frameTemplateOverride struct {
-	Name       string   `json:"name"`
-	Type       string   `json:"type"`
-	FrameTypes []string `json:"frame_types"`
+// literalTemplateOverride applies the template's mixin Type to the listed
+// types created with exactly that template name.
+type literalTemplateOverride struct {
+	Name  string   `json:"name"`
+	Type  string   `json:"type"`
+	Types []string `json:"types"`
 }
 type aliasOverride struct {
 	Type string `json:"type"`
@@ -116,7 +123,6 @@ func (c *catalogue) applyOverrides(overrides catalogueOverrides) {
 		item := overrides.OpaqueObjects[name]
 		c.record(name, "reviewed opaque native object", kindRecord).Opaque = item.Representation != "table"
 	}
-	c.applyFrameFactory(overrides.FrameFactory)
 	// Native arity and restrictions still apply to numeric IDs, paths and texture objects.
 	c.method("TextureBase", "SetTexture").Native.Arguments[0].Type = "TextureAsset"
 	c.aliases["fileID"] = &catalogueAlias{Expression: "number", Source: "Lua 5.1 numeric asset-ID carrier; native ID validation still applies"}
@@ -242,12 +248,9 @@ func (c *catalogue) applyOverrides(overrides catalogueOverrides) {
 	}
 	c.applyNativeTableContracts()
 	c.applySecureCallContracts()
-	// Preserve the subtype selected by the literal animation name.
-	animation := c.method("AnimationGroup", "CreateAnimation")
-	genericAnimation := animation.clone()
-	animation.ResolvedSignature = new("function(self, " + c.literal([]string{"RadialProgress"}) + ", ? string, ? string): RadialProgress")
-	animation.Variants = append([]*catalogueFunction{genericAnimation}, animation.Variants...)
 	c.applyReceiverCorrections(overrides)
+	// Factory types must already have their reviewed bases.
+	c.applyLiteralFactories(overrides.LiteralFactories)
 }
 
 // applyFormattedText appends the string.format arguments that native
@@ -277,48 +280,82 @@ func (c *catalogue) applyFormattedText() {
 	}
 }
 
-// applyFrameFactory declares CreateFrame overloads, most specific first: a
-// frame-type literal with a template literal, a frame-type literal, then any
-// string returning Frame. Literals are case-sensitive while the client is not,
-// so other spellings, template lists and unknown templates select a wider result.
-func (c *catalogue) applyFrameFactory(factory frameFactoryOverride) {
-	const source = "reviewed native frame factory"
-	if len(factory.FrameTypes) == 0 {
-		reject("frame factory lists no frame types")
+// applyLiteralFactory declares factory overloads, most specific first: a type
+// literal with a template literal, a type literal, then the generic fallback.
+// Literals are case-sensitive while the client is not, so other spellings,
+// template lists and unknown templates select the generic result.
+// applyLiteralFactories narrows each factory once. A second entry for one
+// symbol would narrow the already narrowed overloads.
+func (c *catalogue) applyLiteralFactories(factories []literalFactoryOverride) {
+	seen := map[string]bool{}
+	for _, factory := range factories {
+		if seen[factory.Symbol] {
+			reject(fmt.Sprintf("literal factory %s is declared twice", factory.Symbol))
+		}
+		seen[factory.Symbol] = true
+		c.applyLiteralFactory(factory)
 	}
-	signature := func(frameType, template, result string) *catalogueFunction {
+}
+
+func (c *catalogue) applyLiteralFactory(factory literalFactoryOverride) {
+	const source = "reviewed literal factory"
+	symbol := factory.Symbol
+	if len(factory.Types) == 0 {
+		reject(fmt.Sprintf("literal factory %s lists no types", symbol))
+	}
+	if !strings.Contains(factory.Overload, "{type}") || !strings.Contains(factory.Overload, "{result}") ||
+		len(factory.Templates) > 0 && !strings.Contains(factory.Overload, "{template}") {
+		reject(fmt.Sprintf("literal factory %s overload lacks a placeholder: %s", symbol, factory.Overload))
+	}
+	item := c.symbolItem(symbol)
+	if factory.Generic != "" {
+		// The reviewed signature replaces only the unrepresentable source
+		// contract; the native permission still applies to every overload.
+		item = item.clone()
+		item.Source, item.Variants, item.ResolvedSignature = source, nil, new(factory.Generic)
+	}
+	overload := func(typeName, template, result string) *catalogueFunction {
 		templateArgument := "? string"
 		if template != "" {
 			templateArgument = c.literal([]string{template})
 		}
-		return &catalogueFunction{Source: source, ResolvedSignature: new("function(" + c.literal([]string{frameType}) + ", ? string, ? Frame, " + templateArgument + ", ? number): " + result)}
+		narrowed := item.clone()
+		narrowed.Variants = nil
+		narrowed.ResolvedSignature = new(strings.NewReplacer("{type}", c.literal([]string{typeName}), "{template}", templateArgument, "{result}", result).Replace(factory.Overload))
+		return narrowed
 	}
 	overloads := []*catalogueFunction{}
 	for _, template := range factory.Templates {
 		if c.defs[template.Type] == nil {
-			reject(fmt.Sprintf("frame template %s type %s is not defined", template.Name, template.Type))
+			reject(fmt.Sprintf("%s template %s type %s is not defined", symbol, template.Name, template.Type))
 		}
-		for _, frameType := range template.FrameTypes {
-			if !slices.Contains(factory.FrameTypes, frameType) {
-				reject(fmt.Sprintf("frame template %s lists unknown frame type %s", template.Name, frameType))
+		for _, typeName := range template.Types {
+			if !slices.Contains(factory.Types, typeName) {
+				reject(fmt.Sprintf("%s template %s lists unknown type %s", symbol, template.Name, typeName))
 			}
-			name := frameType + "_" + template.Name
+			name := typeName + "_" + template.Name
 			if c.defs[name] != nil || c.aliases[name] != nil {
-				reject(fmt.Sprintf("frame template type %s collides with a declaration", name))
+				reject(fmt.Sprintf("%s template type %s collides with a declaration", symbol, name))
 			}
-			c.record(name, source, kindInterface).Bases = []string{frameType, template.Type}
-			overloads = append(overloads, signature(frameType, template.Name, name))
+			c.record(name, source, kindInterface).Bases = []string{typeName, template.Type}
+			overloads = append(overloads, overload(typeName, template.Name, name))
 		}
 	}
-	for _, frameType := range factory.FrameTypes {
-		if !c.extends(frameType, "Frame") {
-			reject(fmt.Sprintf("frame factory type %s does not extend Frame", frameType))
+	for n, typeName := range factory.Types {
+		if slices.Contains(factory.Types[:n], typeName) {
+			reject(fmt.Sprintf("%s lists type %s twice", symbol, typeName))
 		}
-		overloads = append(overloads, signature(frameType, "", frameType))
+		if !c.extends(typeName, factory.Base) {
+			reject(fmt.Sprintf("%s type %s does not extend %s", symbol, typeName, factory.Base))
+		}
+		overloads = append(overloads, overload(typeName, "", typeName))
 	}
-	fallback := &catalogueFunction{Source: source, ResolvedSignature: new("function(string, ? string, ? Frame, ? string, ? number): Frame")}
-	overloads[0].Variants = append(overloads[1:], fallback)
-	c.setGlobal("CreateFrame", overloads[0])
+	fallback := item.clone()
+	overloads[0].Variants = append(append(overloads[1:], fallback), item.Variants...)
+	fallback.Variants = nil
+	// The first overload takes the symbol's place, keeping its identity for
+	// every owner that already shares it.
+	*c.symbolItem(symbol) = *overloads[0]
 }
 
 // extends reports whether the definition name is base or inherits from it.

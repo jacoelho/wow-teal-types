@@ -317,15 +317,20 @@ type is retained. Rejected alternative: keeping `| nil` and requiring `is`
 narrowing. It blocked idiomatic guards at every nilable result without
 detecting any additional nil use.
 
-`CreateFrame` selects its result from literal arguments: a listed frame type
-returns that widget type, and `"BackdropTemplate"` with Frame, Button,
-CheckButton, EditBox, ScrollFrame, Slider or StatusBar returns an interface
-with both bases (for example `Frame_BackdropTemplate`). Literals are
-case-sensitive while the client is not, so `"BUTTON"`, template lists, other
-templates and non-literal strings return the frame type or `Frame`; assert
-the intended type with `as`. The
-[frame factory list](../../internal/wowapi/inputs/overrides.json) admits only
-types whose base chain reaches `Frame`.
+`CreateFrame` and `AnimationGroup:CreateAnimation` select their result from
+literal arguments. A listed frame type returns that widget type, and
+`"BackdropTemplate"` with Frame, Button, CheckButton, EditBox, ScrollFrame,
+Slider or StatusBar returns an interface with both bases (for example
+`Frame_BackdropTemplate`). A listed animation type such as `"Alpha"` or
+`"Translation"` returns that animation type. Literals are case-sensitive while
+the client is not, so `"BUTTON"`, template lists, other templates and
+non-literal strings return the generic `Frame` or `Animation`; assert the
+intended type with `as`. Each
+[literal factory](../../internal/wowapi/inputs/overrides.json) admits only
+types whose base chain reaches its base type, and keeps the native contract of
+the factory for every narrowed overload. `CreateFrame` declares a reviewed
+generic signature, because its source annotation selects the result through a
+string-dependent generic that Teal cannot express.
 
 `SetFormattedText` accepts `string | number` format arguments after the format
 string; native metadata omits them. They share the method's secret permission:

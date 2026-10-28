@@ -284,50 +284,74 @@
       ]
     }
   ],
-  "frame_factory": {
-    "frame_types": [
-      "Frame",
-      "Button",
-      "CheckButton",
-      "EditBox",
-      "ScrollFrame",
-      "Slider",
-      "StatusBar",
-      "Cooldown",
-      "GameTooltip",
-      "ColorSelect",
-      "MessageFrame",
-      "ScrollingMessageFrame",
-      "SimpleHTML",
-      "Model",
-      "PlayerModel",
-      "DressUpModel",
-      "CinematicModel",
-      "TabardModel",
-      "ModelScene",
-      "MovieFrame",
-      "FogOfWarFrame",
-      "UnitPositionFrame",
-      "ArchaeologyDigSiteFrame",
-      "QuestPOIFrame",
-      "ScenarioPOIFrame",
-      "DropdownButton",
-      "EventFrame"
-    ],
-    "templates": [
-      {
-        "name": "BackdropTemplate",
-        "type": "BackdropTemplate",
-        "frame_types": [
-          "Frame",
-          "Button",
-          "CheckButton",
-          "EditBox",
-          "ScrollFrame",
-          "Slider",
-          "StatusBar"
-        ]
-      }
-    ]
-  }
+  "literal_factories": [
+    {
+      "symbol": "CreateFrame",
+      "base": "Frame",
+      "generic": "function(string, ? string, ? Frame, ? string, ? number): Frame",
+      "overload": "function({type}, ? string, ? Frame, {template}, ? number): {result}",
+      "types": [
+        "Frame",
+        "Button",
+        "CheckButton",
+        "EditBox",
+        "ScrollFrame",
+        "Slider",
+        "StatusBar",
+        "Cooldown",
+        "GameTooltip",
+        "ColorSelect",
+        "MessageFrame",
+        "ScrollingMessageFrame",
+        "SimpleHTML",
+        "Model",
+        "PlayerModel",
+        "DressUpModel",
+        "CinematicModel",
+        "TabardModel",
+        "ModelScene",
+        "MovieFrame",
+        "FogOfWarFrame",
+        "UnitPositionFrame",
+        "ArchaeologyDigSiteFrame",
+        "QuestPOIFrame",
+        "ScenarioPOIFrame",
+        "DropdownButton",
+        "EventFrame"
+      ],
+      "templates": [
+        {
+          "name": "BackdropTemplate",
+          "type": "BackdropTemplate",
+          "types": [
+            "Frame",
+            "Button",
+            "CheckButton",
+            "EditBox",
+            "ScrollFrame",
+            "Slider",
+            "StatusBar"
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "AnimationGroup.CreateAnimation",
+      "base": "Animation",
+      "overload": "function(self, {type}, ? string, ? string): {result}",
+      "types": [
+        "Alpha",
+        "Scale",
+        "LineScale",
+        "Translation",
+        "LineTranslation",
+        "Rotation",
+        "Path",
+        "FlipBook",
+        "TextureCoordTranslation",
+        "VertexColor",
+        "RadialProgress"
+      ]
+    }
+  ]
 }
