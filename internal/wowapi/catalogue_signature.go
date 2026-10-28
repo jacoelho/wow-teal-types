@@ -17,15 +17,12 @@ import (
 // own fields carry the marking. Already projected members are kept, so the
 // projection is idempotent.
 func (c *catalogue) projectSecret(expression string, position typePosition) string {
-	names := map[string]string{}
-	for name := range c.defs {
-		names[ident(name)] = name
-	}
 	plain, kept := []string{}, []string{}
 	nilable := false
 	for _, member := range splitTop(expression, '|') {
 		primitive := c.primitive(member)
-		name := cmp.Or(names[member], member)
+		defName, _ := c.defNamed(member)
+		name := cmp.Or(defName, member)
 		switch {
 		case member == "nil":
 			nilable = true
@@ -33,7 +30,7 @@ func (c *catalogue) projectSecret(expression string, position typePosition) stri
 			kept = append(kept, member)
 		case member == dataType || primitive == "any" || strings.HasPrefix(member, "function"):
 			plain = append(plain, dataType)
-		case primitive != "" || kindOf(c.defs[names[member]]) == kindEnum:
+		case primitive != "" || kindOf(c.defs[defName]) == kindEnum:
 			plain = append(plain, member)
 		case strings.HasPrefix(member, "{"):
 			if position == inputPosition {

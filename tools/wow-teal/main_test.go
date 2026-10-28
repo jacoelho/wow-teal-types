@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"wow-teal-types/internal/consumer"
 )
 
 // Malformed command lines fail before any package, compiler or file access, so
@@ -54,7 +56,7 @@ func TestVersionPrintsPackageVersionLine(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	data, err := os.ReadFile(filepath.Join(root, "package.json"))
+	data, err := os.ReadFile(filepath.Join(root, consumer.ManifestFile))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,7 +64,7 @@ func TestVersionPrintsPackageVersionLine(t *testing.T) {
 		Version string `json:"version"`
 	}
 	if err = json.Unmarshal(data, &manifest); err != nil || manifest.Version == "" {
-		t.Fatalf("package.json version: %q %v", manifest.Version, err)
+		t.Fatalf("manifest.json version: %q %v", manifest.Version, err)
 	}
 	var out bytes.Buffer
 	if err = run(t.Context(), root, []string{"version"}, &out, &bytes.Buffer{}); err != nil {

@@ -46,6 +46,9 @@ type catalogue struct {
 	abiTuples            map[string][]string
 	defOrder             []string
 	globalOrder          []string
+	// defNames maps declared identifiers back to definition names. It is
+	// derived from defs and dropped whenever defs changes.
+	defNames map[string]string
 }
 
 func newCatalogue() *catalogue {
@@ -68,6 +71,23 @@ func (c *catalogue) setDef(name string, item *catalogueDefinition) {
 		c.defOrder = append(c.defOrder, name)
 	}
 	c.defs[name] = item
+	c.defNames = nil
+}
+func (c *catalogue) deleteDef(name string) {
+	delete(c.defs, name)
+	c.defNames = nil
+}
+
+// defNamed returns the definition declared as identifier.
+func (c *catalogue) defNamed(identifier string) (string, bool) {
+	if c.defNames == nil {
+		c.defNames = make(map[string]string, len(c.defs))
+		for name := range c.defs {
+			c.defNames[ident(name)] = name
+		}
+	}
+	name, ok := c.defNames[identifier]
+	return name, ok
 }
 func (c *catalogue) setGlobal(name string, item *catalogueFunction) {
 	if _, ok := c.globals[name]; !ok {
@@ -453,7 +473,7 @@ func (c *catalogue) loadNative(docs []nativeDocument) {
 			nativeNames[name] = true
 			switch kind {
 			case "Enumeration":
-				delete(c.defs, name)
+				c.deleteDef(name)
 				if name != "UnitTokenType" {
 					c.aliases[name] = &catalogueAlias{Expression: "number", Source: source}
 				}
@@ -679,14 +699,9 @@ func (c *catalogue) secretNative(raw, result string, position typePosition) stri
 	if c.isUserdata(raw) {
 		return "W.Secret<" + result + ">"
 	}
-	if slices.Contains([]string{"LuaValueReference", "LuaValueVariant"}, raw) {
+	// Secret structures project their own fields instead.
+	if name, ok := c.defNamed(result); ok && c.defs[name].Kind.isTableLike() {
 		return result
-	}
-	for name, v := range c.defs {
-		// Secret structures project their own fields instead.
-		if result == ident(name) && v.Kind.isTableLike() {
-			return result
-		}
 	}
 	return "W.MaybeSecret<" + result + ">"
 }

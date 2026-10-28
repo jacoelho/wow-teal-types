@@ -196,7 +196,6 @@ return {
             symbol = "C_Example.Accept",
             secret_parameters = { 1 },
             secret_vararg_from = 3, -- optional
-            secret_contents_parameters = {}, -- optional; must be empty
          },
       },
    },
@@ -209,8 +208,8 @@ Paths are limited to `wow.d.tl`, `wow_env.d.tl` and `wow_secure_env.d.tl` under
 Positions count the full argument tuple, including an explicit or `__call`
 receiver at position 1. A permitted position accepts a Secret where the declared
 type is plain; a vararg permission covers every position from its start. Contents
-secrecy is carried by `SecretTable`, so a non-empty `secret_contents_parameters`
-or any `secret_contents_vararg_from` fails closed.
+secrecy is carried by `SecretTable`, so any `secret_contents_parameters` or
+`secret_contents_vararg_from` fails closed.
 
 Only the canonical guards carry `guard`: `canaccessvalue` (`"value"`),
 `canaccessallvalues` (`"values"`), `canaccesstable` (`"table"`) and

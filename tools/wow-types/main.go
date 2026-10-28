@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"path/filepath"
 	"slices"
-	"strconv"
 	"strings"
 	"syscall"
 	"wow-teal-types/internal/consumer"
@@ -210,7 +209,7 @@ func (in invocation) snapshot() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(in.root, "build/wow-client", strconv.Itoa(selected.Build)), nil
+	return release.ClientSnapshotPath(in.root, selected.Build), nil
 }
 
 func writeResult(result any, err error) error {

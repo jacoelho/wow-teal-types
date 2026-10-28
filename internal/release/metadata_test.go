@@ -27,7 +27,7 @@ func metadataFixture(t *testing.T) string {
 		}
 		fixtureFile(t, root, name, data)
 	}
-	for _, name := range append(consumer.RequiredFiles(), "package.json", "LICENSE", "README.md", "examples/minimal/WowTealExample.toc", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json") {
+	for _, name := range append(consumer.RequiredFiles(), consumer.ManifestFile, "LICENSE", "README.md", "examples/minimal/WowTealExample.toc", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json") {
 		copyFile(name)
 	}
 	return root
@@ -53,7 +53,7 @@ func TestMetadataPreparationPreservesInputsAndExactVersionBytes(t *testing.T) {
 	if !maps.Equal(before, metadataInputs(t, root)) {
 		t.Fatal("metadata preparation changed inputs")
 	}
-	manifest, err := consumer.ParsePackageManifest(artifacts["package.json"])
+	manifest, err := consumer.ParsePackageManifest(artifacts[consumer.ManifestFile])
 	if err != nil {
 		t.Fatal(err)
 	}

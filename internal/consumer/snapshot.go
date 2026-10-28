@@ -113,11 +113,11 @@ type verifiedPackage struct {
 	manifestData []byte
 }
 
-// readPackage reads package.json and every required file within one aggregate
+// readPackage reads manifest.json and every required file within one aggregate
 // byte bound, rejecting inventory, hash, compiler-version or WoW-version
 // mismatches. keep, when set, receives each verified file's bytes.
 func readPackage(ctx context.Context, root string, keep func(name string, data []byte) error) (verifiedPackage, error) {
-	path, err := checkedPath(root, "package.json")
+	path, err := checkedPath(root, ManifestFile)
 	if err != nil {
 		return verifiedPackage{}, err
 	}
@@ -181,7 +181,7 @@ func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
 	}
 	b.manifest = verified.manifest
 	b.manifestHash = fingerprint(verified.manifestData)
-	return atomicWrite(filepath.Join(b.packageRoot, "package.json"), verified.manifestData, 0644)
+	return atomicWrite(filepath.Join(b.packageRoot, ManifestFile), verified.manifestData, 0644)
 }
 
 func (b *buildInputs) captureSources(ctx context.Context, sources, include []string) error {

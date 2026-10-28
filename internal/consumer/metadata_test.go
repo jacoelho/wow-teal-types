@@ -15,7 +15,7 @@ func recipeFixture(t *testing.T) addonFixture {
 	f := newAddon(t)
 	repo := repositoryRoot(t)
 	writeTest(t, filepath.Join(f.root, "LICENSE"), fileText(t, filepath.Join(repo, "LICENSE")))
-	manifest := readManifest(t, filepath.Join(f.root, "package.json"))
+	manifest := readManifest(t, filepath.Join(f.root, ManifestFile))
 	recipe, err := Recipe(f.root, manifest, "", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func recipeCommand(t *testing.T, f addonFixture, options RockspecOptions, reject
 }
 func TestRecipeInstallsOnlyFourModulesWithMatchingToolkit(t *testing.T) {
 	f := recipeFixture(t)
-	manifest := readManifest(t, filepath.Join(f.root, "package.json"))
+	manifest := readManifest(t, filepath.Join(f.root, ManifestFile))
 	recipeCommand(t, f, RockspecOptions{Check: true}, "")
 	recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types"}, "")
 	path := filepath.Join(f.project, "candidate/wow-tl-type-"+manifest.Version+"-1.rockspec")

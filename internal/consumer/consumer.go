@@ -423,7 +423,6 @@ func secretCheckArgs(search []string, checker, environment, source, native strin
 
 // session owns the captured inputs and admitted compiler for one Check or Build.
 type session struct {
-	root        string
 	inputs      *buildInputs
 	tl          compiler
 	sources     []string // caller paths, sorted
@@ -459,7 +458,7 @@ func openSession(ctx context.Context, root string, selected Selection, errout io
 			inputs.close()
 		}
 	}()
-	s := &session{root: root, inputs: inputs, sources: sources, native: "wow_env"}
+	s := &session{inputs: inputs, sources: sources, native: "wow_env"}
 	if selected.Secure {
 		s.native = "wow_secure_env"
 	}

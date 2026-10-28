@@ -130,7 +130,7 @@ own their bookkeeping locally. Finalized declarations own their slices independe
 of the mutable catalogue. Closure compares deterministic JSON state for at most 32
 passes; historical encoding is reserved for generated names and emitted metadata.
 
-Source locks own acquisition identities; `package.json` owns consumer file hashes.
+Source locks own acquisition identities; `manifest.json` owns consumer file hashes.
 There is no separate release provenance file, report manifest, cross-source audit,
 runtime probe or approval ledger. Generation verifies its inputs and compiler
 contracts; it does not independently corroborate every API against a running client.

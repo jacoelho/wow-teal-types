@@ -89,7 +89,7 @@ bin/wow-teal rockspecs --check
 bin/wow-teal package
 ```
 
-A package/compiler update starts in `package.json` and requires its corresponding
+A package/compiler update starts in `manifest.json` and requires its corresponding
 checker/CI review. Remove the superseded recipe template before a package version
 bump; generation creates its replacement. Verify the consumer ZIP from a separate
 directory. Packaging does not install or publish anything.
@@ -104,7 +104,7 @@ bin/wow-teal rockspecs --repository OWNER/wow-teal-types --check
 ```
 
 Candidates go to `build/rockspecs/` and refer to the matching `v<package-version>`
-tag and declare the MIT license from `package.json`. The source checkout and
+tag and declare the MIT license from `manifest.json`. The source checkout and
 consumer ZIP include `LICENSE`; LuaRocks copies the root license with its default
 documentation installation. Additional registry description metadata is optional:
 

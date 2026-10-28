@@ -63,10 +63,7 @@ local policy_ok, policy_error = pcall(function()
             or type(policy) ~= "table" or type(policy.symbol) ~= "string" or #policy.symbol > 256 then error("invalid call policy identity") end
          validate_positions(policy.secret_parameters)
          -- Contents secrecy is carried by SecretTable types, not by policy.
-         if policy.secret_contents_parameters ~= nil and (type(policy.secret_contents_parameters) ~= "table" or next(policy.secret_contents_parameters) ~= nil) then
-            error("unsupported secret-contents policy")
-         end
-         if policy.secret_contents_vararg_from ~= nil then error("unsupported secret-contents policy") end
+         if policy.secret_contents_parameters ~= nil or policy.secret_contents_vararg_from ~= nil then error("unsupported secret-contents policy") end
          if policy.secret_vararg_from ~= nil and not valid_position(policy.secret_vararg_from) then error("invalid call policy vararg") end
          if policy.guard and guard_symbols[policy.symbol] ~= policy.guard then error("invalid native guard policy") end
       end

@@ -66,6 +66,11 @@ type SourceFile struct {
 	Size       int          `json:"size"`
 }
 
+// Matches reports whether data is the locked blob: same size and Git blob SHA.
+func (f SourceFile) Matches(data []byte) bool {
+	return len(data) == f.Size && BlobSHA(data) == f.SHA
+}
+
 func (f *SourceFile) UnmarshalJSON(data []byte) error {
 	var row struct {
 		ClientPath OptionalPath `json:"client_path"`

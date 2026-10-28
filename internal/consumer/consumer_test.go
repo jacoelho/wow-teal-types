@@ -23,7 +23,7 @@ func newAddon(t *testing.T) addonFixture {
 	project := filepath.Join(t.TempDir(), "external addon with spaces")
 	root := filepath.Join(project, "vendor/wow-teal-types")
 	source := filepath.Join(project, "src")
-	manifest := readManifest(t, filepath.Join(repo, "package.json"))
+	manifest := readManifest(t, filepath.Join(repo, ManifestFile))
 	files := map[string]string{}
 	for _, name := range RequiredFiles() {
 		data, err := os.ReadFile(filepath.Join(repo, filepath.FromSlash(name)))
@@ -38,7 +38,7 @@ func newAddon(t *testing.T) addonFixture {
 	if err != nil {
 		t.Fatal(err)
 	}
-	writeTest(t, filepath.Join(root, "package.json"), string(data))
+	writeTest(t, filepath.Join(root, ManifestFile), string(data))
 	if err = os.MkdirAll(source, 0755); err != nil {
 		t.Fatal(err)
 	}

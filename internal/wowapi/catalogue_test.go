@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"wow-teal-types/internal/sourcelock"
 )
 
 func TestFrameXMLMethodContracts(t *testing.T) {
@@ -22,7 +24,7 @@ func TestFrameXMLMethodContracts(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			var supplement frameXMLSupplement
 			input := `{"classes":[{"name":"Widget","methods":{"Read":` + strconv.Quote(test.expression) + `}}]}`
-			if err := decodeJSON([]byte(input), &supplement); err != nil {
+			if err := sourcelock.DecodeStrict([]byte(input), &supplement); err != nil {
 				t.Fatal(err)
 			}
 			c := newCatalogue()

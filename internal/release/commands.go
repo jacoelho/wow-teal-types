@@ -75,13 +75,19 @@ func obtainSnapshot(ctx context.Context, path string, s clientSelection, extract
 	return record, nil
 }
 
+// ClientSnapshotPath is the conventional location of a user-provided client
+// snapshot for build.
+func ClientSnapshotPath(root string, build int) string {
+	return filepath.Join(root, "build/wow-client", strconv.Itoa(build))
+}
+
 // resolveSnapshot prefers a user-provided build/wow-client/<build> snapshot and
 // otherwise uses the update cache. Cache entries are keyed by full client
 // version and current extractor source, so an extractor change re-extracts
 // instead of trusting output of an older build. Locked and .wow-version
 // selections of one build share an entry.
 func resolveSnapshot(ctx context.Context, root string, s clientSelection, extract extractFunc) (string, error) {
-	provided := filepath.Join(root, "build/wow-client", strconv.Itoa(s.want.Build))
+	provided := ClientSnapshotPath(root, s.want.Build)
 	if exists(provided) {
 		if _, e := s.verify(provided); e != nil {
 			return "", fmt.Errorf("client snapshot %s: %w", provided, e)

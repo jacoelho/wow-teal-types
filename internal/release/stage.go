@@ -17,7 +17,7 @@ import (
 )
 
 var maintainedDirs = []string{"internal", "tools", "types/wow", "bin", "docs", "examples", "rockspecs", ".github/workflows"}
-var maintainedFiles = []string{".wow-version", "go.mod", "tlconfig.lua", "LICENSE", "README.md", "UPDATING.md", "package.json", "Makefile", "check-all.sh"}
+var maintainedFiles = []string{".wow-version", "go.mod", "tlconfig.lua", "LICENSE", "README.md", "UPDATING.md", consumer.ManifestFile, "Makefile", "check-all.sh"}
 
 func copyMaintained(root, target string) error {
 	if exists(target) {
@@ -129,7 +129,7 @@ func stageNative(root, snapshot string) error {
 			}
 			var legacy []byte
 			if r, ok := old[name]; ok {
-				if len(raw) == r.Size && sourcelock.BlobSHA(raw) == r.SHA {
+				if r.Matches(raw) {
 					legacy = raw
 				} else {
 					legacy = lockedBytes(raw, r)

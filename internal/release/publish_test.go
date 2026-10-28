@@ -10,6 +10,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"wow-teal-types/internal/consumer"
 )
 
 func fixtureFile(t *testing.T, root, name string, b []byte) {
@@ -20,7 +22,7 @@ func fixtureFile(t *testing.T, root, name string, b []byte) {
 }
 
 // fixtureOutputs are the candidate outputs a publication fixture derives.
-var fixtureOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
+var fixtureOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", consumer.ManifestFile, "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
 
 func publicationFixture(t *testing.T) (string, string, string) {
 	t.Helper()
@@ -35,7 +37,7 @@ func publicationFixture(t *testing.T) (string, string, string) {
 	fixtureFile(t, root, ".wow-version", []byte("12.1.5.70575"))
 	for _, name := range fixtureOutputs {
 		old, new := []byte("old "+name), []byte("new "+name)
-		if name == "package.json" {
+		if name == consumer.ManifestFile {
 			old = []byte(`{"schema_version":1,"version":"1.2.3","name":"old","license":"MIT","teal_version":"0.24.8","wow_build":"12.1.5.70575","files":{}}`)
 			new = []byte(`{"schema_version":1,"version":"1.2.3","name":"new","license":"MIT","teal_version":"0.24.8","wow_build":"12.1.5.70575","files":{}}`)
 		}
@@ -70,7 +72,7 @@ func TestPublicationOwnsOnlyDerivedOutputsAndIsRepeatable(t *testing.T) {
 	want := slices.Sorted(slices.Values(fixtureOutputs))
 	got := slices.Clone(changed)
 	slices.Sort(got)
-	if !slices.Equal(got, want) || order[len(order)-1] != "package.json" {
+	if !slices.Equal(got, want) || order[len(order)-1] != consumer.ManifestFile {
 		t.Fatalf("publication inventory/order: %v", changed)
 	}
 	for _, name := range changed {

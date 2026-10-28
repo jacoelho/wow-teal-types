@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"unicode/utf16"
 
 	"wow-teal-types/internal/wowapi/literal"
@@ -66,17 +65,4 @@ func encodeJSON(v any, spaced bool) ([]byte, error) {
 		data = out.Bytes()
 	}
 	return data, nil
-}
-
-func decodeJSON(data []byte, value any) error {
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	if err := decoder.Decode(value); err != nil {
-		return err
-	}
-	var trailing json.RawMessage
-	if err := decoder.Decode(&trailing); err != io.EOF {
-		return fmt.Errorf("trailing JSON data")
-	}
-	return nil
 }

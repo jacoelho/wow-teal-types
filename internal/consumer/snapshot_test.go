@@ -15,7 +15,7 @@ func TestBuildUsesCapturedInputsAndManifest(t *testing.T) {
 	declarations := filepath.Join(f.project, "types")
 	declaration := filepath.Join(declarations, "addon_env.d.tl")
 	writeTest(t, declaration, "global MyCounter: number\n")
-	manifest := filepath.Join(f.root, "package.json")
+	manifest := filepath.Join(f.root, ManifestFile)
 	before := fileText(t, manifest)
 	actualTL := teal(t)
 	wrapper := filepath.Join(f.project, "tl-wrapper")

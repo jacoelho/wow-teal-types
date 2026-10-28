@@ -121,9 +121,7 @@ func renderCallPolicy(locations map[string]map[string]callPolicy) []byte {
 		fmt.Fprintf(&out, "      [%s] = {\n", luaQuote(path))
 		for _, position := range slices.Sorted(maps.Keys(locations[path])) {
 			policy := locations[path][position]
-			// The consumer checker requires secret_contents_parameters; no source
-			// policy currently produces content-only secret parameters.
-			fmt.Fprintf(&out, "         [%s] = { symbol = %s, secret_parameters = %s, secret_contents_parameters = {}", luaQuote(position), luaQuote(policy.Symbol), luaPositions(policy.SecretParameters))
+			fmt.Fprintf(&out, "         [%s] = { symbol = %s, secret_parameters = %s", luaQuote(position), luaQuote(policy.Symbol), luaPositions(policy.SecretParameters))
 			if policy.SecretVarargFrom > 0 {
 				fmt.Fprintf(&out, ", secret_vararg_from = %d", policy.SecretVarargFrom)
 			}

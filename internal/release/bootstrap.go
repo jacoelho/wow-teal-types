@@ -142,7 +142,7 @@ func seedCaches(origin, target string) error {
 			if e != nil {
 				return e
 			}
-			if len(b) != row.Size || sourcelock.BlobSHA(b) != row.SHA {
+			if !row.Matches(b) {
 				return fmt.Errorf("modified pinned community cache: %s", name)
 			}
 			dst, e := wowapi.NewProject(target).InputPath(group, name)

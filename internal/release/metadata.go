@@ -43,10 +43,10 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 	}
 	versions := native["blizzard_version"].Files
 	versionBytes := []byte(selected.Full + "\n")
-	if len(versions) != 1 || versions[0].Name != "version.txt" || versions[0].SHA != sourcelock.BlobSHA(versionBytes) || versions[0].Size != len(versionBytes) {
+	if len(versions) != 1 || versions[0].Name != "version.txt" || !versions[0].Matches(versionBytes) {
 		return nil, fmt.Errorf("native source version lock does not match .wow-version")
 	}
-	manifestData, err := sourcelock.ReadRegular(filepath.Join(root, "package.json"), maxFile)
+	manifestData, err := sourcelock.ReadRegular(filepath.Join(root, consumer.ManifestFile), maxFile)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 		return nil, err
 	}
 	outputs[template] = []byte(recipe)
-	outputs["package.json"], err = jsonBytes(manifest)
+	outputs[consumer.ManifestFile], err = jsonBytes(manifest)
 	if err != nil {
 		return nil, err
 	}

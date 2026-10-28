@@ -9,6 +9,9 @@ import (
 	"os"
 )
 
+// ManifestFile is the package-root file holding the PackageManifest.
+const ManifestFile = "manifest.json"
+
 // PackageManifest binds the complete consumer execution closure to one release.
 // Field order is part of the published JSON byte contract.
 type PackageManifest struct {

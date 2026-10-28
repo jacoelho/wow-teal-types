@@ -2,12 +2,14 @@ package wowapi
 
 import (
 	"fmt"
-	"os"
 	"slices"
 	"strings"
 
 	"wow-teal-types/internal/sourcelock"
 )
+
+// maxInputFile bounds every generation input read.
+const maxInputFile = 128 << 20
 
 // generationInputs is every input file of one generation, read and decoded
 // before conversion starts. Conversion itself performs no I/O.
@@ -44,11 +46,11 @@ func (p Project) readInputs() (generationInputs, error) {
 }
 
 func readInputJSON(path string, target any) error {
-	data, err := os.ReadFile(path)
+	data, err := sourcelock.ReadRegular(path, maxInputFile)
 	if err != nil {
 		return err
 	}
-	if err = decodeJSON(data, target); err != nil {
+	if err = sourcelock.DecodeStrict(data, target); err != nil {
 		return fmt.Errorf("%s: %w", path, err)
 	}
 	return nil
@@ -67,7 +69,7 @@ func (p Project) readQuestieDocuments(lock sourcelock.Sources) ([]annotationDocu
 		if err != nil {
 			return nil, err
 		}
-		data, err := os.ReadFile(path)
+		data, err := sourcelock.ReadRegular(path, maxInputFile)
 		if err != nil {
 			return nil, err
 		}
@@ -88,11 +90,11 @@ func (p Project) readNativeDocuments(lock sourcelock.Sources) ([]nativeDocument,
 		if err != nil {
 			return nil, err
 		}
-		data, err := os.ReadFile(path)
+		data, err := sourcelock.ReadRegular(path, maxInputFile)
 		if err != nil {
 			return nil, err
 		}
-		if sourcelock.BlobSHA(data) != source.SHA || len(data) != source.Size {
+		if !source.Matches(data) {
 			return nil, fmt.Errorf("modified native source: %s", source.Name)
 		}
 		if !strings.HasSuffix(source.Name, ".lua") {

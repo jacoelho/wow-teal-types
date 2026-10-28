@@ -437,7 +437,7 @@ func projectSources(root, snapshot string) (wowapi.Project, error) {
 			} else if sourcelock.BlobSHA(b) != row.SHA {
 				b = lockedBytes(b, row)
 			}
-			if len(b) != row.Size || sourcelock.BlobSHA(b) != row.SHA {
+			if !row.Matches(b) {
 				return p, fmt.Errorf("client source differs from locked contract: %s", relative)
 			}
 			pending[group+"/"+name] = b
@@ -512,7 +512,7 @@ func normalized(b []byte, count int) []byte {
 func lockedBytes(b []byte, row sourcelock.SourceFile) []byte {
 	for n := range 16 {
 		v := normalized(b, n)
-		if len(v) == row.Size && sourcelock.BlobSHA(v) == row.SHA {
+		if row.Matches(v) {
 			return v
 		}
 	}

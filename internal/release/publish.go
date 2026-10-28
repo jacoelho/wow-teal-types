@@ -12,6 +12,8 @@ import (
 	"strconv"
 	"strings"
 	"syscall"
+
+	"wow-teal-types/internal/consumer"
 	"wow-teal-types/internal/sourcelock"
 )
 
@@ -179,15 +181,15 @@ func updateLock(root string) (func(), error) {
 }
 
 // publicationOrder validates the candidate's output names and orders them so
-// package.json, which fingerprints the others, is replaced last.
+// manifest.json, which fingerprints the others, is replaced last.
 func publicationOrder(outputs []string) ([]string, error) {
 	if len(outputs) == 0 || len(outputs) > maxPublishedOutputs {
 		return nil, fmt.Errorf("publication requires 1 to %d outputs, got %d", maxPublishedOutputs, len(outputs))
 	}
 	names := slices.Clone(outputs)
 	slices.SortFunc(names, func(a, b string) int {
-		if (a == "package.json") != (b == "package.json") {
-			if a == "package.json" {
+		if (a == consumer.ManifestFile) != (b == consumer.ManifestFile) {
+			if a == consumer.ManifestFile {
 				return 1
 			}
 			return -1
