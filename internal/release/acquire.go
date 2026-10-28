@@ -31,9 +31,9 @@ type extractorConfig struct {
 	Manifests map[string]int `json:"manifests"`
 }
 
-func clientPath(name string, files map[string]bool) (string, error) {
+func clientPath(name string, files map[string]sourcelock.ClientFile) (string, error) {
 	exact := "Interface/AddOns/" + name
-	if files[exact] {
+	if _, ok := files[exact]; ok {
 		return exact, nil
 	}
 	addon, _, _ := strings.Cut(name, "/")
@@ -109,64 +109,79 @@ func manifestPaths(raw string) ([]string, error) {
 
 // VerifySnapshot validates all raw bytes and the complete manifest-selected inventory.
 func VerifySnapshot(snapshot string, expected *sourcelock.Snapshot) (sourcelock.Snapshot, error) {
+	v, e := verifySnapshot(snapshot, expected)
+	return v.record, e
+}
+
+// verifiedSnapshot is a client snapshot whose record and complete raw inventory
+// passed verification once. Its only raw read, packagedFile, re-checks each
+// file against the record, so a later on-disk change fails at use instead of
+// requiring the whole snapshot to be hashed again.
+type verifiedSnapshot struct {
+	dir    string
+	record sourcelock.Snapshot
+	files  map[string]sourcelock.ClientFile
+}
+
+func verifySnapshot(snapshot string, expected *sourcelock.Snapshot) (verifiedSnapshot, error) {
 	recorded, e := sourcelock.ReadSnapshot(filepath.Join(snapshot, "snapshot.json"))
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	if expected != nil && !recorded.Equal(*expected) {
-		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot differs from selected source lock")
+		return verifiedSnapshot{}, fmt.Errorf("client snapshot differs from selected source lock")
 	}
 	if e = recorded.Identity().Validate(); e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	recordedManifests := recorded.Manifests
 	if len(recordedManifests) != len(manifests) {
-		return sourcelock.Snapshot{}, fmt.Errorf("unsupported manifest identities")
+		return verifiedSnapshot{}, fmt.Errorf("unsupported manifest identities")
 	}
 	for name, id := range manifests {
 		if recordedManifests[name] != id {
-			return sourcelock.Snapshot{}, fmt.Errorf("unsupported manifest identities")
+			return verifiedSnapshot{}, fmt.Errorf("unsupported manifest identities")
 		}
 	}
 	if recorded.Schema != 1 {
-		return sourcelock.Snapshot{}, fmt.Errorf("unsupported client snapshot schema")
+		return verifiedSnapshot{}, fmt.Errorf("unsupported client snapshot schema")
 	}
 	raw := filepath.Join(snapshot, "raw")
 	names, e := manifestPaths(raw)
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	rows := recorded.Files
 	if len(rows) != len(names) {
-		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot inventory does not match manifests")
+		return verifiedSnapshot{}, fmt.Errorf("client snapshot inventory does not match manifests")
 	}
-	inventory := map[string]bool{}
+	inventory := map[string]sourcelock.ClientFile{}
 	total := 0
 	for _, row := range rows {
 		name := row.Path
-		if inventory[name] {
-			return sourcelock.Snapshot{}, fmt.Errorf("duplicate client snapshot entry: %s", name)
+		if _, ok := inventory[name]; ok {
+			return verifiedSnapshot{}, fmt.Errorf("duplicate client snapshot entry: %s", name)
 		}
 		p, e := safeJoin(raw, name)
 		if e != nil {
-			return sourcelock.Snapshot{}, e
+			return verifiedSnapshot{}, e
 		}
 		b, e := sourcelock.ReadRegular(p, maxFile)
 		if e != nil {
-			return sourcelock.Snapshot{}, e
+			return verifiedSnapshot{}, e
 		}
 		total += len(b)
 		if total > maxTotal {
-			return sourcelock.Snapshot{}, fmt.Errorf("client snapshot exceeds aggregate size")
+			return verifiedSnapshot{}, fmt.Errorf("client snapshot exceeds aggregate size")
 		}
-		if len(b) != row.Size || sha(b) != row.SHA256 || contentKey(b) != row.ContentKey {
-			return sourcelock.Snapshot{}, fmt.Errorf("client content identity mismatch: %s", name)
+		if !clientContent(row, b) {
+			return verifiedSnapshot{}, fmt.Errorf("client content identity mismatch: %s", name)
 		}
-		inventory[name] = true
+		inventory[name] = row
 	}
 	for _, name := range names {
-		if !inventory[name] {
-			return sourcelock.Snapshot{}, fmt.Errorf("missing manifest-selected input: %s", name)
+		if _, ok := inventory[name]; !ok {
+			return verifiedSnapshot{}, fmt.Errorf("missing manifest-selected input: %s", name)
 		}
 	}
 	disk := 0
@@ -188,20 +203,42 @@ func VerifySnapshot(snapshot string, expected *sourcelock.Snapshot) (sourcelock.
 		if n == "extractor-result.json" {
 			return nil
 		}
-		if !inventory[n] {
+		if _, ok := inventory[n]; !ok {
 			return fmt.Errorf("unlisted client snapshot file: %s", n)
 		}
 		disk++
 		return nil
 	})
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	if disk != len(names) {
-		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot inventory incomplete")
+		return verifiedSnapshot{}, fmt.Errorf("client snapshot inventory incomplete")
 	}
-	return recorded, nil
+	return verifiedSnapshot{snapshot, recorded, inventory}, nil
 }
+
+func clientContent(row sourcelock.ClientFile, b []byte) bool {
+	return len(b) == row.Size && sha(b) == row.SHA256 && contentKey(b) == row.ContentKey
+}
+
+// packagedFile reads the addon file that name selects ("<addon>/<file>") and
+// returns its packaged path. An empty path means the client lacks the file.
+func (v verifiedSnapshot) packagedFile(name string) (string, []byte, error) {
+	path, e := clientPath(name, v.files)
+	if e != nil || path == "" {
+		return "", nil, e
+	}
+	b, e := sourcelock.ReadRegular(filepath.Join(v.dir, "raw", filepath.FromSlash(path)), maxFile)
+	if e != nil {
+		return "", nil, e
+	}
+	if !clientContent(v.files[path], b) {
+		return "", nil, fmt.Errorf("client snapshot changed after verification: %s", path)
+	}
+	return path, b, nil
+}
+
 func projectVersion(root string, identity sourcelock.ClientIdentity) error {
 	v, e := consumer.ReadVersion(root)
 	if e != nil {
@@ -298,24 +335,24 @@ func BuildExtractor(ctx context.Context, root string) (string, error) {
 	}
 	return binary, nil
 }
-func extractSnapshot(ctx context.Context, root, output, cache string, identity sourcelock.ClientIdentity, expected *sourcelock.Snapshot) (sourcelock.Snapshot, error) {
+func extractSnapshot(ctx context.Context, root, output, cache string, identity sourcelock.ClientIdentity, expected *sourcelock.Snapshot) (verifiedSnapshot, error) {
 	if exists(output) {
-		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot destination already exists: %s", output)
+		return verifiedSnapshot{}, fmt.Errorf("client snapshot destination already exists: %s", output)
 	}
 	id := identity
 	if e := id.Validate(); e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	binary, e := BuildExtractor(ctx, root)
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	if e = os.MkdirAll(filepath.Dir(output), 0755); e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	stage, e := os.MkdirTemp(filepath.Dir(output), ".client-source-")
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	success := false
 	defer func() {
@@ -327,48 +364,50 @@ func extractSnapshot(ctx context.Context, root, output, cache string, identity s
 		}
 	}()
 	if e = writeObject(filepath.Join(stage, "config.json"), extractorConfig{id, manifests}); e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	if cache == "" {
 		cache = filepath.Join(root, "build/direct-source-tools/cache")
 	}
 	raw := filepath.Join(stage, "raw")
 	if e = command(ctx, stage, filepath.Join(stage, "extraction.log"), 20*time.Minute, binary, filepath.Join(stage, "config.json"), raw, cache); e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	receipt, e := readJSON[extractorReceipt](filepath.Join(raw, "extractor-result.json"))
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	actual := receipt.ClientIdentity
 	if e = actual.Validate(); e != nil || actual != id {
-		return sourcelock.Snapshot{}, fmt.Errorf("extractor returned different client identity")
+		return verifiedSnapshot{}, fmt.Errorf("extractor returned different client identity")
 	}
 	record := sourcelock.NewSnapshot(id, receipt.Files, manifests)
 	if e = writeObject(filepath.Join(stage, "snapshot.json"), record); e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
-	if _, e = VerifySnapshot(stage, expected); e != nil {
-		return sourcelock.Snapshot{}, e
+	verified, e := verifySnapshot(stage, expected)
+	if e != nil {
+		return verifiedSnapshot{}, e
 	}
 	if e = os.Rename(stage, output); e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
 	success = true
-	return sourcelock.ReadSnapshot(filepath.Join(output, "snapshot.json"))
+	verified.dir = output
+	return verified, nil
 }
 
 // projectSources bridges packaged bytes to the locked source representation.
-func projectSources(root, snapshot string) (wowapi.Project, error) {
+func projectSources(root string, snapshot verifiedSnapshot) (wowapi.Project, error) {
 	p := wowapi.NewProject(root)
 	lockPath := p.ClientSourcesPath()
 	lock, e := sourcelock.ReadSnapshot(lockPath)
 	if e != nil {
 		return p, e
 	}
-	record, e := VerifySnapshot(snapshot, &lock)
-	if e != nil {
-		return p, e
+	record := snapshot.record
+	if !record.Equal(lock) {
+		return p, fmt.Errorf("client snapshot differs from selected source lock")
 	}
 	if e = projectVersion(root, record.Identity()); e != nil {
 		return p, e
@@ -390,10 +429,6 @@ func projectSources(root, snapshot string) (wowapi.Project, error) {
 	}
 	// The selected representation can change independently of the raw snapshot.
 	dest := filepath.Join(root, "build/wow-api-source", identity+"-"+sha(selection))
-	files := map[string]bool{}
-	for _, row := range record.Files {
-		files[row.Path] = true
-	}
 	pending := map[string][]byte{}
 	paths := map[string]string{}
 	for _, group := range []string{"blizzard", "blizzard_version"} {
@@ -416,7 +451,7 @@ func projectSources(root, snapshot string) (wowapi.Project, error) {
 			if group == "blizzard_version" {
 				b = []byte(record.Version + "\n")
 			} else {
-				path, err := clientPath(relative, files)
+				path, raw, err := snapshot.packagedFile(relative)
 				if err != nil {
 					return p, err
 				}
@@ -424,18 +459,15 @@ func projectSources(root, snapshot string) (wowapi.Project, error) {
 					return p, fmt.Errorf("locked source absent from client: %s", relative)
 				}
 				origin = sourcelock.ClientPath(path)
-				b, e = sourcelock.ReadRegular(filepath.Join(snapshot, "raw", filepath.FromSlash(path)), maxFile)
-				if e != nil {
-					return p, e
-				}
+				b = raw
 			}
 			if casc {
 				if !row.ClientPath.Equal(origin) {
 					return p, fmt.Errorf("native source path differs from client selection: %s", name)
 				}
 				b = normalized(b, 1)
-			} else if sourcelock.BlobSHA(b) != row.SHA {
-				b = lockedBytes(b, row)
+			} else if locked, ok := lockedBytes(b, row); ok {
+				b = locked
 			}
 			if !row.Matches(b) {
 				return p, fmt.Errorf("client source differs from locked contract: %s", relative)
@@ -509,14 +541,19 @@ func normalized(b []byte, count int) []byte {
 	base := bytes.TrimRight(bytes.ReplaceAll(b, []byte("\r\n"), []byte("\n")), "\n")
 	return append(append([]byte{}, base...), bytes.Repeat([]byte("\n"), count)...)
 }
-func lockedBytes(b []byte, row sourcelock.SourceFile) []byte {
+// lockedBytes returns b in the locked representation: unchanged, or with
+// normalized line endings and a final-newline count the lock records.
+func lockedBytes(b []byte, row sourcelock.SourceFile) ([]byte, bool) {
+	if row.Matches(b) {
+		return b, true
+	}
 	for n := range 16 {
 		v := normalized(b, n)
 		if row.Matches(v) {
-			return v
+			return v, true
 		}
 	}
-	return nil
+	return nil, false
 }
 
 // fetcher owns HTTPS acquisition. One client serves every attempt; wait paces

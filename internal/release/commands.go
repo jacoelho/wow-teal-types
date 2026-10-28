@@ -39,44 +39,44 @@ func offeredSelection(want consumer.Version, f fetcher, region string) clientSel
 	}}
 }
 
-func (s clientSelection) verify(snapshot string) (sourcelock.Snapshot, error) {
-	record, e := VerifySnapshot(snapshot, s.lock)
+func (s clientSelection) verify(snapshot string) (verifiedSnapshot, error) {
+	v, e := verifySnapshot(snapshot, s.lock)
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
-	return record, s.want.Require(record.Version, record.Build)
+	return v, s.want.Require(v.record.Version, v.record.Build)
 }
 
-type extractFunc func(ctx context.Context, output string, identity sourcelock.ClientIdentity, expected *sourcelock.Snapshot) (sourcelock.Snapshot, error)
+type extractFunc func(ctx context.Context, output string, identity sourcelock.ClientIdentity, expected *sourcelock.Snapshot) (verifiedSnapshot, error)
 
 func extractor(root, cache string) extractFunc {
-	return func(ctx context.Context, output string, identity sourcelock.ClientIdentity, expected *sourcelock.Snapshot) (sourcelock.Snapshot, error) {
+	return func(ctx context.Context, output string, identity sourcelock.ClientIdentity, expected *sourcelock.Snapshot) (verifiedSnapshot, error) {
 		return extractSnapshot(ctx, root, output, cache, identity, expected)
 	}
 }
 
 // obtainSnapshot verifies the snapshot at path, extracting it there first when absent.
-func obtainSnapshot(ctx context.Context, path string, s clientSelection, extract extractFunc) (sourcelock.Snapshot, error) {
+func obtainSnapshot(ctx context.Context, path string, s clientSelection, extract extractFunc) (verifiedSnapshot, error) {
 	if exists(path) {
-		record, e := s.verify(path)
+		v, e := s.verify(path)
 		if e != nil {
-			return sourcelock.Snapshot{}, fmt.Errorf("client snapshot %s: %w", path, e)
+			return verifiedSnapshot{}, fmt.Errorf("client snapshot %s: %w", path, e)
 		}
-		return record, nil
+		return v, nil
 	}
 	identity, e := s.identity(ctx)
 	if e != nil {
-		return sourcelock.Snapshot{}, e
+		return verifiedSnapshot{}, e
 	}
-	record, e := extract(ctx, path, identity, s.lock)
+	v, e := extract(ctx, path, identity, s.lock)
 	if e != nil {
-		return sourcelock.Snapshot{}, fmt.Errorf("client snapshot %s: %w", path, e)
+		return verifiedSnapshot{}, fmt.Errorf("client snapshot %s: %w", path, e)
 	}
-	return record, nil
+	return v, nil
 }
 
-// ClientSnapshotPath is the conventional location of a user-provided client
-// snapshot for build.
+// ClientSnapshotPath is the default client snapshot location for build;
+// commands extract to it and read from it. The path is not verified.
 func ClientSnapshotPath(root string, build int) string {
 	return filepath.Join(root, "build/wow-client", strconv.Itoa(build))
 }
@@ -86,23 +86,21 @@ func ClientSnapshotPath(root string, build int) string {
 // version and current extractor source, so an extractor change re-extracts
 // instead of trusting output of an older build. Locked and .wow-version
 // selections of one build share an entry.
-func resolveSnapshot(ctx context.Context, root string, s clientSelection, extract extractFunc) (string, error) {
+func resolveSnapshot(ctx context.Context, root string, s clientSelection, extract extractFunc) (verifiedSnapshot, error) {
 	provided := ClientSnapshotPath(root, s.want.Build)
 	if exists(provided) {
-		if _, e := s.verify(provided); e != nil {
-			return "", fmt.Errorf("client snapshot %s: %w", provided, e)
+		v, e := s.verify(provided)
+		if e != nil {
+			return verifiedSnapshot{}, fmt.Errorf("client snapshot %s: %w", provided, e)
 		}
-		return provided, nil
+		return v, nil
 	}
 	extractorSHA, e := extractorSourceSHA(root)
 	if e != nil {
-		return "", e
+		return verifiedSnapshot{}, e
 	}
 	cached := filepath.Join(root, "build/wow-update/snapshots", s.want.Full, extractorSHA)
-	if _, e := obtainSnapshot(ctx, cached, s, extract); e != nil {
-		return "", e
-	}
-	return cached, nil
+	return obtainSnapshot(ctx, cached, s, extract)
 }
 
 func Acquire(ctx context.Context, root, snapshot, cache string) (sourcelock.Snapshot, error) {
@@ -113,7 +111,8 @@ func Acquire(ctx context.Context, root, snapshot, cache string) (sourcelock.Snap
 	if e = projectVersion(root, lock.Identity()); e != nil {
 		return sourcelock.Snapshot{}, e
 	}
-	return obtainSnapshot(ctx, snapshot, lockedSelection(lock), extractor(root, cache))
+	v, e := obtainSnapshot(ctx, snapshot, lockedSelection(lock), extractor(root, cache))
+	return v.record, e
 }
 func StageSelected(ctx context.Context, root, snapshot, cache, region string) (sourcelock.Snapshot, error) {
 	selected, e := consumer.ReadVersion(root)
@@ -127,5 +126,6 @@ func StageSelected(ctx context.Context, root, snapshot, cache, region string) (s
 		}
 		region = lock.Region
 	}
-	return obtainSnapshot(ctx, snapshot, offeredSelection(selected, newFetcher(), region), extractor(root, cache))
+	v, e := obtainSnapshot(ctx, snapshot, offeredSelection(selected, newFetcher(), region), extractor(root, cache))
+	return v.record, e
 }

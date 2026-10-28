@@ -95,7 +95,7 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 	if e := writeObject(wowapi.NewProject(root).SourcesPath(), source); e != nil {
 		t.Fatal(e)
 	}
-	p, e := projectSources(root, snapshot)
+	p, e := projectSources(root, mustVerify(t, snapshot))
 	if e != nil {
 		t.Fatal(e)
 	}
@@ -111,7 +111,7 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 	if e != nil || !bytes.Contains(raw, []byte("\r\n")) {
 		t.Fatal("raw client bytes changed")
 	}
-	if _, e = projectSources(root, snapshot); e != nil {
+	if _, e = projectSources(root, mustVerify(t, snapshot)); e != nil {
 		t.Fatal(e)
 	}
 	selected := []byte("local A = {}\nAPIDocumentation:AddDocumentationTable(A)\n\n")
@@ -119,7 +119,7 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 	if err := writeObject(wowapi.NewProject(root).SourcesPath(), source); err != nil {
 		t.Fatal(err)
 	}
-	next, err := projectSources(root, snapshot)
+	next, err := projectSources(root, mustVerify(t, snapshot))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -136,7 +136,7 @@ func TestProjectionRetainsRawBytesAndReviewedNewlineRepresentation(t *testing.T)
 		t.Fatalf("previous source selection changed: %q, %v", b, err)
 	}
 	fixtureFile(t, filepath.Dir(nextPath), "A.lua", []byte("modified"))
-	if _, e = projectSources(root, snapshot); e == nil {
+	if _, e = projectSources(root, mustVerify(t, snapshot)); e == nil {
 		t.Fatal("modified projection accepted")
 	}
 }
@@ -190,10 +190,19 @@ func TestBoundedResponsesAndCancelledWorkerPool(t *testing.T) {
 	}
 }
 func TestClientPathAmbiguityIsNotResolvedArbitrarily(t *testing.T) {
-	_, e := clientPath("Blizzard_Test/Binding.lua", map[string]bool{"Interface/AddOns/Blizzard_Test/One/Binding.lua": true, "Interface/AddOns/Blizzard_Test/Two/Binding.lua": true})
+	_, e := clientPath("Blizzard_Test/Binding.lua", map[string]sourcelock.ClientFile{"Interface/AddOns/Blizzard_Test/One/Binding.lua": {}, "Interface/AddOns/Blizzard_Test/Two/Binding.lua": {}})
 	if e == nil {
 		t.Fatal("ambiguous source accepted")
 	}
+}
+
+func mustVerify(t *testing.T, snapshot string) verifiedSnapshot {
+	t.Helper()
+	v, e := verifySnapshot(snapshot, nil)
+	if e != nil {
+		t.Fatal(e)
+	}
+	return v
 }
 
 func sourceFixture(name string, data []byte) sourcelock.SourceGroup {
@@ -354,23 +363,23 @@ func TestResolveSnapshotReusesOrExtractsOneCacheEntry(t *testing.T) {
 				selection = offeredSelection(consumer.Version{Full: "12.1.5.70576", Build: 70576}, fetcher{}, "eu")
 			}
 			var calls []stageCall
-			stage := func(_ context.Context, output string, identity sourcelock.ClientIdentity, _ *sourcelock.Snapshot) (sourcelock.Snapshot, error) {
+			stage := func(_ context.Context, output string, identity sourcelock.ClientIdentity, _ *sourcelock.Snapshot) (verifiedSnapshot, error) {
 				calls = append(calls, stageCall{output, identity})
 				if err := os.MkdirAll(filepath.Dir(output), 0755); err != nil {
-					return sourcelock.Snapshot{}, err
+					return verifiedSnapshot{}, err
 				}
 				if err := os.Rename(fixture, output); err != nil {
-					return sourcelock.Snapshot{}, err
+					return verifiedSnapshot{}, err
 				}
-				return VerifySnapshot(output, &lock)
+				return verifySnapshot(output, &lock)
 			}
 			got, err := resolveSnapshot(t.Context(), root, selection, stage)
 			if tc.wantErr {
 				if err == nil {
 					t.Fatal("mismatched snapshot accepted")
 				}
-			} else if err != nil || got != filepath.Join(root, expand(tc.want)) {
-				t.Fatalf("resolveSnapshot = %q, %v; want %q", got, err, filepath.Join(root, expand(tc.want)))
+			} else if err != nil || got.dir != filepath.Join(root, expand(tc.want)) || !got.record.Equal(lock) {
+				t.Fatalf("resolveSnapshot = %q, %v; want %q", got.dir, err, filepath.Join(root, expand(tc.want)))
 			}
 			if len(calls) != tc.stages {
 				t.Fatalf("stage calls = %v; want %d", calls, tc.stages)
@@ -402,9 +411,10 @@ func TestResolveSnapshotCacheFollowsExtractorSource(t *testing.T) {
 				selection.lock = &lock
 			}
 			var outputs []string
-			stage := func(_ context.Context, output string, identity sourcelock.ClientIdentity, _ *sourcelock.Snapshot) (sourcelock.Snapshot, error) {
+			stage := func(_ context.Context, output string, identity sourcelock.ClientIdentity, _ *sourcelock.Snapshot) (verifiedSnapshot, error) {
 				outputs = append(outputs, output)
-				return writeSnapshotFixture(t, output), nil
+				writeSnapshotFixture(t, output)
+				return verifySnapshot(output, nil)
 			}
 			sha, err := extractorSourceSHA(root)
 			if err != nil {
@@ -418,8 +428,8 @@ func TestResolveSnapshotCacheFollowsExtractorSource(t *testing.T) {
 				t.Fatal(err)
 			}
 			got, err := resolveSnapshot(t.Context(), root, selection, stage)
-			if err != nil || got != first || identities != 0 || len(outputs) != 0 {
-				t.Fatalf("unchanged extractor: resolveSnapshot = %q, %v, identities %d, stages %v; want cache hit %q", got, err, identities, outputs, first)
+			if err != nil || got.dir != first || identities != 0 || len(outputs) != 0 {
+				t.Fatalf("unchanged extractor: resolveSnapshot = %q, %v, identities %d, stages %v; want cache hit %q", got.dir, err, identities, outputs, first)
 			}
 
 			fixtureFile(t, root, "tools/cdn/main.go", []byte("package main\n\nfunc main() {}\n"))
@@ -427,11 +437,11 @@ func TestResolveSnapshotCacheFollowsExtractorSource(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if identities != 1 || len(outputs) != 1 || got != outputs[0] {
-				t.Fatalf("changed extractor: resolveSnapshot = %q, identities %d, stages %v; want one extraction", got, identities, outputs)
+			if identities != 1 || len(outputs) != 1 || got.dir != outputs[0] {
+				t.Fatalf("changed extractor: resolveSnapshot = %q, identities %d, stages %v; want one extraction", got.dir, identities, outputs)
 			}
-			if got == first || filepath.Dir(got) != filepath.Dir(first) {
-				t.Fatalf("changed extractor resolved %q; want a new entry beside %q", got, first)
+			if got.dir == first || filepath.Dir(got.dir) != filepath.Dir(first) {
+				t.Fatalf("changed extractor resolved %q; want a new entry beside %q", got.dir, first)
 			}
 			if _, err := VerifySnapshot(first, &lock); err != nil {
 				t.Fatalf("previous cache entry disturbed: %v", err)

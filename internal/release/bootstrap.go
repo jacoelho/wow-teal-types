@@ -48,8 +48,8 @@ func parallel(ctx context.Context, items []sourceJob, fn func(context.Context, s
 }
 
 type sourceJob struct {
-	group, repo, commit, upstream, name, blob string
-	size                                      int
+	group, repo, commit, upstream string
+	file                          sourcelock.SourceFile
 }
 
 func escapePath(path string) string {
@@ -68,11 +68,11 @@ func syncPrimary(ctx context.Context, f fetcher, p wowapi.Project) error {
 	for _, group := range keys(lock) {
 		source := lock[group]
 		for _, r := range source.Files {
-			jobs = append(jobs, sourceJob{group, source.Repository, source.Commit, strings.Trim(source.Path+"/"+r.Name, "/"), r.Name, r.SHA, r.Size})
+			jobs = append(jobs, sourceJob{group, source.Repository, source.Commit, strings.Trim(source.Path+"/"+r.Name, "/"), r})
 		}
 	}
 	return parallel(ctx, jobs, func(ctx context.Context, j sourceJob) error {
-		path, e := p.InputPath(j.group, j.name)
+		path, e := p.InputPath(j.group, j.file.Name)
 		if e != nil {
 			return e
 		}
@@ -84,7 +84,7 @@ func syncPrimary(ctx context.Context, f fetcher, p wowapi.Project) error {
 			if e != nil {
 				return e
 			}
-			if len(b) != j.size || sourcelock.BlobSHA(b) != j.blob {
+			if !j.file.Matches(b) {
 				return fmt.Errorf("modified pinned source: %s", path)
 			}
 			return nil
@@ -99,8 +99,8 @@ func syncPrimary(ctx context.Context, f fetcher, p wowapi.Project) error {
 		if e != nil {
 			return e
 		}
-		if len(b) != j.size || sourcelock.BlobSHA(b) != j.blob {
-			return fmt.Errorf("community blob identity mismatch: %s", j.name)
+		if !j.file.Matches(b) {
+			return fmt.Errorf("community blob identity mismatch: %s", j.file.Name)
 		}
 		return atomicWrite(path, b, 0644)
 	})
@@ -108,9 +108,18 @@ func syncPrimary(ctx context.Context, f fetcher, p wowapi.Project) error {
 
 // Bootstrap selects verified native inputs and populates pinned community inputs.
 func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, error) {
-	return bootstrap(ctx, newFetcher(), root, snapshot)
+	p := wowapi.NewProject(root)
+	lock, e := sourcelock.ReadSnapshot(p.ClientSourcesPath())
+	if e != nil {
+		return p, e
+	}
+	v, e := verifySnapshot(snapshot, &lock)
+	if e != nil {
+		return p, e
+	}
+	return bootstrap(ctx, newFetcher(), root, v)
 }
-func bootstrap(ctx context.Context, f fetcher, root, snapshot string) (wowapi.Project, error) {
+func bootstrap(ctx context.Context, f fetcher, root string, snapshot verifiedSnapshot) (wowapi.Project, error) {
 	p, e := projectSources(root, snapshot)
 	if e != nil {
 		return p, e

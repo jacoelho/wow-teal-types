@@ -88,11 +88,22 @@ Callers serialize publication to the same destination.
 Release publication owns a larger journaled cohort transaction and its recovery
 command. Its journal and input fingerprints remain distinct from consumer
 directory replacement. Neither operation claims power-loss atomicity.
-Recovery and extractor building do not require `.wow-version`. Explicit snapshot
-verification uses the supplied snapshot; the default snapshot path,
-`build/wow-update/snapshots/<version>/<extractor source sha256>`, is keyed by
-the client version and the current `tools/cdn` source, so an extractor change
-extracts afresh instead of reusing older output.
+Recovery and extractor building do not require `.wow-version`. Commands use the
+supplied snapshot or `build/wow-client/<build>`, which is not verified until
+read. Generation without a snapshot in `build/wow-client/<build>` uses the
+update cache, `build/wow-update/snapshots/<version>/<extractor source sha256>`.
+The cache is keyed by the client version and the current `tools/cdn` source, so
+an extractor change extracts afresh instead of reusing older output.
+
+A command verifies its client snapshot once, hashing the record and the full raw
+inventory, and passes the verified value to staging and projection. That value
+reads raw files only through the record and re-checks each file's size,
+SHA-256 and content key when it is read, so a change after verification fails
+at use. Staging writes the client lock from the verified record, not from the
+`snapshot.json` on disk. Re-verifying the whole snapshot in each consumer was
+rejected: it hashed the inventory up to three times per generation and still
+read the files after the last check. Freshly extracted output is verified
+before it is renamed into place.
 
 Snapshot records and the client lock identify the client and its verified files
 only: identity, manifests, and each file's content key, SHA-256 and size.

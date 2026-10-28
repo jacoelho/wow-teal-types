@@ -51,29 +51,25 @@ func copyMaintained(root, target string) error {
 	}
 	return nil
 }
-func stageNative(root, snapshot string) error {
+func stageNative(root string, snapshot verifiedSnapshot) error {
 	p := wowapi.NewProject(root)
 	lock, e := sourcelock.ReadSources(p.SourcesPath())
 	if e != nil {
 		return e
 	}
-	record, e := VerifySnapshot(snapshot, nil)
-	if e != nil {
-		return e
-	}
+	record := snapshot.record
 	if e = projectVersion(root, record.Identity()); e != nil {
 		return e
 	}
-	receipt, e := sourcelock.ReadRegular(filepath.Join(snapshot, "snapshot.json"), maxFile)
+	// The lock is written from the verified record, never re-read from disk.
+	receipt, e := jsonBytes(record)
 	if e != nil {
 		return e
 	}
-	files := map[string]bool{}
 	var names []string
 	prefix := "Interface/AddOns/Blizzard_APIDocumentationGenerated/"
 	for _, row := range record.Files {
 		n := row.Path
-		files[n] = true
 		if strings.HasPrefix(n, prefix) {
 			names = append(names, strings.TrimPrefix(n, prefix))
 		}
@@ -115,27 +111,20 @@ func stageNative(root, snapshot string) error {
 				if group == "blizzard" {
 					relative = "Blizzard_APIDocumentationGenerated/" + name
 				}
-				packaged, e = clientPath(relative, files)
+				packaged, raw, e = snapshot.packagedFile(relative)
 				if e != nil {
 					return e
 				}
 				if packaged == "" {
 					return fmt.Errorf("required native source removed: %s", name)
 				}
-				raw, e = sourcelock.ReadRegular(filepath.Join(snapshot, "raw", filepath.FromSlash(packaged)), maxFile)
-				if e != nil {
-					return e
-				}
 			}
 			var legacy []byte
-			if r, ok := old[name]; ok {
-				if r.Matches(raw) {
-					legacy = raw
-				} else {
-					legacy = lockedBytes(raw, r)
-				}
-			}
-			if legacy == nil {
+			if r, ok := old[name]; !ok {
+				preserved = false
+			} else if locked, ok := lockedBytes(raw, r); ok {
+				legacy = locked
+			} else {
 				preserved = false
 			}
 			acquired[group] = append(acquired[group], selected{name, packaged, normalized(raw, 1), legacy})
@@ -329,6 +318,10 @@ func StageRelease(ctx context.Context, root, output, snapshot, questieRef string
 	if e != nil {
 		return StageResult{}, e
 	}
+	verified, e := verifySnapshot(snapshot, nil)
+	if e != nil {
+		return StageResult{}, e
+	}
 	if exists(output) {
 		return StageResult{}, fmt.Errorf("candidate destination already exists")
 	}
@@ -345,7 +338,7 @@ func StageRelease(ctx context.Context, root, output, snapshot, questieRef string
 	if e = seedCaches(root, workspace); e != nil {
 		return StageResult{}, e
 	}
-	if e = stageNative(workspace, snapshot); e != nil {
+	if e = stageNative(workspace, verified); e != nil {
 		return StageResult{}, e
 	}
 	g := &github{fetch: newFetcher()}
