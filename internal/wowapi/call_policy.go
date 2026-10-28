@@ -80,20 +80,33 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 		policy.Guard = "secret"
 	}
 	slots := c.argumentSlots(contract.Native)
-	if !slices.ContainsFunc(slots, func(s argumentSlot) bool { return s.acceptsSecret }) {
-		return policy
-	}
 	opening := strings.IndexByte(signature, '(')
-	if opening < 0 {
-		return policy
+	closing := -1
+	if opening >= 0 {
+		closing = matchingClose(signature, opening)
 	}
-	closing := matchingClose(signature, opening)
 	if closing < 0 {
 		reject(fmt.Sprintf("invalid finalized native signature: %s", symbol))
 	}
 	arguments := splitTop(signature[opening+1:closing], ',')
 	if len(arguments) == 1 && arguments[0] == "" {
 		arguments = nil
+	}
+	// The rendered parameters must be exactly the native slots, so every grant
+	// lands on the parameter whose declared type the slot produced.
+	want := 0
+	if item.Method {
+		want++
+	}
+	for _, slot := range slots {
+		if slot.variadic {
+			want++
+		} else {
+			want += slot.width
+		}
+	}
+	if len(arguments) != want {
+		reject(fmt.Sprintf("native signature %s renders %d parameters for %d native slots: %s", symbol, len(arguments), want, signature))
 	}
 	position := 1
 	if item.Method {
@@ -107,7 +120,7 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 			break
 		}
 		for range slot.width {
-			if slot.acceptsSecret && position <= len(arguments) {
+			if slot.acceptsSecret {
 				policy.SecretParameters = append(policy.SecretParameters, position)
 			}
 			position++
@@ -118,7 +131,9 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 
 // argumentSlot is one native argument's secret permission. The declared
 // parameter types and call_policy.lua both derive from it, so a permitted
-// position is exactly a position whose declared type admits a Secret.
+// position is a position whose source-rendered type admits a Secret. Reviewed
+// overloads may narrow a permitted position to a type that rejects a Secret;
+// the grant then never applies.
 type argumentSlot struct {
 	width         int // declared parameters; an ABI tuple spans several
 	acceptsSecret bool

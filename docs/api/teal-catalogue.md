@@ -209,7 +209,11 @@ Paths are limited to `wow.d.tl`, `wow_env.d.tl` and `wow_secure_env.d.tl` under
 `function` keyword, one entry per overload; aliases keep that origin.
 Positions count the full argument tuple, including an explicit or `__call`
 receiver at position 1. A permitted position accepts a Secret where the declared
-type is plain; a vararg permission covers every position from its start. Contents
+type is plain; a vararg permission covers every position from its start. Every
+native-backed overload, including reviewed literal-factory overloads, must
+render exactly one parameter per native slot (an ABI tuple spans its width, the
+repeating tail is one vararg); generation rejects any other arity rather than
+shifting or dropping a permission. Contents
 secrecy is carried by `SecretTable`, so any `secret_contents_parameters` or
 `secret_contents_vararg_from` fails closed.
 

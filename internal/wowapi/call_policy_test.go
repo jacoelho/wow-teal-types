@@ -157,3 +157,48 @@ func TestOverloadsDifferingOnlyByNilCollapseUnlessPermissionsDiffer(t *testing.T
 		}
 	})
 }
+
+// A native-backed signature renders exactly one parameter per native slot, so
+// no permission can shift onto, or vanish from, a rendered parameter.
+func TestNativeSignatureArityMustMatchSlots(t *testing.T) {
+	allowed := nativeParameter{Type: "number"}
+	stride := 1
+	rest := nativeParameter{Type: "unknown", StrideIndex: &stride}
+	for _, test := range []struct {
+		name      string
+		method    bool
+		arguments []nativeParameter
+		signature string
+		accept    bool
+	}{
+		{name: "zero arguments", signature: "function(): string", accept: true},
+		{name: "too many", arguments: []nativeParameter{allowed}, signature: "function(number, number): string"},
+		{name: "too few", arguments: []nativeParameter{allowed, allowed}, signature: "function(number): string"},
+		{name: "method without self", method: true, arguments: []nativeParameter{allowed}, signature: "function(number): string"},
+		{name: "method with extra self", method: true, arguments: []nativeParameter{allowed}, signature: "function(self, self, number): string"},
+		{name: "ABI tuple narrower than its width", arguments: []nativeParameter{{Type: "Pair"}}, signature: "function(number): string"},
+		{name: "variadic tail missing", arguments: []nativeParameter{allowed, rest}, signature: "function(number): string"},
+		{name: "variadic tail repeated", arguments: []nativeParameter{allowed, rest}, signature: "function(number, unknown, unknown...): string"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			c := newCatalogue()
+			c.abiTuples["Pair"] = []string{"number", "number"}
+			item := &catalogueFunction{Method: test.method, ResolvedSignature: new(test.signature), Native: &nativeFunction{
+				Arguments: test.arguments, Policy: nativePolicy{SecretArguments: new("AllowedWhenTainted")},
+			}}
+			symbol := "fixtureNative"
+			if test.method {
+				c.record("Receiver", "fixture", kindRecord).Methods[symbol] = item
+			} else {
+				c.setGlobal(symbol, item)
+			}
+			_, err := c.finalize(t.Context())
+			switch {
+			case test.accept && err != nil:
+				t.Fatal(err)
+			case !test.accept && (err == nil || !strings.Contains(err.Error(), symbol)):
+				t.Fatalf("finalize = %v; want a rejection naming %s", err, symbol)
+			}
+		})
+	}
+}

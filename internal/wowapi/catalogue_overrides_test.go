@@ -75,7 +75,7 @@ func TestLiteralFactoryOverloadsKeepOrderAndNativePolicy(t *testing.T) {
 	for _, test := range []struct {
 		name, generic, fallback string
 	}{
-		{"source fallback", "", "function(self, W.MaybeSecret<string>): Widget"},
+		{"source fallback", "", "function(self, W.MaybeSecret<string>, ? W.MaybeSecret<string>): Widget"},
 		{"reviewed generic fallback", "function(self, string, ? string): Widget", "function(self, string, ? string): Widget"},
 	} {
 		t.Run(test.name, func(t *testing.T) {
@@ -85,7 +85,7 @@ func TestLiteralFactoryOverloadsKeepOrderAndNativePolicy(t *testing.T) {
 			c.record("B", "fixture", kindRecord).Bases = []string{"Widget"}
 			c.record("Tpl", "fixture", kindInterface)
 			c.record("Factory", "fixture", kindRecord).Methods["Make"] = &catalogueFunction{Source: "fixture", Method: true, Native: &nativeFunction{
-				Arguments: []nativeParameter{{Name: "kind", Type: "string"}},
+				Arguments: []nativeParameter{{Name: "kind", Type: "string"}, {Name: "template", Type: "string", Nilable: new(true)}},
 				Returns:   []nativeParameter{{Name: "made", Type: "Widget"}},
 				Policy:    nativePolicy{SecretArguments: new("AllowedWhenTainted")},
 			}}
@@ -115,8 +115,41 @@ func TestLiteralFactoryOverloadsKeepOrderAndNativePolicy(t *testing.T) {
 			if !slices.Equal(got, want) {
 				t.Fatalf("overloads = %q, want %q", got, want)
 			}
-			if policy := string(outputs["call_policy.lua"]); strings.Count(policy, `symbol = "Factory.Make"`) != len(want) || strings.Count(policy, "secret_parameters = {2}") != len(want) {
-				t.Errorf("want %d Factory.Make entries granting argument 2:\n%s", len(want), policy)
+			if policy := string(outputs["call_policy.lua"]); strings.Count(policy, `symbol = "Factory.Make"`) != len(want) || strings.Count(policy, "secret_parameters = {2, 3}") != len(want) {
+				t.Errorf("want %d Factory.Make entries granting arguments 2 and 3:\n%s", len(want), policy)
+			}
+		})
+	}
+}
+
+// A reviewed overload pattern that drifts from the native's arity is rejected
+// instead of moving the native permissions onto other parameters.
+func TestLiteralFactoryPatternMustMatchNativeArity(t *testing.T) {
+	for _, test := range []struct {
+		name      string
+		arguments []nativeParameter
+		factory   literalFactoryOverride
+	}{
+		{"more than the native", []nativeParameter{{Name: "kind", Type: "string"}}, literalFactoryOverride{
+			Overload: "function(self, {type}, {template}): {result}", Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"A"}}}}},
+		{"fewer than the native", []nativeParameter{{Name: "kind", Type: "string"}, {Name: "name", Type: "string"}}, literalFactoryOverride{
+			Overload: "function(self, {type}): {result}"}},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			c := newCatalogue()
+			c.record("Widget", "fixture", kindRecord)
+			c.record("A", "fixture", kindRecord).Bases = []string{"Widget"}
+			c.record("Tpl", "fixture", kindInterface)
+			c.record("Factory", "fixture", kindRecord).Methods["Make"] = &catalogueFunction{Source: "fixture", Method: true, Native: &nativeFunction{
+				Arguments: test.arguments,
+				Returns:   []nativeParameter{{Name: "made", Type: "Widget"}},
+				Policy:    nativePolicy{SecretArguments: new("AllowedWhenTainted")},
+			}}
+			factory := test.factory
+			factory.Symbol, factory.Base, factory.Types = "Factory.Make", "Widget", []string{"A"}
+			c.applyLiteralFactories([]literalFactoryOverride{factory})
+			if _, err := c.finalize(t.Context()); err == nil || !strings.Contains(err.Error(), "Factory.Make") {
+				t.Fatalf("finalize = %v; want a rejection naming Factory.Make", err)
 			}
 		})
 	}
