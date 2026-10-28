@@ -15,7 +15,7 @@ func TestExtractorConfigWireContract(t *testing.T) {
 		t.Fatal(err)
 	}
 	id := sourcelock.ClientIdentity{Product: "wow", Region: "eu", Locale: "enUS", Build: 70575, Version: "12.1.5.70575", BuildConfig: strings.Repeat("a", 32), CDNConfig: strings.Repeat("b", 32), ProductConfig: strings.Repeat("c", 32)}
-	got, err := jsonBytes(extractorConfig{id, manifests})
+	got, err := jsonBytes(newExtractorConfig(id))
 	if err != nil {
 		t.Fatal(err)
 	}

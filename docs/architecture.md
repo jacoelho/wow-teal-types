@@ -30,7 +30,13 @@ overlap under the filesystem's own case and alias rules. Rejected requests may
 leave empty directories; extraction and cache file writes have not started.
 Release owns the UI manifest selection (path to file data ID) and passes it to
 the extractor in `config.json` alongside the client identity; the extractor
-validates and follows it and holds no copy. The CDN is the only acquisition
+validates and follows it and holds no copy. Release also owns the per-file and
+aggregate source limits that `VerifySnapshot` enforces, and writes them as
+`max_file` and `max_total`. The extractor accepts them only within its own
+ceilings and with `max_file <= max_total`, then enforces them while building
+the inventory, before downloading content. Keeping a mirrored constant in each
+module was rejected: drift failed only after a full extraction, at
+`VerifySnapshot`. The CDN is the only acquisition
 source. Extraction receipts carry client identity and verified files. Archive
 checksums and size-hint validation belong to extraction, without a separate
 reporting model. Release bounds extraction time around the extractor process.

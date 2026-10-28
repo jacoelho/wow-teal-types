@@ -11,5 +11,7 @@
     "Interface/ui-code-list.txt": 6067012,
     "Interface/ui-gen-addon-list.txt": 6076661,
     "Interface/ui-toc-list.txt": 6067013
-  }
+  },
+  "max_file": 8388608,
+  "max_total": 402653184
 }

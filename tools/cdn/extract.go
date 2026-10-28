@@ -51,7 +51,7 @@ func extract(ctx context.Context, job extraction, output, cache string, progress
 	if err != nil {
 		return fmt.Errorf("root manifest: %w", err)
 	}
-	inv, err := inventory(ctx, c, encoding, root, job.manifests)
+	inv, err := inventory(ctx, c, encoding, root, job.manifests, job.limits)
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func extract(ctx context.Context, job extraction, output, cache string, progress
 		}
 		receipts = append(receipts, receipt)
 	}
-	files, err := extractFiles(ctx, c, encoding, output, inv.files)
+	files, err := extractFiles(ctx, c, encoding, output, inv.files, job.limits.file)
 	if err != nil {
 		return err
 	}
@@ -157,7 +157,7 @@ func loadEncoding(ctx context.Context, c *cdnClient, build map[string][]string) 
 // inventory resolves the selected manifests by file data ID, reads them, and
 // resolves every path they list by name hash. It enforces path safety,
 // case-collision, per-file, file-count and aggregate limits before any write.
-func inventory(ctx context.Context, c *cdnClient, encoding *encodingTable, root []byte, manifests []manifestID) (sourceInventory, error) {
+func inventory(ctx context.Context, c *cdnClient, encoding *encodingTable, root []byte, manifests []manifestID, limits sourceLimits) (sourceInventory, error) {
 	wanted := make(map[uint32]bool, len(manifests))
 	for _, manifest := range manifests {
 		wanted[manifest.ID] = true
@@ -187,11 +187,11 @@ func inventory(ctx context.Context, c *cdnClient, encoding *encodingTable, root 
 		if err != nil {
 			return preparedFile{}, err
 		}
-		if entry.Size > maxFile {
+		if entry.Size > limits.file {
 			return preparedFile{}, fmt.Errorf("%s exceeds per-file limit", name)
 		}
 		inv.bytes += entry.Size
-		if inv.bytes > maxSourceTotal {
+		if inv.bytes > limits.total {
 			return preparedFile{}, fmt.Errorf("UI files exceed aggregate limit")
 		}
 		return preparedFile{name, k, entry.Size}, nil
@@ -209,7 +209,7 @@ func inventory(ctx context.Context, c *cdnClient, encoding *encodingTable, root 
 		if err != nil {
 			return sourceInventory{}, err
 		}
-		data, err := readContent(ctx, c, encoding, k, maxFile)
+		data, err := readContent(ctx, c, encoding, k, limits.file)
 		if err != nil {
 			return sourceInventory{}, fmt.Errorf("%s: %w", manifest.Path, err)
 		}
@@ -261,7 +261,7 @@ func inventory(ctx context.Context, c *cdnClient, encoding *encodingTable, root 
 	return inv, nil
 }
 
-func extractFiles(ctx context.Context, c *cdnClient, encoding *encodingTable, output string, files []preparedFile) ([]fileReceipt, error) {
+func extractFiles(ctx context.Context, c *cdnClient, encoding *encodingTable, output string, files []preparedFile, maxFile uint64) ([]fileReceipt, error) {
 	receipts := make([]fileReceipt, len(files))
 	err := forEach(ctx, len(files), maxWorkers, func(ctx context.Context, i int) error {
 		file := files[i]

@@ -20,14 +20,15 @@ import (
 	"syscall"
 )
 
+// The source limits are ceilings: release chooses the enforced limits and
+// writes them into config.json, which may only tighten them.
 const (
 	maxFile = 8 << 20
 	// maxMetadata bounds one encoded or decoded metadata blob (encoding, root)
 	// and is the BLTE decoder's ceiling.
 	maxMetadata = 384 << 20
-	// maxSourceTotal bounds aggregate extracted UI bytes. It is a separate limit
-	// from maxMetadata that mirrors release's maxTotal, which VerifySnapshot
-	// enforces over the same files; the two must stay equal.
+	// maxSourceTotal bounds aggregate extracted UI bytes, separately from
+	// maxMetadata.
 	maxSourceTotal = 384 << 20
 	maxFiles       = 20000
 	maxManifests   = 16
@@ -51,6 +52,15 @@ type clientIdentity struct {
 type sourceConfig struct {
 	clientIdentity
 	Manifests map[string]uint32 `json:"manifests"`
+	MaxFile   uint64            `json:"max_file"`
+	MaxTotal  uint64            `json:"max_total"`
+}
+
+// sourceLimits bounds the extracted UI files. Release's VerifySnapshot enforces
+// the same values over the result, so they arrive in config.json rather than
+// as a second copy of release's constants.
+type sourceLimits struct {
+	file, total uint64
 }
 type manifestID struct {
 	ID   uint32
@@ -66,6 +76,7 @@ type extraction struct {
 	productConfig key
 	buildName     string
 	manifests     []manifestID
+	limits        sourceLimits
 }
 
 type fileReceipt struct {
@@ -181,6 +192,17 @@ func validateConfig(c sourceConfig) (extraction, error) {
 		}
 		ids[manifest.ID] = manifest.Path
 	}
+	for _, limit := range [2]struct {
+		name           string
+		value, ceiling uint64
+	}{{"max_file", c.MaxFile, maxFile}, {"max_total", c.MaxTotal, maxSourceTotal}} {
+		if limit.value == 0 || limit.value > limit.ceiling {
+			return extraction{}, fmt.Errorf("%s %d must be within 1..%d", limit.name, limit.value, limit.ceiling)
+		}
+	}
+	if c.MaxFile > c.MaxTotal {
+		return extraction{}, fmt.Errorf("max_file %d exceeds max_total %d", c.MaxFile, c.MaxTotal)
+	}
 	return extraction{
 		identity:      c.clientIdentity,
 		buildConfig:   keys[0],
@@ -188,6 +210,7 @@ func validateConfig(c sourceConfig) (extraction, error) {
 		productConfig: keys[2],
 		buildName:     fmt.Sprintf("WOW-%dpatch%s_Retail", build, version[1]),
 		manifests:     manifests,
+		limits:        sourceLimits{c.MaxFile, c.MaxTotal},
 	}, nil
 }
 func readContent(ctx context.Context, c *cdnClient, e *encodingTable, k key, limit uint64) ([]byte, error) {

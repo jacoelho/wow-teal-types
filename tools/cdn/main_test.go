@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"io"
 	"io/fs"
-	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -238,44 +237,87 @@ func TestExtractorConfigWireContract(t *testing.T) {
 	if job.identity.Build != 70575 || job.identity.Region != "eu" || job.buildName != "WOW-70575patch12.1.5_Retail" {
 		t.Fatalf("identity = %+v, build name %q", job.identity, job.buildName)
 	}
+	if job.limits != (sourceLimits{file: 8 << 20, total: 384 << 20}) {
+		t.Fatalf("limits = %+v; want release's 8 MiB file and 384 MiB total", job.limits)
+	}
 }
 
-func TestExtractorConfigRejectsInvalidManifests(t *testing.T) {
-	var base map[string]json.RawMessage
-	if err := json.Unmarshal(configFixture(t), &base); err != nil {
+// configWith writes the fixture with each named field replaced, or removed when
+// its value is "".
+func configWith(t *testing.T, changes map[string]string) string {
+	t.Helper()
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(configFixture(t), &fields); err != nil {
 		t.Fatal(err)
 	}
+	for field, value := range changes {
+		if value == "" {
+			delete(fields, field)
+		} else {
+			fields[field] = json.RawMessage(value)
+		}
+	}
+	data, err := json.Marshal(fields)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(t.TempDir(), "config.json")
+	if err := os.WriteFile(path, data, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
+func TestExtractorConfigRejectsInvalidFields(t *testing.T) {
+	type rejection struct {
+		name    string
+		changes map[string]string
+		want    string // a fragment the rejection must name; "" accepts any error
+	}
+	tests := []rejection{
+		{"manifests-missing", map[string]string{"manifests": ""}, ""},
+		{"manifests-empty", map[string]string{"manifests": `{}`}, ""},
+		{"manifests-null", map[string]string{"manifests": `null`}, ""},
+		{"duplicate-id", map[string]string{"manifests": `{"Interface/a.txt": 7, "Interface/b.txt": 7}`}, ""},
+		{"zero-id", map[string]string{"manifests": `{"Interface/a.txt": 0}`}, ""},
+		{"negative-id", map[string]string{"manifests": `{"Interface/a.txt": -1}`}, ""},
+		{"unsafe-path", map[string]string{"manifests": `{"Interface/../a.txt": 7}`}, ""},
+		{"unknown-key", map[string]string{"installation": `"/Applications/World of Warcraft"`}, ""},
+		{"max_file-above-max_total", map[string]string{"max_file": `2048`, "max_total": `1024`}, "max_file"},
+	}
+	ceilings := map[string]string{"max_file": `8388609`, "max_total": `402653185`}
+	for _, field := range []string{"max_file", "max_total"} {
+		for _, row := range []struct{ name, value string }{
+			{"missing", ""}, {"zero", `0`}, {"negative", `-1`}, {"null", `null`}, {"string", `"1024"`},
+			{"fractional", `1024.5`}, {"ceiling-plus-one", ceilings[field]},
+			{"2^63", `9223372036854775808`}, {"2^64", `18446744073709551616`},
+		} {
+			tests = append(tests, rejection{field + "-" + row.name, map[string]string{field: row.value}, field})
+		}
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			_, err := readConfig(configWith(t, test.changes))
+			if err == nil || !strings.Contains(err.Error(), test.want) {
+				t.Fatalf("readConfig = %v; want a rejection naming %q", err, test.want)
+			}
+		})
+	}
+}
+
+func TestExtractorConfigAcceptsLimitsUpToTheCeilings(t *testing.T) {
 	for _, test := range []struct {
-		name  string
-		field string
-		value string
+		name    string
+		changes map[string]string
+		want    sourceLimits
 	}{
-		{"missing", "manifests", ""},
-		{"empty", "manifests", `{}`},
-		{"null", "manifests", `null`},
-		{"duplicate-id", "manifests", `{"Interface/a.txt": 7, "Interface/b.txt": 7}`},
-		{"zero-id", "manifests", `{"Interface/a.txt": 0}`},
-		{"negative-id", "manifests", `{"Interface/a.txt": -1}`},
-		{"unsafe-path", "manifests", `{"Interface/../a.txt": 7}`},
-		{"unknown-key", "installation", `"/Applications/World of Warcraft"`},
+		{"ceilings", map[string]string{"max_file": `8388608`, "max_total": `402653184`}, sourceLimits{8 << 20, 384 << 20}},
+		{"tightened", map[string]string{"max_file": `1024`, "max_total": `1024`}, sourceLimits{1024, 1024}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			fields := maps.Clone(base)
-			if test.value == "" {
-				delete(fields, test.field)
-			} else {
-				fields[test.field] = json.RawMessage(test.value)
-			}
-			data, err := json.Marshal(fields)
-			if err != nil {
-				t.Fatal(err)
-			}
-			path := filepath.Join(t.TempDir(), "config.json")
-			if err := os.WriteFile(path, data, 0o600); err != nil {
-				t.Fatal(err)
-			}
-			if _, err := readConfig(path); err == nil {
-				t.Fatalf("accepted %s", data)
+			job, err := readConfig(configWith(t, test.changes))
+			if err != nil || job.limits != test.want {
+				t.Fatalf("readConfig = %+v, %v; want limits %+v", job.limits, err, test.want)
 			}
 		})
 	}

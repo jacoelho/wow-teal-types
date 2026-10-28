@@ -292,3 +292,29 @@ func FuzzFormatBounds(f *testing.F) {
 		_ = verifyBLTEEnvelope(data)
 	})
 }
+
+// The configured limits, not the ceilings, bound the inventory, and they are
+// checked before any content is requested.
+func TestInventoryEnforcesConfiguredLimits(t *testing.T) {
+	encoding, err := parseEncoding(encodingFixture(t))
+	if err != nil {
+		t.Fatal(err)
+	}
+	manifests := []manifestID{{7, "Interface/ui-code-list.txt"}}
+	for _, test := range []struct {
+		name   string
+		limits sourceLimits
+		want   string
+	}{
+		{"per-file", sourceLimits{file: 2, total: 1024}, "exceeds per-file limit"},
+		{"aggregate", sourceLimits{file: 3, total: 2}, "exceed aggregate limit"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			// A nil client fails the test by panicking if content is requested.
+			_, err := inventory(t.Context(), nil, encoding, rootFixture(t), manifests, test.limits)
+			if err == nil || !strings.Contains(err.Error(), test.want) {
+				t.Fatalf("inventory = %v; want %q", err, test.want)
+			}
+		})
+	}
+}

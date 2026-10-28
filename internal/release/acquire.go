@@ -29,6 +29,14 @@ var manifests = map[string]int{"Interface/ui-code-list.txt": 6067012, "Interface
 type extractorConfig struct {
 	sourcelock.ClientIdentity
 	Manifests map[string]int `json:"manifests"`
+	MaxFile   int            `json:"max_file"`
+	MaxTotal  int            `json:"max_total"`
+}
+
+// newExtractorConfig passes the limits VerifySnapshot enforces to the
+// extractor, so extraction fails at the same bounds before downloading.
+func newExtractorConfig(id sourcelock.ClientIdentity) extractorConfig {
+	return extractorConfig{id, manifests, maxFile, maxTotal}
 }
 
 func clientPath(name string, files map[string]sourcelock.ClientFile) (string, error) {
@@ -363,7 +371,7 @@ func extractSnapshot(ctx context.Context, root, output, cache string, identity s
 			}
 		}
 	}()
-	if e = writeObject(filepath.Join(stage, "config.json"), extractorConfig{id, manifests}); e != nil {
+	if e = writeObject(filepath.Join(stage, "config.json"), newExtractorConfig(id)); e != nil {
 		return verifiedSnapshot{}, e
 	}
 	if cache == "" {
