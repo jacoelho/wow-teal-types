@@ -1,8 +1,6 @@
 package wowapi
 
 import (
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
@@ -22,21 +20,13 @@ func TestFrameXMLMethodContracts(t *testing.T) {
 		{"owning receiver", "fun(self:Widget):number", true},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			root := t.TempDir()
-			path := filepath.Join(root, "internal/wowapi/inputs/framexml.json")
-			if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-				t.Fatal(err)
-			}
+			var supplement frameXMLSupplement
 			input := `{"classes":[{"name":"Widget","methods":{"Read":` + strconv.Quote(test.expression) + `}}]}`
-			if err := os.WriteFile(path, []byte(input), 0o644); err != nil {
+			if err := decodeJSON([]byte(input), &supplement); err != nil {
 				t.Fatal(err)
 			}
-			c := newCatalogue(Project{Root: root})
-			err := func() (err error) {
-				defer captureError(&err)
-				c.loadFrameXML()
-				return nil
-			}()
+			c := newCatalogue()
+			err := c.loadFrameXML(supplement)
 			if !test.valid {
 				if err == nil || !strings.Contains(err.Error(), "Widget.Read:") {
 					t.Fatalf("invalid method error = %v", err)

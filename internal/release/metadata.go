@@ -7,6 +7,7 @@ import (
 
 	"wow-teal-types/internal/consumer"
 	"wow-teal-types/internal/sourcelock"
+	"wow-teal-types/internal/wowapi"
 )
 
 func replaceOnce(data []byte, pattern, replacement, context string) ([]byte, error) {
@@ -28,11 +29,12 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	native, err := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
+	project := wowapi.NewProject(root)
+	native, err := sourcelock.ReadSources(project.SourcesPath())
 	if err != nil {
 		return nil, err
 	}
-	client, err := sourcelock.ReadSnapshot(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
+	client, err := sourcelock.ReadSnapshot(project.ClientSourcesPath())
 	if err != nil {
 		return nil, err
 	}
@@ -41,10 +43,10 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 	}
 	versions := native["blizzard_version"].Files
 	versionBytes := []byte(selected.Full + "\n")
-	if len(versions) != 1 || versions[0].Name != "version.txt" || versions[0].SHA != blob(versionBytes) || versions[0].Size != len(versionBytes) {
+	if len(versions) != 1 || versions[0].Name != "version.txt" || versions[0].SHA != sourcelock.BlobSHA(versionBytes) || versions[0].Size != len(versionBytes) {
 		return nil, fmt.Errorf("native source version lock does not match .wow-version")
 	}
-	manifestData, err := readFile(filepath.Join(root, "package.json"), maxFile)
+	manifestData, err := sourcelock.ReadRegular(filepath.Join(root, "package.json"), maxFile)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +67,7 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 		if e != nil {
 			return nil, e
 		}
-		return readFile(path, maxPayload)
+		return sourcelock.ReadRegular(path, maxPayload)
 	}
 	data, err := read("README.md")
 	if err != nil {
@@ -84,9 +86,6 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 		return nil, err
 	}
 	for _, name := range keys(files) {
-		if name == "package.json" {
-			return nil, fmt.Errorf("package metadata cannot fingerprint itself")
-		}
 		data, exists := outputs[name]
 		if !exists {
 			data, err = read(name)
@@ -96,17 +95,7 @@ func prepareMetadata(root string) (map[string][]byte, error) {
 		}
 		files[name] = sha(data)
 	}
-	template := "rockspecs/wow-tl-type-" + manifest.Version + "-1.rockspec.in"
-	templates, err := filepath.Glob(filepath.Join(root, "rockspecs/*.rockspec.in"))
-	if err != nil {
-		return nil, err
-	}
-	for _, path := range templates {
-		if path != filepath.Join(root, template) {
-			return nil, fmt.Errorf("remove superseded recipe templates after reviewing the package version change")
-		}
-	}
-	recipe, err := consumer.Recipe(root, manifest, "", nil)
+	template, recipe, err := consumer.RecipeTemplate(root, manifest)
 	if err != nil {
 		return nil, err
 	}

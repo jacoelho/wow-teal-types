@@ -9,7 +9,7 @@ import (
 	"io"
 	"math"
 	"math/bits"
-	"sort"
+	"slices"
 	"strings"
 )
 
@@ -26,14 +26,12 @@ type encodingTable struct {
 	pages    int
 }
 
-const maxMetadataBytes = 384 << 20
-
 // decodeBLTE accepts the unencrypted N/Z encodings used by the UI catalogue.
 // Unknown/encrypted modes fail; unavailable plaintext is never filled with zeros.
 // expected == 0 means unknown; the acquisition boundary independently checks the
 // content key, including legitimately empty files.
 func decodeBLTE(data []byte, limit, expected uint64) ([]byte, error) {
-	if limit > maxMetadataBytes || expected > limit {
+	if limit > maxMetadata || expected > limit {
 		return nil, fmt.Errorf("BLTE: invalid header or size limit")
 	}
 	header, count, decoded, err := blteLayout(data)
@@ -81,7 +79,7 @@ func verifyBLTEEnvelope(data []byte) error {
 }
 
 func blteLayout(data []byte) (header, count, decoded uint64, err error) {
-	if len(data) < 9 || len(data) > maxMetadataBytes || string(data[:4]) != "BLTE" {
+	if len(data) < 9 || len(data) > maxMetadata || string(data[:4]) != "BLTE" {
 		return 0, 0, 0, fmt.Errorf("BLTE: invalid header or encoded size limit")
 	}
 	header = uint64(binary.BigEndian.Uint32(data[4:8]))
@@ -100,7 +98,7 @@ func blteLayout(data []byte) (header, count, decoded uint64, err error) {
 		p := 12 + 24*n
 		compressed := uint64(binary.BigEndian.Uint32(data[p : p+4]))
 		decoded += uint64(binary.BigEndian.Uint32(data[p+4 : p+8]))
-		if compressed == 0 || compressed > uint64(len(data))-cursor || decoded > maxMetadataBytes {
+		if compressed == 0 || compressed > uint64(len(data))-cursor || decoded > maxMetadata {
 			return 0, 0, 0, fmt.Errorf("BLTE: chunk %d exceeds bounds", n)
 		}
 		checksum := md5.Sum(data[cursor : cursor+compressed])
@@ -158,7 +156,7 @@ func uint40(data []byte) uint64 {
 // parseEncoding takes ownership of data: callers must not mutate it while the
 // table exists. Page checksums are checked once before bounded binary lookups.
 func parseEncoding(data []byte) (*encodingTable, error) {
-	if len(data) < 22 || len(data) > maxMetadataBytes || string(data[:2]) != "EN" || data[2] != 1 || data[3] != 16 || data[4] != 16 || data[17] != 0 {
+	if len(data) < 22 || len(data) > maxMetadata || string(data[:2]) != "EN" || data[2] != 1 || data[3] != 16 || data[4] != 16 || data[17] != 0 {
 		return nil, fmt.Errorf("encoding: unsupported header")
 	}
 	contentSize := uint64(binary.BigEndian.Uint16(data[5:7])) * 1024
@@ -284,7 +282,12 @@ func allZero(data []byte) bool {
 }
 
 func (table *encodingTable) lookup(content key) (encodingEntry, error) {
-	n := sort.Search(len(table.index), func(n int) bool { return bytes.Compare(table.index[n][:], content[:]) > 0 }) - 1
+	// The page index holds each page's first key; the candidate page is the
+	// last one whose first key is not after content.
+	n, found := slices.BinarySearchFunc(table.index, content, func(first, target key) int { return bytes.Compare(first[:], target[:]) })
+	if !found {
+		n--
+	}
 	if n < 0 {
 		return encodingEntry{}, fmt.Errorf("encoding: content key %x not found", content)
 	}
@@ -313,7 +316,7 @@ func (table *encodingTable) lookup(content key) (encodingEntry, error) {
 func scanRoot(data []byte, ids map[uint32]bool, hashes map[uint64]bool) (map[uint32]key, map[uint64]key, error) {
 	byID := make(map[uint32]key)
 	byHash := make(map[uint64]key)
-	if len(data) < 20 || len(data) > maxMetadataBytes || string(data[:4]) != "TSFM" {
+	if len(data) < 20 || len(data) > maxMetadata || string(data[:4]) != "TSFM" {
 		return nil, nil, fmt.Errorf("root: unsupported header")
 	}
 	offset := int(binary.LittleEndian.Uint32(data[4:8]))

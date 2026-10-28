@@ -22,7 +22,7 @@ func Package(root string) (PackageResult, error) {
 	for name := range manifest.Files {
 		names[name] = true
 	}
-	for _, name := range []string{"package.json", "LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "tools/teal/tests/compiler.lua", "tools/teal/README.md", "tools/teal/provenance.json", "tools/teal/unknown.patch", "tools/teal/rebuild.py", "tools/teal/upstream/tl.lua", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "check-all.sh", "Makefile", "rockspecs/wow-tl-type-" + manifest.Version + "-1.rockspec.in"} {
+	for _, name := range []string{"package.json", "LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "check-all.sh", "Makefile", "rockspecs/wow-tl-type-" + manifest.Version + "-1.rockspec.in"} {
 		names[name] = true
 	}
 	// Tests exercise the same consumer closure without importing producer packages.

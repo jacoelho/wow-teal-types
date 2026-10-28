@@ -5,8 +5,40 @@ import (
 	"slices"
 )
 
+// definitionKind is the declaration form of a catalogue definition. The zero
+// value marks an absent definition (see kindOf).
+type definitionKind uint8
+
+const (
+	kindAbsent definitionKind = iota
+	kindEnum
+	kindCallback
+	kindRecord
+	kindInterface
+	// kindConvertedRecord is an interned anonymous LuaLS table whose field
+	// types are already Teal expressions.
+	kindConvertedRecord
+)
+
+var definitionKindNames = [...]string{"absent", "enum", "callback", "record", "interface", "converted_record"}
+
+func (k definitionKind) String() string { return definitionKindNames[k] }
+
+// isTableLike reports whether values of the kind are Lua tables with fields.
+func (k definitionKind) isTableLike() bool {
+	return k == kindRecord || k == kindInterface || k == kindConvertedRecord
+}
+
+func kindOf(v *catalogueDefinition) definitionKind {
+	if v == nil {
+		return kindAbsent
+	}
+	return v.Kind
+}
+
 type catalogueDefinition struct {
-	Kind, Source                       string
+	Kind                               definitionKind
+	Source                             string
 	Fields                             map[string]*catalogueField
 	Methods                            map[string]*catalogueFunction
 	Bases                              []string
@@ -22,12 +54,12 @@ type catalogueAlias struct {
 type catalogueField struct {
 	Type     string
 	Resolved *string
-	Native   *NativeParameter
+	Native   *nativeParameter
 }
 type catalogueFunction struct {
 	PolicySymbol      string
-	Native            *NativeFunction
-	Annotation        *AnnotationFunction
+	Native            *nativeFunction
+	Annotation        *annotationFunction
 	Source            string
 	Method            bool
 	ResolvedSignature *string
@@ -71,9 +103,9 @@ func (function *catalogueFunction) clone() *catalogueFunction {
 	copy.CallableContract = function.CallableContract.clone()
 	return &copy
 }
-func functionFromNative(native NativeFunction, source string, method bool) *catalogueFunction {
+func functionFromNative(native nativeFunction, source string, method bool) *catalogueFunction {
 	return (&catalogueFunction{Native: &native, Source: source, Method: method}).clone()
 }
-func functionFromAnnotation(annotation *AnnotationFunction, source string) *catalogueFunction {
+func functionFromAnnotation(annotation *annotationFunction, source string) *catalogueFunction {
 	return (&catalogueFunction{Annotation: annotation, Source: source, Method: annotation.Method}).clone()
 }

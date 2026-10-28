@@ -105,17 +105,6 @@ func ParsePackageManifest(data []byte) (PackageManifest, error) {
 	}
 	return PackageManifest{files, string(value.License), string(value.Name), value.SchemaVersion, string(value.TealVersion), string(value.Version), string(value.WoWBuild)}, nil
 }
-func readManifest(path string) (PackageManifest, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return PackageManifest{}, err
-	}
-	manifest, err := ParsePackageManifest(data)
-	if err != nil {
-		return PackageManifest{}, fmt.Errorf("%s: %w", path, err)
-	}
-	return manifest, nil
-}
 func parseBuildReceipt(data []byte) (BuildReceipt, error) {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
@@ -156,7 +145,7 @@ func receiptBytes(value BuildReceipt) ([]byte, error) {
 	}
 	return buffer.Bytes(), nil
 }
-func writePackageResult(out io.Writer, value PackageResult) error {
+func WritePackageResult(out io.Writer, value PackageResult) error {
 	encoder := json.NewEncoder(out)
 	encoder.SetEscapeHTML(false)
 	encoder.SetIndent("", "  ")

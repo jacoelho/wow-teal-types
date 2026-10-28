@@ -1,14 +1,12 @@
 package wowapi
 
 import (
-	"context"
+	"cmp"
 	"fmt"
-	"os"
-	"path/filepath"
+	"maps"
 	"regexp"
-	"sort"
+	"slices"
 	"strings"
-	"wow-teal-types/internal/sourcelock"
 )
 
 var tealKeywords = wordSet("and break do else elseif end false for function goto if in local nil not or repeat return then true until while global type record enum interface is as where")
@@ -27,34 +25,15 @@ func ident(name string) string {
 	}
 	return value
 }
-func requireStringJSON[T any](v T) string {
+func requireStringJSON(v any) string {
 	b, e := jsonDefault(v)
 	if e != nil {
 		reject(fmt.Sprintf("JSON encoding: %s", e))
 	}
 	return string(b)
 }
-func setAdd(target map[string]bool, source map[string]bool) {
-	for k, v := range source {
-		if v {
-			target[k] = true
-		}
-	}
-}
-func setEqual(a, b map[string]bool) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for k := range a {
-		if !b[k] {
-			return false
-		}
-	}
-	return true
-}
 
 type catalogue struct {
-	project              Project
 	defs                 map[string]*catalogueDefinition
 	aliases              map[string]*catalogueAlias
 	globals              map[string]*catalogueFunction
@@ -69,10 +48,9 @@ type catalogue struct {
 	globalOrder          []string
 }
 
-func newCatalogue(p Project) *catalogue {
+func newCatalogue() *catalogue {
 	return &catalogue{
-		project:              p,
-		defs:                 map[string]*catalogueDefinition{"OpaqueValue": {Kind: "external", Source: "opaque native/LuaLS unknown carrier"}},
+		defs:                 map[string]*catalogueDefinition{},
 		aliases:              map[string]*catalogueAlias{},
 		globals:              map[string]*catalogueFunction{},
 		errors:               []string{},
@@ -81,7 +59,7 @@ func newCatalogue(p Project) *catalogue {
 		secureGlobals:        map[string]bool{},
 		absencePreconditions: map[string]bool{},
 		abiTuples:            map[string][]string{},
-		defOrder:             []string{"OpaqueValue"},
+		defOrder:             []string{},
 		globalOrder:          []string{},
 	}
 }
@@ -97,23 +75,21 @@ func (c *catalogue) setGlobal(name string, item *catalogueFunction) {
 	}
 	c.globals[name] = item
 }
-func (c *catalogue) record(name, source string, kind ...string) *catalogueDefinition {
+
+// record returns the named definition, creating it with kind when absent.
+func (c *catalogue) record(name, source string, kind definitionKind) *catalogueDefinition {
 	delete(c.aliases, name)
 	if v := c.defs[name]; v != nil {
 		return v
 	}
-	k := "record"
-	if len(kind) > 0 {
-		k = kind[0]
-	}
-	v := &catalogueDefinition{Kind: k, Source: source, Fields: map[string]*catalogueField{}, Methods: map[string]*catalogueFunction{}, Bases: []string{}}
+	v := &catalogueDefinition{Kind: kind, Source: source, Fields: map[string]*catalogueField{}, Methods: map[string]*catalogueFunction{}, Bases: []string{}}
 	c.setDef(name, v)
 	return v
 }
 func (c *catalogue) literal(values []string) string {
 	key := "Literal_" + sha256hex([]byte(requireStringJSON(values)))[:12]
 	if c.defs[key] == nil {
-		c.setDef(key, &catalogueDefinition{Kind: "enum", Values: values, Source: "interned LuaLS string literals"})
+		c.setDef(key, &catalogueDefinition{Kind: kindEnum, Values: values, Source: "interned LuaLS string literals"})
 	}
 	return ident(key)
 }
@@ -147,18 +123,18 @@ func (c *catalogue) anonymous(fields []recordField) string {
 	}
 	key := "Shape_" + sha256hex([]byte(requireStringJSON(rows)))[:12]
 	if c.defs[key] == nil {
-		c.setDef(key, &catalogueDefinition{Kind: "converted_record", Fields: mapped, Source: "interned LuaLS record"})
+		c.setDef(key, &catalogueDefinition{Kind: kindConvertedRecord, Fields: mapped, Source: "interned LuaLS record"})
 	}
 	return ident(key)
 }
-func (c *catalogue) resolve(name string) string {
+func (c *catalogue) resolve(name string, position typePosition) string {
 	if name == "self" {
 		unsupported(name, "self requires receiver context")
 	}
-	if name == "any" {
-		return "unknown"
+	if name == "any" || name == "unknown" {
+		return position.untyped()
 	}
-	if containsString([]string{"number", "integer", "string", "boolean", "nil", "unknown", "thread"}, name) {
+	if slices.Contains([]string{"number", "integer", "string", "boolean", "nil", "thread"}, name) {
 		return name
 	}
 	if c.defs[name] == nil && c.aliases[name] == nil && c.aliases["Enum."+name] != nil {
@@ -174,7 +150,7 @@ func (c *catalogue) resolve(name string) string {
 		if alias.Signature != nil {
 			return c.signatureValue(alias.Signature, "")
 		}
-		return c.tealValue(alias.Expression, "", nil)
+		return c.tealValue(alias.Expression, "", nil, position)
 	}
 	if c.defs[name] != nil || c.aliases[name] != nil {
 		return ident(name)
@@ -201,13 +177,13 @@ func pythonTuple(values []string) string {
 	}
 	return "(" + strings.Join(out, ", ") + ")"
 }
-func (c *catalogue) tealValue(expression, owner string, generics []string) string {
-	converter := typeConverter{raw: expression, self: ident(owner), literal: c.literal, record: c.anonymous}
-	converter.resolve = func(name string) string {
-		if containsString(generics, name) {
+func (c *catalogue) tealValue(expression, owner string, generics []string, position typePosition) string {
+	converter := typeConverter{raw: expression, self: ident(owner), position: position, literal: c.literal, record: c.anonymous}
+	converter.resolve = func(name string, position typePosition) string {
+		if slices.Contains(generics, name) {
 			return ident(name)
 		}
-		return c.resolve(name)
+		return c.resolve(name, position)
 	}
 	converter.callback = func(signature string) string {
 		usedGenerics := []string{}
@@ -218,7 +194,7 @@ func (c *catalogue) tealValue(expression, owner string, generics []string) strin
 		}
 		key := "Callback_" + sha256hex([]byte(signature + pythonTuple(usedGenerics)))[:12]
 		if _, ok := c.defs[key]; !ok {
-			c.setDef(key, &catalogueDefinition{Kind: "callback", Signature: signature, Generics: usedGenerics, Source: "named LuaLS callback"})
+			c.setDef(key, &catalogueDefinition{Kind: kindCallback, Signature: signature, Generics: usedGenerics, Source: "named LuaLS callback"})
 		}
 		if len(usedGenerics) > 0 {
 			return key + "<" + strings.Join(usedGenerics, ", ") + ">"
@@ -231,8 +207,16 @@ func (c *catalogue) tealValue(expression, owner string, generics []string) strin
 			all = append(all, splitTop(value, '|')...)
 		}
 		values = uniqueStrings(all)
-		if containsString(values, "unknown") {
-			return "unknown"
+		// An untyped member absorbs the union: Data already has table and
+		// function members, so no other table or callback could discriminate.
+		if slices.Contains(values, "any") {
+			return "any"
+		}
+		if slices.Contains(values, dataType) {
+			if slices.Contains(values, "nil") {
+				return dataType + " | nil"
+			}
+			return dataType
 		}
 		named := map[string]*catalogueDefinition{}
 		for name, value := range c.defs {
@@ -240,57 +224,54 @@ func (c *catalogue) tealValue(expression, owner string, generics []string) strin
 		}
 		enums := []string{}
 		for _, value := range values {
-			if named[value] != nil && named[value].Kind == "enum" {
+			if named[value] != nil && named[value].Kind == kindEnum {
 				enums = append(enums, value)
 			}
 		}
 		if len(enums) > 0 {
 			next := []string{}
 			for _, value := range values {
-				if !containsString(enums, value) {
+				if !slices.Contains(enums, value) {
 					next = append(next, value)
 				}
 			}
 			values = next
-			if !containsString(values, "string") {
+			if !slices.Contains(values, "string") {
 				members := []string{}
 				for _, value := range enums {
 					members = append(members, named[value].Values...)
 				}
 				members = uniqueStrings(members)
-				sort.Strings(members)
+				slices.Sort(members)
 				values = append(values, c.literal(members))
 			}
 		}
 		tables := []string{}
 		for _, value := range values {
 			record := named[value]
-			if strings.HasPrefix(value, "{") || record != nil && containsString([]string{"record", "interface", "converted_record"}, record.Kind) && !record.Opaque {
+			if strings.HasPrefix(value, "{") || record != nil && record.Kind.isTableLike() && !record.Opaque {
 				tables = append(tables, value)
 			}
 		}
 		if len(tables) > 1 {
-			replacement := "{unknown: unknown}"
-			if !containsString(tables, replacement) {
-				ordered := append([]string{}, tables...)
-				sort.Strings(ordered)
-				replacement = "TableVariants_" + sha256hex([]byte(strings.Join(ordered, "|")))[:12]
-				if c.defs[replacement] == nil {
-					c.setDef(replacement, &catalogueDefinition{Kind: "interface", Source: "opaque result surface of " + strings.Join(tables, " | "), Fields: map[string]*catalogueField{}, Methods: map[string]*catalogueFunction{}, Bases: []string{}})
+			ordered := append([]string{}, tables...)
+			slices.Sort(ordered)
+			replacement := "TableVariants_" + sha256hex([]byte(strings.Join(ordered, "|")))[:12]
+			if c.defs[replacement] == nil {
+				c.setDef(replacement, &catalogueDefinition{Kind: kindInterface, Source: "opaque result surface of " + strings.Join(tables, " | "), Fields: map[string]*catalogueField{}, Methods: map[string]*catalogueFunction{}, Bases: []string{}})
+			}
+			for _, table := range tables {
+				record := named[table]
+				if record == nil {
+					reject(fmt.Sprintf("unknown table union member %s", table))
 				}
-				for _, table := range tables {
-					record := named[table]
-					if record == nil {
-						reject(fmt.Sprintf("unknown table union member %s", table))
-					}
-					if !containsString(record.Bases, replacement) {
-						record.Bases = append(record.Bases, replacement)
-					}
+				if !slices.Contains(record.Bases, replacement) {
+					record.Bases = append(record.Bases, replacement)
 				}
 			}
 			next := []string{}
 			for _, v := range values {
-				if !containsString(tables, v) {
+				if !slices.Contains(tables, v) {
 					next = append(next, v)
 				}
 			}
@@ -300,32 +281,8 @@ func (c *catalogue) tealValue(expression, owner string, generics []string) strin
 	}
 	return converter.walk(expression, 0)
 }
-func (c *catalogue) sourceLocks() sourcelock.Sources {
-	locks, e := sourcelock.ReadSources(filepath.Join(c.project.Root, "internal/wowapi/inputs/sources.json"))
-	if e != nil {
-		reject(e.Error())
-	}
-	return locks
-}
-func (c *catalogue) loadQuestie() {
-	locks := c.sourceLocks()
-	for _, source := range locks {
-		c.inputStats.InputFiles += len(source.Files)
-	}
-	rows := locks["questie"].Files
-	sort.SliceStable(rows, func(i, j int) bool { return rows[i].Name < rows[j].Name })
-	for _, row := range rows {
-		if !strings.HasSuffix(row.Name, ".lua") {
-			continue
-		}
-		path, e := c.project.InputPath("questie", row.Name)
-		if e != nil {
-			reject(e.Error())
-		}
-		doc, e := parseAnnotationFile(path, row.Name)
-		if e != nil {
-			reject(e.Error())
-		}
+func (c *catalogue) loadQuestie(docs []annotationDocument) {
+	for _, doc := range docs {
 		source := "questie:" + doc.Path
 		if strings.HasPrefix(doc.Path, "Lua/") {
 			continue
@@ -349,9 +306,9 @@ func (c *catalogue) loadQuestie() {
 			c.aliases[alias.Name] = &catalogueAlias{Expression: expression, Source: source}
 		}
 		for _, cls := range doc.Classes {
-			record := c.record(cls.Name, source, "interface")
+			record := c.record(cls.Name, source, kindInterface)
 			for _, base := range cls.Bases {
-				if !containsString(record.Bases, base) {
+				if !slices.Contains(record.Bases, base) {
 					record.Bases = append(record.Bases, base)
 				}
 			}
@@ -373,7 +330,7 @@ func (c *catalogue) loadQuestie() {
 			name := enum.Name
 			c.aliases[name] = &catalogueAlias{Expression: expression, Source: source}
 			recordName := name + "_Values"
-			record := c.record(recordName, source)
+			record := c.record(recordName, source, kindRecord)
 			for _, v := range enum.Values {
 				typ := "string"
 				if v.Numeric {
@@ -395,7 +352,7 @@ func (c *catalogue) loadQuestie() {
 				owner = nativeMethodOwner("SimpleRegionAPI", name)
 			}
 			if owner != "" {
-				methods := c.record(owner, source).Methods
+				methods := c.record(owner, source, kindRecord).Methods
 				if previous := methods[name]; previous != nil {
 					item.Variants = append(append([]*catalogueFunction{}, previous.Variants...), previous)
 				}
@@ -419,13 +376,13 @@ func (c *catalogue) loadQuestie() {
 				case strings.HasPrefix(value, "CreateFromMixins("):
 					target = name
 					mixins := strings.SplitN(strings.TrimPrefix(value, "CreateFromMixins("), ")", 2)[0]
-					record := c.record(name, source, "interface")
+					record := c.record(name, source, kindInterface)
 					for _, m := range strings.Split(mixins, ",") {
 						record.Bases = append(record.Bases, strings.TrimSpace(m))
 					}
 				case strings.HasPrefix(value, "{}"):
 					target = name
-					c.record(name, source)
+					c.record(name, source, kindRecord)
 				case numericTypePattern.MatchString(value):
 					target = "number"
 				}
@@ -435,7 +392,7 @@ func (c *catalogue) loadQuestie() {
 			}
 		}
 	}
-	for name, expression := range map[string]string{"bool": "boolean", "cstring": "string", "luaIndex": "number", "UnitTokenType": "string", "UnitTokenVariant": "string", "LuaFunctionReference": "function", "Secret": "unknown", "Seconds": "number"} {
+	for name, expression := range map[string]string{"bool": "boolean", "cstring": "string", "luaIndex": "number", "UnitTokenType": "string", "UnitTokenVariant": "string", "LuaFunctionReference": "function", "Seconds": "number"} {
 		if c.aliases[name] == nil {
 			c.aliases[name] = &catalogueAlias{Expression: expression, Source: "Blizzard metadata primitive"}
 		}
@@ -449,16 +406,20 @@ func (c *catalogue) bindGlobal(name, typeName, source string) {
 	}
 	parent := parts[0] + "_Namespace"
 	c.setGlobal(parts[0], &catalogueFunction{TypeName: parent, Source: source})
-	record := c.record(parent, source)
+	record := c.record(parent, source, kindRecord)
 	if len(parts) != 2 {
 		c.errors = append(c.errors, source+": unsupported global nesting "+name)
 		return
 	}
-	record.Fields[parts[1]] = &catalogueField{Resolved: stringPointer(ident(typeName))}
+	record.Fields[parts[1]] = &catalogueField{Resolved: new(ident(typeName))}
 }
+
+// scriptReceivers names the receivers whose documentation group does not
+// follow the Simple*/FrameAPI*/*API naming convention.
+var scriptReceivers = map[string]string{"SimpleCheckboxAPI": "CheckButton", "SimpleHTMLAPI": "SimpleHTML", "SimpleAnimAPI": "Animation", "SimpleAnimGroupAPI": "AnimationGroup", "SimpleAnimatableObjectAPI": "AnimatableObject", "SimpleFrameScriptObjectAPI": "FrameScriptObject", "SimpleControlPointAPI": "ControlPoint", "SimpleTextureBaseAPI": "TextureBase", "SimpleScriptRegionAPI": "ScriptRegion", "SimpleScriptRegionResizingAPI": "ScriptRegionResizing", "SimpleObjectAPI": "Object", "SimpleRegionAPI": "Region", "SimpleMovieAPI": "MovieFrame", "MinimapFrameAPI": "Minimap", "FrameAPITooltip": "GameTooltip", "FrameAPIModelSceneFrame": "ModelScene", "FrameAPIModelSceneFrameActor": "ModelSceneFrameActor", "FrameAPIModelSceneFrameActorBase": "ModelSceneFrameActorBase", "FrameAPIArchaeologyDigSiteFrame": "ArchaeologyDigSiteFrame", "FrameAPIQuestPOI": "QuestPOIFrame", "FrameAPIScenarioPOI": "ScenarioPOIFrame", "LuaDurationObjectAPI": "DurationObject", "LuaCurveObjectAPI": "CurveObject", "LuaColorCurveObjectAPI": "ColorCurveObject", "LuaCurveObjectBaseAPI": "CurveObjectBase", "UnitHealPredictionCalculatorAPI": "UnitHealPredictionCalculator", "AbbreviateConfigAPI": "AbbreviateConfig"}
+
 func scriptName(name string) string {
-	direct := map[string]string{"SimpleCheckboxAPI": "CheckButton", "SimpleHTMLAPI": "SimpleHTML", "SimpleAnimAPI": "Animation", "SimpleAnimGroupAPI": "AnimationGroup", "SimpleAnimatableObjectAPI": "AnimatableObject", "SimpleFrameScriptObjectAPI": "FrameScriptObject", "SimpleControlPointAPI": "ControlPoint", "SimpleTextureBaseAPI": "TextureBase", "SimpleScriptRegionAPI": "ScriptRegion", "SimpleScriptRegionResizingAPI": "ScriptRegionResizing", "SimpleObjectAPI": "Object", "SimpleRegionAPI": "Region", "SimpleMovieAPI": "MovieFrame", "MinimapFrameAPI": "Minimap", "FrameAPITooltip": "GameTooltip", "FrameAPIModelSceneFrame": "ModelScene", "FrameAPIModelSceneFrameActor": "ModelSceneFrameActor", "FrameAPIModelSceneFrameActorBase": "ModelSceneFrameActorBase", "FrameAPIArchaeologyDigSiteFrame": "ArchaeologyDigSiteFrame", "FrameAPIQuestPOI": "QuestPOIFrame", "FrameAPIScenarioPOI": "ScenarioPOIFrame", "LuaDurationObjectAPI": "DurationObject", "LuaCurveObjectAPI": "CurveObject", "LuaColorCurveObjectAPI": "ColorCurveObject", "LuaCurveObjectBaseAPI": "CurveObjectBase", "UnitHealPredictionCalculatorAPI": "UnitHealPredictionCalculator", "AbbreviateConfigAPI": "AbbreviateConfig"}
-	if v, ok := direct[name]; ok {
+	if v, ok := scriptReceivers[name]; ok {
 		return v
 	}
 	if strings.HasPrefix(name, "SimpleAnim") {
@@ -472,19 +433,14 @@ func scriptName(name string) string {
 	}
 	return strings.TrimSuffix(name, "API")
 }
-func (c *catalogue) loadNative() {
-	docs, e := c.project.readNativeDocuments()
-	if e != nil {
-		reject(e.Error())
-	}
-	sort.SliceStable(docs, func(i, j int) bool { return docs[i].Name < docs[j].Name })
+func (c *catalogue) loadNative(docs []nativeDocument) {
 	nativeNames, nativeFunctions := map[string]bool{}, map[string]bool{}
 	for _, document := range docs {
 		doc := document.Metadata
 		c.inputStats.NativeFunctions += len(doc.Functions)
 		c.inputStats.NativeEvents += len(doc.EventNames)
 		for _, predicate := range doc.Predicates {
-			if predicate.Type == "Precondition" && containsString([]string{"ReturnNothing", "ReturnWithError"}, predicate.FailureMode) {
+			if predicate.Type == "Precondition" && slices.Contains([]string{"ReturnNothing", "ReturnWithError"}, predicate.FailureMode) {
 				c.absencePreconditions[predicate.Name] = true
 			}
 		}
@@ -502,7 +458,7 @@ func (c *catalogue) loadNative() {
 					c.aliases[name] = &catalogueAlias{Expression: "number", Source: source}
 				}
 				c.aliases["Enum."+name] = &catalogueAlias{Expression: "number", Source: source}
-				record := c.record("Enum."+name+"_Values", source)
+				record := c.record("Enum."+name+"_Values", source, kindRecord)
 				record.Fields = map[string]*catalogueField{}
 				for _, field := range table.Fields {
 					record.Fields[field.Name] = &catalogueField{Type: "number"}
@@ -514,20 +470,20 @@ func (c *catalogue) loadNative() {
 				}
 				if len(metadata) > 0 {
 					metaName := "Enum." + name + "Meta_Values"
-					c.record(metaName, source).Fields = metadata
+					c.record(metaName, source, kindRecord).Fields = metadata
 					c.bindGlobal("Enum."+name+"Meta", metaName, source)
 				}
 			case "Structure":
-				record := c.record(name, source)
-				record.Kind, record.Source, record.Bases = "record", source, []string{}
+				record := c.record(name, source, kindRecord)
+				record.Kind, record.Source, record.Bases = kindRecord, source, []string{}
 				record.Fields = map[string]*catalogueField{}
 				for _, field := range table.Fields {
 					record.Fields[field.Name] = &catalogueField{Native: &field}
 				}
 			case "CallbackType":
-				c.aliases[name] = &catalogueAlias{Signature: functionFromNative(table.Callback(), source, false), Source: source}
+				c.aliases[name] = &catalogueAlias{Signature: functionFromNative(table.callback(), source, false), Source: source}
 			case "Constants":
-				record := c.record("Constants."+name+"_Values", source)
+				record := c.record("Constants."+name+"_Values", source, kindRecord)
 				record.Fields = map[string]*catalogueField{}
 				for _, field := range table.Fields {
 					record.Fields[field.Name] = &catalogueField{Native: &field}
@@ -540,7 +496,7 @@ func (c *catalogue) loadNative() {
 		namespace, owner := doc.Namespace, ""
 		if doc.Type == "ScriptObject" {
 			owner = scriptName(doc.Name)
-			record := c.record(owner, source, "interface")
+			record := c.record(owner, source, kindInterface)
 			record.NativeHandle, record.NativeObject = true, doc.ObjectType == "Userdata"
 			alias := strings.TrimSuffix(doc.Name, "API")
 			if c.aliases[alias] == nil {
@@ -548,7 +504,7 @@ func (c *catalogue) loadNative() {
 			}
 		} else if namespace != "" {
 			owner = namespace
-			c.record(owner, source)
+			c.record(owner, source, kindRecord)
 			c.setGlobal(namespace, &catalogueFunction{TypeName: owner, Source: source})
 			if doc.Environment == "SecureOnly" {
 				c.secureGlobals[namespace] = true
@@ -560,8 +516,8 @@ func (c *catalogue) loadNative() {
 			if doc.Type == "ScriptObject" {
 				methodOwner = nativeMethodOwner(doc.Name, name)
 				if methodOwner != owner {
-					record := c.record(methodOwner, source, "interface")
-					record.Kind = "interface"
+					record := c.record(methodOwner, source, kindInterface)
+					record.Kind = kindInterface
 					record.NativeHandle, record.NativeObject = true, doc.ObjectType == "Userdata"
 				}
 			}
@@ -576,7 +532,7 @@ func (c *catalogue) loadNative() {
 			nativeFunctions[symbol] = true
 			item := functionFromNative(function, source, doc.Type == "ScriptObject")
 			if item.Native.Policy.Environment == nil {
-				item.Native.Policy.Environment = stringPointer(firstNonempty(doc.Environment, "All"))
+				item.Native.Policy.Environment = new(cmp.Or(doc.Environment, "All"))
 			}
 			if stringValue(item.Native.Policy.Environment) == "SecureOnly" {
 				if owner != "" && doc.Environment != "SecureOnly" {
@@ -615,9 +571,10 @@ func (c *catalogue) primitiveSeen(name string, seen map[string]bool) string {
 	switch name {
 	case "number", "integer":
 		return "number"
-	case "any":
-		return "unknown"
-	case "string", "boolean", "unknown":
+	case "any", "unknown":
+		// Untyped: no primitive is known, but the value is not a named type.
+		return "any"
+	case "string", "boolean":
 		return name
 	}
 	raw := ""
@@ -660,74 +617,78 @@ func definitionBases(v *catalogueDefinition) []string {
 	}
 	return v.Bases
 }
-func definitionKind(v *catalogueDefinition) string {
-	if v == nil {
-		return ""
-	}
-	return v.Kind
-}
 func (c *catalogue) resultSecret(item *catalogueFunction) bool {
 	return item != nil && (!item.returnsNeverSecret()) && ((item.Native != nil && item.Native.Policy.secretResult()) || item.SecretEffect)
 }
 func (item *catalogueFunction) returnsNeverSecret() bool {
 	return item != nil && item.Native != nil && item.Native.Policy.Flags[nativeReturnsNeverSecret]
 }
-func (c *catalogue) nativeTypeValue(item NativeParameter, secret bool) string {
+
+// isUserdata reports whether a named type is declared `is userdata`. Teal
+// cannot discriminate a union of two userdata types, so such a type can only
+// be wrapped as Secret<T>, never as MaybeSecret<T>.
+func (c *catalogue) isUserdata(name string) bool {
+	return c.isHandle(name) || c.defs[name] != nil && c.defs[name].Opaque
+}
+
+// nativeTypeValue declares one native parameter or result at position.
+func (c *catalogue) nativeTypeValue(item nativeParameter, secret bool, position typePosition) string {
 	raw := item.Type
 	secret = !enabled(item.NeverSecret) && (secret || item.secretResult())
-	if raw == "table" && (secret || enabled(item.ConditionalSecretContents)) && !enabled(item.NeverSecretContents) {
-		result := "OpaqueValue"
-		if enabled(item.Nilable) {
-			result += " | nil"
-		}
-		return result
-	}
 	result := ""
-	if raw == "table" {
-		inner := item.InnerType
-		if inner == "" {
-			result = "{unknown: unknown}"
-		} else {
-			value := c.nativeTypeValue(NativeParameter{Type: inner}, !enabled(item.NeverSecretContents) && (secret || enabled(item.ConditionalSecretContents)))
-			key := ""
-			if item.KeyType != "" {
-				key = c.nativeTypeValue(NativeParameter{Type: item.KeyType}, false) + ": "
-			}
-			result = "{" + key + value + "}"
+	switch {
+	case raw == "table" && (secret || enabled(item.ConditionalSecretContents)) && !enabled(item.NeverSecretContents):
+		// Possibly secret contents stay marked after canaccesstable unwraps the table.
+		result = secretTableType
+		if position == inputPosition {
+			result = "any"
 		}
-	} else {
-		result = c.resolve(raw)
-	}
-	if secret {
-		switch c.primitive(raw) {
-		case "number":
-			result = "W.NumberLike"
-		case "string":
-			result = "W.TextLike"
-		case "boolean":
-			result = "boolean | OpaqueValue"
-		case "unknown":
-			result = "unknown"
-		default:
-			if c.isHandle(raw) {
-				result = "OpaqueValue"
-			} else if !containsString([]string{"table", "Secret", "LuaValueReference", "LuaValueVariant"}, raw) {
-				known := false
-				for name, v := range c.defs {
-					if result == ident(name) && containsString([]string{"record", "interface", "converted_record"}, v.Kind) {
-						known = true
-					}
-				}
-				if !known {
-					result = "OpaqueValue"
-				}
-			}
+	case raw == "table" && item.InnerType == "":
+		result = position.untyped()
+	case raw == "table":
+		value := c.nativeTypeValue(nativeParameter{Type: item.InnerType}, !enabled(item.NeverSecretContents) && (secret || enabled(item.ConditionalSecretContents)), position)
+		key := ""
+		if item.KeyType != "" {
+			key = c.nativeTypeValue(nativeParameter{Type: item.KeyType}, false, position) + ": "
+		}
+		result = "{" + key + value + "}"
+	default:
+		result = c.resolve(raw, position)
+		if secret {
+			result = c.secretNative(raw, result, position)
 		}
 	}
-	if enabled(item.Nilable) {
+	if enabled(item.Nilable) && result != "any" {
 		result += " | nil"
 	}
 	return result
+}
+
+// secretNative declares a possibly secret native value of raw type, already
+// resolved to result.
+func (c *catalogue) secretNative(raw, result string, position typePosition) string {
+	switch primitive := c.primitive(raw); primitive {
+	case "number", "string", "boolean":
+		return "W.MaybeSecret<" + primitive + ">"
+	case "any":
+		if position == inputPosition {
+			return "any"
+		}
+		return secretDataType
+	}
+	if c.isUserdata(raw) {
+		return "W.Secret<" + result + ">"
+	}
+	if slices.Contains([]string{"LuaValueReference", "LuaValueVariant"}, raw) {
+		return result
+	}
+	for name, v := range c.defs {
+		// Secret structures project their own fields instead.
+		if result == ident(name) && v.Kind.isTableLike() {
+			return result
+		}
+	}
+	return "W.MaybeSecret<" + result + ">"
 }
 
 type frameXMLSupplement struct {
@@ -743,19 +704,16 @@ type frameXMLClass struct {
 	Methods map[string]string `json:"methods"`
 }
 
-func (c *catalogue) loadFrameXML() {
-	var supplement frameXMLSupplement
-	if e := decodeJSON(mustFile(filepath.Join(c.project.Root, "internal/wowapi/inputs/framexml.json")), &supplement); e != nil {
-		reject(e.Error())
-	}
+func (c *catalogue) loadFrameXML(supplement frameXMLSupplement) (err error) {
+	defer recoverConversion(&err)
 	source := "reviewed FrameXML supplement"
-	for _, name := range sortedKeys(supplement.Aliases) {
+	for _, name := range slices.Sorted(maps.Keys(supplement.Aliases)) {
 		c.aliases[name] = &catalogueAlias{Expression: supplement.Aliases[name], Source: source}
 	}
 	for _, cls := range supplement.Classes {
-		record := c.record(cls.Name, source, "interface")
+		record := c.record(cls.Name, source, kindInterface)
 		for _, base := range cls.Bases {
-			if !containsString(record.Bases, base) {
+			if !slices.Contains(record.Bases, base) {
 				record.Bases = append(record.Bases, base)
 			}
 		}
@@ -763,29 +721,31 @@ func (c *catalogue) loadFrameXML() {
 	for _, cls := range supplement.Classes {
 		owner := cls.Name
 		record := c.defs[owner]
-		for _, name := range sortedKeys(cls.Fields) {
+		for _, name := range slices.Sorted(maps.Keys(cls.Fields)) {
 			record.Fields[name] = &catalogueField{Type: cls.Fields[name]}
 		}
-		for _, name := range sortedKeys(cls.Methods) {
+		for _, name := range slices.Sorted(maps.Keys(cls.Methods)) {
 			signature, err := c.frameXMLMethod(cls.Methods[name], owner)
 			if err != nil {
-				reject(fmt.Sprintf("%s.%s: %s", owner, name, err))
+				return fmt.Errorf("%s.%s: %w", owner, name, err)
 			}
 			record.Methods[name] = &catalogueFunction{ResolvedSignature: &signature, Source: source}
 		}
 	}
-	for _, name := range sortedKeys(supplement.Globals) {
-		c.setGlobal(name, &catalogueFunction{ResolvedSignature: stringPointer(c.tealValue(supplement.Globals[name], "", nil)), Source: source})
+	for _, name := range slices.Sorted(maps.Keys(supplement.Globals)) {
+		c.setGlobal(name, &catalogueFunction{ResolvedSignature: new(c.tealValue(supplement.Globals[name], "", nil, outputPosition)), Source: source})
 	}
+	return nil
 }
 func (c *catalogue) frameXMLMethod(expression, owner string) (signature string, err error) {
-	defer captureError(&err)
+	defer recoverConversion(&err)
 	pattern := regexp.MustCompile(`^fun\(\s*self\s*:\s*` + regexp.QuoteMeta(owner) + `\s*[,)]`)
 	if !pattern.MatchString(expression) {
 		reject("expected an explicit owning receiver")
 	}
-	callback := c.defs[c.tealValue(expression, owner, nil)]
-	if callback == nil || callback.Kind != "callback" {
+	// The method is a value the game provides: its parameters are inputs.
+	callback := c.defs[c.tealValue(expression, owner, nil, outputPosition)]
+	if callback == nil || callback.Kind != kindCallback {
 		reject("expected a method function")
 	}
 	signature = callback.Signature
@@ -794,35 +754,6 @@ func (c *catalogue) frameXMLMethod(expression, owner string) (signature string, 
 		reject("expected an explicit owning receiver")
 	}
 	return "function(self" + signature[len(receiver):], nil
-}
-
-func (p Project) Generate(ctx context.Context) (artifacts Artifacts, err error) {
-	defer captureError(&err)
-	if e := ctx.Err(); e != nil {
-		return Artifacts{}, e
-	}
-	c := newCatalogue(p)
-	c.loadQuestie()
-	c.loadNative()
-	c.loadFrameXML()
-	c.applyOverrides()
-	projection, e := c.finalize(ctx)
-	if e != nil {
-		return Artifacts{}, e
-	}
-	outputs := projection.render()
-	files := map[string][]byte{}
-	for name, b := range outputs {
-		files[filepath.ToSlash(filepath.Join("types/wow", name))] = b
-	}
-	return Artifacts{Files: files, Statistics: c.statistics()}, nil
-}
-func mustFile(path string) []byte {
-	b, e := os.ReadFile(path)
-	if e != nil {
-		reject(fmt.Sprintf("%s", e))
-	}
-	return b
 }
 
 func (c *catalogue) statistics() CatalogueStatistics {

@@ -18,15 +18,15 @@ import (
 type Kind uint8
 
 const (
-	Null Kind = iota
-	Boolean
-	String
-	Integer
-	FloatKind
-	Array
-	ObjectKind
-	Reference
-	Expression
+	KindNull Kind = iota
+	KindBoolean
+	KindString
+	KindInteger
+	KindFloat
+	KindArray
+	KindObject
+	KindReference
+	KindExpression
 )
 
 // Object is keyed source syntax, never a domain model.
@@ -44,9 +44,8 @@ type Value struct {
 	left, right *Value
 }
 
-func Bool(v bool) Value   { return Value{kind: Boolean, boolean: v} }
-func Text(v string) Value { return Value{kind: String, text: v} }
-func Int(v int64) Value   { return Value{kind: Integer, text: strconv.FormatInt(v, 10)} }
+func Bool(v bool) Value   { return Value{kind: KindBoolean, boolean: v} }
+func Text(v string) Value { return Value{kind: KindString, text: v} }
 func BigInteger(decimal string) (Value, error) {
 	if len(strings.TrimPrefix(decimal, "-")) > 4300 {
 		return Value{}, fmt.Errorf("literal integer exceeds 4300 digits")
@@ -55,21 +54,21 @@ func BigInteger(decimal string) (Value, error) {
 	if !ok {
 		return Value{}, fmt.Errorf("invalid literal integer %q", decimal)
 	}
-	return Value{kind: Integer, text: n.String()}, nil
+	return Value{kind: KindInteger, text: n.String()}, nil
 }
 func Number(v float64) (Value, error) {
 	if math.IsNaN(v) || math.IsInf(v, 0) {
 		return Value{}, fmt.Errorf("non-finite literal number")
 	}
-	return Value{kind: FloatKind, number: v}, nil
+	return Value{kind: KindFloat, number: v}, nil
 }
-func List(v []Value) Value { return Value{kind: Array, array: slices.Clone(v)} }
+func List(v []Value) Value { return Value{kind: KindArray, array: slices.Clone(v)} }
 func Record(v Object) Value {
 	copy := make(Object, len(v))
 	for key, value := range v {
 		copy[key] = value
 	}
-	return Value{kind: ObjectKind, object: copy}
+	return Value{kind: KindObject, object: copy}
 }
 func Ref(name string) (Value, error) {
 	for _, part := range strings.Split(name, ".") {
@@ -82,27 +81,27 @@ func Ref(name string) (Value, error) {
 			}
 		}
 	}
-	return Value{kind: Reference, text: name}, nil
+	return Value{kind: KindReference, text: name}, nil
 }
 func Binary(operator string, left, right Value) (Value, error) {
 	if operator != "+" && operator != "-" {
 		return Value{}, fmt.Errorf("unsupported literal operator %q", operator)
 	}
 	for _, value := range []Value{left, right} {
-		if value.kind != Integer && value.kind != FloatKind && value.kind != Reference && value.kind != Expression {
+		if value.kind != KindInteger && value.kind != KindFloat && value.kind != KindReference && value.kind != KindExpression {
 			return Value{}, fmt.Errorf("literal arithmetic requires numbers or named references")
 		}
 	}
-	return Value{kind: Expression, text: operator, left: &left, right: &right}, nil
+	return Value{kind: KindExpression, text: operator, left: &left, right: &right}, nil
 }
 func (v Value) Kind() Kind              { return v.kind }
-func (v Value) Bool() (bool, bool)      { return v.boolean, v.kind == Boolean }
-func (v Value) Text() (string, bool)    { return v.text, v.kind == String }
-func (v Value) Integer() (string, bool) { return v.text, v.kind == Integer }
-func (v Value) Number() (float64, bool) { return v.number, v.kind == FloatKind }
-func (v Value) Array() ([]Value, bool)  { return slices.Clone(v.array), v.kind == Array }
+func (v Value) Bool() (bool, bool)      { return v.boolean, v.kind == KindBoolean }
+func (v Value) Text() (string, bool)    { return v.text, v.kind == KindString }
+func (v Value) Integer() (string, bool) { return v.text, v.kind == KindInteger }
+func (v Value) Number() (float64, bool) { return v.number, v.kind == KindFloat }
+func (v Value) Array() ([]Value, bool)  { return slices.Clone(v.array), v.kind == KindArray }
 func (v Value) Object() (Object, bool) {
-	if v.kind != ObjectKind {
+	if v.kind != KindObject {
 		return nil, false
 	}
 	out := make(Object, len(v.object))
@@ -111,23 +110,23 @@ func (v Value) Object() (Object, bool) {
 	}
 	return out, true
 }
-func (v Value) Reference() (string, bool) { return v.text, v.kind == Reference }
+func (v Value) Reference() (string, bool) { return v.text, v.kind == KindReference }
 func (v Value) Equal(other Value) bool {
 	if v.kind != other.kind {
 		return false
 	}
 	switch v.kind {
-	case Null:
+	case KindNull:
 		return true
-	case Boolean:
+	case KindBoolean:
 		return v.boolean == other.boolean
-	case String, Integer, Reference:
+	case KindString, KindInteger, KindReference:
 		return v.text == other.text
-	case FloatKind:
+	case KindFloat:
 		return math.Float64bits(v.number) == math.Float64bits(other.number)
-	case Array:
+	case KindArray:
 		return slices.EqualFunc(v.array, other.array, Value.Equal)
-	case ObjectKind:
+	case KindObject:
 		if len(v.object) != len(other.object) {
 			return false
 		}
@@ -138,7 +137,7 @@ func (v Value) Equal(other Value) bool {
 			}
 		}
 		return true
-	case Expression:
+	case KindExpression:
 		return v.text == other.text && v.left.Equal(*other.left) && v.right.Equal(*other.right)
 	}
 	return false
@@ -171,21 +170,21 @@ func (v Value) writeJSON(out *bytes.Buffer, depth int) error {
 		return fmt.Errorf("literal nesting exceeds 64")
 	}
 	switch v.kind {
-	case Null:
+	case KindNull:
 		out.WriteString("null")
-	case Boolean:
+	case KindBoolean:
 		out.WriteString(strconv.FormatBool(v.boolean))
-	case String:
+	case KindString:
 		return writeText(out, v.text)
-	case Integer:
+	case KindInteger:
 		out.WriteString(v.text)
-	case FloatKind:
-		data, err := Float(v.number).MarshalJSON()
+	case KindFloat:
+		data, err := jsonFloat(v.number).MarshalJSON()
 		if err != nil {
 			return err
 		}
 		out.Write(data)
-	case Array:
+	case KindArray:
 		out.WriteByte('[')
 		for i, value := range v.array {
 			if i > 0 {
@@ -196,7 +195,7 @@ func (v Value) writeJSON(out *bytes.Buffer, depth int) error {
 			}
 		}
 		out.WriteByte(']')
-	case ObjectKind:
+	case KindObject:
 		keys := make([]string, 0, len(v.object))
 		for key := range v.object {
 			keys = append(keys, key)
@@ -216,13 +215,13 @@ func (v Value) writeJSON(out *bytes.Buffer, depth int) error {
 			}
 		}
 		out.WriteByte('}')
-	case Reference:
+	case KindReference:
 		out.WriteString(`{"$ref":`)
 		if err := writeText(out, v.text); err != nil {
 			return err
 		}
 		out.WriteByte('}')
-	case Expression:
+	case KindExpression:
 		out.WriteString(`{"$expression":[`)
 		if err := v.left.writeJSON(out, depth+1); err != nil {
 			return err

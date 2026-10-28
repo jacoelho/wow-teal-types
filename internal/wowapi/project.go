@@ -2,12 +2,22 @@
 package wowapi
 
 import (
-	"crypto/sha1"
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"path"
 	"path/filepath"
-	"sort"
+)
+
+// Root-relative, slash-separated locations of the generator inputs. Release
+// tooling reads and rewrites the same lock files.
+const (
+	InputsDir         = "internal/wowapi/inputs"
+	SourcesFile       = InputsDir + "/sources.json"
+	ClientSourcesFile = InputsDir + "/client_sources.json"
+	frameXMLFile      = InputsDir + "/framexml.json"
+	overridesFile     = InputsDir + "/overrides.json"
 )
 
 // Project selects explicit, immutable input roots for one generation.
@@ -43,21 +53,50 @@ func (p Project) InputPath(group, name string) (string, error) {
 	}
 	return filepath.Join(root, filepath.FromSlash(name)), nil
 }
-func sha256hex(b []byte) string { s := sha256.Sum256(b); return hex.EncodeToString(s[:]) }
-func blobSHA(b []byte) string {
-	h := sha1.New()
-	fmt.Fprintf(h, "blob %d\x00", len(b))
-	h.Write(b)
-	return hex.EncodeToString(h.Sum(nil))
+func (p Project) path(relative string) string {
+	return filepath.Join(p.Root, filepath.FromSlash(relative))
 }
-func sortedKeys[V any](m map[string]V) []string {
-	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
+
+// SourcesPath is the lock of every source file a generation reads.
+func (p Project) SourcesPath() string { return p.path(SourcesFile) }
+
+// ClientSourcesPath is the lock of the extracted client snapshot.
+func (p Project) ClientSourcesPath() string { return p.path(ClientSourcesFile) }
+
+// Generate converts the project's locked inputs into the Teal declaration files.
+func (p Project) Generate(ctx context.Context) (Artifacts, error) {
+	if err := ctx.Err(); err != nil {
+		return Artifacts{}, err
 	}
-	sort.Strings(keys)
-	return keys
+	in, err := p.readInputs()
+	if err != nil {
+		return Artifacts{}, err
+	}
+	return generate(ctx, in)
 }
+
+func generate(ctx context.Context, in generationInputs) (artifacts Artifacts, err error) {
+	defer recoverConversion(&err)
+	c := newCatalogue()
+	c.inputStats.InputFiles = in.inputFiles
+	c.loadQuestie(in.questie)
+	c.loadNative(in.native)
+	if err = c.loadFrameXML(in.frameXML); err != nil {
+		return Artifacts{}, err
+	}
+	c.applyOverrides(in.overrides)
+	projection, err := c.finalize(ctx)
+	if err != nil {
+		return Artifacts{}, err
+	}
+	files := map[string][]byte{}
+	for name, b := range projection.render() {
+		files[path.Join("types/wow", name)] = b
+	}
+	return Artifacts{Files: files, Statistics: c.statistics()}, nil
+}
+
+func sha256hex(b []byte) string { s := sha256.Sum256(b); return hex.EncodeToString(s[:]) }
 
 type CatalogueStatistics struct {
 	InputFiles          int `json:"input_files"`

@@ -3,27 +3,14 @@ package release
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"net/url"
 	"path/filepath"
 	"strings"
 	"sync"
-	"time"
 	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
 )
 
-func readBounded(r io.Reader, limit int64) ([]byte, error) {
-	b, e := io.ReadAll(io.LimitReader(r, limit+1))
-	if e != nil {
-		return nil, e
-	}
-	if int64(len(b)) > limit {
-		return nil, fmt.Errorf("acquisition response exceeds %d bytes", limit)
-	}
-	return b, nil
-}
 func parallel(ctx context.Context, items []sourceJob, fn func(context.Context, sourceJob) error) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
@@ -72,8 +59,8 @@ func escapePath(path string) string {
 	}
 	return strings.Join(parts, "/")
 }
-func syncPrimary(ctx context.Context, p wowapi.Project) error {
-	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "internal/wowapi/inputs/sources.json"))
+func syncPrimary(ctx context.Context, f fetcher, p wowapi.Project) error {
+	lock, e := sourcelock.ReadSources(p.SourcesPath())
 	if e != nil {
 		return e
 	}
@@ -93,11 +80,11 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 			return e
 		}
 		if exists(path) {
-			b, e := readFile(path, maxFile)
+			b, e := sourcelock.ReadRegular(path, maxFile)
 			if e != nil {
 				return e
 			}
-			if len(b) != j.size || blob(b) != j.blob {
+			if len(b) != j.size || sourcelock.BlobSHA(b) != j.blob {
 				return fmt.Errorf("modified pinned source: %s", path)
 			}
 			return nil
@@ -105,14 +92,14 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 		if j.group == "blizzard" || j.group == "blizzard_version" {
 			return fmt.Errorf("missing verified native input: %s", path)
 		}
-		if !hex40.MatchString(j.commit) {
+		if !sourcelock.IsGitSHA(j.commit) {
 			return fmt.Errorf("community source requires immutable revision")
 		}
-		b, e := fetch(ctx, "https://raw.githubusercontent.com/"+j.repo+"/"+j.commit+"/"+escapePath(j.upstream), maxFile)
+		b, e := f.get(ctx, "https://raw.githubusercontent.com/"+j.repo+"/"+j.commit+"/"+escapePath(j.upstream), maxFile)
 		if e != nil {
 			return e
 		}
-		if len(b) != j.size || blob(b) != j.blob {
+		if len(b) != j.size || sourcelock.BlobSHA(b) != j.blob {
 			return fmt.Errorf("community blob identity mismatch: %s", j.name)
 		}
 		return atomicWrite(path, b, 0644)
@@ -121,20 +108,20 @@ func syncPrimary(ctx context.Context, p wowapi.Project) error {
 
 // Bootstrap selects verified native inputs and populates pinned community inputs.
 func Bootstrap(ctx context.Context, root, snapshot string) (wowapi.Project, error) {
-	p, e := Projection(root, snapshot, filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
+	return bootstrap(ctx, newFetcher(), root, snapshot)
+}
+func bootstrap(ctx context.Context, f fetcher, root, snapshot string) (wowapi.Project, error) {
+	p, e := projectSources(root, snapshot)
 	if e != nil {
 		return p, e
 	}
-	if e = syncPrimary(ctx, p); e != nil {
-		return p, e
-	}
-	return p, nil
+	return p, syncPrimary(ctx, f, p)
 }
 
 // Cache files remain optional, integrity-checked projections rather than authorities.
 func seedCaches(origin, target string) error {
 	p := wowapi.NewProject(origin)
-	lock, e := sourcelock.ReadSources(filepath.Join(p.Root, "internal/wowapi/inputs/sources.json"))
+	lock, e := sourcelock.ReadSources(p.SourcesPath())
 	if e != nil {
 		return e
 	}
@@ -151,11 +138,11 @@ func seedCaches(origin, target string) error {
 			if !exists(src) {
 				continue
 			}
-			b, e := readFile(src, maxFile)
+			b, e := sourcelock.ReadRegular(src, maxFile)
 			if e != nil {
 				return e
 			}
-			if len(b) != row.Size || blob(b) != row.SHA {
+			if len(b) != row.Size || sourcelock.BlobSHA(b) != row.SHA {
 				return fmt.Errorf("modified pinned community cache: %s", name)
 			}
 			dst, e := wowapi.NewProject(target).InputPath(group, name)
@@ -168,13 +155,4 @@ func seedCaches(origin, target string) error {
 		}
 	}
 	return nil
-}
-
-func acquireHTTPClient() *http.Client {
-	return &http.Client{Timeout: 45 * time.Second, CheckRedirect: func(req *http.Request, via []*http.Request) error {
-		if len(via) >= 3 || req.URL.Scheme != "https" {
-			return fmt.Errorf("unsupported acquisition redirect")
-		}
-		return nil
-	}}
 }

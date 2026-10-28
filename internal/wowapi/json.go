@@ -11,9 +11,9 @@ import (
 )
 
 // Stable field ordering and ASCII escaping preserve interned declaration names.
-func jsonCompact[T any](v T) ([]byte, error) { return encodeJSON(v, false) }
-func jsonDefault[T any](v T) ([]byte, error) { return encodeJSON(v, true) }
-func encodeJSON[T any](v T, spaced bool) ([]byte, error) {
+func jsonCompact(v any) ([]byte, error) { return encodeJSON(v, false) }
+func jsonDefault(v any) ([]byte, error) { return encodeJSON(v, true) }
+func encodeJSON(v any, spaced bool) ([]byte, error) {
 	var b bytes.Buffer
 	enc := json.NewEncoder(&b)
 	enc.SetEscapeHTML(false)
@@ -68,7 +68,7 @@ func encodeJSON[T any](v T, spaced bool) ([]byte, error) {
 	return data, nil
 }
 
-func decodeJSON[T any](data []byte, value *T) error {
+func decodeJSON(data []byte, value any) error {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(value); err != nil {

@@ -10,6 +10,8 @@ import (
 
 const (
 	archiveIndexLimit = 8 << 20
+	// archiveIndexTotal is the default budget for retained archive index
+	// bytes. It is a distinct limit from maxMetadata that happens to be equal.
 	archiveIndexTotal = 384 << 20
 	archiveBlockSize  = 4096
 	archiveEntrySize  = 24

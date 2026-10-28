@@ -1,3 +1,3 @@
 module wow-teal-types/tools/cdn
 
-go 1.26.0
+go 1.27

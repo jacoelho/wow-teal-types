@@ -1,6 +1,7 @@
 package consumer
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"os/exec"
@@ -14,10 +15,7 @@ func recipeFixture(t *testing.T) addonFixture {
 	f := newAddon(t)
 	repo := repositoryRoot(t)
 	writeTest(t, filepath.Join(f.root, "LICENSE"), fileText(t, filepath.Join(repo, "LICENSE")))
-	manifest, err := readManifest(filepath.Join(f.root, "package.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
+	manifest := readManifest(t, filepath.Join(f.root, "package.json"))
 	recipe, err := Recipe(f.root, manifest, "", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -25,25 +23,24 @@ func recipeFixture(t *testing.T) addonFixture {
 	writeTest(t, filepath.Join(f.root, "rockspecs/wow-tl-type-"+manifest.Version+"-1.rockspec.in"), recipe)
 	return f
 }
-func recipeCommand(t *testing.T, f addonFixture, args []string, reject string) string {
+func recipeCommand(t *testing.T, f addonFixture, options RockspecOptions, reject string) string {
 	t.Helper()
-	return f.run(t, append([]string{"rockspecs", "--output", filepath.Join(f.project, "candidate")}, args...), reject)
+	options.Output = filepath.Join(f.project, "candidate")
+	var out bytes.Buffer
+	return expect(t, Rockspecs(f.root, options, &out, &out), &out, reject)
 }
 func TestRecipeInstallsOnlyFourModulesWithMatchingToolkit(t *testing.T) {
 	f := recipeFixture(t)
-	manifest, err := readManifest(filepath.Join(f.root, "package.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
-	recipeCommand(t, f, []string{"--check"}, "")
-	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types"}, "")
+	manifest := readManifest(t, filepath.Join(f.root, "package.json"))
+	recipeCommand(t, f, RockspecOptions{Check: true}, "")
+	recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types"}, "")
 	path := filepath.Join(f.project, "candidate/wow-tl-type-"+manifest.Version+"-1.rockspec")
 	before := fileText(t, path)
-	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types"}, "")
+	recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types"}, "")
 	if before != fileText(t, path) {
 		t.Fatal("recipe is nondeterministic")
 	}
-	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types", "--check"}, "")
+	recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types", Check: true}, "")
 	inspector := filepath.Join(f.project, "Inspect.lua")
 	writeTest(t, inspector, `local data = {}
 local chunk
@@ -59,8 +56,7 @@ print(data.version)
 print(data.source.url)
 print(data.source.tag)
 print(data.description.license)
-assert(#data.dependencies == 1 and data.dependencies[1] == "lua >= 5.1")
-assert(data.description.detailed:find("0.24.8-wow.1", 1, true))
+assert(#data.dependencies == 2 and data.dependencies[1] == "lua >= 5.1" and data.dependencies[2] == "tl == 0.24.8")
 for _, path in ipairs(data.build.install.lua) do print(path) end
 `)
 	command := exec.CommandContext(t.Context(), teal(t), "run", inspector, "--", path)
@@ -76,31 +72,31 @@ for _, path in ipairs(data.build.install.lua) do print(path) end
 }
 func TestStaleRecipesAreRejectedWithoutRewrites(t *testing.T) {
 	f := recipeFixture(t)
-	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types"}, "")
+	recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types"}, "")
 	path := filepath.Join(f.project, "candidate/wow-tl-type-0.1.0-1.rockspec")
 	writeTest(t, path, fileText(t, path)+"-- stale\n")
 	before := fileText(t, path)
-	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types", "--check"}, "missing or stale")
+	recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types", Check: true}, "missing or stale")
 	if fileText(t, path) != before {
 		t.Fatal("candidate check rewrote output")
 	}
 	path = filepath.Join(f.root, "rockspecs/wow-tl-type-0.1.0-1.rockspec.in")
 	writeTest(t, path, fileText(t, path)+"-- stale\n")
 	before = fileText(t, path)
-	recipeCommand(t, f, []string{"--check"}, "template is stale")
+	recipeCommand(t, f, RockspecOptions{Check: true}, "template is stale")
 	if fileText(t, path) != before {
 		t.Fatal("template check rewrote output")
 	}
 }
 func TestRecipeRequiresSourceIdentityAndIntactDeclarations(t *testing.T) {
 	f := recipeFixture(t)
-	recipeCommand(t, f, nil, "requires --repository")
+	recipeCommand(t, f, RockspecOptions{}, "requires --repository")
 	if _, err := os.Stat(filepath.Join(f.project, "candidate")); !os.IsNotExist(err) {
 		t.Fatal("missing source identity created candidate")
 	}
 	path := filepath.Join(f.root, "types/wow/wow.d.tl")
 	writeTest(t, path, fileText(t, path)+"-- changed\n")
-	recipeCommand(t, f, []string{"--repository", "example/wow-teal-types"}, "integrity mismatch")
+	recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types"}, "integrity mismatch")
 }
 func TestOwnerDescriptionRoundTripsAndCannotOverrideCoreFields(t *testing.T) {
 	f := recipeFixture(t)
@@ -109,9 +105,10 @@ func TestOwnerDescriptionRoundTripsAndCannotOverrideCoreFields(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	args := []string{"--repository", "example/wow-teal-types", "--description-json", string(metadata)}
-	recipeCommand(t, f, args, "")
-	recipeCommand(t, f, append(append([]string{}, args...), "--check"), "")
+	options := RockspecOptions{Repository: "example/wow-teal-types", DescriptionJSON: string(metadata)}
+	recipeCommand(t, f, options, "")
+	options.Check = true
+	recipeCommand(t, f, options, "")
 	path := filepath.Join(f.project, "candidate/wow-tl-type-0.1.0-1.rockspec")
 	inspector := filepath.Join(f.project, "Metadata.lua")
 	writeTest(t, inspector, `local data = {}
@@ -129,7 +126,7 @@ print(data.description.maintainer)
 	}
 	before := fileText(t, path)
 	for _, invalid := range []string{`{"summary":"override"}`, `{"license":"other"}`, `{"maintainer":[]}`, `{"maintainer":"line\nbreak"}`, `null`, `{"maintainer":null}`, `{"maintainer":17}`, `[]`} {
-		recipeCommand(t, f, []string{"--repository", "example/wow-teal-types", "--description-json", invalid}, "description")
+		recipeCommand(t, f, RockspecOptions{Repository: "example/wow-teal-types", DescriptionJSON: invalid}, "description")
 		if fileText(t, path) != before {
 			t.Fatal("invalid description changed candidate")
 		}
@@ -140,21 +137,11 @@ func TestSourceAndDependencyBounds(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Good.tl", "print(\"checked\")\n")
 	f.write(t, "Big.tl", strings.Repeat(" ", maxSourceBytes+1))
-	f.run(t, []string{"check", f.source}, "source exceeds 2 MiB")
+	f.check(t, Selection{Sources: []string{f.source}}, "source exceeds 2 MiB")
 	if err := os.Remove(filepath.Join(f.source, "Big.tl")); err != nil {
 		t.Fatal(err)
 	}
 	deps := filepath.Join(f.project, "types")
 	writeTest(t, filepath.Join(deps, "Big.d.tl"), strings.Repeat(" ", maxSourceBytes+1))
-	f.run(t, []string{"check", f.source, "-I", deps}, "regular file of at most 2 MiB")
-}
-
-func TestRecipeRefreshCannotWriteActiveTemplate(t *testing.T) {
-	f := recipeFixture(t)
-	path := filepath.Join(f.root, "rockspecs/wow-tl-type-0.1.0-1.rockspec.in")
-	before := fileText(t, path)
-	recipeCommand(t, f, []string{"--refresh-template"}, "unknown rockspec option")
-	if got := fileText(t, path); got != before {
-		t.Fatal("removed refresh flag changed active template")
-	}
+	f.check(t, Selection{Sources: []string{f.source}, Include: []string{deps}}, "regular file of at most 2 MiB")
 }

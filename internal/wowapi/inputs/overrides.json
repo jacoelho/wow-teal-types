@@ -103,9 +103,33 @@
   "native_contracts": [
     {
       "symbols": [
+        "Mixin"
+      ],
+      "signature": "function<T>(T, any...): T"
+    },
+    {
+      "symbols": [
+        "CopyTable"
+      ],
+      "signature": "function<K, V>({K: V}, ? boolean): {K: V}"
+    },
+    {
+      "symbols": [
+        "tInvert"
+      ],
+      "signature": "function<K, V>({K: V}): {V: K}"
+    },
+    {
+      "symbols": [
+        "tFilter"
+      ],
+      "signature": "function<K, V>({K: V}, function(V): (any), ? boolean): {K: V}"
+    },
+    {
+      "symbols": [
         "GetCursorInfo"
       ],
-      "signature": "function(): string | nil, OpaqueValue..."
+      "signature": "function(): string | nil, W.SecretData..."
     },
     {
       "symbols": [
@@ -127,8 +151,9 @@
       "returns": [
         {
           "Name": "value",
-          "Type": "Secret",
-          "Nilable": true
+          "Type": "any",
+          "Nilable": true,
+          "ConditionalSecret": true
         }
       ]
     },
@@ -190,7 +215,7 @@
         "Region"
       ],
       "bases": [
-        "Region",
+        "LayeredRegion",
         "AnimatableObject"
       ]
     },
@@ -200,7 +225,7 @@
         "Region"
       ],
       "bases": [
-        "Region",
+        "LayeredRegion",
         "AnimatableObject"
       ]
     },
@@ -215,8 +240,91 @@
       "owner": "VectorGraphics",
       "expected_bases": [],
       "bases": [
+        "LayeredRegion"
+      ]
+    },
+    {
+      "owner": "LayeredRegion",
+      "expected_bases": [],
+      "bases": [
         "Region"
       ]
+    },
+    {
+      "owner": "ModelSceneFrameActor",
+      "expected_bases": [],
+      "bases": [
+        "ModelSceneFrameActorBase"
+      ]
+    },
+    {
+      "owner": "ModelSceneActor",
+      "expected_bases": [
+        "ModelSceneActorBase"
+      ],
+      "bases": [
+        "Object"
+      ]
+    },
+    {
+      "owner": "LuaDurationManualClock",
+      "expected_bases": [],
+      "bases": [
+        "LuaDurationClockObject"
+      ]
+    },
+    {
+      "owner": "SecondsFormatter",
+      "expected_bases": [],
+      "bases": [
+        "NumericFormatter"
+      ]
     }
-  ]
+  ],
+  "frame_factory": {
+    "frame_types": [
+      "Frame",
+      "Button",
+      "CheckButton",
+      "EditBox",
+      "ScrollFrame",
+      "Slider",
+      "StatusBar",
+      "Cooldown",
+      "GameTooltip",
+      "ColorSelect",
+      "MessageFrame",
+      "ScrollingMessageFrame",
+      "SimpleHTML",
+      "Model",
+      "PlayerModel",
+      "DressUpModel",
+      "CinematicModel",
+      "TabardModel",
+      "ModelScene",
+      "MovieFrame",
+      "FogOfWarFrame",
+      "UnitPositionFrame",
+      "ArchaeologyDigSiteFrame",
+      "QuestPOIFrame",
+      "ScenarioPOIFrame",
+      "DropdownButton",
+      "EventFrame"
+    ],
+    "templates": [
+      {
+        "name": "BackdropTemplate",
+        "type": "BackdropTemplate",
+        "frame_types": [
+          "Frame",
+          "Button",
+          "CheckButton",
+          "EditBox",
+          "ScrollFrame",
+          "Slider",
+          "StatusBar"
+        ]
+      }
+    ]
+  }
 }

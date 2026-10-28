@@ -8,10 +8,10 @@ Generation and publication are manual maintainer operations from a source checko
 make generate
 ```
 
-Use Linux or macOS with Go 1.27+, LuaJIT, `zstd` and Git. The compiler is bundled
-under `tools/teal`. Acquisition and generation use Go without external module
-dependencies. Reproducing the compiler patch also needs Python 3 and `patch`; see
-[the compiler contract](tools/teal/README.md).
+Use Linux or macOS with Go 1.27+, `zstd`, Git and stock Teal 0.24.8
+(`luarocks install tl 0.24.8`), found through `TL` or `tl` on `PATH`. Any other
+`tl --version` output fails closed. Acquisition and generation use Go without
+external module dependencies.
 
 Generation acquires the selected client, prepares an isolated candidate, renders
 declarations and native call permissions, runs consumer checks, and repeats
@@ -38,7 +38,9 @@ cross-source reports, runtime captures or approval ledgers.
 inventory, configuration identities, content keys, SHA-256 hashes and sizes.
 Acquisition verifies every file before publishing a snapshot. Original Lua, XML,
 TOC and listed asset bytes remain in that snapshot; Blizzard inputs have no
-source-mirror fallback. [`sources.json`](internal/wowapi/inputs/sources.json) owns the
+source-mirror fallback. Snapshots recorded with an `extractor` field predate the
+current lock format and are rejected; remove the `extractor` block, or delete the
+snapshot directory to extract again. [`sources.json`](internal/wowapi/inputs/sources.json) owns the
 selected generator inputs and pinned annotation revisions.
 
 Literal parsing rejects unsupported statements and duplicate keys. Native decoding
@@ -46,8 +48,8 @@ rejects unsupported fields and value shapes, including permission metadata.
 Malformed recognized annotations fail with their source location. Bootstrap stores
 native projections under `build/`, keyed by the client lock and selected source
 representation; it does not copy them into a second native cache.
-The [declaration contract](docs/api/teal-catalogue.md) describes projection limits.
-An unresolved type uses opaque `unknown`; it is not widened to erased `any`.
+The [declaration contract](docs/api/teal-catalogue.md) describes projection limits
+and the secret-value model.
 
 ## XML validation boundary
 
@@ -133,7 +135,8 @@ luarocks upload "build/rockspecs/wow-tl-type-$version-1.rockspec" \
 ```
 
 [Consumer CI](.github/workflows/check.yml) validates the committed snapshot with
-checks, tests, the example build, temporary archive creation and recipe lint.
+checks, the Go test suites (generator parity is skipped without a client
+snapshot), the example build, temporary archive creation and recipe lint.
 Catalogue generation and registry publication remain manual maintainer commands.
 
 ## Maintenance boundaries

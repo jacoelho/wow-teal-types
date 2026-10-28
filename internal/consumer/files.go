@@ -155,7 +155,7 @@ func copyTree(source, target string) error {
 }
 
 func consumerFileMode(name string) os.FileMode {
-	if name == "bin/wow-teal" || name == "tools/teal/tl" || name == "check-all.sh" {
+	if name == "bin/wow-teal" || name == "check-all.sh" {
 		return 0755
 	}
 	return 0644

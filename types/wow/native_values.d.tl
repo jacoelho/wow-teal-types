@@ -1,15 +1,12 @@
--- Static restriction markers; these do not assert runtime userdata carriers.
--- Native accessibility checks own permission to inspect the underlying values.
-local record OpaqueNumber
-   is userdata
-end
-local record OpaqueText
-   is userdata
-end
+-- Static restriction markers; Secret does not assert a runtime userdata carrier.
 local record Values
-   type OpaqueNumber = OpaqueNumber
-   type OpaqueText = OpaqueText
-   type NumberLike = number | OpaqueNumber
-   type TextLike = string | OpaqueText
+   record Secret<T>
+      is userdata
+   end
+   type MaybeSecret<T> = T | Secret<T>
+   type Data = number | string | boolean | {any: any} | function(any...): any...
+   type Atom = number | string | boolean | function(any...): any...
+   type SecretData = MaybeSecret<Atom> | Secret<SecretTable>
+   type SecretTable = {SecretData: SecretData}
 end
 return Values

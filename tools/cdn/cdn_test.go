@@ -25,7 +25,7 @@ func testCDN(t *testing.T, server *httptest.Server) *cdnClient {
 	if err != nil {
 		t.Fatal(err)
 	}
-	c := newCDN(cache, "")
+	c := newCDN(cache)
 	c.hosts = []string{server.URL}
 	t.Cleanup(c.close)
 	return c
@@ -241,6 +241,59 @@ func TestCDNIndexWorkersAreBoundedAndCancellationLeavesNoContent(t *testing.T) {
 		return err
 	}); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestCDNIndexBudgetChargesEachVerifiedIndexOnce(t *testing.T) {
+	bodies := map[string][]byte{}
+	values := map[string][]string{}
+	var budget int64
+	for tag := 1; tag <= 2; tag++ {
+		body, k := literalIndex(t, tag)
+		name := hex.EncodeToString(k[:])
+		bodies[name+".index"] = body
+		values["archives"] = append(values["archives"], name)
+		values["archives-index-size"] = append(values["archives-index-size"], strconv.Itoa(len(body)))
+		budget += int64(len(body))
+	}
+	// The first host streams half of each index and then drops the connection.
+	truncating := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body := bodies[filepath.Base(r.URL.Path)]
+		w.Header().Set("Content-Length", strconv.Itoa(len(body)))
+		w.Write(body[:len(body)/2])
+		w.(http.Flusher).Flush()
+	}))
+	defer truncating.Close()
+	valid := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write(bodies[filepath.Base(r.URL.Path)])
+	}))
+	defer valid.Close()
+	newCache := func() string {
+		cache, err := prepareDirectory(t.TempDir())
+		if err != nil {
+			t.Fatal(err)
+		}
+		return cache
+	}
+	prepare := func(cache string, limit int64, hosts ...string) error {
+		c := newCDN(cache)
+		c.hosts, c.indexBudget = hosts, limit
+		defer c.close()
+		return c.prepareIndexes(t.Context(), values)
+	}
+	if err := prepare(newCache(), budget-1, truncating.URL, valid.URL); err == nil || !strings.Contains(err.Error(), "archive index bytes exceed") {
+		t.Fatalf("budget below index bytes: error = %v", err)
+	}
+	cache := newCache()
+	if err := prepare(cache, budget, truncating.URL, valid.URL); err != nil {
+		t.Fatalf("budget equal to index bytes after failed attempts: %v", err)
+	}
+	// Indexes are now cached; only the truncating host remains reachable.
+	if err := prepare(cache, budget, truncating.URL); err != nil {
+		t.Fatalf("budget equal to cached index bytes: %v", err)
+	}
+	if err := prepare(cache, budget-1, truncating.URL); err == nil || !strings.Contains(err.Error(), "archive index bytes exceed") {
+		t.Fatalf("budget below cached index bytes: error = %v", err)
 	}
 }
 

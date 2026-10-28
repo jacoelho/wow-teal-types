@@ -2,53 +2,45 @@ package wowapi
 
 import (
 	"fmt"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
+
+	"wow-teal-types/internal/consumer"
 )
 
 // callPolicy is finalized with its signature. Source permission fields never
 // enter the renderer or the consumer checker as a second interpretation path.
 type callPolicy struct {
-	Symbol                   string
-	SecretParameters         []int
-	SecretVarargFrom         int
-	SecretContentsParameters []int
-	SecretContentsVarargFrom int
-	Guard                    string
+	Symbol           string
+	SecretParameters []int
+	SecretVarargFrom int
+	Guard            string
 }
 
 func (p *callPolicy) equal(other *callPolicy) bool {
 	if p == nil || other == nil {
 		return p == other
 	}
-	return p.Symbol == other.Symbol && p.Guard == other.Guard && p.SecretVarargFrom == other.SecretVarargFrom && p.SecretContentsVarargFrom == other.SecretContentsVarargFrom && slices.Equal(p.SecretParameters, other.SecretParameters) && slices.Equal(p.SecretContentsParameters, other.SecretContentsParameters)
+	return p.Symbol == other.Symbol && p.Guard == other.Guard && p.SecretVarargFrom == other.SecretVarargFrom && slices.Equal(p.SecretParameters, other.SecretParameters)
 }
 
-func uniqueSignatureChoices(values []signatureChoice) []signatureChoice {
-	out := []signatureChoice{}
-	seen := map[string]bool{}
-	for _, value := range values {
-		if !seen[value.expression] {
-			seen[value.expression] = true
-			out = append(out, value)
-		}
-	}
-	return out
-}
 func (c *catalogue) projectCallable(item *catalogueFunction, owner, symbol string) []projectedSignature {
 	out := []projectedSignature{}
 	seen := map[string]int{}
 	for _, choice := range c.signatureChoices(item, owner) {
-		policy := c.signaturePolicy(choice.contract, symbol, choice.expression)
-		if index, ok := seen[choice.expression]; ok {
+		// Variants that differ only by nil members are one overload.
+		expression := omitNil(choice.expression)
+		policy := c.signaturePolicy(choice.contract, symbol, expression)
+		if index, ok := seen[expression]; ok {
 			if !out[index].policy.equal(policy) {
 				reject(fmt.Sprintf("ambiguous permissions for identical overload: %s", symbol))
 			}
 			continue
 		}
-		seen[choice.expression] = len(out)
-		out = append(out, projectedSignature{expression: choice.expression, policy: policy})
+		seen[expression] = len(out)
+		out = append(out, projectedSignature{expression: expression, policy: policy})
 	}
 	return out
 }
@@ -60,7 +52,7 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 	if contract.Native == nil {
 		return nil
 	}
-	policy := &callPolicy{Symbol: symbol, SecretParameters: []int{}, SecretContentsParameters: []int{}}
+	policy := &callPolicy{Symbol: symbol, SecretParameters: []int{}}
 	switch symbol {
 	case "canaccessvalue":
 		policy.Guard = "value"
@@ -124,20 +116,19 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 
 func renderCallPolicy(locations map[string]map[string]callPolicy) []byte {
 	var out strings.Builder
-	out.WriteString("-- Generated native-call permissions, bound by the consumer artifact manifest.\nreturn {\n   schema = 1,\n   compiler = \"0.24.8-wow.1\",\n   declarations = {\n")
-	for _, path := range sortedKeys(locations) {
-		fmt.Fprintf(&out, "      [%s] = {\n", requireStringJSON(path))
-		for _, position := range sortedKeys(locations[path]) {
+	out.WriteString("-- Generated native-call permissions, bound by the consumer artifact manifest.\nreturn {\n   schema = 1,\n   compiler = " + luaQuote(consumer.TealVersion) + ",\n   declarations = {\n")
+	for _, path := range slices.Sorted(maps.Keys(locations)) {
+		fmt.Fprintf(&out, "      [%s] = {\n", luaQuote(path))
+		for _, position := range slices.Sorted(maps.Keys(locations[path])) {
 			policy := locations[path][position]
-			fmt.Fprintf(&out, "         [%s] = { symbol = %s, secret_parameters = %s, secret_contents_parameters = %s", requireStringJSON(position), requireStringJSON(policy.Symbol), luaPositions(policy.SecretParameters), luaPositions(policy.SecretContentsParameters))
+			// The consumer checker requires secret_contents_parameters; no source
+			// policy currently produces content-only secret parameters.
+			fmt.Fprintf(&out, "         [%s] = { symbol = %s, secret_parameters = %s, secret_contents_parameters = {}", luaQuote(position), luaQuote(policy.Symbol), luaPositions(policy.SecretParameters))
 			if policy.SecretVarargFrom > 0 {
 				fmt.Fprintf(&out, ", secret_vararg_from = %d", policy.SecretVarargFrom)
 			}
-			if policy.SecretContentsVarargFrom > 0 {
-				fmt.Fprintf(&out, ", secret_contents_vararg_from = %d", policy.SecretContentsVarargFrom)
-			}
 			if policy.Guard != "" {
-				fmt.Fprintf(&out, ", guard = %s", requireStringJSON(policy.Guard))
+				fmt.Fprintf(&out, ", guard = %s", luaQuote(policy.Guard))
 			}
 			out.WriteString(" },\n")
 		}

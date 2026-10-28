@@ -8,12 +8,10 @@ import (
 	"maps"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strconv"
 	"strings"
 	"syscall"
-	"wow-teal-types/internal/consumer"
 	"wow-teal-types/internal/sourcelock"
 )
 
@@ -23,11 +21,11 @@ type fileIdentity struct {
 }
 
 func (id *fileIdentity) UnmarshalJSON(data []byte) error {
-	value, err := decodeJSON[struct {
+	var value struct {
 		SHA256 string  `json:"sha256"`
 		Mode   *uint32 `json:"mode"`
-	}](data)
-	if err != nil {
+	}
+	if err := sourcelock.DecodeStrict(data, &value); err != nil {
 		return err
 	}
 	if value.Mode == nil || *value.Mode > 0777 || !sourcelock.IsSHA256(value.SHA256) {
@@ -50,19 +48,17 @@ type journal struct {
 	Files  []publicationRow `json:"files"`
 }
 
-var ownedOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json"}
+// maxPublishedOutputs bounds a publication and therefore a recovery journal.
+const maxPublishedOutputs = 64
 
 func sameIdentity(a, b *fileIdentity) bool {
 	return a == nil && b == nil || a != nil && b != nil && *a == *b
-}
-func validFileIdentity(id *fileIdentity) bool {
-	return id != nil && sourcelock.IsSHA256(id.SHA256) && id.Mode <= 0777
 }
 func identityOf(path string) (*fileIdentity, error) {
 	if !exists(path) {
 		return nil, nil
 	}
-	b, e := readFile(path, maxPayload)
+	b, e := sourcelock.ReadRegular(path, maxPayload)
 	if e != nil {
 		return nil, e
 	}
@@ -111,7 +107,7 @@ func captureInputs(root string) (inputState, error) {
 			if e != nil {
 				return e
 			}
-			if path != dir && d.IsDir() && (d.Name() == "target" || d.Name() == ".git" || d.Name() == "__pycache__") {
+			if path != dir && d.IsDir() && unmaintainedDir(d.Name()) {
 				return filepath.SkipDir
 			}
 			if d.Type()&os.ModeSymlink != 0 {
@@ -181,29 +177,41 @@ func updateLock(root string) (func(), error) {
 	}
 	return func() { _ = syscall.Flock(int(f.Fd()), syscall.LOCK_UN); _ = f.Close() }, nil
 }
-func outputNames(workspace string) ([]string, error) {
-	data, e := readFile(filepath.Join(workspace, "package.json"), maxFile)
-	if e != nil {
-		return nil, e
+
+// publicationOrder validates the candidate's output names and orders them so
+// package.json, which fingerprints the others, is replaced last.
+func publicationOrder(outputs []string) ([]string, error) {
+	if len(outputs) == 0 || len(outputs) > maxPublishedOutputs {
+		return nil, fmt.Errorf("publication requires 1 to %d outputs, got %d", maxPublishedOutputs, len(outputs))
 	}
-	m, e := consumer.ParsePackageManifest(data)
-	if e != nil {
-		return nil, e
-	}
-	v := m.Version
-	if !regexp.MustCompile(`^\d+\.\d+\.\d+$`).MatchString(v) {
-		return nil, fmt.Errorf("invalid checked package version")
-	}
-	names := append([]string{}, ownedOutputs...)
-	names = append(names, "rockspecs/wow-tl-type-"+v+"-1.rockspec.in")
-	slices.Sort(names)
-	for k, n := range names {
-		if n == "package.json" {
-			names = append(append(names[:k], names[k+1:]...), n)
-			break
+	names := slices.Clone(outputs)
+	slices.SortFunc(names, func(a, b string) int {
+		if (a == "package.json") != (b == "package.json") {
+			if a == "package.json" {
+				return 1
+			}
+			return -1
+		}
+		return strings.Compare(a, b)
+	})
+	for k, name := range names {
+		if k > 0 && names[k-1] == name {
+			return nil, fmt.Errorf("duplicate publication output: %s", name)
+		}
+		if e := publishablePath(name); e != nil {
+			return nil, e
 		}
 	}
 	return names, nil
+}
+
+// publishablePath bounds what a journal may name: a checkout-relative path that
+// never enters the update's own state under build/.
+func publishablePath(name string) error {
+	if !fs.ValidPath(name) || name == "." || name == "build" || strings.HasPrefix(name, "build/") {
+		return fmt.Errorf("unpublishable output path: %q", name)
+	}
+	return nil
 }
 func rollback(root, transaction string, rows []publicationRow) error {
 	var failures []error
@@ -236,7 +244,7 @@ func rollback(root, transaction string, rows []publicationRow) error {
 			} else if saved == nil || saved.SHA256 != row.Before.SHA256 {
 				e = fmt.Errorf("publication backup identity mismatch: %s", row.Path)
 			} else {
-				b, err := readFile(backup, maxPayload)
+				b, err := sourcelock.ReadRegular(backup, maxPayload)
 				if err != nil {
 					e = err
 				} else {
@@ -253,11 +261,21 @@ func rollback(root, transaction string, rows []publicationRow) error {
 
 // publish offers per-file atomic replacement, guarded publication and rollback.
 // It does not promise a filesystem-wide atomic commit or power-loss durability.
-func publish(ctx context.Context, root, workspace, runDir string, expected inputState, replace func(string, string) error) (changed []string, err error) {
-	if e := requireUnchanged(root, expected); e != nil {
+// outputs names every file the candidate derived; nothing else is replaced.
+func publish(ctx context.Context, root, workspace, runDir string, outputs []string, expected inputState, replace func(string, string) error) (changed []string, err error) {
+	// The journal persists root and the journal path; recovery compares them
+	// against its own absolute root.
+	root, e := filepath.Abs(root)
+	if e != nil {
 		return nil, e
 	}
-	names, e := outputNames(workspace)
+	if runDir, e = filepath.Abs(runDir); e != nil {
+		return nil, e
+	}
+	if e = requireUnchanged(root, expected); e != nil {
+		return nil, e
+	}
+	names, e := publicationOrder(outputs)
 	if e != nil {
 		return nil, e
 	}
@@ -302,7 +320,7 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 	}
 	for _, r := range rows {
 		if r.Before != nil {
-			b, e := readFile(filepath.Join(root, filepath.FromSlash(r.Path)), maxPayload)
+			b, e := sourcelock.ReadRegular(filepath.Join(root, filepath.FromSlash(r.Path)), maxPayload)
 			if e != nil {
 				return nil, e
 			}
@@ -310,7 +328,7 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 				return nil, e
 			}
 		}
-		b, e := readFile(filepath.Join(workspace, filepath.FromSlash(r.Path)), maxPayload)
+		b, e := sourcelock.ReadRegular(filepath.Join(workspace, filepath.FromSlash(r.Path)), maxPayload)
 		if e != nil {
 			return nil, e
 		}
@@ -391,6 +409,10 @@ func publish(ctx context.Context, root, workspace, runDir string, expected input
 	return changed, nil
 }
 func Recover(root string) (PublicationResult, error) {
+	root, e := filepath.Abs(root)
+	if e != nil {
+		return PublicationResult{}, e
+	}
 	unlock, e := updateLock(root)
 	if e != nil {
 		return PublicationResult{}, e
@@ -413,32 +435,24 @@ func Recover(root string) (PublicationResult, error) {
 	if e != nil {
 		return PublicationResult{}, e
 	}
-	body, e := readFile(path, maxFile)
+	body, e := sourcelock.ReadRegular(path, maxFile)
 	if e != nil {
 		return PublicationResult{}, e
 	}
 	if sha(body) != pointer.SHA256 {
 		return PublicationResult{}, fmt.Errorf("publication journal identity mismatch")
 	}
-	j, e := decodeJSON[journal](body)
-	if e != nil {
+	var j journal
+	if e = sourcelock.DecodeStrict(body, &j); e != nil {
 		return PublicationResult{}, e
 	}
-	if j.Schema != 1 || j.Root != root || len(j.Files) < 1 || len(j.Files) > len(ownedOutputs)+1 {
+	if j.Schema != 1 || j.Root != root || len(j.Files) < 1 || len(j.Files) > maxPublishedOutputs {
 		return PublicationResult{}, fmt.Errorf("invalid publication journal inventory")
 	}
-	allowed := map[string]bool{}
-	for _, n := range ownedOutputs {
-		allowed[n] = true
-	}
 	seen := map[string]bool{}
-	recipe := regexp.MustCompile(`^rockspecs/wow-tl-type-\d+\.\d+\.\d+-1\.rockspec\.in$`)
 	for k, row := range j.Files {
-		if seen[row.Path] || row.Backup != strconv.Itoa(k) || (!allowed[row.Path] && !recipe.MatchString(row.Path)) || row.After == nil {
-			return PublicationResult{}, fmt.Errorf("unowned or duplicate publication journal path")
-		}
-		if !validFileIdentity(row.After) || (row.Before != nil && !validFileIdentity(row.Before)) {
-			return PublicationResult{}, fmt.Errorf("invalid publication file identity")
+		if seen[row.Path] || row.Backup != strconv.Itoa(k) || publishablePath(row.Path) != nil || row.After == nil {
+			return PublicationResult{}, fmt.Errorf("unowned or duplicate publication journal path: %q", row.Path)
 		}
 		seen[row.Path] = true
 		dst, e := safeJoin(root, row.Path)

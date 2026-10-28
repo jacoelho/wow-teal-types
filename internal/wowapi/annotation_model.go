@@ -1,56 +1,55 @@
 package wowapi
 
-type AnnotationDocument struct {
-	Aliases   []*AnnotationAlias    `json:"aliases"`
-	Bindings  []AnnotationBinding   `json:"bindings"`
-	Classes   []*AnnotationClass    `json:"classes"`
-	Enums     []*AnnotationEnum     `json:"enums"`
-	Functions []*AnnotationFunction `json:"functions"`
+type annotationDocument struct {
+	Aliases   []*annotationAlias    `json:"aliases"`
+	Bindings  []annotationBinding   `json:"bindings"`
+	Classes   []*annotationClass    `json:"classes"`
+	Enums     []*annotationEnum     `json:"enums"`
+	Functions []*annotationFunction `json:"functions"`
 	Path      string                `json:"path"`
 }
-type AnnotationParameter struct {
+type annotationParameter struct {
 	Name     string `json:"name"`
 	Optional bool   `json:"optional"`
 	Type     string `json:"type"`
 	Variadic bool   `json:"variadic"`
 }
-type AnnotationReturn struct {
-	Type        string `json:"type"`
-	Variadic    bool   `json:"variadic"`
-	NeverSecret bool   `json:"-"`
+type annotationReturn struct {
+	Type     string `json:"type"`
+	Variadic bool   `json:"variadic"`
 }
-type AnnotationFunction struct {
+type annotationFunction struct {
 	Arguments     []string              `json:"arguments"`
 	Generics      []string              `json:"generics"`
 	Method        bool                  `json:"method"`
 	Name          string                `json:"name"`
 	Overloads     []string              `json:"overloads"`
 	Owner         *string               `json:"owner"`
-	Params        []AnnotationParameter `json:"params"`
+	Params        []annotationParameter `json:"params"`
 	QualifiedName string                `json:"qualified_name"`
 	Local         bool                  `json:"local"`
-	Returns       []AnnotationReturn    `json:"returns"`
+	Returns       []annotationReturn    `json:"returns"`
 }
-type AnnotationClass struct {
+type annotationClass struct {
 	Bases  []string              `json:"bases"`
-	Fields []AnnotationParameter `json:"fields"`
+	Fields []annotationParameter `json:"fields"`
 	Name   string                `json:"name"`
 }
-type AnnotationAlias struct {
+type annotationAlias struct {
 	Alternatives []string `json:"alternatives"`
 	Line         int      `json:"line"`
 	Name         string   `json:"name"`
 	Type         string   `json:"type"`
 }
-type AnnotationEnum struct {
+type annotationEnum struct {
 	Name   string                `json:"name"`
-	Values []AnnotationEnumValue `json:"values"`
+	Values []annotationEnumValue `json:"values"`
 }
-type AnnotationEnumValue struct {
+type annotationEnumValue struct {
 	Name    string `json:"name"`
 	Numeric bool   `json:"numeric"`
 }
-type AnnotationBinding struct {
+type annotationBinding struct {
 	Class    *string `json:"class"`
 	Local    bool    `json:"local"`
 	Name     string  `json:"name"`

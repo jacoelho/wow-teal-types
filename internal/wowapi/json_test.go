@@ -9,11 +9,11 @@ import (
 func TestCanonicalJSONByteContracts(t *testing.T) {
 	value := struct {
 		Empty        []string      `json:"empty"`
-		Float        literal.Float `json:"float"`
-		NegativeZero literal.Float `json:"negative_zero"`
+		Float        literal.Value `json:"float"`
+		NegativeZero literal.Value `json:"negative_zero"`
 		Text         string        `json:"text"`
 		None         *string       `json:"none"`
-	}{[]string{}, 1, literal.Float(math.Copysign(0, -1)), "©😀<\x7f", nil}
+	}{[]string{}, mustLiteral(literal.Number(1)), mustLiteral(literal.Number(math.Copysign(0, -1))), "©😀<\x7f", nil}
 	compact, e := jsonCompact(value)
 	if e != nil {
 		t.Fatal(e)

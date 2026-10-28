@@ -239,6 +239,59 @@
         "UnitFrame": "NamePlateUnitFrame?"
       },
       "methods": {}
+    },
+    {
+      "name": "ColorMixin",
+      "bases": [],
+      "fields": {
+        "r": "number",
+        "g": "number",
+        "b": "number",
+        "a": "number"
+      },
+      "methods": {}
+    },
+    {
+      "name": "TooltipDataHandlerMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "IsTooltipType": "fun(self:TooltipDataHandlerMixin, tooltipType:number):boolean"
+      }
+    },
+    {
+      "name": "GameTooltipDataMixin",
+      "bases": [
+        "TooltipDataHandlerMixin"
+      ],
+      "fields": {},
+      "methods": {}
+    },
+    {
+      "name": "GameTooltipTemplate",
+      "bases": [
+        "GameTooltip",
+        "GameTooltipDataMixin"
+      ],
+      "fields": {},
+      "methods": {}
+    },
+    {
+      "name": "RaidWarningFrameMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "OnEvent": "fun(self:RaidWarningFrameMixin, event:string, ...:any)"
+      }
+    },
+    {
+      "name": "RaidWarningFrameTemplate",
+      "bases": [
+        "Frame",
+        "RaidWarningFrameMixin"
+      ],
+      "fields": {},
+      "methods": {}
     }
   ],
   "aliases": {
@@ -248,7 +301,7 @@
     "UiMapPoint": "UiMapPointFactory",
     "ChatTypeInfo": "table<string,ChatTypeColor>",
     "SOUNDKIT": "table<string,number>",
-    "RaidWarningFrame": "Frame",
+    "RaidWarningFrame": "RaidWarningFrameTemplate",
     "RaidNotice_AddMessage": "fun(noticeFrame:Frame, textString:string, colorInfo:ChatTypeColor, displayTime?:number)",
     "DEFAULT_CHAT_FRAME": "ScrollingMessageFrame",
     "MapCanvasPinMixin": "MapCanvasPinMixin",
@@ -263,6 +316,18 @@
     "SecureHandlerWrapScript": "fun(frame:Frame, script:string, header:Frame, preBody:string, postBody?:string)",
     "Settings": "SettingsNamespace",
     "SlashCmdList": "table<string,fun(msg:string, editBox?:EditBox)>",
-    "UISpecialFrames": "string[]"
+    "UISpecialFrames": "string[]",
+    "GameTooltip": "GameTooltipTemplate",
+    "RAID_CLASS_COLORS": "table<string,colorRGB>",
+    "ChatFrame1": "ScrollingMessageFrame",
+    "ChatFrame2": "ScrollingMessageFrame",
+    "ChatFrame3": "ScrollingMessageFrame",
+    "ChatFrame4": "ScrollingMessageFrame",
+    "ChatFrame5": "ScrollingMessageFrame",
+    "ChatFrame6": "ScrollingMessageFrame",
+    "ChatFrame7": "ScrollingMessageFrame",
+    "ChatFrame8": "ScrollingMessageFrame",
+    "ChatFrame9": "ScrollingMessageFrame",
+    "ChatFrame10": "ScrollingMessageFrame"
   }
 }

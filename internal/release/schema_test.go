@@ -1,9 +1,28 @@
 package release
 
 import (
+	"bytes"
+	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+	"wow-teal-types/internal/sourcelock"
 )
+
+func TestExtractorConfigWireContract(t *testing.T) {
+	want, err := os.ReadFile(filepath.Join("..", "..", "tools", "cdn", "testdata", "extractor-config.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	id := sourcelock.ClientIdentity{Product: "wow", Region: "eu", Locale: "enUS", Build: 70575, Version: "12.1.5.70575", BuildConfig: strings.Repeat("a", 32), CDNConfig: strings.Repeat("b", 32), ProductConfig: strings.Repeat("c", 32)}
+	got, err := jsonBytes(extractorConfig{id, manifests})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(got, want) {
+		t.Fatalf("release config.json =\n%s\nwant tools/cdn fixture\n%s", got, want)
+	}
+}
 
 func TestExtractorReceiptWireContract(t *testing.T) {
 	receipt, err := readJSON[extractorReceipt](filepath.Join("..", "..", "tools", "cdn", "testdata", "extractor-result.json"))

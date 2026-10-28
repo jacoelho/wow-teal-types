@@ -2,10 +2,6 @@
   "build": 70575,
   "build_config": "d718abcc42604d8efbd35aecfa5bb75b",
   "cdn_config": "c13b476a09cb3262797a6fdc88103036",
-  "extractor": {
-    "implementation": "wow-teal-types/tools/cdn",
-    "source_sha256": "665de26c40a6963f73443a95c337bc59210723a1d7612d169e5eda3b251fe045"
-  },
   "files": [
     {
       "content_key": "51812203898e1e22b9927ddb95af0897",

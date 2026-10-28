@@ -1,42 +1,74 @@
 package wowapi
 
 import (
+	"cmp"
+	"context"
 	"fmt"
+	"maps"
 	"regexp"
-	"sort"
+	"slices"
 	"strings"
 )
 
-func (c *catalogue) projectSecret(expression string) string {
-	projected := []string{}
+// projectSecret marks every member of expression as possibly secret. Plain
+// values merge into one MaybeSecret so the union holds a single Secret
+// userdata; userdata handles can only be Secret, and possibly secret tables
+// keep their contents marked. Secret structures keep their name because their
+// own fields carry the marking. Already projected members are kept, so the
+// projection is idempotent.
+func (c *catalogue) projectSecret(expression string, position typePosition) string {
 	names := map[string]string{}
 	for name := range c.defs {
 		names[ident(name)] = name
 	}
+	plain, kept := []string{}, []string{}
+	nilable := false
 	for _, member := range splitTop(expression, '|') {
-		value := member
 		primitive := c.primitive(member)
+		name := cmp.Or(names[member], member)
 		switch {
-		case primitive == "number":
-			value = "W.NumberLike"
-		case primitive == "string" || definitionKind(c.defs[names[member]]) == "enum":
-			value = "W.TextLike"
-		case primitive == "boolean":
-			value = "boolean | OpaqueValue"
-		case primitive == "unknown":
-			value = "unknown"
-		case strings.HasPrefix(member, "{") || strings.HasPrefix(member, "function") || c.isHandle(firstNonempty(names[member], member)):
-			value = "OpaqueValue"
+		case member == "nil":
+			nilable = true
+		case member == "any" || member == secretDataType || strings.HasPrefix(member, "W.MaybeSecret<") || strings.HasPrefix(member, "W.Secret<"):
+			kept = append(kept, member)
+		case member == dataType || primitive == "any" || strings.HasPrefix(member, "function"):
+			plain = append(plain, dataType)
+		case primitive != "" || kindOf(c.defs[names[member]]) == kindEnum:
+			plain = append(plain, member)
+		case strings.HasPrefix(member, "{"):
+			if position == inputPosition {
+				kept = append(kept, "any")
+			} else {
+				kept = append(kept, secretTableType)
+			}
+		case c.isUserdata(name):
+			kept = append(kept, "W.Secret<"+member+">")
+		default:
+			kept = append(kept, member)
 		}
-		projected = append(projected, splitTop(value, '|')...)
 	}
-	return strings.Join(uniqueStrings(projected), " | ")
-}
-func firstNonempty(a, b string) string {
-	if a != "" {
-		return a
+	if slices.Contains(kept, "any") {
+		return "any"
 	}
-	return b
+	projected := []string{}
+	if plain = uniqueStrings(plain); slices.Contains(plain, dataType) {
+		// SecretData already covers every plain member and secret tables.
+		projected = append(projected, secretDataType)
+		kept = slices.DeleteFunc(kept, func(member string) bool { return member == secretTableType || member == secretDataType })
+	} else if len(plain) > 0 && position == inputPosition {
+		// Secret<T> is invariant, so Secret<A | B> rejects Secret<A>; an input
+		// accepts each member's secret separately.
+		for _, member := range plain {
+			projected = append(projected, "W.MaybeSecret<"+member+">")
+		}
+	} else if len(plain) > 0 {
+		projected = append(projected, "W.MaybeSecret<"+strings.Join(plain, " | ")+">")
+	}
+	projected = append(projected, uniqueStrings(kept)...)
+	if nilable {
+		projected = append(projected, "nil")
+	}
+	return strings.Join(projected, " | ")
 }
 func (c *catalogue) projectSignature(signature string) string {
 	parts := splitTop(signature, ':')
@@ -49,7 +81,7 @@ func (c *catalogue) projectSignature(signature string) string {
 		if variadic {
 			result = strings.TrimSuffix(result, "...")
 		}
-		value := c.projectSecret(result)
+		value := c.projectSecret(result, outputPosition)
 		if variadic {
 			value += "..."
 		}
@@ -74,48 +106,57 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 			args = append(args, "self")
 		}
 		nativeArgs := native.Arguments
+		taintedSecrets := stringValue(native.Policy.SecretArguments) == "AllowedWhenTainted"
 		for index, argument := range nativeArgs {
 			if argument.StrideIndex != nil && *argument.StrideIndex != 0 {
+				// The collapsed vararg accepts secrets exactly when signaturePolicy
+				// grants secret_vararg_from: every member must permit them.
+				acceptsSecret := taintedSecrets
 				tail := []string{}
 				for _, v := range nativeArgs[index:] {
-					tail = append(tail, c.nativeTypeValue(v, false))
+					acceptsSecret = acceptsSecret && !enabled(v.NeverSecret)
+					tail = append(tail, c.nativeTypeValue(v, false, inputPosition))
 				}
-				args = append(args, strings.Join(uniqueStrings(tail), " | ")+"...")
+				value := strings.Join(uniqueStrings(tail), " | ")
+				if acceptsSecret {
+					value = c.projectSecret(value, inputPosition)
+				}
+				args = append(args, value+"...")
 				break
 			}
 			raw := argument.Type
-			acceptsSecret := stringValue(native.Policy.SecretArguments) == "AllowedWhenTainted" && !enabled(argument.NeverSecret)
+			acceptsSecret := taintedSecrets && !enabled(argument.NeverSecret)
 			if tuple, ok := c.abiTuples[raw]; ok {
 				for _, value := range tuple {
 					if acceptsSecret {
-						value = c.projectSecret(value)
+						value = c.projectSecret(value, inputPosition)
 					}
 					args = append(args, value)
 				}
 				continue
 			}
-			value := c.nativeTypeValue(argument, acceptsSecret && c.primitive(raw) != "")
-			if acceptsSecret && containsString([]string{"TextureAsset", "TextureAssetDisk"}, raw) {
-				value += " | W.OpaqueNumber"
+			value := c.nativeTypeValue(argument, acceptsSecret && c.primitive(raw) != "", inputPosition)
+			if acceptsSecret && slices.Contains([]string{"TextureAsset", "TextureAssetDisk"}, raw) {
+				value += " | W.Secret<number>"
 			}
 			if enabled(argument.Nilable) || argument.HasDefault {
 				value = "? " + strings.TrimSuffix(value, " | nil")
 			}
 			args = append(args, value)
 		}
-		nativeReturns := append([]NativeParameter{}, native.Returns...)
+		nativeReturns := append([]nativeParameter{}, native.Returns...)
 		absent := c.mayReturnNothing(item)
 		if item.returnsNeverSecret() {
 			for i := range nativeReturns {
-				nativeReturns[i].NeverSecret = boolPointer(true)
+				nativeReturns[i].NeverSecret = new(true)
 			}
 		}
 		for index, output := range nativeReturns {
 			if output.StrideIndex != nil && *output.StrideIndex != 0 {
 				tail := []string{}
 				for _, value := range nativeReturns[index:] {
-					value.Nilable = boolPointer(enabled(value.Nilable) || absent)
-					tail = append(tail, c.nativeTypeValue(value, receiverSecret || c.resultSecret(item)))
+					value.Nilable = new(enabled(value.Nilable) || absent)
+					tail = append(tail, c.nativeTypeValue(value, receiverSecret || c.resultSecret(item), outputPosition))
 				}
 				returns = append(returns, strings.Join(uniqueStrings(tail), " | ")+"...")
 				break
@@ -124,7 +165,7 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 			if tuple, ok := c.abiTuples[raw]; ok {
 				for _, value := range tuple {
 					if !enabled(output.NeverSecret) && (receiverSecret || c.resultSecret(item) || output.secretResult()) {
-						value = c.projectSecret(value)
+						value = c.projectSecret(value, outputPosition)
 					}
 					if absent {
 						value += " | nil"
@@ -133,8 +174,8 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 				}
 				continue
 			}
-			value := c.nativeTypeValue(output, receiverSecret || c.resultSecret(item))
-			if absent && !containsString(splitTop(value, '|'), "nil") {
+			value := c.nativeTypeValue(output, receiverSecret || c.resultSecret(item), outputPosition)
+			if absent && !slices.Contains(splitTop(value, '|'), "nil") {
 				value += " | nil"
 			}
 			returns = append(returns, value)
@@ -142,7 +183,7 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 	} else {
 		annotation := item.clone().Annotation
 		if annotation == nil {
-			annotation = &AnnotationFunction{}
+			annotation = &annotationFunction{}
 		}
 		declarations := []string{}
 		for _, group := range annotation.Generics {
@@ -151,7 +192,7 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 		for _, decl := range declarations {
 			name, bound, separator := strings.Cut(decl, ":")
 			name, bound = strings.TrimSpace(name), strings.TrimSpace(bound)
-			if separator && bound != "table" && (containsString([]string{"string", "number", "boolean"}, bound) || strings.Contains(bound, "OptionsGetter")) {
+			if separator && bound != "table" && (slices.Contains([]string{"string", "number", "boolean"}, bound) || strings.Contains(bound, "OptionsGetter")) {
 				pattern := regexp.MustCompile(`\b` + regexp.QuoteMeta(name) + `\b`)
 				for i := range annotation.Params {
 					annotation.Params[i].Type = pattern.ReplaceAllString(annotation.Params[i].Type, bound)
@@ -169,7 +210,7 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 				inputBound = inputBound || pattern.MatchString(parameter.Type)
 			}
 			if !inputBound {
-				replacement := "unknown"
+				replacement := "any"
 				if separator {
 					replacement = bound
 				}
@@ -179,11 +220,11 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 				continue
 			}
 			generics = append(generics, name)
+			// A table bound stays unconstrained: Teal records do not satisfy a
+			// map constraint.
 			constraint := ""
-			if bound == "table" {
-				constraint = "CatalogueTable"
-			} else if separator {
-				constraint = c.resolve(bound)
+			if separator && bound != "table" {
+				constraint = c.resolve(bound, inputPosition)
 			}
 			declaration := ident(name)
 			if constraint != "" {
@@ -194,19 +235,19 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 		if item.Method {
 			args = append(args, "self")
 		}
-		params := map[string]AnnotationParameter{}
+		params := map[string]annotationParameter{}
 		for _, param := range annotation.Params {
 			params[param.Name] = param
 		}
 		for _, name := range annotation.Arguments {
 			param, present := params[name]
-			value := "unknown"
+			value := inputPosition.untyped()
 			if present {
-				value = c.tealValue(param.Type, owner, generics)
+				value = c.tealValue(param.Type, owner, generics, inputPosition)
 			}
 			if name == "..." {
 				value += "..."
-			} else if present && (param.Optional || containsString(splitTop(value, '|'), "nil") || containsString(splitTop(param.Type, '|'), "nil")) {
+			} else if present && (param.Optional || slices.Contains(splitTop(value, '|'), "nil") || slices.Contains(splitTop(param.Type, '|'), "nil")) {
 				members := []string{}
 				for _, member := range splitTop(value, '|') {
 					if member != "nil" {
@@ -220,15 +261,15 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 		for _, output := range annotation.Returns {
 			raw := output.Type
 			if raw == "..." {
-				value := "unknown..."
+				value := outputPosition.untyped()
 				if receiverSecret {
-					value = "OpaqueValue..."
+					value = c.projectSecret(value, outputPosition)
 				}
-				returns = append(returns, value)
+				returns = append(returns, value+"...")
 			} else {
-				value := c.tealValue(raw, owner, generics)
-				if receiverSecret && !output.NeverSecret {
-					value = c.projectSecret(value)
+				value := c.tealValue(raw, owner, generics, outputPosition)
+				if receiverSecret {
+					value = c.projectSecret(value, outputPosition)
 				}
 				if output.Variadic {
 					value += "..."
@@ -237,11 +278,11 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 			}
 		}
 		if len(annotation.Returns) == 0 && item.Source == "questie:Data/Wiki.lua" {
-			value := "unknown..."
+			value := outputPosition.untyped()
 			if receiverSecret {
-				value = "OpaqueValue..."
+				value = c.projectSecret(value, outputPosition)
 			}
-			returns = append(returns, value)
+			returns = append(returns, value+"...")
 		}
 	}
 	signature := "function"
@@ -273,7 +314,7 @@ func (c *catalogue) signatureChoices(item *catalogueFunction, owner string) []si
 	for _, variant := range variants {
 		choices := [][]string{}
 		count := 1
-		var params []AnnotationParameter
+		var params []annotationParameter
 		if variant.Annotation != nil {
 			params = variant.Annotation.Params
 		}
@@ -282,17 +323,17 @@ func (c *catalogue) signatureChoices(item *catalogueFunction, owner string) []si
 			members := splitTop(raw, '|')
 			tables := []string{}
 			for _, value := range members {
-				if !containsString([]string{"string", "table", "math"}, value) && containsString([]string{"record", "interface"}, definitionKind(c.defs[value])) {
+				if !slices.Contains([]string{"string", "table", "math"}, value) && kindOf(c.defs[value]).isTableLike() {
 					tables = append(tables, value)
 				}
 			}
 			options := []string{raw}
-			if len(tables) > 1 && !containsString(members, "table") {
+			if len(tables) > 1 && !slices.Contains(members, "table") {
 				options = []string{}
 				for _, table := range tables {
 					ordinary := []string{}
 					for _, member := range members {
-						if !containsString(tables, member) {
+						if !slices.Contains(tables, member) {
 							ordinary = append(ordinary, member)
 						}
 					}
@@ -332,9 +373,10 @@ func (c *catalogue) signatureChoices(item *catalogueFunction, owner string) []si
 		overloads = item.Annotation.Overloads
 	}
 	for _, raw := range overloads {
-		converted := c.tealValue(raw, owner, nil)
+		// An overload is a function the game provides: its parameters are inputs.
+		converted := c.tealValue(raw, owner, nil, outputPosition)
 		signature := converted
-		if def := c.defs[converted]; definitionKind(def) == "callback" {
+		if def := c.defs[converted]; kindOf(def) == kindCallback {
 			signature = def.Signature
 		}
 		if c.secretStructs[owner] && !item.returnsNeverSecret() {
@@ -350,12 +392,14 @@ func (c *catalogue) prepareGlobals() {
 		if item == nil || item.TypeName != "" {
 			continue
 		}
-		choices := c.signatureChoices(item, "")
-		if len(uniqueSignatureChoices(choices)) < 2 {
+		// projectCallable owns overload identity: variants that differ only by
+		// nil are one overload, and must agree on permissions.
+		if len(c.projectCallable(item, "", name)) < 2 {
 			continue
 		}
+		choices := c.signatureChoices(item, "")
 		key := "Callable_" + ident(name)
-		record := c.record(key, item.Source)
+		record := c.record(key, item.Source, kindRecord)
 		calls := []*catalogueFunction{}
 		for _, choice := range choices {
 			call := strings.Replace(choice.expression, "(", "(self, ", 1)
@@ -379,7 +423,7 @@ func (c *catalogue) reconcileInheritance() {
 		if result, ok := cache[name]; ok {
 			return result
 		}
-		if containsString(stack, name) {
+		if slices.Contains(stack, name) {
 			reject(fmt.Sprintf("cyclic inheritance: %s", strings.Join(append(stack, name), " -> ")))
 		}
 		record := c.defs[name]
@@ -411,7 +455,7 @@ func (c *catalogue) reconcileInheritance() {
 		for k, v := range record.Fields {
 			fields[k] = v
 		}
-		for _, method := range sortedKeys(record.Methods) {
+		for _, method := range slices.Sorted(maps.Keys(record.Methods)) {
 			item := record.Methods[method]
 			if previous := methods[method]; previous != nil && previous.Native != nil && item.Native == nil {
 				continue
@@ -423,11 +467,14 @@ func (c *catalogue) reconcileInheritance() {
 		return result
 	}
 	for _, name := range append([]string{}, c.defOrder...) {
-		if containsString([]string{"record", "interface"}, definitionKind(c.defs[name])) {
+		// Converted records are excluded: their fields are already Teal
+		// expressions and their only bases are member-less TableVariants
+		// interfaces, so there is nothing to inherit.
+		if kind := kindOf(c.defs[name]); kind == kindRecord || kind == kindInterface {
 			expand(name, nil)
 		}
 	}
-	for _, name := range sortedKeys(cache) {
+	for _, name := range slices.Sorted(maps.Keys(cache)) {
 		record := c.defs[name]
 		methods := map[string]*catalogueFunction{}
 		for key, value := range record.Methods {
@@ -444,20 +491,25 @@ func (c *catalogue) reconcileInheritance() {
 		}
 		record.Fields = fields
 		if record.NativeObject {
-			record.Kind, record.Opaque = "interface", true
+			record.Kind, record.Opaque = kindInterface, true
 		}
 	}
 	for _, name := range c.defOrder {
 		record := c.defs[name]
 		for _, base := range definitionBases(record) {
 			value := c.defs[base]
-			if definitionKind(value) == "record" && len(value.Fields) == 0 && !value.Opaque {
-				value.Kind = "interface"
+			if kindOf(value) == kindRecord && len(value.Fields) == 0 && !value.Opaque {
+				value.Kind = kindInterface
 			}
 		}
 	}
 }
-func (c *catalogue) prepareSecrecy() {
+
+// secrecyPassLimit bounds the secrecy fixed point. Every pass but the last
+// marks at least one more definition, so the limit only trips on a defect.
+const secrecyPassLimit = 32768
+
+func (c *catalogue) prepareSecrecy(ctx context.Context) {
 	var targets func(string, map[string]bool) map[string]bool
 	targets = func(expression string, seen map[string]bool) map[string]bool {
 		out := map[string]bool{}
@@ -465,26 +517,26 @@ func (c *catalogue) prepareSecrecy() {
 			return out
 		}
 		next := map[string]bool{}
-		setAdd(next, seen)
+		maps.Copy(next, seen)
 		next[expression] = true
 		for _, token := range dottedIdentifiers.FindAllString(expression, -1) {
-			if c.primitive(token) != "" || containsString([]string{"nil", "table", "self"}, token) {
+			if c.primitive(token) != "" || slices.Contains([]string{"nil", "table", "self"}, token) {
 				continue
 			}
 			if c.aliases[token] != nil && c.defs[token] == nil {
-				setAdd(out, targets(c.aliases[token].Expression, next))
-			} else if record := c.defs[token]; record != nil && !c.isHandle(token) && containsString([]string{"record", "interface", "converted_record"}, record.Kind) {
+				maps.Copy(out, targets(c.aliases[token].Expression, next))
+			} else if record := c.defs[token]; record != nil && !c.isHandle(token) && record.Kind.isTableLike() {
 				out[token] = true
 			}
 		}
 		return out
 	}
-	seed := func(item NativeParameter, inherited bool) map[string]bool {
+	seed := func(item nativeParameter, inherited bool) map[string]bool {
 		if enabled(item.NeverSecret) || enabled(item.NeverSecretContents) {
 			return map[string]bool{}
 		}
 		if inherited || item.secretResult() {
-			return targets(firstNonempty(item.InnerType, item.Type), map[string]bool{})
+			return targets(cmp.Or(item.InnerType, item.Type), map[string]bool{})
 		}
 		return map[string]bool{}
 	}
@@ -498,25 +550,30 @@ func (c *catalogue) prepareSecrecy() {
 		if record == nil {
 			continue
 		}
-		for _, method := range sortedKeys(record.Methods) {
+		for _, method := range slices.Sorted(maps.Keys(record.Methods)) {
 			functions = append(functions, record.Methods[method])
 		}
 		for _, field := range record.Fields {
 			if field.Native != nil {
-				setAdd(c.secretStructs, seed(*field.Native, false))
+				maps.Copy(c.secretStructs, seed(*field.Native, false))
 			}
 		}
 	}
 	for _, item := range functions {
 		if item.Native != nil && !item.returnsNeverSecret() {
 			for _, output := range item.Native.Returns {
-				setAdd(c.secretStructs, seed(output, c.resultSecret(item)))
+				maps.Copy(c.secretStructs, seed(output, c.resultSecret(item)))
 			}
 		}
 	}
-	for {
-		previous := map[string]bool{}
-		setAdd(previous, c.secretStructs)
+	for pass := 0; ; pass++ {
+		if err := ctx.Err(); err != nil {
+			rejectErr(err)
+		}
+		if pass == secrecyPassLimit {
+			reject(fmt.Sprintf("secrecy propagation did not converge within %d passes", secrecyPassLimit))
+		}
+		previous := maps.Clone(c.secretStructs)
 		for _, name := range append([]string{}, c.defOrder...) {
 			record := c.defs[name]
 			if record == nil || c.isHandle(name) {
@@ -524,7 +581,7 @@ func (c *catalogue) prepareSecrecy() {
 			}
 			bases := map[string]bool{}
 			for _, base := range record.Bases {
-				setAdd(bases, targets(base, map[string]bool{}))
+				maps.Copy(bases, targets(base, map[string]bool{}))
 			}
 			for base := range bases {
 				if c.secretStructs[base] {
@@ -534,56 +591,44 @@ func (c *catalogue) prepareSecrecy() {
 			if !c.secretStructs[name] {
 				continue
 			}
-			setAdd(c.secretStructs, bases)
+			maps.Copy(c.secretStructs, bases)
 			for _, field := range record.Fields {
 				if field.Native != nil {
-					setAdd(c.secretStructs, seed(*field.Native, true))
+					maps.Copy(c.secretStructs, seed(*field.Native, true))
 				} else {
 					expression := field.Type
 					if field.Resolved != nil {
 						expression = *field.Resolved
-					} else if record.Kind != "converted_record" {
-						expression = c.tealValue(field.Type, name, nil)
+					} else if record.Kind != kindConvertedRecord {
+						expression = c.tealValue(field.Type, name, nil, outputPosition)
 					}
-					setAdd(c.secretStructs, targets(expression, map[string]bool{}))
+					maps.Copy(c.secretStructs, targets(expression, map[string]bool{}))
 				}
 			}
-			for _, method := range sortedKeys(record.Methods) {
+			for _, method := range slices.Sorted(maps.Keys(record.Methods)) {
 				item := record.Methods[method]
 				if item.returnsNeverSecret() {
 					continue
 				}
 				if item.Native != nil {
 					for _, output := range item.Native.Returns {
-						setAdd(c.secretStructs, seed(output, true))
+						maps.Copy(c.secretStructs, seed(output, true))
 					}
 				} else if item.Annotation != nil {
 					for _, output := range item.Annotation.Returns {
-						if !output.NeverSecret {
-							setAdd(c.secretStructs, targets(output.Type, map[string]bool{}))
-						}
+						maps.Copy(c.secretStructs, targets(output.Type, map[string]bool{}))
 					}
 				}
 				for _, signature := range c.signaturesValue(item, name) {
 					parts := splitTop(signature, ':')
 					if len(parts) > 1 {
-						setAdd(c.secretStructs, targets(strings.Join(parts[1:], ":"), map[string]bool{}))
+						maps.Copy(c.secretStructs, targets(strings.Join(parts[1:], ":"), map[string]bool{}))
 					}
 				}
 			}
 		}
-		if setEqual(previous, c.secretStructs) {
+		if maps.Equal(previous, c.secretStructs) {
 			break
 		}
 	}
-}
-func sortedSet(values map[string]bool) []string {
-	out := []string{}
-	for k, v := range values {
-		if v {
-			out = append(out, k)
-		}
-	}
-	sort.Strings(out)
-	return out
 }

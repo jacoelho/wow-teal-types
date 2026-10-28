@@ -18,6 +18,10 @@ func fixtureFile(t *testing.T, root, name string, b []byte) {
 		t.Fatal(e)
 	}
 }
+
+// fixtureOutputs are the candidate outputs a publication fixture derives.
+var fixtureOutputs = []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
+
 func publicationFixture(t *testing.T) (string, string, string) {
 	t.Helper()
 	base := t.TempDir()
@@ -29,7 +33,7 @@ func publicationFixture(t *testing.T) (string, string, string) {
 		t.Fatal(e)
 	}
 	fixtureFile(t, root, ".wow-version", []byte("12.1.5.70575"))
-	for _, name := range []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"} {
+	for _, name := range fixtureOutputs {
 		old, new := []byte("old "+name), []byte("new "+name)
 		if name == "package.json" {
 			old = []byte(`{"schema_version":1,"version":"1.2.3","name":"old","license":"MIT","teal_version":"0.24.8","wow_build":"12.1.5.70575","files":{}}`)
@@ -59,12 +63,11 @@ func TestPublicationOwnsOnlyDerivedOutputsAndIsRepeatable(t *testing.T) {
 	}
 	var order []string
 	replace := func(a, b string) error { order = append(order, filepath.Base(b)); return os.Rename(a, b) }
-	changed, e := publish(t.Context(), root, next, run, old, replace)
+	changed, e := publish(t.Context(), root, next, run, fixtureOutputs, old, replace)
 	if e != nil {
 		t.Fatal(e)
 	}
-	want := []string{"types/wow/wow.d.tl", "types/wow/wow_env.d.tl", "types/wow/wow_secure_env.d.tl", "types/wow/call_policy.lua", "internal/wowapi/inputs/sources.json", "internal/wowapi/inputs/client_sources.json", "README.md", "examples/minimal/WowTealExample.toc", "package.json", "rockspecs/wow-tl-type-1.2.3-1.rockspec.in"}
-	slices.Sort(want)
+	want := slices.Sorted(slices.Values(fixtureOutputs))
 	got := slices.Clone(changed)
 	slices.Sort(got)
 	if !slices.Equal(got, want) || order[len(order)-1] != "package.json" {
@@ -98,7 +101,7 @@ func TestPublicationOwnsOnlyDerivedOutputsAndIsRepeatable(t *testing.T) {
 		t.Fatal("mode changed")
 	}
 	after, _ := captureInputs(root)
-	changes, e := publish(t.Context(), root, next, run, after, os.Rename)
+	changes, e := publish(t.Context(), root, next, run, fixtureOutputs, after, os.Rename)
 	if e != nil || len(changes) != 0 {
 		t.Fatalf("repeat: %v %v", changes, e)
 	}
@@ -129,7 +132,7 @@ func TestPublicationRollsBackAfterActualReplacementAndCancellation(t *testing.T)
 				}
 				return nil
 			}
-			_, e := publish(ctx, root, next, run, before, replace)
+			_, e := publish(ctx, root, next, run, fixtureOutputs, before, replace)
 			if e == nil {
 				t.Fatal("failure accepted")
 			}
@@ -155,7 +158,7 @@ func TestPublicationRefusesStaleVersionOrSource(t *testing.T) {
 			root, next, run := publicationFixture(t)
 			before, _ := captureInputs(root)
 			fixtureFile(t, root, name, []byte("external edit"))
-			_, e := publish(t.Context(), root, next, run, before, os.Rename)
+			_, e := publish(t.Context(), root, next, run, fixtureOutputs, before, os.Rename)
 			if e == nil || !strings.Contains(e.Error(), "active inputs changed") {
 				t.Fatalf("stale accepted: %v", e)
 			}
@@ -191,7 +194,7 @@ func TestRecoveryPreservesExternalEditAndRestoresAfterItIsResolved(t *testing.T)
 		fixtureFile(t, root, strings.TrimPrefix(b, root+string(filepath.Separator)), []byte("external edit"))
 		return errors.New("interrupted publication")
 	}
-	_, e := publish(t.Context(), root, next, run, before, replace)
+	_, e := publish(t.Context(), root, next, run, fixtureOutputs, before, replace)
 	if e == nil || !strings.Contains(e.Error(), "requires recovery") {
 		t.Fatalf("external edit lost: %v", e)
 	}
@@ -287,6 +290,118 @@ func TestMalformedRecoveryRetainsJournalAndOutputs(t *testing.T) {
 			actual, err := os.ReadFile(journalPath)
 			if err != nil || string(actual) != string(body) {
 				t.Fatal("malformed journal changed")
+			}
+			if _, err = os.Stat(pointer); err != nil {
+				t.Fatal("pending marker removed")
+			}
+		})
+	}
+}
+
+// interruptPublication leaves a pending journal whose rollback was blocked by an
+// external edit, then resolves the edit so recovery can proceed.
+func interruptPublication(t *testing.T, root, publishRoot, next, run string) {
+	t.Helper()
+	before, err := captureInputs(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var edited string
+	replace := func(a, b string) error {
+		if e := os.Rename(a, b); e != nil {
+			return e
+		}
+		edited = b
+		if e := atomicWrite(b, []byte("external edit"), 0644); e != nil {
+			t.Fatal(e)
+		}
+		return errors.New("interrupted publication")
+	}
+	if _, err = publish(t.Context(), publishRoot, next, run, fixtureOutputs, before, replace); err == nil || !strings.Contains(err.Error(), "requires recovery") {
+		t.Fatalf("publication not left pending: %v", err)
+	}
+	relative, err := filepath.Rel(root, edited)
+	if err != nil {
+		t.Fatal(err)
+	}
+	checked, err := os.ReadFile(filepath.Join(next, relative))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = atomicWrite(edited, checked, 0644); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestRecoveryAcceptsEquivalentRootSpellings(t *testing.T) {
+	for _, tc := range []struct {
+		name, publishRoot, recoverRoot string
+	}{
+		{name: "relative recovery", publishRoot: "", recoverRoot: "checkout"},
+		{name: "unclean relative recovery", publishRoot: "", recoverRoot: "./checkout/../checkout"},
+		{name: "relative publication", publishRoot: "checkout", recoverRoot: ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			root, next, run := publicationFixture(t)
+			before, err := captureInputs(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			base := filepath.Dir(root)
+			t.Chdir(base)
+			publishRoot, publishNext, publishRun := root, next, run
+			if tc.publishRoot != "" {
+				publishRoot, publishNext, publishRun = tc.publishRoot, "candidate", filepath.Join(tc.publishRoot, "build/wow-update/trial")
+			}
+			interruptPublication(t, root, publishRoot, publishNext, publishRun)
+			recoverRoot := root
+			if tc.recoverRoot != "" {
+				recoverRoot = tc.recoverRoot
+			}
+			if _, err = Recover(recoverRoot); err != nil {
+				t.Fatal(err)
+			}
+			after, err := captureInputs(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !maps.Equal(before, after) {
+				t.Fatal("recovery did not restore prior publication")
+			}
+		})
+	}
+}
+
+func TestRecoveryRejectsForeignJournalLocation(t *testing.T) {
+	for _, kind := range []string{"other_root", "outside_update_directory"} {
+		t.Run(kind, func(t *testing.T) {
+			root, _, run := publicationFixture(t)
+			id, err := identityOf(filepath.Join(root, "types/wow/wow.d.tl"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			journalRoot, journalDir := root, filepath.Join(run, "publication")
+			switch kind {
+			case "other_root":
+				journalRoot = t.TempDir()
+			case "outside_update_directory":
+				journalDir = filepath.Join(root, "build/elsewhere")
+			}
+			body, err := jsonBytes(journal{Schema: 1, Root: journalRoot, Files: []publicationRow{{Path: "types/wow/wow.d.tl", Before: id, After: id, Backup: "0"}}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			fixtureFile(t, journalDir, "journal.json", body)
+			pointer := filepath.Join(root, "build/wow-update/pending.json")
+			if err = writeObject(pointer, publicationPointer{Journal: filepath.Join(journalDir, "journal.json"), SHA256: sha(body)}); err != nil {
+				t.Fatal(err)
+			}
+			before := metadataInputs(t, root)
+			if _, err = Recover(root); err == nil {
+				t.Fatal("foreign journal accepted")
+			}
+			if !maps.Equal(before, metadataInputs(t, root)) {
+				t.Fatal("rejected recovery changed outputs")
 			}
 			if _, err = os.Stat(pointer); err != nil {
 				t.Fatal("pending marker removed")

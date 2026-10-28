@@ -3,7 +3,7 @@ package wowapi
 import (
 	"fmt"
 	"regexp"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 	"unicode/utf8"
@@ -12,17 +12,34 @@ import (
 var typeNamePattern = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9.\-]*$`)
 var numericTypePattern = regexp.MustCompile(`^-?(?:0x[0-9A-Fa-f]+|\d+(?:\.\d+)?)$`)
 var genericTypePattern = regexp.MustCompile(`^([A-Za-z_][A-Za-z_0-9.\-]*)\s*<(.*)>$`)
+var decimalDigitsPattern = regexp.MustCompile(`^[0-9]+$`)
 var simpleFieldPattern = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9]*\??$`)
 
 func unsupported(raw, reason string) { reject(fmt.Sprintf("%q: %s", raw, reason)) }
-func splitTop(text string, delimiter byte) []string {
-	pairs := map[byte]byte{'(': ')', '[': ']', '{': '}', '<': '>'}
+func typeCloser(c byte) byte {
+	switch c {
+	case '(':
+		return ')'
+	case '[':
+		return ']'
+	case '{':
+		return '}'
+	case '<':
+		return '>'
+	}
+	return 0
+}
+
+// scanTypeDelimiters walks text from start, skipping quoted literals and
+// tracking bracket nesting. visit receives each unquoted byte with the
+// nesting depth after that byte and returns false to stop. The result
+// reports whether the scan stopped early or ended with every quote and
+// bracket closed; otherwise the caller rejects the unterminated text.
+func scanTypeDelimiters(text string, start int, visit func(i, depth int) bool) bool {
 	stack := []byte{}
 	quote := byte(0)
 	escaped := false
-	start := 0
-	parts := []string{}
-	for i := 0; i < len(text); i++ {
+	for i := start; i < len(text); i++ {
 		c := text[i]
 		if quote != 0 {
 			if escaped {
@@ -36,63 +53,76 @@ func splitTop(text string, delimiter byte) []string {
 		}
 		if c == '"' || c == '\'' || c == '`' {
 			quote = c
-		} else if close, ok := pairs[c]; ok {
-			stack = append(stack, close)
+			continue
+		}
+		if closer := typeCloser(c); closer != 0 {
+			stack = append(stack, closer)
 			if len(stack) > 64 {
 				unsupported(text, "type nesting exceeds 64 levels")
 			}
-		} else if strings.ContainsRune(")]}>", rune(c)) {
+		} else if strings.IndexByte(")]}>", c) >= 0 {
 			if len(stack) == 0 || stack[len(stack)-1] != c {
 				unsupported(text, "unbalanced type delimiters")
 			}
 			stack = stack[:len(stack)-1]
-		} else if c == delimiter && len(stack) == 0 {
+		}
+		if !visit(i, len(stack)) {
+			return true
+		}
+	}
+	return quote == 0 && len(stack) == 0
+}
+
+// nilMember matches a nil union member with its adjacent separator. nil is a
+// reserved word, so the token cannot be part of a type name, and a separator
+// next to it always belongs to the same union.
+var nilMember = regexp.MustCompile(`\s*\|\s*nil\b|\bnil\s*\|\s*`)
+
+// omitNil removes nil union members from a generated type expression. Teal
+// admits nil for every type but cannot narrow `T | nil` through truthiness, so
+// the explicit member blocks idiomatic absence checks without adding safety.
+// A lone nil is kept; optional parameters keep their `? T` marker.
+func omitNil(expression string) string {
+	if strings.ContainsAny(expression, "\"'`") {
+		unsupported(expression, "quoted literal in generated type expression")
+	}
+	return nilMember.ReplaceAllString(expression, "")
+}
+
+// splitTop splits text at delimiter bytes outside quotes and brackets.
+func splitTop(text string, delimiter byte) []string {
+	start := 0
+	parts := []string{}
+	closed := scanTypeDelimiters(text, 0, func(i, depth int) bool {
+		if depth == 0 && text[i] == delimiter {
 			parts = append(parts, strings.TrimSpace(text[start:i]))
 			start = i + 1
 		}
-	}
-	if quote != 0 || len(stack) > 0 {
+		return true
+	})
+	if !closed {
 		unsupported(text, "unterminated type literal or delimiter")
 	}
 	return append(parts, strings.TrimSpace(text[start:]))
 }
+
+// matchingClose returns the index of the bracket closing text[opening].
 func matchingClose(text string, opening int) int {
-	pairs := map[byte]byte{'(': ')', '[': ']', '{': '}', '<': '>'}
-	if opening < 0 || opening >= len(text) {
+	if opening < 0 || opening >= len(text) || typeCloser(text[opening]) == 0 {
 		unsupported(text, "missing type delimiter")
 	}
-	stack := []byte{pairs[text[opening]]}
-	quote := byte(0)
-	escaped := false
-	for i := opening + 1; i < len(text); i++ {
-		c := text[i]
-		if quote != 0 {
-			if escaped {
-				escaped = false
-			} else if c == '\\' {
-				escaped = true
-			} else if c == quote {
-				quote = 0
-			}
-		} else if c == '"' || c == '\'' || c == '`' {
-			quote = c
-		} else if close, ok := pairs[c]; ok {
-			stack = append(stack, close)
-			if len(stack) > 64 {
-				unsupported(text, "type nesting exceeds 64 levels")
-			}
-		} else if strings.ContainsRune(")]}>", rune(c)) {
-			if len(stack) == 0 || stack[len(stack)-1] != c {
-				unsupported(text, "unbalanced type delimiters")
-			}
-			stack = stack[:len(stack)-1]
-			if len(stack) == 0 {
-				return i
-			}
+	closing := -1
+	scanTypeDelimiters(text, opening, func(i, depth int) bool {
+		if depth == 0 {
+			closing = i
+			return false
 		}
+		return true
+	})
+	if closing < 0 {
+		unsupported(text, "unterminated type delimiter")
 	}
-	unsupported(text, "unterminated type delimiter")
-	return 0
+	return closing
 }
 func quotedLiteral(text string) (string, bool) {
 	if len(text) == 0 || text[0] != '"' && text[0] != '\'' {
@@ -179,22 +209,57 @@ func uniqueStrings(values []string) []string {
 	}
 	return out
 }
-func containsString(values []string, value string) bool {
-	for _, v := range values {
-		if v == value {
-			return true
-		}
+
+// typePosition is the direction a value crosses the API boundary. It decides
+// how a type without source information is declared.
+type typePosition uint8
+
+const (
+	// inputPosition values are supplied by the addon: parameters, and the
+	// results of callbacks the game invokes.
+	inputPosition typePosition = iota + 1
+	// outputPosition values are produced by the game: results, fields, and
+	// the arguments the game passes to callbacks.
+	outputPosition
+)
+
+// Native value types re-exported from native_values.d.tl through W.
+const (
+	dataType        = "W.Data"
+	secretDataType  = "W.SecretData"
+	secretTableType = "W.Secret<W.SecretTable>"
+)
+
+func (p typePosition) flip() typePosition {
+	if p == inputPosition {
+		return outputPosition
 	}
-	return false
+	return inputPosition
+}
+
+// untyped is the declaration of a value with no type information. Inputs stay
+// any so records, functions and table literals remain acceptable; outputs are
+// public plain values of undocumented shape.
+func (p typePosition) untyped() string {
+	if p == inputPosition {
+		return "any"
+	}
+	return dataType
 }
 
 type recordField struct {
 	name, typeName string
 	optional       bool
 }
+
+// typeConverter translates one LuaLS type expression at one position. Every
+// callback is required: the catalogue owns interning and name resolution.
+// Function parameters take the flipped position; everything else nested in
+// the expression, including anonymous record fields, keeps it.
 type typeConverter struct {
 	raw, self string
-	resolve   func(string) string
+	position  typePosition
+	resolve   func(string, typePosition) string
 	literal   func([]string) string
 	record    func([]recordField) string
 	callback  func(string) string
@@ -245,15 +310,12 @@ func (c typeConverter) walk(text string, depth int) string {
 			unsupported(c.raw, "multiple callback variants need an explicit overload declaration")
 		}
 		converted := []string{}
-		if len(literals) > 0 && !containsString(ordinary, "string") {
-			if c.literal == nil {
-				unsupported(c.raw, "string literals require one caller-interned enum")
-			}
+		if len(literals) > 0 && !slices.Contains(ordinary, "string") {
 			for _, member := range ordinary {
 				converted = append(converted, c.walk(member, depth+1))
 			}
 			literals = uniqueStrings(literals)
-			sort.Strings(literals)
+			slices.Sort(literals)
 			converted = append(converted, c.literal(literals))
 		} else {
 			for _, member := range ordinary {
@@ -263,20 +325,7 @@ func (c typeConverter) walk(text string, depth int) string {
 		for _, member := range functions {
 			converted = append(converted, c.walk(member, depth+1))
 		}
-		converted = uniqueStrings(converted)
-		if c.union != nil {
-			return c.union(converted)
-		}
-		tables := 0
-		for _, member := range converted {
-			if strings.HasPrefix(member, "{") {
-				tables++
-			}
-		}
-		if tables > 1 {
-			unsupported(c.raw, "multiple anonymous table variants cannot be discriminated by Teal")
-		}
-		return strings.Join(converted, " | ")
+		return c.union(uniqueStrings(converted))
 	}
 	if strings.HasSuffix(text, "?") {
 		inner := c.walk(strings.TrimSuffix(text, "?"), depth+1)
@@ -301,9 +350,6 @@ func (c typeConverter) walk(text string, depth int) string {
 		return c.table(text[1:len(text)-1], depth+1)
 	}
 	if value, ok := quotedLiteral(text); ok {
-		if c.literal == nil {
-			unsupported(c.raw, "string literal requires caller-interned enum")
-		}
 		return c.literal([]string{value})
 	}
 	if numericTypePattern.MatchString(text) {
@@ -312,15 +358,11 @@ func (c typeConverter) walk(text string, depth int) string {
 	switch text {
 	case "true", "false":
 		return "boolean"
-	case "any":
-		return "unknown"
-	case "number", "integer", "string", "boolean", "nil", "unknown":
+	case "any", "unknown", "table", "function":
+		// Bare table and function identity establish no shape or signature.
+		return c.position.untyped()
+	case "number", "integer", "string", "boolean", "nil":
 		return text
-	case "table":
-		return "{unknown: unknown}"
-	case "function":
-		// Callable identity alone establishes neither arguments nor results.
-		return "unknown"
 	case "self":
 		if c.self == "" {
 			unsupported(c.raw, "self type requires an owning receiver")
@@ -342,12 +384,12 @@ func (c typeConverter) walk(text string, depth int) string {
 		for _, arg := range args {
 			converted = append(converted, c.walk(arg, depth+1))
 		}
-		return c.resolve(match[1]) + "<" + strings.Join(converted, ", ") + ">"
+		return c.resolve(match[1], c.position) + "<" + strings.Join(converted, ", ") + ">"
 	}
 	if !typeNamePattern.MatchString(text) {
 		unsupported(c.raw, "unrecognized type syntax")
 	}
-	return c.resolve(text)
+	return c.resolve(text, c.position)
 }
 func (c typeConverter) function(text string, depth int) string {
 	opening := strings.IndexByte(text, '(')
@@ -361,13 +403,15 @@ func (c typeConverter) function(text string, depth int) string {
 		unsupported(c.raw, "unrecognized callback suffix")
 	}
 	params := []string{}
+	parameter := c
+	parameter.position = c.position.flip()
 	body := strings.TrimSpace(text[opening+1 : closing])
 	if body != "" {
 		for _, part := range splitTop(body, ',') {
 			pair := splitTop(part, ':')
 			if len(pair) == 1 {
 				if part == "..." {
-					params = append(params, "unknown...")
+					params = append(params, parameter.position.untyped()+"...")
 				} else if part == "self" && c.self != "" {
 					params = append(params, c.self)
 				} else {
@@ -379,7 +423,7 @@ func (c typeConverter) function(text string, depth int) string {
 				unsupported(c.raw, "invalid callback parameter")
 			}
 			name := pair[0]
-			value := c.walk(pair[1], depth+1)
+			value := parameter.walk(pair[1], depth+1)
 			if strings.HasPrefix(name, "...") {
 				value += "..."
 			} else if strings.HasSuffix(name, "?") {
@@ -401,7 +445,7 @@ func (c typeConverter) function(text string, depth int) string {
 			}
 			switch {
 			case variadic && len(pair) == 1:
-				values = append(values, "unknown...")
+				values = append(values, c.position.untyped()+"...")
 			case variadic && len(pair) == 2:
 				values = append(values, c.walk(pair[1], depth+1)+"...")
 			case len(pair) == 1:
@@ -412,9 +456,7 @@ func (c typeConverter) function(text string, depth int) string {
 		}
 		signature += ": " + strings.Join(values, ", ")
 	}
-	if c.callback != nil {
-		signature = c.callback(signature)
-	}
+	signature = c.callback(signature)
 	if optional {
 		return "nil | " + signature
 	}
@@ -423,10 +465,7 @@ func (c typeConverter) function(text string, depth int) string {
 func (c typeConverter) table(body string, depth int) string {
 	parts := splitTop(body, ',')
 	if len(parts) == 1 && parts[0] == "" {
-		if c.record != nil {
-			return c.record([]recordField{})
-		}
-		unsupported(c.raw, "empty anonymous record needs a named declaration")
+		return c.record([]recordField{})
 	}
 	numeric := map[int]string{}
 	fields := []recordField{}
@@ -440,7 +479,7 @@ func (c typeConverter) table(body string, depth int) string {
 		if strings.HasPrefix(key, "[") && strings.HasSuffix(key, "]") {
 			key = strings.TrimSpace(key[1 : len(key)-1])
 			n, e := strconv.Atoi(key)
-			if e == nil && n >= 0 && regexp.MustCompile(`^[0-9]+$`).MatchString(key) {
+			if e == nil && n >= 0 && decimalDigitsPattern.MatchString(key) {
 				if _, ok := numeric[n]; ok {
 					unsupported(c.raw, "duplicate tuple index")
 				}
@@ -471,7 +510,7 @@ func (c typeConverter) table(body string, depth int) string {
 	if mapType != "" && len(fields) == 0 && len(numeric) == 0 {
 		return mapType
 	}
-	if len(fields) > 0 && len(numeric) == 0 && mapType == "" && c.record != nil {
+	if len(fields) > 0 && len(numeric) == 0 && mapType == "" {
 		return c.record(fields)
 	}
 	unsupported(c.raw, "anonymous record requires a caller-owned declaration")

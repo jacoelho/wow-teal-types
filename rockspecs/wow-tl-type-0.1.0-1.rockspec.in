@@ -11,8 +11,8 @@ description = {
    summary = "Retail World of Warcraft declaration files for Teal",
    detailed = [[
       Declaration-only snapshot for Retail 12.1.5.70575.
-      Requires the matching wow-teal toolkit and its bundled compiler 0.24.8-wow.1.
-      The toolkit also supplies the required secret-operation checks.
+      Requires the matching wow-teal toolkit, which supplies the required
+      secret-operation checks, and Teal 0.24.8.
    ]],
    homepage = "https://github.com/@REPOSITORY@",
    license = "MIT",
@@ -20,6 +20,7 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
+   "tl == 0.24.8",
 }
 
 build = {

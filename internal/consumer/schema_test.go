@@ -68,7 +68,7 @@ func TestConsumerSchemaWireBytes(t *testing.T) {
 		t.Fatalf("receipt bytes changed:\n%s", actual)
 	}
 	var out bytes.Buffer
-	if err = writePackageResult(&out, PackageResult{Archive: "<archive>.zip", Members: 3, SHA256: "digest"}); err != nil {
+	if err = WritePackageResult(&out, PackageResult{Archive: "<archive>.zip", Members: 3, SHA256: "digest"}); err != nil {
 		t.Fatal(err)
 	}
 	const wantResult = `{

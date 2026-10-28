@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"wow-teal-types/internal/wowapi"
 )
 
 func TestLayeredRegionContractsPreserveSourceAndReceiverCapabilities(t *testing.T) {
@@ -60,6 +62,7 @@ vector:SetVertexColor(1,1,1)`, false},
 		{"Frame has no vertex color", `frame:SetVertexColor(1,1,1)`, true},
 		{"ModelScene keeps narrower native arity", `model:SetDrawLayer("ARTWORK",2)`, true},
 	}
+	tl := wowapi.StockTeal(t)
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			source := `local type W=require("wow")
@@ -69,7 +72,7 @@ local function check(frame:W.Frame,model:W.ModelScene,font:W.FontString,texture:
 			if err := os.WriteFile(path, []byte(source), 0644); err != nil {
 				t.Fatal(err)
 			}
-			command := exec.CommandContext(t.Context(), filepath.Join(root, "tools/teal/tl"), "-I", dir, "--gen-target", "5.1", "--gen-compat", "off", "check", path)
+			command := exec.CommandContext(t.Context(), tl, "-I", dir, "--gen-target", "5.1", "--gen-compat", "off", "check", path)
 			output, err := command.CombinedOutput()
 			if !tc.reject {
 				if err != nil {

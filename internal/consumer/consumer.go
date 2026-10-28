@@ -22,18 +22,21 @@ const maxSources = 512
 const maxEntries = 10000
 const maxSourceBytes = 2 << 20
 
-// TealVersion identifies the bundled compiler/checker contract, not stock Teal.
-const TealVersion = "0.24.8-wow.1"
+// TealVersion is the exact stock Teal release the checker and generated
+// declarations are written against. The compiler is pinned by version, not bytes.
+const TealVersion = "0.24.8"
+
+// tealInstall is the remedy named whenever the external compiler is unusable.
+const tealInstall = "luarocks install tl " + TealVersion
 
 var modules = []string{"native_values", "wow", "wow_env", "wow_secure_env"}
 var excluded = map[string]bool{".git": true, ".venv": true, "__pycache__": true, "build": true, "dist": true, "vendor": true, "node_modules": true}
 var moduleName = regexp.MustCompile(`^[A-Za-z_][A-Za-z_0-9]*(\.[A-Za-z_][A-Za-z_0-9]*)*$`)
 
 // RequiredFiles is the complete immutable consumer execution closure. The
-// producer, CDN extractor and test fixtures are not runtime inputs.
+// producer, CDN extractor, test fixtures and the external compiler are not part of it.
 func RequiredFiles() []string {
-	names := []string{".wow-version", "bin/wow-teal", "go.mod", "tools/check_secrets.lua", "tools/check_runtime_imports.lua", "tools/wow-teal/main.go",
-		"tools/teal/tl", "tools/teal/cli.lua", "tools/teal/tl.lua", "tools/teal/argparse.lua", "tools/teal/contract.lua", "tools/teal/check_capabilities.lua", "tools/teal/LICENSE", "types/wow/call_policy.lua",
+	names := []string{".wow-version", "bin/wow-teal", "go.mod", "tools/check_secrets.lua", "tools/check_runtime_imports.lua", "tools/wow-teal/main.go", "types/wow/call_policy.lua",
 		"internal/consumer/consumer.go", "internal/consumer/schema.go", "internal/consumer/files.go", "internal/consumer/version.go", "internal/consumer/snapshot.go", "internal/consumer/rockspec.go", "internal/consumer/package.go"}
 	for _, name := range modules {
 		names = append(names, "types/wow/"+name+".d.tl")
@@ -42,129 +45,117 @@ func RequiredFiles() []string {
 	return names
 }
 
+// Verify checks the package manifest, every file it binds and the selected
+// WoW version without copying anything.
 func Verify(root string) (PackageManifest, error) {
-	manifest, err := readManifest(filepath.Join(root, "package.json"))
-	if err != nil {
-		return PackageManifest{}, err
-	}
-	files := manifest.Files
-	if !slices.Equal(slices.Sorted(maps.Keys(files)), RequiredFiles()) {
-		return PackageManifest{}, fmt.Errorf("package manifest inventory mismatch")
-	}
-	for _, name := range slices.Sorted(maps.Keys(files)) {
-		path, err := checkedPath(root, name)
-		if err != nil {
-			return PackageManifest{}, fmt.Errorf("package integrity mismatch: %s: %w", name, err)
-		}
-		actual, err := fileHash(path)
-		if err != nil {
-			return PackageManifest{}, err
-		}
-		if actual != files[name] {
-			return PackageManifest{}, fmt.Errorf("package integrity mismatch: %s", name)
-		}
-	}
-	selected, err := ReadVersion(root)
-	if err != nil {
-		return PackageManifest{}, err
-	}
-	if manifest.WoWBuild != selected.Full {
-		return PackageManifest{}, fmt.Errorf("package WoW version differs from .wow-version")
-	}
-	return manifest, nil
+	verified, err := readPackage(context.Background(), root, nil)
+	return verified.manifest, err
 }
 
-type selection struct {
-	command          string
-	sources, include []string
-	output, global   string
-	secure           bool
+// Selection names caller-owned Teal sources for Check and Build.
+type Selection struct {
+	// Sources are Teal files or directories; Build requires exactly one directory.
+	Sources []string
+	// Include adds dependency search roots captured with the sources.
+	Include []string
+	// Global names an addon declaration module merged with the native environment.
+	Global string
+	// Secure selects the secure native environment.
+	Secure bool
 }
 
-func parseSelection(args []string) (selection, error) {
-	if len(args) == 0 {
-		return selection{}, fmt.Errorf("expected version, verify, check-types, check, build, package or rockspecs")
-	}
-	selected := selection{command: args[0]}
-	for i := 1; i < len(args); i++ {
-		a := args[i]
-		switch a {
-		case "--secure":
-			selected.secure = true
-		case "-I", "--include", "-o", "--output", "--global-env-def":
-			if i+1 == len(args) {
-				return selected, fmt.Errorf("missing argument for %s", a)
-			}
-			i++
-			switch a {
-			case "-I", "--include":
-				selected.include = append(selected.include, args[i])
-			case "-o", "--output":
-				selected.output = args[i]
-			default:
-				selected.global = args[i]
-			}
-		default:
-			if strings.HasPrefix(a, "-") {
-				return selected, fmt.Errorf("unknown option: %s", a)
-			}
-			selected.sources = append(selected.sources, a)
-		}
-	}
-	switch selected.command {
-	case "verify", "check-types":
-		if len(args) != 1 {
-			return selected, fmt.Errorf("%s does not accept source arguments", selected.command)
-		}
-	case "check", "build":
-		if len(selected.sources) == 0 {
-			return selected, fmt.Errorf("expected owned Teal sources")
-		}
-		if selected.command == "build" && selected.output == "" {
-			return selected, fmt.Errorf("build requires --output")
-		}
-	default:
-		return selected, fmt.Errorf("unknown command: %s", selected.command)
-	}
-	return selected, nil
-}
-
-func Run(ctx context.Context, root string, args []string, out, errout io.Writer) error {
-	var err error
-	root, err = canonicalExisting(root)
+// CheckTypes type-checks the package's own declaration modules.
+func CheckTypes(ctx context.Context, root string, out, errout io.Writer) error {
+	root, err := canonicalExisting(root)
 	if err != nil {
 		return err
 	}
-	if len(args) > 0 {
-		switch args[0] {
-		case "version":
-			if len(args) != 1 {
-				return fmt.Errorf("version takes no arguments")
-			}
-			manifest, err := Verify(root)
-			if err != nil {
-				return err
-			}
-			_, err = fmt.Fprintln(out, manifest.Version)
+	inputs, err := captureBuildInputs(ctx, root, nil, nil)
+	if err != nil {
+		return err
+	}
+	defer inputs.close()
+	tl, err := resolveCompiler(ctx, root, inputs, errout)
+	if err != nil {
+		return err
+	}
+	for _, name := range modules {
+		fmt.Fprintln(out, "Checking "+filepath.Join(root, "types/wow", name+".d.tl"))
+		if _, err = tl.run(append(compilerFlags(inputs.search), "check", filepath.Join(inputs.packageRoot, "types/wow", name+".d.tl"))...); err != nil {
 			return err
-		case "package":
-			if len(args) != 1 {
-				return fmt.Errorf("package takes no arguments")
-			}
-			value, err := Package(root)
-			if err != nil {
-				return err
-			}
-			return writePackageResult(out, value)
-		case "rockspecs":
-			return Rockspecs(root, args[1:], out, errout)
 		}
 	}
-	selected, err := parseSelection(args)
+	fmt.Fprintf(out, "Passed declaration checks for %d files.\n", len(modules))
+	return nil
+}
+
+// Check type-checks and secret-checks the selected sources.
+func Check(ctx context.Context, root string, selected Selection, out, errout io.Writer) error {
+	root, err := canonicalExisting(root)
 	if err != nil {
 		return err
 	}
-	return execute(ctx, root, selected, out, errout)
+	session, err := openSession(ctx, root, selected, errout)
+	if err != nil {
+		return err
+	}
+	defer session.inputs.close()
+	if err = session.checkSources(out); err != nil {
+		return err
+	}
+	fmt.Fprintf(out, "Passed type and secret checks for %d selected source files.\n", len(session.sources))
+	return nil
+}
+
+// Build checks one source directory and atomically replaces the owned output
+// directory with its generated Lua.
+func Build(ctx context.Context, root string, selected Selection, output string, out, errout io.Writer) error {
+	root, err := canonicalExisting(root)
+	if err != nil {
+		return err
+	}
+	if output == "" {
+		return fmt.Errorf("build requires --output")
+	}
+	if len(selected.Sources) != 1 {
+		return fmt.Errorf("build requires one source directory")
+	}
+	info, err := os.Stat(selected.Sources[0])
+	if err != nil {
+		return err
+	}
+	if !info.IsDir() {
+		return fmt.Errorf("build requires one source directory")
+	}
+	sourceRoot, err := canonicalExisting(selected.Sources[0])
+	if err != nil {
+		return err
+	}
+	destination, err := canonicalOutput(output)
+	if err != nil {
+		return err
+	}
+	if inside(destination, sourceRoot) || inside(sourceRoot, destination) || inside(root, destination) {
+		return fmt.Errorf("output must not overlap source or package roots")
+	}
+	if err = ownedOutput(destination); err != nil {
+		return err
+	}
+	session, err := openSession(ctx, root, selected, errout)
+	if err != nil {
+		return err
+	}
+	defer session.inputs.close()
+	if err = session.checkSources(out); err != nil {
+		return err
+	}
+	count, err := session.build(sourceRoot, destination)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintf(out, "Generated %d Lua files in %s\n", count, destination)
+	fmt.Fprintf(out, "Passed type and secret checks for %d selected source files.\n", len(session.sources))
+	return nil
 }
 
 func sourcesFor(arguments []string) ([]string, error) {
@@ -320,12 +311,79 @@ func ownedOutput(destination string) error {
 	return nil
 }
 
-func compilerRun(ctx context.Context, command []string, cwd string, environment []string, paths *strings.Replacer, errout io.Writer) (string, error) {
-	child, cancel := context.WithTimeout(ctx, 60*time.Second)
+// compiler runs one external Teal executable inside a captured workspace.
+type compiler struct {
+	ctx         context.Context
+	path        string
+	work        string
+	environment []string
+	paths       *strings.Replacer
+	errout      io.Writer
+}
+
+// resolveCompiler locates TL, else tl on PATH, and admits it only when its
+// version output is exactly TealVersion. Callers capture and verify package
+// inputs first, so no compiler runs against unverified bytes.
+func resolveCompiler(ctx context.Context, root string, inputs *buildInputs, errout io.Writer) (compiler, error) {
+	name := os.Getenv("TL")
+	if name == "" {
+		name = "tl"
+	}
+	path, err := exec.LookPath(name)
+	if err != nil {
+		return compiler{}, fmt.Errorf("locate Teal compiler (set TL or run %s): %w", tealInstall, err)
+	}
+	path, err = filepath.Abs(path)
+	if err != nil {
+		return compiler{}, err
+	}
+	patterns := []string{}
+	for _, directory := range inputs.search {
+		if strings.ContainsAny(directory, ";?\n\r") {
+			return compiler{}, fmt.Errorf("unsupported Teal search-path character: %s", directory)
+		}
+		patterns = append(patterns, filepath.ToSlash(directory)+"/?.lua", filepath.ToSlash(directory)+"/?/init.lua")
+	}
+	environment := []string{}
+	for _, value := range os.Environ() {
+		if !strings.HasPrefix(value, "TL_PATH=") {
+			environment = append(environment, value)
+		}
+	}
+	environment = append(environment, "TL_PATH="+strings.Join(patterns, ";"))
+	c := compiler{
+		ctx:         ctx,
+		path:        path,
+		work:        inputs.directory,
+		environment: environment,
+		paths:       strings.NewReplacer(inputs.packageRoot, root, filepath.Join(inputs.directory, "inputs")+string(filepath.Separator), string(filepath.Separator)),
+		errout:      errout,
+	}
+	version, err := c.run("--version")
+	if err != nil {
+		return compiler{}, fmt.Errorf("unsupported Teal version: %s --version failed; expected %s (%s): %w", path, TealVersion, tealInstall, err)
+	}
+	if err = admitTealVersion(version); err != nil {
+		return compiler{}, err
+	}
+	return c, nil
+}
+
+// admitTealVersion accepts only TealVersion, ignoring surrounding whitespace.
+// The checker reads compiler internals, so a prefix or suffix match is unsafe.
+func admitTealVersion(output string) error {
+	if strings.TrimSpace(output) != TealVersion {
+		return fmt.Errorf("unsupported Teal version: %q; expected %s (%s)", output, TealVersion, tealInstall)
+	}
+	return nil
+}
+
+func (c compiler) run(args ...string) (string, error) {
+	child, cancel := context.WithTimeout(c.ctx, 60*time.Second)
 	defer cancel()
-	process := exec.CommandContext(child, command[0], command[1:]...)
-	process.Dir = cwd
-	process.Env = environment
+	process := exec.CommandContext(child, c.path, args...)
+	process.Dir = c.work
+	process.Env = c.environment
 	var stdout, stderr bytes.Buffer
 	process.Stdout = &stdout
 	process.Stderr = &stderr
@@ -338,264 +396,197 @@ func compilerRun(ctx context.Context, command []string, cwd string, environment 
 		if detail == "" {
 			detail = "compiler failed without diagnostics: " + err.Error()
 		}
-		return "", fmt.Errorf("%s: %w", paths.Replace(detail), err)
+		return "", fmt.Errorf("%s: %w", c.paths.Replace(detail), err)
 	}
 	if stderr.Len() != 0 {
-		if _, err = io.WriteString(errout, paths.Replace(stderr.String())); err != nil {
+		if _, err = io.WriteString(c.errout, c.paths.Replace(stderr.String())); err != nil {
 			return "", err
 		}
 	}
 	return stdout.String(), nil
 }
 
-func execute(ctx context.Context, root string, args selection, out, errout io.Writer) error {
-	if args.command == "verify" {
-		manifest, err := Verify(root)
-		if err != nil {
-			return err
-		}
-		_, err = fmt.Fprintf(out, "Verified wow-teal %s / Retail %s\n", manifest.Version, manifest.WoWBuild)
-		return err
+// compilerFlags are the language options of every consumer compiler invocation.
+func compilerFlags(search []string) []string {
+	flags := []string{"--feat-arity", "on", "--gen-target", "5.1", "--gen-compat", "off"}
+	for _, directory := range search {
+		flags = append(flags, "-I", directory)
 	}
-	declarationCheck := args.command == "check-types"
-	types := filepath.Join(root, "types/wow")
-	var sources []string
-	var err error
-	if declarationCheck {
-		for _, name := range modules {
-			sources = append(sources, filepath.Join(types, name+".d.tl"))
-		}
-	} else {
-		sources, err = sourcesFor(args.sources)
+	return flags
+}
+
+// secretCheckArgs is the one checker invocation shape: the selected type
+// environment, the source, and the native environment whose identity it pins.
+func secretCheckArgs(search []string, checker, environment, source, native string) []string {
+	return append(compilerFlags(search), "run", checker, "--", environment, source, native)
+}
+
+// session owns the captured inputs and admitted compiler for one Check or Build.
+type session struct {
+	root        string
+	inputs      *buildInputs
+	tl          compiler
+	sources     []string // caller paths, sorted
+	captured    []string // captured copies, parallel to sources
+	environment string   // module selected as the global environment
+	native      string
+}
+
+func openSession(ctx context.Context, root string, selected Selection, errout io.Writer) (_ *session, err error) {
+	if len(selected.Sources) == 0 {
+		return nil, fmt.Errorf("expected owned Teal sources")
 	}
+	if selected.Global != "" && !moduleName.MatchString(selected.Global) {
+		return nil, fmt.Errorf("addon global environment must be a module name")
+	}
+	if slices.Contains(modules, selected.Global) {
+		return nil, fmt.Errorf("use --secure to select the secure native environment")
+	}
+	sources, err := sourcesFor(selected.Sources)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	destination, sourceRoot := "", ""
-	if args.command == "build" {
-		if len(args.sources) != 1 {
-			return fmt.Errorf("build requires one source directory")
-		}
-		info, e := os.Stat(args.sources[0])
-		if e != nil {
-			return e
-		}
-		if !info.IsDir() {
-			return fmt.Errorf("build requires one source directory")
-		}
-		sourceRoot, err = canonicalExisting(args.sources[0])
+	include, err := searchRoots(selected, sources)
+	if err != nil {
+		return nil, err
+	}
+	inputs, err := captureBuildInputs(ctx, root, sources, include)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
 		if err != nil {
-			return err
+			inputs.close()
 		}
-		destination, err = canonicalOutput(args.output)
-		if err != nil {
-			return err
-		}
-		if inside(destination, sourceRoot) || inside(sourceRoot, destination) || inside(root, destination) {
-			return fmt.Errorf("output must not overlap source or package roots")
-		}
-		if err = ownedOutput(destination); err != nil {
-			return err
+	}()
+	s := &session{root: root, inputs: inputs, sources: sources, native: "wow_env"}
+	if selected.Secure {
+		s.native = "wow_secure_env"
+	}
+	s.environment = s.native
+	if selected.Global != "" {
+		s.environment = "wow_teal_combined_env"
+		body := "require(\"" + s.native + "\")\nrequire(\"" + selected.Global + "\")\n"
+		if err = os.WriteFile(filepath.Join(inputs.directory, "environment", s.environment+".d.tl"), []byte(body), 0644); err != nil {
+			return nil, err
 		}
 	}
+	for _, source := range sources {
+		s.captured = append(s.captured, inputs.source(source))
+	}
+	if s.tl, err = resolveCompiler(ctx, root, inputs, errout); err != nil {
+		return nil, err
+	}
+	return s, nil
+}
+
+// searchRoots orders explicit includes, selected directories, then the
+// parents of selected files; earlier roots take precedence.
+func searchRoots(selected Selection, sources []string) ([]string, error) {
 	include := []string{}
-	for _, name := range args.include {
-		path, e := inputRoot(name)
-		if e != nil {
-			return e
+	for _, name := range selected.Include {
+		path, err := inputRoot(name)
+		if err != nil {
+			return nil, err
 		}
-		info, e := os.Stat(path)
-		if e != nil {
-			return e
+		info, err := os.Stat(path)
+		if err != nil {
+			return nil, err
 		}
 		if !info.IsDir() {
-			return fmt.Errorf("include paths must be directories")
+			return nil, fmt.Errorf("include paths must be directories")
 		}
 		include = append(include, path)
 	}
-	if !declarationCheck {
-		for _, name := range args.sources {
-			info, e := os.Stat(name)
-			if e != nil {
-				return e
+	for _, name := range selected.Sources {
+		info, err := os.Stat(name)
+		if err != nil {
+			return nil, err
+		}
+		if info.IsDir() {
+			path, err := canonicalExisting(name)
+			if err != nil {
+				return nil, err
 			}
-			if info.IsDir() {
-				path, e := canonicalExisting(name)
-				if e != nil {
-					return e
-				}
-				include = append(include, path)
-			}
+			include = append(include, path)
 		}
 	}
 	parents := map[string]bool{}
 	for _, source := range sources {
 		parents[filepath.Dir(source)] = true
 	}
-	include = append(include, slices.Sorted(maps.Keys(parents))...)
-	callerSources := sources
-	if declarationCheck {
-		callerSources = nil
-		include = nil
-	}
-	inputs, err := captureBuildInputs(ctx, root, callerSources, include)
-	if err != nil {
-		return err
-	}
-	defer inputs.close()
-	manifest := inputs.manifest
-	work := inputs.directory
-	capturedSources := make([]string, len(sources))
-	for i, source := range sources {
-		if declarationCheck {
-			capturedSources[i] = filepath.Join(inputs.packageRoot, "types/wow", filepath.Base(source))
-		} else {
-			capturedSources[i] = inputs.source(source)
-		}
-	}
-	compiler := os.Getenv("TL")
-	if compiler == "" {
-		compiler = filepath.Join(inputs.packageRoot, "tools/teal/tl")
-	}
-	compiler, err = exec.LookPath(compiler)
-	if err != nil {
-		return fmt.Errorf("locate bundled Teal compiler: %w", err)
-	}
-	compiler, err = filepath.Abs(compiler)
-	if err != nil {
-		return err
-	}
-	if args.global != "" && !moduleName.MatchString(args.global) {
-		return fmt.Errorf("addon global environment must be a module name")
-	}
-	for _, name := range modules {
-		if args.global == name {
-			return fmt.Errorf("use --secure to select the secure native environment")
-		}
-	}
-	native := "wow_env"
-	if args.secure {
-		native = "wow_secure_env"
-	}
-	selectedEnv := native
-	if args.global != "" {
-		selectedEnv = "wow_teal_combined_env"
-		body := "require(\"" + native + "\")\nrequire(\"" + args.global + "\")\n"
-		if err = os.WriteFile(filepath.Join(work, "environment", selectedEnv+".d.tl"), []byte(body), 0644); err != nil {
+	return append(include, slices.Sorted(maps.Keys(parents))...), nil
+}
+
+func (s *session) checkSources(out io.Writer) error {
+	checker := filepath.Join(s.inputs.packageRoot, "tools/check_secrets.lua")
+	for i, source := range s.captured {
+		fmt.Fprintln(out, "Checking "+s.sources[i])
+		if _, err := s.tl.run(secretCheckArgs(s.inputs.search, checker, s.environment, source, s.native)...); err != nil {
 			return err
 		}
-	}
-	search := inputs.search
-	patterns := []string{}
-	for _, directory := range search {
-		if strings.ContainsAny(directory, ";?\n\r") {
-			return fmt.Errorf("unsupported Teal search-path character: %s", directory)
-		}
-		patterns = append(patterns, filepath.ToSlash(directory)+"/?.lua", filepath.ToSlash(directory)+"/?/init.lua")
-	}
-	environment := []string{}
-	for _, value := range os.Environ() {
-		if !strings.HasPrefix(value, "TL_PATH=") {
-			environment = append(environment, value)
-		}
-	}
-	environment = append(environment, "TL_PATH="+strings.Join(patterns, ";"))
-	diagnosticPaths := strings.NewReplacer(inputs.packageRoot, root, filepath.Join(work, "inputs")+string(filepath.Separator), string(filepath.Separator))
-	run := func(command []string) (string, error) {
-		return compilerRun(ctx, command, work, environment, diagnosticPaths, errout)
-	}
-	version, err := run([]string{compiler, "--version"})
-	if err != nil {
-		return err
-	}
-	if strings.TrimSpace(version) != manifest.TealVersion {
-		return fmt.Errorf("unsupported Teal version: %s; expected %v", strings.TrimSpace(version), manifest.TealVersion)
-	}
-	if _, err = run([]string{compiler, "run", filepath.Join(inputs.packageRoot, "tools/teal/check_capabilities.lua")}); err != nil {
-		return err
-	}
-	flags := []string{compiler, "--feat-arity", "on", "--gen-target", "5.1", "--gen-compat", "off"}
-	for _, directory := range search {
-		flags = append(flags, "-I", directory)
-	}
-	invoke := func(arguments ...string) error {
-		_, e := run(append(append([]string{}, flags...), arguments...))
-		return e
-	}
-	for i, source := range capturedSources {
-		fmt.Fprintln(out, "Checking "+sources[i])
-		if declarationCheck {
-			err = invoke("check", source)
-		} else {
-			err = invoke("run", filepath.Join(inputs.packageRoot, "tools/check_secrets.lua"), "--", selectedEnv, source, native)
-		}
-		if err != nil {
-			return err
-		}
-	}
-	generated := filepath.Join(work, "generated")
-	if err = os.Mkdir(generated, 0755); err != nil {
-		return err
-	}
-	if destination != "" {
-		for i, source := range capturedSources {
-			relative, e := filepath.Rel(sourceRoot, sources[i])
-			if e != nil {
-				return e
-			}
-			target := filepath.Join(generated, strings.TrimSuffix(relative, ".tl")+".lua")
-			if err = os.MkdirAll(filepath.Dir(target), 0755); err != nil {
-				return err
-			}
-			if err = invoke("--global-env-def", selectedEnv, "gen", "--check", "-o", target, source); err != nil {
-				return err
-			}
-			if err = invoke("run", filepath.Join(inputs.packageRoot, "tools/check_runtime_imports.lua"), "--", target); err != nil {
-				return err
-			}
-		}
-	}
-	if destination != "" {
-		files := map[string]string{}
-		err = filepath.WalkDir(generated, func(path string, entry os.DirEntry, e error) error {
-			if e != nil {
-				return e
-			}
-			if entry.IsDir() {
-				return nil
-			}
-			relative, e := filepath.Rel(generated, path)
-			if e != nil {
-				return e
-			}
-			hash, e := fileHash(path)
-			if e != nil {
-				return e
-			}
-			files[filepath.ToSlash(relative)] = hash
-			return nil
-		})
-		if err != nil {
-			return err
-		}
-		receipt, err := receiptBytes(BuildReceipt{Files: files, PackageManifestSHA256: inputs.manifestHash, PackageVersion: manifest.Version})
-		if err != nil {
-			return err
-		}
-		if err = os.WriteFile(filepath.Join(generated, "wow-teal-build.json"), receipt, 0644); err != nil {
-			return err
-		}
-		if err = publishBuild(generated, destination, os.Rename); err != nil {
-			return err
-		}
-		fmt.Fprintf(out, "Generated %d Lua files in %s\n", len(files), destination)
-	}
-	if declarationCheck {
-		fmt.Fprintf(out, "Passed declaration checks for %d files.\n", len(sources))
-	} else {
-		fmt.Fprintf(out, "Passed type and secret checks for %d selected source files.\n", len(sources))
 	}
 	return nil
+}
+
+// build generates Lua for every checked source, then publishes it with an
+// ownership receipt. It returns the number of generated files.
+func (s *session) build(sourceRoot, destination string) (int, error) {
+	generated := filepath.Join(s.inputs.directory, "generated")
+	if err := os.Mkdir(generated, 0755); err != nil {
+		return 0, err
+	}
+	flags := compilerFlags(s.inputs.search)
+	imports := filepath.Join(s.inputs.packageRoot, "tools/check_runtime_imports.lua")
+	for i, source := range s.captured {
+		relative, err := filepath.Rel(sourceRoot, s.sources[i])
+		if err != nil {
+			return 0, err
+		}
+		target := filepath.Join(generated, strings.TrimSuffix(relative, ".tl")+".lua")
+		if err = os.MkdirAll(filepath.Dir(target), 0755); err != nil {
+			return 0, err
+		}
+		if _, err = s.tl.run(append(slices.Clone(flags), "--global-env-def", s.environment, "gen", "--check", "-o", target, source)...); err != nil {
+			return 0, err
+		}
+		if _, err = s.tl.run(append(slices.Clone(flags), "run", imports, "--", target)...); err != nil {
+			return 0, err
+		}
+	}
+	files := map[string]string{}
+	err := filepath.WalkDir(generated, func(path string, entry os.DirEntry, e error) error {
+		if e != nil {
+			return e
+		}
+		if entry.IsDir() {
+			return nil
+		}
+		relative, e := filepath.Rel(generated, path)
+		if e != nil {
+			return e
+		}
+		hash, e := fileHash(path)
+		if e != nil {
+			return e
+		}
+		files[filepath.ToSlash(relative)] = hash
+		return nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	receipt, err := receiptBytes(BuildReceipt{Files: files, PackageManifestSHA256: s.inputs.manifestHash, PackageVersion: s.inputs.manifest.Version})
+	if err != nil {
+		return 0, err
+	}
+	if err = os.WriteFile(filepath.Join(generated, "wow-teal-build.json"), receipt, 0644); err != nil {
+		return 0, err
+	}
+	if err = publishBuild(generated, destination, os.Rename); err != nil {
+		return 0, err
+	}
+	return len(files), nil
 }
 
 func publishBuild(generated, destination string, rename func(string, string) error) error {

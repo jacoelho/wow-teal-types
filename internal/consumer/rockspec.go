@@ -128,8 +128,8 @@ description = {
    summary = "Retail World of Warcraft declaration files for Teal",
    detailed = [[
       Declaration-only snapshot for Retail %s.
-      Requires the matching wow-teal toolkit and its bundled compiler %s.
-      The toolkit also supplies the required secret-operation checks.
+      Requires the matching wow-teal toolkit, which supplies the required
+      secret-operation checks, and Teal %s.
    ]],
    homepage = "https://github.com/%s",
    license = %s,
@@ -137,6 +137,7 @@ description = {
 
 dependencies = {
    "lua >= 5.1",
+   "tl == %s",
 }
 
 build = {
@@ -147,42 +148,63 @@ build = {
 %s      },
    },
 }
-`, version, repository, version, manifest.WoWBuild, compiler, repository, quoteJSON(license), additions.String(), installs.String()), nil
+`, version, repository, version, manifest.WoWBuild, compiler, repository, quoteJSON(license), additions.String(), compiler, installs.String()), nil
 }
 
-func Rockspecs(root string, args []string, out, errout io.Writer) error {
-	repository, encoded, output := "", "", filepath.Join(root, "build/rockspecs")
-	descriptionSet, check := false, false
-	for i := 0; i < len(args); i++ {
-		switch args[i] {
-		case "--check":
-			check = true
-		case "--repository", "--description-json", "--output":
-			if i+1 == len(args) {
-				return fmt.Errorf("missing argument for %s", args[i])
-			}
-			option := args[i]
-			i++
-			switch option {
-			case "--repository":
-				repository = args[i]
-			case "--description-json":
-				encoded = args[i]
-				descriptionSet = true
-			case "--output":
-				output = args[i]
-			}
-		default:
-			return fmt.Errorf("unknown rockspec option: %s", args[i])
+// RecipeTemplate returns the reviewed template's package-relative path and its
+// expected text for manifest, rejecting templates left from another version.
+func RecipeTemplate(root string, manifest PackageManifest) (string, string, error) {
+	name := "rockspecs/wow-tl-type-" + manifest.Version + "-1.rockspec.in"
+	if err := checkRecipeTemplates(root, name); err != nil {
+		return "", "", err
+	}
+	text, err := Recipe(root, manifest, "", nil)
+	if err != nil {
+		return "", "", err
+	}
+	return name, text, nil
+}
+
+func checkRecipeTemplates(root, name string) error {
+	templates, err := filepath.Glob(filepath.Join(root, "rockspecs/*.rockspec.in"))
+	if err != nil {
+		return err
+	}
+	for _, path := range templates {
+		if path != filepath.Join(root, filepath.FromSlash(name)) {
+			return fmt.Errorf("remove superseded recipe templates after reviewing the package version change")
 		}
+	}
+	return nil
+}
+
+// RockspecOptions selects candidate recipe generation or checking.
+type RockspecOptions struct {
+	// Repository is the GitHub OWNER/REPOSITORY; empty checks only the template.
+	Repository string
+	// DescriptionJSON adds registry description fields; empty adds none.
+	DescriptionJSON string
+	// Output is the candidate directory; empty selects build/rockspecs.
+	Output string
+	// Check compares instead of writing.
+	Check bool
+}
+
+func Rockspecs(root string, options RockspecOptions, out, errout io.Writer) error {
+	root, err := canonicalExisting(root)
+	if err != nil {
+		return err
+	}
+	repository, output := options.Repository, options.Output
+	if output == "" {
+		output = filepath.Join(root, "build/rockspecs")
 	}
 	if repository != "" && !repositoryName.MatchString(repository) {
 		return fmt.Errorf("--repository must be an actual GitHub OWNER/REPOSITORY")
 	}
 	var description map[string]string
-	var err error
-	if descriptionSet {
-		description, err = descriptionFields(encoded)
+	if options.DescriptionJSON != "" {
+		description, err = descriptionFields(options.DescriptionJSON)
 		if err != nil {
 			return err
 		}
@@ -190,30 +212,19 @@ func Rockspecs(root string, args []string, out, errout io.Writer) error {
 			return fmt.Errorf("registry description metadata requires --repository OWNER/REPOSITORY")
 		}
 	}
-	manifest, err := readManifest(filepath.Join(root, "package.json"))
+	manifest, err := Verify(root)
 	if err != nil {
 		return err
 	}
-	expected, err := Recipe(root, manifest, "", nil)
+	name, expected, err := RecipeTemplate(root, manifest)
 	if err != nil {
 		return err
 	}
-	filename := "wow-tl-type-" + manifest.Version + "-1.rockspec"
-	template := filepath.Join(root, "rockspecs", filename+".in")
-	templates, err := filepath.Glob(filepath.Join(root, "rockspecs/*.rockspec.in"))
-	if err != nil {
-		return err
-	}
-	for _, path := range templates {
-		if path != template {
-			return fmt.Errorf("remove superseded recipe templates after reviewing the version change")
-		}
-	}
-	existing, err := os.ReadFile(template)
+	existing, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(name)))
 	if err != nil || string(existing) != expected {
 		return fmt.Errorf("recipe template is stale; regenerate the reviewed cohort with wow-types generate")
 	}
-	if check && repository == "" {
+	if options.Check && repository == "" {
 		fmt.Fprintln(out, "Recipe template matches the reviewed declaration inventory and version.")
 		return nil
 	}
@@ -224,8 +235,8 @@ func Rockspecs(root string, args []string, out, errout io.Writer) error {
 	if err != nil {
 		return err
 	}
-	target := filepath.Join(output, filename)
-	if check {
+	target := filepath.Join(output, strings.TrimSuffix(filepath.Base(name), ".in"))
+	if options.Check {
 		data, e := os.ReadFile(target)
 		if e != nil || string(data) != concrete {
 			return fmt.Errorf("generated candidate is missing or stale: %s", target)

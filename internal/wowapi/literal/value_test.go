@@ -2,6 +2,7 @@ package literal
 
 import (
 	"math"
+	"strconv"
 	"testing"
 )
 
@@ -11,9 +12,9 @@ func TestLiteralKindsAndCanonicalNumbers(t *testing.T) {
 		kind    Kind
 		encoded string
 	}{
-		{"null", Null, "null"}, {"false", Boolean, "false"}, {"0", Integer, "0"}, {"1.0", FloatKind, "1.0"}, {"-0.0", FloatKind, "-0.0"},
-		{"[]", Array, "[]"}, {"{}", ObjectKind, "{}"}, {"1000000.0", FloatKind, "1000000.0"}, {"0.00001", FloatKind, "1e-05"}, {"1e16", FloatKind, "1e+16"},
-		{"9007199254740993", Integer, "9007199254740993"},
+		{"null", KindNull, "null"}, {"false", KindBoolean, "false"}, {"0", KindInteger, "0"}, {"1.0", KindFloat, "1.0"}, {"-0.0", KindFloat, "-0.0"},
+		{"[]", KindArray, "[]"}, {"{}", KindObject, "{}"}, {"1000000.0", KindFloat, "1000000.0"}, {"0.00001", KindFloat, "1e-05"}, {"1e16", KindFloat, "1e+16"},
+		{"9007199254740993", KindInteger, "9007199254740993"},
 	} {
 		t.Run(test.source, func(t *testing.T) {
 			value, err := ParseJSON([]byte(test.source))
@@ -38,7 +39,7 @@ func TestLiteralReferencesAndExpressions(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	expression, err := Binary("+", reference, Int(1))
+	expression, err := Binary("+", reference, testInteger(1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,7 +55,7 @@ func TestLiteralReferencesAndExpressions(t *testing.T) {
 			t.Error("accepted nonfinite number")
 		}
 	}
-	if _, err := Binary("+", Text("text"), Int(1)); err == nil {
+	if _, err := Binary("+", Text("text"), testInteger(1)); err == nil {
 		t.Error("accepted arithmetic on text")
 	}
 	if _, err := Ref("Enum..First"); err == nil {
@@ -68,3 +69,5 @@ func TestJSONRejectsAmbiguousOrInvalidLiterals(t *testing.T) {
 		}
 	}
 }
+
+func testInteger(v int64) Value { return Value{kind: KindInteger, text: strconv.FormatInt(v, 10)} }

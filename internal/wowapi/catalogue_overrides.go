@@ -2,7 +2,8 @@ package wowapi
 
 import (
 	"fmt"
-	"path/filepath"
+	"maps"
+	"slices"
 	"strings"
 )
 
@@ -14,6 +15,22 @@ type catalogueOverrides struct {
 	NativeContracts              []nativeContractOverride    `json:"native_contracts"`
 	SupplementalMethodExclusions []supplementalExclusion     `json:"supplemental_method_exclusions"`
 	ReceiverHierarchy            []receiverHierarchyOverride `json:"receiver_hierarchy"`
+	FrameFactory                 frameFactoryOverride        `json:"frame_factory"`
+}
+
+// frameFactoryOverride lists the CreateFrame frame types and templates whose
+// literal names select a narrower result than Frame.
+type frameFactoryOverride struct {
+	FrameTypes []string                `json:"frame_types"`
+	Templates  []frameTemplateOverride `json:"templates"`
+}
+
+// frameTemplateOverride applies the template's mixin Type to frames of the
+// listed types created with exactly that template name.
+type frameTemplateOverride struct {
+	Name       string   `json:"name"`
+	Type       string   `json:"type"`
+	FrameTypes []string `json:"frame_types"`
 }
 type aliasOverride struct {
 	Type string `json:"type"`
@@ -27,7 +44,7 @@ type secretEffectOverride struct {
 type nativeContractOverride struct {
 	Symbols       []string           `json:"symbols"`
 	Signature     *string            `json:"signature"`
-	Returns       *[]NativeParameter `json:"returns"`
+	Returns       *[]nativeParameter `json:"returns"`
 	ArgumentTypes map[string]string  `json:"argument_types"`
 }
 type supplementalExclusion struct {
@@ -63,7 +80,7 @@ func (c *catalogue) global(name string) *catalogueFunction {
 	}
 	return m
 }
-func nativeArgument(item *catalogueFunction, name string) *NativeParameter {
+func nativeArgument(item *catalogueFunction, name string) *nativeParameter {
 	if item.Native != nil {
 		for i := range item.Native.Arguments {
 			if item.Native.Arguments[i].Name == name {
@@ -74,7 +91,7 @@ func nativeArgument(item *catalogueFunction, name string) *NativeParameter {
 	reject(fmt.Sprintf("missing required Arguments argument %s", name))
 	return nil
 }
-func annotationArgument(item *catalogueFunction, name string) *AnnotationParameter {
+func annotationArgument(item *catalogueFunction, name string) *annotationParameter {
 	if item.Annotation != nil {
 		for i := range item.Annotation.Params {
 			if item.Annotation.Params[i].Name == name {
@@ -85,44 +102,34 @@ func annotationArgument(item *catalogueFunction, name string) *AnnotationParamet
 	reject(fmt.Sprintf("missing required params argument %s", name))
 	return nil
 }
-func (c *catalogue) applyOverrides() {
-	// Frame actors and legacy world actors have different SetPlayerModelFromGlues arguments.
-	c.definition("ModelSceneFrameActor").Bases = []string{"ModelSceneFrameActorBase"}
+func (c *catalogue) applyOverrides(overrides catalogueOverrides) {
+	// Legacy world actors keep the shared actor methods after receiver_hierarchy
+	// detaches them from ModelSceneActorBase, whose SetPlayerModelFromGlues
+	// arguments differ.
 	legacyActor := c.definition("ModelSceneActor")
-	legacyActor.Bases = []string{"Object"}
 	for name, value := range c.definition("ModelSceneActorBase").Methods {
 		methods := legacyActor.Methods
 		if methods[name] == nil {
 			methods[name] = value
 		}
 	}
-	var overrides catalogueOverrides
-	if e := decodeJSON(mustFile(filepath.Join(c.project.Root, "internal/wowapi/inputs/overrides.json")), &overrides); e != nil {
-		reject(e.Error())
-	}
 	c.abiTuples = overrides.ABITuples
-	for _, name := range sortedKeys(overrides.Aliases) {
+	for _, name := range slices.Sorted(maps.Keys(overrides.Aliases)) {
 		item := overrides.Aliases[name]
 		c.aliases[name] = &catalogueAlias{Expression: item.Type, Source: "reviewed override"}
 	}
-	for _, name := range sortedKeys(overrides.OpaqueObjects) {
+	for _, name := range slices.Sorted(maps.Keys(overrides.OpaqueObjects)) {
 		item := overrides.OpaqueObjects[name]
-		c.record(name, "reviewed opaque native object").Opaque = item.Representation != "table"
+		c.record(name, "reviewed opaque native object", kindRecord).Opaque = item.Representation != "table"
 	}
-	c.setGlobal("CreateFrame", &catalogueFunction{
-		ResolvedSignature: stringPointer("function(" + c.literal([]string{"StatusBar"}) + ", ? string, ? Frame, ? string, ? number): StatusBar"),
-		Source:            "reviewed native frame factory",
-		Variants: []*catalogueFunction{{
-			ResolvedSignature: stringPointer("function(string, ? string, ? Frame, ? string, ? number): Frame"),
-		}},
-	})
+	c.applyFrameFactory(overrides.FrameFactory)
 	// Native arity and restrictions still apply to numeric IDs, paths and texture objects.
 	c.method("TextureBase", "SetTexture").Native.Arguments[0].Type = "TextureAsset"
 	c.aliases["fileID"] = &catalogueAlias{Expression: "number", Source: "Lua 5.1 numeric asset-ID carrier; native ID validation still applies"}
 	// FrameXML also uses coordinate-only and omitted-relative-point shorthands.
 	point := c.method("ScriptRegionResizing", "SetPoint")
-	point.ResolvedSignature = stringPointer("function(self, FramePoint, ? ScriptRegion | string, ? FramePoint, ? number, ? number)")
-	point.Variants = []*catalogueFunction{{ResolvedSignature: stringPointer("function(self, FramePoint, ? number, ? number)")}, {ResolvedSignature: stringPointer("function(self, FramePoint, ScriptRegion | string, ? number, ? number)")}}
+	point.ResolvedSignature = new("function(self, FramePoint, ? ScriptRegion | string, ? FramePoint, ? number, ? number)")
+	point.Variants = []*catalogueFunction{{ResolvedSignature: new("function(self, FramePoint, ? number, ? number)")}, {ResolvedSignature: new("function(self, FramePoint, ScriptRegion | string, ? number, ? number)")}}
 	// Timer results are cancellable handles; callbacks receive the same handle.
 	for _, name := range []string{"NewTimer", "NewTicker"} {
 		c.method("C_Timer", name).Native.Returns[0].Type = "FunctionContainer"
@@ -134,24 +141,23 @@ func (c *catalogue) applyOverrides() {
 	// SecureHandlers.lua stores arbitrary Lua values in frame attributes.
 	for _, name := range []string{"SetAttribute", "SetAttributeNoHandler"} {
 		v := nativeArgument(c.method("Frame", name), "value")
-		v.Type, v.Nilable = "LuaValueVariant", boolPointer(true)
+		v.Type, v.Nilable = "LuaValueVariant", new(true)
 	}
+	c.applyFormattedText()
 	// FrameXML calls SetText with only text; color, alpha and wrap are optional.
 	for i := 1; i < len(c.method("GameTooltip", "SetText").Native.Arguments); i++ {
-		c.method("GameTooltip", "SetText").Native.Arguments[i].Nilable = boolPointer(true)
+		c.method("GameTooltip", "SetText").Native.Arguments[i].Nilable = new(true)
 	}
-	c.definition("LuaDurationManualClock").Bases = append(c.definition("LuaDurationManualClock").Bases, "LuaDurationClockObject")
-	c.definition("SecondsFormatter").Bases = append(c.definition("SecondsFormatter").Bases, "NumericFormatter")
 	// Numeric curves retain numeric results; general curves may return other carriers.
 	numericCurves := []*catalogueFunction{c.global("UnitHealthPercent"), c.global("UnitPowerPercent")}
 	durationMethods := c.definition("DurationObject").Methods
-	for _, name := range sortedKeys(durationMethods) {
+	for _, name := range slices.Sorted(maps.Keys(durationMethods)) {
 		if strings.HasPrefix(name, "Evaluate") {
 			numericCurves = append(numericCurves, durationMethods[name])
 		}
 	}
 	for _, item := range numericCurves {
-		var target *NativeParameter
+		var target *nativeParameter
 		for i := range item.Native.Arguments {
 			argument := &item.Native.Arguments[i]
 			if argument.Type == "LuaCurveObjectBase" {
@@ -174,9 +180,9 @@ func (c *catalogue) applyOverrides() {
 		item := c.method("LibStub", name)
 		item.Annotation.Generics = []string{}
 		item.Annotation.Params[0].Type = "string"
-		item.Annotation.Returns[0].Type = "unknown?"
+		item.Annotation.Returns[0].Type = "any?"
 		if name == "GetLibrary" && len(item.Annotation.Returns) == 1 {
-			item.Annotation.Returns = append(item.Annotation.Returns, AnnotationReturn{Type: "number?"})
+			item.Annotation.Returns = append(item.Annotation.Returns, annotationReturn{Type: "number?"})
 		}
 		if name == "NewLibrary" {
 			annotationArgument(item, "minor").Type = "number|string"
@@ -185,9 +191,9 @@ func (c *catalogue) applyOverrides() {
 	item := c.global("LibStub")
 	item.Annotation.Generics = []string{}
 	item.Annotation.Params[0].Type = "string"
-	item.Annotation.Returns[0].Type = "unknown?"
+	item.Annotation.Returns[0].Type = "any?"
 	if len(item.Annotation.Returns) == 1 {
-		item.Annotation.Returns = append(item.Annotation.Returns, AnnotationReturn{Type: "number?"})
+		item.Annotation.Returns = append(item.Annotation.Returns, annotationReturn{Type: "number?"})
 	}
 	for _, name := range []string{"CreateEnumRadioMenu", "CreateEnumRadioContextMenu"} {
 		annotationArgument(c.method("MenuUtil", name), "enum").Type = "table<string,V>"
@@ -201,13 +207,13 @@ func (c *catalogue) applyOverrides() {
 	}
 	v := annotationArgument(c.method("AceComm-3.0", "SendCommMessage"), "callbackArg")
 	v.Type, v.Optional = "any", true
-	c.definition("AceHook-3.0").Fields["hooks"].Type = "table<any,unknown>"
+	c.definition("AceHook-3.0").Fields["hooks"].Type = "table<any,any>"
 	// Repair the malformed annotation to accept a macro name or numeric index.
 	annotationArgument(c.global("SetBindingMacro"), "name").Type = "number|string"
 	for i := range c.global("GetCurrenciesString").Annotation.Returns {
 		output := &c.global("GetCurrenciesString").Annotation.Returns[i]
 		if strings.ReplaceAll(output.Type, " ", "") == "number[]|table[]" {
-			output.Type = "unknown"
+			output.Type = "any"
 		}
 	}
 	annotationArgument(c.global("GetCurrenciesString"), "currencies").Type = "(number|table)[]"
@@ -233,7 +239,7 @@ func (c *catalogue) applyOverrides() {
 				item.ResolvedSignature = correction.Signature
 			}
 			if correction.Returns != nil {
-				item.Native.Returns = append([]NativeParameter{}, (*correction.Returns)...)
+				item.Native.Returns = append([]nativeParameter{}, (*correction.Returns)...)
 			}
 			for argument, typeName := range correction.ArgumentTypes {
 				nativeArgument(item, argument).Type = typeName
@@ -245,11 +251,101 @@ func (c *catalogue) applyOverrides() {
 	// Preserve the subtype selected by the literal animation name.
 	animation := c.method("AnimationGroup", "CreateAnimation")
 	genericAnimation := animation.clone()
-	animation.ResolvedSignature = stringPointer("function(self, " + c.literal([]string{"RadialProgress"}) + ", ? string, ? string): RadialProgress")
+	animation.ResolvedSignature = new("function(self, " + c.literal([]string{"RadialProgress"}) + ", ? string, ? string): RadialProgress")
 	animation.Variants = append([]*catalogueFunction{genericAnimation}, animation.Variants...)
 	c.applyReceiverCorrections(overrides)
-	c.applyLayeredRegionHierarchy()
 }
+
+// applyFormattedText appends the string.format arguments that native
+// documentation omits from every SetFormattedText. The arguments share the
+// method's secret permission: FrameXML passes UnitName results to
+// FontString:SetFormattedText (ChatFrameEditBox.lua, RaidFinder.lua).
+func (c *catalogue) applyFormattedText() {
+	c.aliases["FormatArgument"] = &catalogueAlias{Expression: "string | number", Source: "Lua 5.1 string.format argument"}
+	owners := 0
+	for _, name := range slices.Sorted(maps.Keys(c.defs)) {
+		item := c.defs[name].Methods["SetFormattedText"]
+		if item == nil {
+			continue
+		}
+		if item.Native == nil {
+			reject(fmt.Sprintf("%s.SetFormattedText has no native contract; review the format argument override", name))
+		}
+		arguments := item.Native.Arguments
+		if len(arguments) != 1 || arguments[0].Name != "text" || arguments[0].StrideIndex != nil {
+			reject(fmt.Sprintf("%s.SetFormattedText native arguments changed; review the format argument override", name))
+		}
+		item.Native.Arguments = append(arguments, nativeParameter{Name: "formatArguments", Type: "FormatArgument", Nilable: new(true), StrideIndex: new(1)})
+		owners++
+	}
+	if owners == 0 {
+		reject("no SetFormattedText method found; review the format argument override")
+	}
+}
+
+// applyFrameFactory declares CreateFrame overloads, most specific first: a
+// frame-type literal with a template literal, a frame-type literal, then any
+// string returning Frame. Literals are case-sensitive while the client is not,
+// so other spellings, template lists and unknown templates select a wider result.
+func (c *catalogue) applyFrameFactory(factory frameFactoryOverride) {
+	const source = "reviewed native frame factory"
+	if len(factory.FrameTypes) == 0 {
+		reject("frame factory lists no frame types")
+	}
+	signature := func(frameType, template, result string) *catalogueFunction {
+		templateArgument := "? string"
+		if template != "" {
+			templateArgument = c.literal([]string{template})
+		}
+		return &catalogueFunction{Source: source, ResolvedSignature: new("function(" + c.literal([]string{frameType}) + ", ? string, ? Frame, " + templateArgument + ", ? number): " + result)}
+	}
+	overloads := []*catalogueFunction{}
+	for _, template := range factory.Templates {
+		if c.defs[template.Type] == nil {
+			reject(fmt.Sprintf("frame template %s type %s is not defined", template.Name, template.Type))
+		}
+		for _, frameType := range template.FrameTypes {
+			if !slices.Contains(factory.FrameTypes, frameType) {
+				reject(fmt.Sprintf("frame template %s lists unknown frame type %s", template.Name, frameType))
+			}
+			name := frameType + "_" + template.Name
+			if c.defs[name] != nil || c.aliases[name] != nil {
+				reject(fmt.Sprintf("frame template type %s collides with a declaration", name))
+			}
+			c.record(name, source, kindInterface).Bases = []string{frameType, template.Type}
+			overloads = append(overloads, signature(frameType, template.Name, name))
+		}
+	}
+	for _, frameType := range factory.FrameTypes {
+		if !c.extends(frameType, "Frame") {
+			reject(fmt.Sprintf("frame factory type %s does not extend Frame", frameType))
+		}
+		overloads = append(overloads, signature(frameType, "", frameType))
+	}
+	fallback := &catalogueFunction{Source: source, ResolvedSignature: new("function(string, ? string, ? Frame, ? string, ? number): Frame")}
+	overloads[0].Variants = append(overloads[1:], fallback)
+	c.setGlobal("CreateFrame", overloads[0])
+}
+
+// extends reports whether the definition name is base or inherits from it.
+func (c *catalogue) extends(name, base string) bool {
+	seen := map[string]bool{}
+	pending := []string{name}
+	for len(pending) > 0 {
+		current := pending[len(pending)-1]
+		pending = pending[:len(pending)-1]
+		if current == base {
+			return true
+		}
+		if seen[current] {
+			continue
+		}
+		seen[current] = true
+		pending = append(pending, definitionBases(c.defs[current])...)
+	}
+	return false
+}
+
 func (c *catalogue) symbolItem(symbol string) *catalogueFunction {
 	index := strings.LastIndexByte(symbol, '.')
 	if index < 0 {
@@ -273,12 +369,12 @@ func (c *catalogue) applyReceiverCorrections(overrides catalogueOverrides) {
 	}
 	for _, rule := range hierarchies {
 		owner := rule.Owner
-		if requireStringJSON(c.definition(owner).Bases) != requireStringJSON(rule.ExpectedBases) {
-			reject(fmt.Sprintf("review changed receiver hierarchy: %s", owner))
+		if actual := c.definition(owner).Bases; !slices.Equal(actual, rule.ExpectedBases) {
+			reject(fmt.Sprintf("review changed receiver hierarchy: %s has bases %q, expected %q", owner, actual, rule.ExpectedBases))
 		}
 		for _, base := range rule.Bases {
 			if c.defs[base] == nil {
-				reject(fmt.Sprintf("review changed receiver hierarchy: %s", owner))
+				reject(fmt.Sprintf("review changed receiver hierarchy: %s base %s is not defined", owner, base))
 			}
 		}
 		c.definition(owner).Bases = append([]string{}, rule.Bases...)
@@ -287,7 +383,7 @@ func (c *catalogue) applyReceiverCorrections(overrides catalogueOverrides) {
 
 // applyNativeTableContracts restores documented container relations that the
 // native schema's table/any labels cannot carry. Mutable maps and arrays stay
-// generic instead of using invariant unknown-valued containers as supertypes.
+// generic instead of using untyped containers as supertypes.
 func (c *catalogue) applyNativeTableContracts() {
 	for _, contract := range []struct{ name, mapSignature, arraySignature string }{
 		{"keys", "function<K, V>({K: V}): {K}", "function<V>({V}): {number}"},
@@ -296,11 +392,11 @@ func (c *catalogue) applyNativeTableContracts() {
 		{"freeze", "function<K, V>({K: V}): {K: V}", "function<V>({V}): {V}"},
 		{"count", "function<K, V>({K: V})", "function<V>({V})"},
 		{"getcountinfo", "function<K, V>({K: V})", "function<V>({V})"},
-		{"contains", "function<K, V>({K: V}, ? unknown)", "function<V>({V}, ? unknown)"},
-		{"indexof", "function<K, V>({K: V}, ? unknown)", "function<V>({V}, ? unknown)"},
+		{"contains", "function<K, V>({K: V}, ? any)", "function<V>({V}, ? any)"},
+		{"indexof", "function<K, V>({K: V}, ? any)", "function<V>({V}, ? any)"},
 		{"isempty", "function<K, V>({K: V})", "function<V>({V})"},
 		{"isfrozen", "function<K, V>({K: V})", "function<V>({V})"},
-		{"removevalue", "function<K, V>({K: V}, ? unknown)", "function<V>({V}, ? unknown)"},
+		{"removevalue", "function<K, V>({K: V}, ? any)", "function<V>({V}, ? any)"},
 	} {
 		item := c.method("table", contract.name)
 		original := c.signatureValue(item, "")
@@ -319,11 +415,11 @@ func (c *catalogue) applyNativeTableContracts() {
 			}
 			signatures = append(signatures, signature)
 		}
-		item.ResolvedSignature = stringPointer(signatures[0])
+		item.ResolvedSignature = new(signatures[0])
 		for _, signature := range signatures[1:] {
 			variant := item.clone()
 			variant.Variants = nil
-			variant.ResolvedSignature = stringPointer(signature)
+			variant.ResolvedSignature = new(signature)
 			item.Variants = append(item.Variants, variant)
 		}
 	}
@@ -339,5 +435,5 @@ func (c *catalogue) applySecureCallContracts() {
 		reject("review changed securecall callback/name contract")
 	}
 	argument.Type = members[1]
-	item.Variants = append(item.Variants, &catalogueFunction{ResolvedSignature: stringPointer("function(string, unknown...): unknown..."), Source: item.Source})
+	item.Variants = append(item.Variants, &catalogueFunction{ResolvedSignature: new("function(string, any...): W.Data..."), Source: item.Source})
 }

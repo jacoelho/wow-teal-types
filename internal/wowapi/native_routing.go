@@ -13,20 +13,3 @@ func nativeMethodOwner(documentName, methodName string) string {
 	}
 	return scriptName(documentName)
 }
-
-func (c *catalogue) applyLayeredRegionHierarchy() {
-	c.definition("LayeredRegion").Bases = []string{"Region"}
-	for _, owner := range []string{"TextureBase", "FontString", "VectorGraphics"} {
-		definition := c.definition(owner)
-		found := false
-		for i, base := range definition.Bases {
-			if base == "Region" {
-				definition.Bases[i] = "LayeredRegion"
-				found = true
-			}
-		}
-		if !found {
-			reject("review changed layered receiver hierarchy: " + owner)
-		}
-	}
-}

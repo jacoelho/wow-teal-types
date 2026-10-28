@@ -12,11 +12,10 @@ consumer archive contains only consumer commands and tests.
 | --- | --- | --- |
 | Acquire and publish a release cohort | `internal/release` | `Update` prepares and verifies a candidate before publishing; `Recover` resolves interrupted publication. These are the only active cohort writers. |
 | Project declarations | `internal/wowapi` | Validate native metadata, apply explicit corrections, finalize a typed declaration graph, and render declarations and call permissions. |
-| Check and build an addon | `internal/consumer` | Capture bounded inputs, verify copied package bytes, run all compiler phases against that capture, then publish checked Lua. |
+| Check and build an addon | `internal/consumer` | Capture bounded inputs, verify package bytes, admit the compiler by exact version, run all compiler phases against that capture, then publish checked Lua. |
 | Extract the selected client | `tools/cdn` | Independent Go module; verified acquisition feeds the release boundary. |
 | Validate locked source identities | `internal/sourcelock` | Concrete transport schemas and path validation shared by acquisition and interpretation. |
-| Enforce opaque type operations | `tools/teal` | Pinned compiler extension, reproducible patch and versioned report capabilities. |
-| Enforce secret operations | `tools/check_secrets.lua` | Paired compiler reports and canonical native call permissions from the finalized projection. |
+| Enforce secret operations | `tools/check_secrets.lua` | Runs inside stock Teal 0.24.8; applies the `Secret` marker rules and canonical native call permissions from the finalized projection. |
 | Reject native runtime imports | `tools/check_runtime_imports.lua` | Inspect generated Lua before publication. |
 
 CLI packages translate arguments and pass explicit dependencies. Release
@@ -29,17 +28,25 @@ The CDN command creates output and cache directories, resolves symlinks, and
 compares directory identities and ancestors before acquisition. This rejects
 overlap under the filesystem's own case and alias rules. Rejected requests may
 leave empty directories; extraction and cache file writes have not started.
-Extraction receipts carry client identity and verified files; release owns the
-manifest selection. Installation paths remain acquisition inputs. Archive
+Release owns the UI manifest selection (path to file data ID) and passes it to
+the extractor in `config.json` alongside the client identity; the extractor
+validates and follows it and holds no copy. The CDN is the only acquisition
+source. Extraction receipts carry client identity and verified files. Archive
 checksums and size-hint validation belong to extraction, without a separate
-reporting model.
+reporting model. Release bounds extraction time around the extractor process.
 
 ## Captured compiler inputs
 
 A consumer invocation owns a private directory until completion. It captures the
 package manifest and verifies each copied package file against that manifest.
-The capture includes the bundled compiler runtime and generated native call
-policy. A capability check precedes declaration or addon checking.
+The capture includes the checker and generated native call policy. The compiler
+is stock Teal from `TL` or `PATH`, admitted after package verification only when
+`tl --version` prints exactly `0.24.8`; it is pinned by version, not by hash.
+
+Bundling an unmodified Teal was rejected: it duplicates the LuaRocks
+distribution and grows the archive without adding a guarantee the version pin
+lacks. Treating every `any` as opaque was rejected because most untyped inputs
+are not secret, so it would be untrue to the sources.
 Selected sources and admitted `.tl`/`.lua` dependencies share one mirrored physical
 namespace, preserving identity for overlapping include roots. Teal retains control
 of module suffix and include-root precedence. Native declarations precede caller
@@ -73,8 +80,16 @@ Release publication owns a larger journaled cohort transaction and its recovery
 command. Its journal and input fingerprints remain distinct from consumer
 directory replacement. Neither operation claims power-loss atomicity.
 Recovery and extractor building do not require `.wow-version`. Explicit snapshot
-verification uses the supplied snapshot; default snapshot paths require the
-selected version.
+verification uses the supplied snapshot; the default snapshot path,
+`build/wow-update/snapshots/<version>/<extractor source sha256>`, is keyed by
+the client version and the current `tools/cdn` source, so an extractor change
+extracts afresh instead of reusing older output.
+
+Snapshot records and the client lock identify the client and its verified files
+only: identity, manifests, and each file's content key, SHA-256 and size.
+Recording the extractor source hash in the lock was rejected: it added no
+integrity beyond the per-file hashes, and because lock equality compared it,
+any `tools/cdn` edit made re-extraction of an unchanged build fail.
 
 ## Declaration generation
 
@@ -119,7 +134,6 @@ Source locks own acquisition identities; `package.json` owns consumer file hashe
 There is no separate release provenance file, report manifest, cross-source audit,
 runtime probe or approval ledger. Generation verifies its inputs and compiler
 contracts; it does not independently corroborate every API against a running client.
-The compiler's own source manifest remains necessary for reproducible rebuilding.
 
 A mutable map renderer was rejected because rendering must not change the graph.
 Reparsing rendered declarations to recover policy locations was removed because

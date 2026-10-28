@@ -51,21 +51,22 @@ func copyMaintained(root, target string) error {
 	}
 	return nil
 }
-func stageNative(root, snapshot string) (sourcelock.Sources, error) {
-	lock, e := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
+func stageNative(root, snapshot string) error {
+	p := wowapi.NewProject(root)
+	lock, e := sourcelock.ReadSources(p.SourcesPath())
 	if e != nil {
-		return nil, e
+		return e
 	}
 	record, e := VerifySnapshot(snapshot, nil)
 	if e != nil {
-		return nil, e
+		return e
 	}
 	if e = projectVersion(root, record.Identity()); e != nil {
-		return nil, e
+		return e
 	}
-	receipt, e := readFile(filepath.Join(snapshot, "snapshot.json"), maxFile)
+	receipt, e := sourcelock.ReadRegular(filepath.Join(snapshot, "snapshot.json"), maxFile)
 	if e != nil {
-		return nil, e
+		return e
 	}
 	files := map[string]bool{}
 	var names []string
@@ -78,7 +79,7 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 		}
 	}
 	if len(names) == 0 {
-		return nil, fmt.Errorf("empty packaged native inventory")
+		return fmt.Errorf("empty packaged native inventory")
 	}
 	slices.Sort(names)
 	type selected struct {
@@ -116,19 +117,19 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 				}
 				packaged, e = clientPath(relative, files)
 				if e != nil {
-					return nil, e
+					return e
 				}
 				if packaged == "" {
-					return nil, fmt.Errorf("required native source removed: %s", name)
+					return fmt.Errorf("required native source removed: %s", name)
 				}
-				raw, e = readFile(filepath.Join(snapshot, "raw", filepath.FromSlash(packaged)), maxFile)
+				raw, e = sourcelock.ReadRegular(filepath.Join(snapshot, "raw", filepath.FromSlash(packaged)), maxFile)
 				if e != nil {
-					return nil, e
+					return e
 				}
 			}
 			var legacy []byte
 			if r, ok := old[name]; ok {
-				if len(raw) == r.Size && blob(raw) == r.SHA {
+				if len(raw) == r.Size && sourcelock.BlobSHA(raw) == r.SHA {
 					legacy = raw
 				} else {
 					legacy = lockedBytes(raw, r)
@@ -149,19 +150,16 @@ func stageNative(root, snapshot string) (sourcelock.Sources, error) {
 				data = r.legacy
 			}
 			origin := sourcelock.ClientPath(r.path)
-			rows = append(rows, sourcelock.SourceFile{ClientPath: origin, Name: r.name, SHA: blob(data), Size: len(data)})
+			rows = append(rows, sourcelock.SourceFile{ClientPath: origin, Name: r.name, SHA: sourcelock.BlobSHA(data), Size: len(data)})
 		}
 		if !preserved {
 			lock[group] = sourcelock.SourceGroup{Kind: "casc", ClientLockSHA256: sha(receipt), Path: old.Path, Normalization: "lf-final-newline", Files: rows}
 		}
 	}
-	if e = atomicWrite(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"), receipt, 0644); e != nil {
-		return nil, e
+	if e = atomicWrite(p.ClientSourcesPath(), receipt, 0644); e != nil {
+		return e
 	}
-	if e = writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), lock); e != nil {
-		return nil, e
-	}
-	return lock, nil
+	return writeObject(p.SourcesPath(), lock)
 }
 
 type githubEntry struct {
@@ -177,11 +175,12 @@ type githubResponse struct {
 	Truncated *bool         `json:"truncated"`
 }
 type github struct {
+	fetch fetcher
 	trees map[string]map[string]githubEntry
 }
 
 func (g *github) api(ctx context.Context, path string) (githubResponse, error) {
-	data, err := fetch(ctx, "https://api.github.com"+path, 16<<20)
+	data, err := g.fetch.get(ctx, "https://api.github.com"+path, 16<<20)
 	if err != nil {
 		return githubResponse{}, err
 	}
@@ -205,13 +204,13 @@ func (g *github) resolve(ctx context.Context, repo, ref string) (string, error) 
 		return "", e
 	}
 	revision := m.SHA
-	if !hex40.MatchString(revision) {
+	if !sourcelock.IsGitSHA(revision) {
 		return "", fmt.Errorf("invalid resolved commit: %s", repo)
 	}
 	return revision, nil
 }
 func (g *github) tree(ctx context.Context, repo, revision string) (map[string]githubEntry, error) {
-	if !hex40.MatchString(revision) {
+	if !sourcelock.IsGitSHA(revision) {
 		return nil, fmt.Errorf("inventory requires immutable revision")
 	}
 	key := repo + "@" + revision
@@ -234,7 +233,7 @@ func (g *github) tree(ctx context.Context, repo, revision string) (map[string]gi
 		if _, e = safeJoin("/", name); e != nil {
 			return nil, e
 		}
-		if _, duplicate := rows[name]; duplicate || !hex40.MatchString(r.SHA) || (r.Type == "blob" && (r.Size == nil || *r.Size < 0)) {
+		if _, duplicate := rows[name]; duplicate || !sourcelock.IsGitSHA(r.SHA) || (r.Type == "blob" && (r.Size == nil || *r.Size < 0)) {
 			return nil, fmt.Errorf("invalid recursive tree row: %s", name)
 		}
 		rows[name] = r
@@ -251,11 +250,11 @@ func (g *github) file(ctx context.Context, repo, revision, name string, limit in
 	if !found || row.Type != "blob" || (row.Mode != "100644" && row.Mode != "100755") || row.Size == nil || *row.Size > limit {
 		return nil, fmt.Errorf("missing or unsupported source entry: %s", name)
 	}
-	b, e := fetch(ctx, "https://raw.githubusercontent.com/"+repo+"/"+revision+"/"+escapePath(name), int64(limit))
+	b, e := g.fetch.get(ctx, "https://raw.githubusercontent.com/"+repo+"/"+revision+"/"+escapePath(name), int64(limit))
 	if e != nil {
 		return nil, e
 	}
-	if len(b) != *row.Size || blob(b) != row.SHA {
+	if len(b) != *row.Size || sourcelock.BlobSHA(b) != row.SHA {
 		return nil, fmt.Errorf("Git blob identity mismatch: %s", name)
 	}
 	return b, nil
@@ -284,7 +283,7 @@ func (g *github) inventory(ctx context.Context, repo, revision, prefix string) (
 }
 func refreshCommunity(ctx context.Context, root string, g *github, questieRef string) error {
 	p := wowapi.NewProject(root)
-	lock, e := sourcelock.ReadSources(filepath.Join(root, "internal/wowapi/inputs/sources.json"))
+	lock, e := sourcelock.ReadSources(p.SourcesPath())
 	if e != nil {
 		return e
 	}
@@ -320,7 +319,7 @@ func refreshCommunity(ctx context.Context, root string, g *github, questieRef st
 		}
 	}
 	lock["questie"] = source
-	return writeObject(filepath.Join(root, "internal/wowapi/inputs/sources.json"), lock)
+	return writeObject(p.SourcesPath(), lock)
 }
 
 // StageRelease acquires an immutable candidate, including explicit third-party revisions.
@@ -346,30 +345,24 @@ func StageRelease(ctx context.Context, root, output, snapshot, questieRef string
 	if e = seedCaches(root, workspace); e != nil {
 		return StageResult{}, e
 	}
-	_, e = stageNative(workspace, snapshot)
-	if e != nil {
+	if e = stageNative(workspace, snapshot); e != nil {
 		return StageResult{}, e
 	}
-	g := &github{}
+	g := &github{fetch: newFetcher()}
 	if e = refreshCommunity(ctx, workspace, g, questieRef); e != nil {
 		return StageResult{}, e
 	}
 	if e = requireUnchanged(root, before); e != nil {
 		return StageResult{}, e
 	}
-	report := StageResult{Status: "acquired", Workspace: workspace}
-	v, e := consumerVersion(workspace)
+	v, e := consumer.ReadVersion(workspace)
 	if e != nil {
 		return StageResult{}, e
 	}
-	report.NativeBuild = v
+	report := StageResult{Status: "acquired", Workspace: workspace, NativeBuild: v.Full}
 	if e = writeObject(filepath.Join(output, "release-report.json"), report); e != nil {
 		return StageResult{}, e
 	}
 	failed = false
 	return report, nil
-}
-func consumerVersion(root string) (string, error) {
-	v, e := consumer.ReadVersion(root)
-	return v.Full, e
 }

@@ -2,11 +2,14 @@ package consumer
 
 import (
 	"archive/zip"
+	"bytes"
 	"encoding/json"
 	"maps"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
+	"runtime"
 	"strings"
 	"syscall"
 	"testing"
@@ -20,10 +23,7 @@ func newAddon(t *testing.T) addonFixture {
 	project := filepath.Join(t.TempDir(), "external addon with spaces")
 	root := filepath.Join(project, "vendor/wow-teal-types")
 	source := filepath.Join(project, "src")
-	manifest, err := readManifest(filepath.Join(repo, "package.json"))
-	if err != nil {
-		t.Fatal(err)
-	}
+	manifest := readManifest(t, filepath.Join(repo, "package.json"))
 	files := map[string]string{}
 	for _, name := range RequiredFiles() {
 		data, err := os.ReadFile(filepath.Join(repo, filepath.FromSlash(name)))
@@ -50,9 +50,96 @@ func (f addonFixture) write(t *testing.T, name, text string) string {
 	writeTest(t, path, text)
 	return path
 }
-func (f addonFixture) run(t *testing.T, args []string, reject string) string {
+func (f addonFixture) check(t *testing.T, selected Selection, reject string) string {
 	t.Helper()
-	return runConsumer(t, t.Context(), f.root, args, reject)
+	var out bytes.Buffer
+	return expect(t, Check(t.Context(), f.root, selected, &out, &out), &out, reject)
+}
+func (f addonFixture) build(t *testing.T, selected Selection, output, reject string) string {
+	t.Helper()
+	var out bytes.Buffer
+	return expect(t, Build(t.Context(), f.root, selected, output, &out, &out), &out, reject)
+}
+func (f addonFixture) verify(t *testing.T, reject string) string {
+	t.Helper()
+	manifest, err := Verify(f.root)
+	return expect(t, err, bytes.NewBufferString(manifest.Version), reject)
+}
+
+// expect checks a consumer result: success when reject is empty, otherwise an
+// error whose text or captured output contains reject.
+func expect(t *testing.T, err error, output *bytes.Buffer, reject string) string {
+	t.Helper()
+	text := output.String()
+	if reject == "" {
+		if err != nil {
+			t.Fatalf("unexpected rejection: %v\n%s", err, text)
+		}
+		return text
+	}
+	if err == nil {
+		t.Fatalf("accepted; expected %q\n%s", reject, text)
+	}
+	text += "\n" + err.Error()
+	if !strings.Contains(text, reject) {
+		t.Fatalf("expected %q in %s", reject, text)
+	}
+	return text
+}
+func readManifest(t *testing.T, path string) PackageManifest {
+	t.Helper()
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	manifest, err := ParsePackageManifest(data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return manifest
+}
+func repositoryRoot(t *testing.T) string {
+	t.Helper()
+	_, file, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("cannot locate test source")
+	}
+	root, err := filepath.Abs(filepath.Join(filepath.Dir(file), "../.."))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return root
+}
+
+// teal resolves the compiler by the consumer rule (TL, else tl on PATH) and
+// requires the pinned stock version.
+func teal(t *testing.T) string {
+	t.Helper()
+	name := os.Getenv("TL")
+	if name == "" {
+		name = "tl"
+	}
+	path, err := exec.LookPath(name)
+	if err != nil {
+		t.Fatalf("stock Teal %s required (%s): %v", TealVersion, tealInstall, err)
+	}
+	output, err := exec.CommandContext(t.Context(), path, "--version").Output()
+	if err != nil {
+		t.Fatalf("stock Teal %s required (%s): %v", TealVersion, tealInstall, err)
+	}
+	if err = admitTealVersion(string(output)); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+func writeTest(t *testing.T, path, source string) {
+	t.Helper()
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, []byte(source), 0644); err != nil {
+		t.Fatal(err)
+	}
 }
 func fileText(t *testing.T, path string) string {
 	t.Helper()
@@ -88,15 +175,14 @@ func outputBytes(t *testing.T, root string) map[string]string {
 	return out
 }
 
-func TestVersionCommandUsesVerifiedPackageWithoutCompiler(t *testing.T) {
+func TestVerifyUsesPackageWithoutCompiler(t *testing.T) {
 	f := newAddon(t)
 	t.Setenv("TL", "/compiler-must-not-be-invoked")
-	if got := f.run(t, []string{"version"}, ""); got != "0.1.0\n" {
-		t.Fatalf("version output: %q", got)
+	if got := f.verify(t, ""); got != "0.1.0" {
+		t.Fatalf("verified version: %q", got)
 	}
-	f.run(t, []string{"version", "extra"}, "version takes no arguments")
 	writeTest(t, filepath.Join(f.root, "types/wow/wow.d.tl"), "changed declaration\n")
-	f.run(t, []string{"version"}, "package integrity mismatch")
+	f.verify(t, "package integrity mismatch")
 }
 
 func TestNativeFrameFactoryContracts(t *testing.T) {
@@ -105,17 +191,56 @@ func TestNativeFrameFactoryContracts(t *testing.T) {
 local frame:W.Frame = CreateFrame("Frame")
 local bar:W.StatusBar = CreateFrame("StatusBar", nil, frame)
 bar:SetValue(1)
+local button:W.Button = CreateFrame("Button")
+local backdrop = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+backdrop:SetBackdrop({})
+local backdropButton = CreateFrame("Button", "Named", frame, "BackdropTemplate", 1)
+backdropButton:SetBackdrop({})
+backdropButton:Click()
+local kind:string = "Frame"
+local any:W.Frame = CreateFrame(kind)
+print(button, any)
 `)
-	f.run(t, []string{"check", f.source}, "")
-	for _, source := range []string{
-		`local type W = require("wow")
-local bar:W.StatusBar = CreateFrame("Frame")`,
-		`local type W = require("wow")
-local function construct(kind:string):W.StatusBar return CreateFrame(kind) end`,
+	f.check(t, Selection{Sources: []string{f.source}}, "")
+	for _, test := range []struct{ source, reject string }{
+		{`local type W = require("wow")
+local bar:W.StatusBar = CreateFrame("Frame")`, "StatusBar"},
+		{`local type W = require("wow")
+local function construct(kind:string):W.StatusBar return CreateFrame(kind) end`, "StatusBar"},
+		// BackdropTemplate narrows only the listed frame types and exact template name.
+		{`CreateFrame("Cooldown", nil, nil, "BackdropTemplate"):SetBackdrop({})`, "SetBackdrop"},
+		{`CreateFrame("Frame", nil, nil, "OtherTemplate"):SetBackdrop({})`, "SetBackdrop"},
 	} {
-		f.write(t, "Main.tl", source)
-		f.run(t, []string{"check", f.source}, "StatusBar")
+		f.write(t, "Main.tl", test.source)
+		f.check(t, Selection{Sources: []string{f.source}}, test.reject)
 	}
+}
+
+// Teal admits nil for every type but cannot narrow `T | nil` by truthiness, so
+// generated declarations state absence only through optional parameters.
+func TestGeneratedDeclarationsOmitNilUnionMembers(t *testing.T) {
+	member := regexp.MustCompile(`\|\s*nil\b|\bnil\s*\|`)
+	for _, name := range []string{"wow.d.tl", "wow_env.d.tl", "wow_secure_env.d.tl"} {
+		for number, line := range strings.Split(fileText(t, filepath.Join(repositoryRoot(t), "types/wow", name)), "\n") {
+			if !strings.HasPrefix(strings.TrimSpace(line), "--") && member.MatchString(line) {
+				t.Errorf("%s:%d declares a nil union member: %s", name, number+1, strings.TrimSpace(line))
+			}
+		}
+	}
+}
+
+func TestFrameXMLSupplementContracts(t *testing.T) {
+	f := newAddon(t)
+	f.write(t, "Main.tl", `local type W = require("wow")
+local mage = RAID_CLASS_COLORS["MAGE"]
+local red:W.MaybeSecret<number> = mage.r
+local alpha:W.MaybeSecret<number> = GRAY_FONT_COLOR.a
+ChatFrame1:AddMessage("first")
+ChatFrame10:AddMessage("last")
+local unit:boolean = GameTooltip:IsTooltipType(Enum.TooltipDataType.Unit)
+RaidWarningFrame:OnEvent("CHAT_MSG_RAID_WARNING", "message", "sender")
+`)
+	f.check(t, Selection{Sources: []string{f.source}}, "")
 }
 
 func TestRelocatedAddonBuildAndRepeat(t *testing.T) {
@@ -123,7 +248,7 @@ func TestRelocatedAddonBuildAndRepeat(t *testing.T) {
 	f.write(t, "WowTealExample.tl", fileText(t, filepath.Join(repositoryRoot(t), "examples/minimal/WowTealExample.tl")))
 	writeTest(t, filepath.Join(f.project, "tlconfig.lua"), "error(\"ambient config must not run\")\n")
 	t.Setenv("TL_PATH", "/missing-and-untrusted/?.lua")
-	text := f.run(t, []string{"build", f.source, "-o", f.output}, "")
+	text := f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
 	if !strings.Contains(text, "Passed type and secret checks for 1 selected source files.") {
 		t.Fatal(text)
 	}
@@ -137,7 +262,7 @@ func TestRelocatedAddonBuildAndRepeat(t *testing.T) {
 		t.Fatal("type import survived generation")
 	}
 	before := outputBytes(t, f.output)
-	f.run(t, []string{"build", f.source, "-o", f.output}, "")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
 	if !maps.Equal(before, outputBytes(t, f.output)) {
 		t.Fatal("repeat changed checked build")
 	}
@@ -147,27 +272,27 @@ func TestSelectedImportedBodiesReceiveSecretChecks(t *testing.T) {
 	f.write(t, "Entry.tl", "local helpers = require(\"Helpers\")\nhelpers.inspect(1)\n")
 	f.write(t, "Helpers.tl", `local type W = require("wow")
 local record Helpers
-   inspect: function(W.NumberLike)
+   inspect: function(W.MaybeSecret<number>)
 end
 local helpers: Helpers = {}
-function helpers.inspect(value: W.NumberLike)
+function helpers.inspect(value: W.MaybeSecret<number>)
    if value == 0 then print("bad") end
 end
 return helpers
 `)
-	f.run(t, []string{"check", f.source}, "secret-value comparison")
+	f.check(t, Selection{Sources: []string{f.source}}, "secret-value comparison")
 }
 func TestInvalidSourceSelectionAndTypeErrors(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Bad.tl", "C_Spell.GetBaseSpell(true)\n")
-	f.run(t, []string{"check", f.source}, "argument")
-	f.run(t, []string{"check", filepath.Join(f.source, "Missing.tl")}, "no such file")
+	f.check(t, Selection{Sources: []string{f.source}}, "argument")
+	f.check(t, Selection{Sources: []string{filepath.Join(f.source, "Missing.tl")}}, "no such file")
 	empty := filepath.Join(f.project, "empty")
 	if err := os.Mkdir(empty, 0755); err != nil {
 		t.Fatal(err)
 	}
-	f.run(t, []string{"check", empty}, "no Teal source files")
-	f.run(t, []string{"check", filepath.Join(f.root, "types/wow/wow.d.tl")}, "expected a Teal source")
+	f.check(t, Selection{Sources: []string{empty}}, "no Teal source files")
+	f.check(t, Selection{Sources: []string{filepath.Join(f.root, "types/wow/wow.d.tl")}}, "expected a Teal source")
 }
 func TestManifestBindsTypesCheckersAndVersion(t *testing.T) {
 	f := newAddon(t)
@@ -175,17 +300,17 @@ func TestManifestBindsTypesCheckersAndVersion(t *testing.T) {
 		path := filepath.Join(f.root, name)
 		before := fileText(t, path)
 		writeTest(t, path, before+"\n-- changed\n")
-		f.run(t, []string{"verify"}, "package integrity mismatch")
+		f.verify(t, "package integrity mismatch")
 		writeTest(t, path, before)
 	}
-	f.run(t, []string{"verify"}, "")
+	f.verify(t, "")
 }
 func TestPackageResolutionAndDirectShadowFailure(t *testing.T) {
 	f := newAddon(t)
-	source := f.write(t, "Unsafe.tl", "local type W = require(\"wow\")\nlocal function f(v: W.NumberLike) if v then print(v) end end\n")
+	source := f.write(t, "Unsafe.tl", "local type W = require(\"wow\")\nlocal function f(v: W.MaybeSecret<number>) if v then print(v) end end\n")
 	shadow := filepath.Join(f.project, "shadow")
-	writeTest(t, filepath.Join(shadow, "wow.d.tl"), "local record Fake\n type NumberLike = number\nend\nreturn Fake\n")
-	f.run(t, []string{"check", f.source, "-I", shadow}, "secret-value truthiness")
+	writeTest(t, filepath.Join(shadow, "wow.d.tl"), "local record Fake\n type MaybeSecret<T> = T\nend\nreturn Fake\n")
+	f.check(t, Selection{Sources: []string{f.source}, Include: []string{shadow}}, "secret-value truthiness")
 	command := exec.CommandContext(t.Context(), teal(t), "run", filepath.Join(f.root, "tools/check_secrets.lua"), "--", "wow_env", source)
 	command.Dir = f.project
 	command.Env = append(os.Environ(), "TL_PATH="+shadow+"/?.lua;"+filepath.Join(f.root, "types/wow/?.lua"))
@@ -199,47 +324,61 @@ func TestAddonGlobalsExtendNativeEnvironment(t *testing.T) {
 	declarations := filepath.Join(f.project, "addon_types")
 	writeTest(t, filepath.Join(declarations, "addon_env.d.tl"), "global MyAddonCounter: number\n")
 	f.write(t, "Main.tl", "MyAddonCounter = C_Spell.GetBaseSpell(17)\n")
-	f.run(t, []string{"build", f.source, "-I", declarations, "--global-env-def", "addon_env", "-o", f.output}, "")
+	f.build(t, Selection{Sources: []string{f.source}, Include: []string{declarations}, Global: "addon_env"}, f.output, "")
 	if strings.Contains(fileText(t, filepath.Join(f.output, "Main.lua")), "require(") {
 		t.Fatal("declaration import survived")
 	}
-	f.run(t, []string{"check", f.source}, "MyAddonCounter")
+	f.check(t, Selection{Sources: []string{f.source}}, "MyAddonCounter")
 }
 func TestFailedBuildPreservesOutputAndRejectsForeignDirectory(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Good.tl", "print(\"checked\")\n")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
 	before := outputBytes(t, f.output)
-	f.write(t, "Bad.tl", "local type W = require(\"wow\")\nlocal function f(v: W.NumberLike) if v == 0 then print(v) end end\n")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "secret-value comparison")
+	f.write(t, "Bad.tl", "local type W = require(\"wow\")\nlocal function f(v: W.MaybeSecret<number>) if v == 0 then print(v) end end\n")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "secret-value comparison")
 	if !maps.Equal(before, outputBytes(t, f.output)) {
 		t.Fatal("failed build changed previous output")
 	}
-	f.run(t, []string{"build", f.source, "-o", f.source}, "output must not overlap")
+	f.build(t, Selection{Sources: []string{f.source}}, f.source, "output must not overlap")
 	foreign := filepath.Join(f.project, "foreign")
 	writeTest(t, filepath.Join(foreign, "mine.txt"), "preserve")
-	f.run(t, []string{"build", f.source, "-o", foreign}, "no wow-teal ownership receipt")
+	f.build(t, Selection{Sources: []string{f.source}}, foreign, "no wow-teal ownership receipt")
 	if fileText(t, filepath.Join(foreign, "mine.txt")) != "preserve" {
 		t.Fatal("foreign output changed")
 	}
 }
 func TestWrongCompilerAndEditedOutputDoNotPublish(t *testing.T) {
 	f := newAddon(t)
+	stock := teal(t)
 	f.write(t, "Good.tl", "print(\"checked\")\n")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
 	before := fileText(t, filepath.Join(f.output, "Good.lua"))
-	compiler := filepath.Join(f.project, "future-tl")
-	writeTest(t, compiler, "#!/bin/sh\nprintf '99.0.0\\n'\n")
-	if err := os.Chmod(compiler, 0755); err != nil {
-		t.Fatal(err)
+	for name, script := range map[string]string{
+		"fork":    "printf '0.24.8-wow.1\\n'",
+		"older":   "printf '0.24.7\\n'",
+		"prefix":  "printf '0.24.80\\n'",
+		"empty":   "true",
+		"failing": "printf '0.24.8\\n'; exit 1",
+		"future":  "printf '99.0.0\\n'",
+	} {
+		compiler := filepath.Join(f.project, name+"-tl")
+		writeTest(t, compiler, "#!/bin/sh\n"+script+"\n")
+		if err := os.Chmod(compiler, 0755); err != nil {
+			t.Fatal(err)
+		}
+		t.Setenv("TL", compiler)
+		text := f.build(t, Selection{Sources: []string{f.source}}, f.output, "unsupported Teal version")
+		if !strings.Contains(text, tealInstall) {
+			t.Fatalf("%s: rejection does not name %q:\n%s", name, tealInstall, text)
+		}
+		if fileText(t, filepath.Join(f.output, "Good.lua")) != before {
+			t.Fatalf("%s compiler changed output", name)
+		}
 	}
-	t.Setenv("TL", compiler)
-	f.run(t, []string{"build", f.source, "-o", f.output}, "unsupported Teal version")
-	if fileText(t, filepath.Join(f.output, "Good.lua")) != before {
-		t.Fatal("wrong compiler changed output")
-	}
+	t.Setenv("TL", stock)
 	writeTest(t, filepath.Join(f.output, "Good.lua"), "-- user edit\n")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "output has local changes")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "output has local changes")
 	if fileText(t, filepath.Join(f.output, "Good.lua")) != "-- user edit\n" {
 		t.Fatal("user edit replaced")
 	}
@@ -249,23 +388,23 @@ func TestSymlinkAndExcludedSourceTrees(t *testing.T) {
 	source := f.write(t, "Good.tl", "print(\"checked\")\n")
 	f.write(t, "build/Bad.tl", "not valid Teal")
 	f.write(t, "vendor/Bad.tl", "not valid Teal")
-	f.run(t, []string{"check", f.source}, "")
+	f.check(t, Selection{Sources: []string{f.source}}, "")
 	if err := os.Symlink(source, filepath.Join(f.source, "Linked.tl")); err != nil {
 		t.Fatal(err)
 	}
-	f.run(t, []string{"check", f.source}, "must not be a symlink")
+	f.check(t, Selection{Sources: []string{f.source}}, "must not be a symlink")
 }
 func TestSecureEnvironmentSelection(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Main.tl", "local forbidden = GetForbiddenObjectTable(CreateFrame(\"Frame\"))\nprint(forbidden)\n")
-	f.run(t, []string{"check", f.source}, "GetForbiddenObjectTable")
-	f.run(t, []string{"check", f.source, "--secure"}, "")
+	f.check(t, Selection{Sources: []string{f.source}}, "GetForbiddenObjectTable")
+	f.check(t, Selection{Sources: []string{f.source}, Secure: true}, "")
 }
 func TestNestedModulesResolveFromSelectedRoot(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "myaddon/Entry.tl", "local helper = require(\"myaddon.Helpers\")\nprint(helper.value)\n")
 	f.write(t, "myaddon/Helpers.tl", "local helper = { value = 17 }\nreturn helper\n")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
 	for _, name := range []string{"myaddon/Entry.lua", "myaddon/Helpers.lua"} {
 		if _, err := os.Stat(filepath.Join(f.output, name)); err != nil {
 			t.Fatal(err)
@@ -275,14 +414,14 @@ func TestNestedModulesResolveFromSelectedRoot(t *testing.T) {
 func TestNonregularSourcesAndDependenciesRejectBeforeReading(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Good.tl", "print(\"checked\")\n")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
 	before := outputBytes(t, f.output)
 	fifo := filepath.Join(f.source, "Input.tl")
 	if err := syscall.Mkfifo(fifo, 0600); err != nil {
 		t.Fatal(err)
 	}
-	f.run(t, []string{"check", fifo}, "regular file")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "regular file")
+	f.check(t, Selection{Sources: []string{fifo}}, "regular file")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "regular file")
 	if err := os.Remove(fifo); err != nil {
 		t.Fatal(err)
 	}
@@ -293,7 +432,7 @@ func TestNonregularSourcesAndDependenciesRejectBeforeReading(t *testing.T) {
 	if err := syscall.Mkfifo(filepath.Join(deps, "Native.d.tl"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	f.run(t, []string{"build", f.source, "-I", deps, "-o", f.output}, "regular file")
+	f.build(t, Selection{Sources: []string{f.source}, Include: []string{deps}}, f.output, "regular file")
 	if !maps.Equal(before, outputBytes(t, f.output)) {
 		t.Fatal("nonregular input changed previous output")
 	}
@@ -301,7 +440,7 @@ func TestNonregularSourcesAndDependenciesRejectBeforeReading(t *testing.T) {
 func TestRuntimeImportsRejectWithoutConfusingCommentsOrStrings(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Main.tl", "-- require(\"wow\") is text.\nprint('require(\"wow\")')\nprint([[require(\"native_values\")]])\n")
-	f.run(t, []string{"build", f.source, "-o", f.output}, "")
+	f.build(t, Selection{Sources: []string{f.source}}, f.output, "")
 	before := outputBytes(t, f.output)
 	for _, expression := range []string{`require("wow")`, `require [[wow]]`, `require([=[wow]=])`, `_G.require("\119\111\119")`, `require("native_values")`, `(require)("wow")`, `(_G.require)("wow")`, `_G["require"]("wow")`, `require(("wow"))`} {
 		t.Run(expression, func(t *testing.T) {
@@ -310,7 +449,7 @@ func TestRuntimeImportsRejectWithoutConfusingCommentsOrStrings(t *testing.T) {
 			if strings.Contains(expression, `\119`) {
 				reject = "module not found"
 			}
-			f.run(t, []string{"build", f.source, "-o", f.output}, reject)
+			f.build(t, Selection{Sources: []string{f.source}}, f.output, reject)
 			if !maps.Equal(before, outputBytes(t, f.output)) {
 				t.Fatal("runtime import changed previous output")
 			}
@@ -375,7 +514,7 @@ func TestConsumerCLIUsesAddonWorkingDirectory(t *testing.T) {
 func TestConsumerPackageIsReproducibleAndExcludesProducer(t *testing.T) {
 	f := newAddon(t)
 	repo := repositoryRoot(t)
-	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "tools/teal/tests/compiler.lua", "tools/teal/README.md", "tools/teal/provenance.json", "tools/teal/unknown.patch", "tools/teal/rebuild.py", "tools/teal/upstream/tl.lua", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
+	for _, name := range []string{"LICENSE", "README.md", "UPDATING.md", "tlconfig.lua", "docs/api/teal-catalogue.md", "docs/architecture.md", "examples/minimal/WowTealExample.tl", "examples/minimal/WowTealExample.toc", "Makefile", "check-all.sh", "rockspecs/wow-tl-type-0.1.0-1.rockspec.in"} {
 		writeTest(t, filepath.Join(f.root, name), fileText(t, filepath.Join(repo, name)))
 	}
 	first, err := Package(f.root)
@@ -396,7 +535,7 @@ func TestConsumerPackageIsReproducibleAndExcludesProducer(t *testing.T) {
 	}
 	defer archive.Close()
 	for _, member := range archive.File {
-		if (strings.HasSuffix(member.Name, ".py") && member.Name != "wow-teal-types/tools/teal/rebuild.py") || strings.Contains(member.Name, "/scripts/") || strings.Contains(member.Name, "/tools/cdn/") {
+		if strings.HasSuffix(member.Name, ".py") || strings.Contains(member.Name, "/tools/teal/") || strings.Contains(member.Name, "/scripts/") || strings.Contains(member.Name, "/tools/cdn/") {
 			t.Fatalf("producer or Python in consumer archive: %s", member.Name)
 		}
 	}

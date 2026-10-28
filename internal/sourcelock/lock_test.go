@@ -13,14 +13,14 @@ const gitSource = `{"blizzard":{"commit":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 const cascVersion = `{"blizzard_version":{"client_lock_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","files":[{"client_path":null,"name":"version.txt","sha":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","size":0}],"kind":"casc","normalization":"lf-final-newline","path":""}}`
 
 func TestSourceSchemaDistinguishesAbsentNullAndZero(t *testing.T) {
-	git, err := ParseSources([]byte(gitSource))
+	git, err := parseSources([]byte(gitSource))
 	if err != nil {
 		t.Fatal(err)
 	}
 	if git["blizzard"].Files[0].ClientPath.Present || git["blizzard"].Files[0].Size != 0 {
 		t.Fatal("Git absence or zero size lost")
 	}
-	casc, err := ParseSources([]byte(cascVersion))
+	casc, err := parseSources([]byte(cascVersion))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,7 +33,7 @@ func TestSourceSchemaDistinguishesAbsentNullAndZero(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		again, err := ParseSources(data)
+		again, err := parseSources(data)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -48,7 +48,7 @@ func TestSourceSchemaRejectsMalformedShapes(t *testing.T) {
 	for _, input := range []string{
 		`null`, `[]`, gitSource + `{}`, strings.Replace(gitSource, `"size":0`, `"size":null`, 1), strings.Replace(gitSource, `,"size":0`, "", 1), strings.Replace(gitSource, `"size":0`, `"size":0.5`, 1), strings.Replace(gitSource, `"size":0`, `"size":99999999999999999999999`, 1), strings.Replace(gitSource, `"name":"A.lua"`, `"name":true`, 1), strings.Replace(gitSource, `"path":""`, `"path":null`, 1), strings.Replace(gitSource, `"name":"A.lua"`, `"client_path":null,"name":"A.lua"`, 1), strings.Replace(cascVersion, `"client_path":null,`, "", 1), strings.Replace(cascVersion, `"client_path":null`, `"client_path":12`, 1), strings.Replace(cascVersion, `"client_path":null`, `"client_path":"../outside"`, 1),
 	} {
-		if _, err := ParseSources([]byte(input)); err == nil {
+		if _, err := parseSources([]byte(input)); err == nil {
 			t.Fatalf("accepted malformed lock: %s", input)
 		}
 	}
@@ -58,7 +58,7 @@ func TestPublishedClientLockRoundTripPreservesBytes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	snapshot, err := ParseSnapshot(data)
+	snapshot, err := parseSnapshot(data)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -72,8 +72,9 @@ func TestPublishedClientLockRoundTripPreservesBytes(t *testing.T) {
 	if !bytes.Equal(buffer.Bytes(), data) {
 		t.Fatal("client lock serialization changed")
 	}
-	for _, malformed := range []string{`null`, `[]`, string(data) + `{}`, strings.Replace(string(data), `"build": 70575`, `"build": 70575.5`, 1), strings.Replace(string(data), `"schema": 1`, `"schema": null`, 1), strings.Replace(string(data), `"size": 2641`, `"size": null`, 1)} {
-		if _, err := ParseSnapshot([]byte(malformed)); err == nil {
+	for _, malformed := range []string{`null`, `[]`, string(data) + `{}`, strings.Replace(string(data), `"build": 70575`, `"build": 70575.5`, 1), strings.Replace(string(data), `"schema": 1`, `"schema": null`, 1), strings.Replace(string(data), `"size": 2641`, `"size": null`, 1), strings.Replace(string(data), `"files": [`, `"extractor": {"implementation": "wow-teal-types/tools/cdn"},
+  "files": [`, 1)} {
+		if _, err := parseSnapshot([]byte(malformed)); err == nil {
 			t.Fatal("accepted malformed client lock")
 		}
 	}

@@ -3,7 +3,10 @@ package sourcelock
 
 import (
 	"bytes"
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -12,6 +15,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"slices"
+	"syscall"
 )
 
 // Optional string fields must be absent or nonempty; null is never an alias for absence.
@@ -69,7 +73,7 @@ func (f *SourceFile) UnmarshalJSON(data []byte) error {
 		SHA        string       `json:"sha"`
 		Size       *int         `json:"size"`
 	}
-	if err := decode(data, &row); err != nil {
+	if err := DecodeStrict(data, &row); err != nil {
 		return err
 	}
 	if row.Size == nil || *row.Size < 0 {
@@ -107,7 +111,7 @@ func (g *SourceGroup) UnmarshalJSON(data []byte) error {
 		Ref              nonemptyString `json:"ref"`
 		Repository       nonemptyString `json:"repository"`
 	}
-	if err := decode(data, &value); err != nil {
+	if err := DecodeStrict(data, &value); err != nil {
 		return err
 	}
 	if value.Path == nil {
@@ -126,9 +130,9 @@ var hex32 = regexp.MustCompile(`^[0-9a-f]{32}$`)
 var hex40 = regexp.MustCompile(`^[0-9a-f]{40}$`)
 var hex64 = regexp.MustCompile(`^[0-9a-f]{64}$`)
 
-func ParseSources(data []byte) (Sources, error) {
+func parseSources(data []byte) (Sources, error) {
 	var sources Sources
-	if err := decode(data, &sources); err != nil {
+	if err := DecodeStrict(data, &sources); err != nil {
 		return nil, err
 	}
 	if len(sources) == 0 {
@@ -171,7 +175,7 @@ func ReadSources(path string) (Sources, error) {
 	if e != nil {
 		return nil, e
 	}
-	v, e := ParseSources(b)
+	v, e := parseSources(b)
 	if e != nil {
 		return nil, fmt.Errorf("%s: %w", path, e)
 	}
@@ -205,10 +209,6 @@ func (id ClientIdentity) Validate() error {
 	return nil
 }
 
-type Extractor struct {
-	Implementation string `json:"implementation"`
-	SourceSHA256   string `json:"source_sha256"`
-}
 type ClientFile struct {
 	ContentKey string `json:"content_key"`
 	Path       string `json:"path"`
@@ -223,7 +223,7 @@ func (f *ClientFile) UnmarshalJSON(data []byte) error {
 		SHA256     string `json:"sha256"`
 		Size       *int   `json:"size"`
 	}
-	if e := decode(data, &row); e != nil {
+	if e := DecodeStrict(data, &row); e != nil {
 		return e
 	}
 	if row.Size == nil || *row.Size < 0 || !fs.ValidPath(row.Path) || !hex32.MatchString(row.ContentKey) || !hex64.MatchString(row.SHA256) {
@@ -238,7 +238,6 @@ type Snapshot struct {
 	Build         int            `json:"build"`
 	BuildConfig   string         `json:"build_config"`
 	CDNConfig     string         `json:"cdn_config"`
-	Extractor     Extractor      `json:"extractor"`
 	Files         []ClientFile   `json:"files"`
 	Locale        string         `json:"locale"`
 	Manifests     map[string]int `json:"manifests"`
@@ -252,21 +251,21 @@ type Snapshot struct {
 func (s Snapshot) Identity() ClientIdentity {
 	return ClientIdentity{s.Build, s.BuildConfig, s.CDNConfig, s.Locale, s.Product, s.ProductConfig, s.Region, s.Version}
 }
-func NewSnapshot(id ClientIdentity, extractor Extractor, files []ClientFile, manifests map[string]int) Snapshot {
-	return Snapshot{id.Build, id.BuildConfig, id.CDNConfig, extractor, files, id.Locale, manifests, id.Product, id.ProductConfig, id.Region, 1, id.Version}
+func NewSnapshot(id ClientIdentity, files []ClientFile, manifests map[string]int) Snapshot {
+	return Snapshot{id.Build, id.BuildConfig, id.CDNConfig, files, id.Locale, manifests, id.Product, id.ProductConfig, id.Region, 1, id.Version}
 }
 func (s Snapshot) Equal(other Snapshot) bool {
-	return s.Identity() == other.Identity() && s.Extractor == other.Extractor && s.Schema == other.Schema && maps.Equal(s.Manifests, other.Manifests) && slices.Equal(s.Files, other.Files)
+	return s.Identity() == other.Identity() && s.Schema == other.Schema && maps.Equal(s.Manifests, other.Manifests) && slices.Equal(s.Files, other.Files)
 }
-func ParseSnapshot(data []byte) (Snapshot, error) {
+func parseSnapshot(data []byte) (Snapshot, error) {
 	var v Snapshot
-	if e := decode(data, &v); e != nil {
+	if e := DecodeStrict(data, &v); e != nil {
 		return v, e
 	}
 	if e := v.Identity().Validate(); e != nil {
 		return v, e
 	}
-	if v.Schema != 1 || v.Files == nil || v.Manifests == nil || v.Extractor.Implementation == "" || !hex64.MatchString(v.Extractor.SourceSHA256) {
+	if v.Schema != 1 || v.Files == nil || v.Manifests == nil {
 		return v, fmt.Errorf("invalid client snapshot schema")
 	}
 	return v, nil
@@ -276,14 +275,16 @@ func ReadSnapshot(path string) (Snapshot, error) {
 	if e != nil {
 		return Snapshot{}, e
 	}
-	v, e := ParseSnapshot(b)
+	v, e := parseSnapshot(b)
 	if e != nil {
 		return v, fmt.Errorf("%s: %w", path, e)
 	}
 	return v, nil
 }
 
-func decode[T any](data []byte, value *T) error {
+// DecodeStrict decodes exactly one JSON object, rejecting unknown fields and
+// trailing input. It is the decoding policy for every persisted lock and journal.
+func DecodeStrict(data []byte, value any) error {
 	if len(bytes.TrimSpace(data)) == 0 || bytes.TrimSpace(data)[0] != '{' {
 		return fmt.Errorf("expected JSON object")
 	}
@@ -298,32 +299,55 @@ func decode[T any](data []byte, value *T) error {
 	return nil
 }
 func read(path string) ([]byte, error) {
-	for _, name := range []string{path, filepath.Dir(path)} {
-		st, err := os.Lstat(name)
-		if err != nil {
-			return nil, err
-		}
-		if st.Mode()&os.ModeSymlink != 0 {
-			return nil, fmt.Errorf("source lock path contains symlink: %s", name)
-		}
+	parent := filepath.Dir(path)
+	st, err := os.Lstat(parent)
+	if errors.Is(err, fs.ErrNotExist) {
+		// A missing parent means the lock itself is missing; name the lock.
+		return nil, &fs.PathError{Op: "open", Path: path, Err: fs.ErrNotExist}
 	}
-	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
+	if st.Mode()&os.ModeSymlink != 0 {
+		return nil, fmt.Errorf("source lock path contains symlink: %s", parent)
+	}
+	return ReadRegular(path, 128<<20)
+}
+
+// ReadRegular owns descriptor checks for source inputs: the final component is
+// never followed and the opened file must be regular. Callers own ancestor and
+// containment checks. Nonblocking open lets the descriptor check reject a FIFO.
+func ReadRegular(path string, limit int64) ([]byte, error) {
+	fd, e := syscall.Open(path, syscall.O_RDONLY|syscall.O_NONBLOCK|syscall.O_NOFOLLOW|syscall.O_CLOEXEC, 0)
+	if e != nil {
+		return nil, &fs.PathError{Op: "open", Path: path, Err: e}
+	}
+	f := os.NewFile(uintptr(fd), path)
 	defer f.Close()
-	st, err := f.Stat()
-	if err != nil {
-		return nil, err
+	st, e := f.Stat()
+	if e != nil {
+		return nil, e
 	}
-	if !st.Mode().IsRegular() || st.Size() > 128<<20 {
-		return nil, fmt.Errorf("nonregular or oversized source lock: %s", path)
+	if !st.Mode().IsRegular() || st.Size() > limit {
+		return nil, fmt.Errorf("nonregular or oversized file: %s", path)
 	}
-	data, err := io.ReadAll(io.LimitReader(f, (128<<20)+1))
-	if len(data) > 128<<20 {
-		return nil, fmt.Errorf("source lock exceeds size limit")
+	b, e := io.ReadAll(io.LimitReader(f, limit+1))
+	if e != nil {
+		return nil, fmt.Errorf("read %s: %w", path, e)
 	}
-	return data, err
+	if int64(len(b)) > limit {
+		return nil, fmt.Errorf("oversized file: %s", path)
+	}
+	return b, nil
 }
 
 func IsSHA256(value string) bool { return hex64.MatchString(value) }
+func IsGitSHA(value string) bool { return hex40.MatchString(value) }
+
+// BlobSHA is the Git blob object ID of data.
+func BlobSHA(data []byte) string {
+	h := sha1.New()
+	fmt.Fprintf(h, "blob %d\x00", len(data))
+	h.Write(data)
+	return hex.EncodeToString(h.Sum(nil))
+}

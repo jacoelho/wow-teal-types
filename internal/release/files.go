@@ -5,13 +5,11 @@ import (
 	"bytes"
 	"context"
 	"crypto/md5"
-	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -19,6 +17,7 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"wow-teal-types/internal/sourcelock"
 )
 
 const maxFile = 8 << 20
@@ -35,12 +34,6 @@ func keys[V any](m map[string]V) []string {
 }
 func sha(b []byte) string        { x := sha256.Sum256(b); return hex.EncodeToString(x[:]) }
 func contentKey(b []byte) string { x := md5.Sum(b); return hex.EncodeToString(x[:]) }
-func blob(b []byte) string {
-	h := sha1.New()
-	fmt.Fprintf(h, "blob %d\x00", len(b))
-	h.Write(b)
-	return hex.EncodeToString(h.Sum(nil))
-}
 func jsonBytes[T any](v T) ([]byte, error) {
 	var b bytes.Buffer
 	e := json.NewEncoder(&b)
@@ -51,29 +44,13 @@ func jsonBytes[T any](v T) ([]byte, error) {
 	}
 	return b.Bytes(), nil
 }
-func decodeJSON[T any](data []byte) (T, error) {
-	var value T
-	if len(bytes.TrimSpace(data)) == 0 || bytes.TrimSpace(data)[0] != '{' {
-		return value, fmt.Errorf("expected JSON object")
-	}
-	d := json.NewDecoder(bytes.NewReader(data))
-	d.DisallowUnknownFields()
-	if err := d.Decode(&value); err != nil {
-		return value, err
-	}
-	if err := d.Decode(new(json.RawMessage)); err != io.EOF {
-		return value, fmt.Errorf("trailing JSON input")
-	}
-	return value, nil
-}
 func readJSON[T any](path string) (T, error) {
 	var value T
-	data, err := readFile(path, 128<<20)
+	data, err := sourcelock.ReadRegular(path, 128<<20)
 	if err != nil {
 		return value, err
 	}
-	value, err = decodeJSON[T](data)
-	if err != nil {
+	if err = sourcelock.DecodeStrict(data, &value); err != nil {
 		return value, fmt.Errorf("%s: %w", path, err)
 	}
 	return value, nil
@@ -102,31 +79,7 @@ func safeJoin(root, name string) (string, error) {
 	}
 	return p, nil
 }
-func readFile(path string, limit int64) ([]byte, error) {
-	if _, e := safeJoin(filepath.Dir(path), filepath.Base(path)); e != nil {
-		return nil, e
-	}
-	st, e := os.Stat(path)
-	if e != nil {
-		return nil, e
-	}
-	if !st.Mode().IsRegular() || st.Size() > limit {
-		return nil, fmt.Errorf("nonregular or oversized file: %s", path)
-	}
-	f, e := os.Open(path)
-	if e != nil {
-		return nil, e
-	}
-	defer f.Close()
-	b, e := io.ReadAll(io.LimitReader(f, limit+1))
-	if e != nil {
-		return nil, e
-	}
-	if int64(len(b)) > limit {
-		return nil, fmt.Errorf("oversized file: %s", path)
-	}
-	return b, nil
-}
+
 func atomicWrite(path string, b []byte, mode fs.FileMode) error {
 	if e := os.MkdirAll(filepath.Dir(path), 0755); e != nil {
 		return e
@@ -182,7 +135,7 @@ func command(ctx context.Context, root, log string, timeout time.Duration, args 
 }
 func exists(path string) bool { _, e := os.Lstat(path); return e == nil }
 func copyFile(src, dst string) error {
-	b, e := readFile(src, maxPayload)
+	b, e := sourcelock.ReadRegular(src, maxPayload)
 	if e != nil {
 		return e
 	}
@@ -192,13 +145,18 @@ func copyFile(src, dst string) error {
 	}
 	return atomicWrite(dst, b, st.Mode().Perm())
 }
+
+// unmaintainedDir names build and VCS directories that maintained-tree walks skip.
+func unmaintainedDir(name string) bool {
+	return name == "target" || name == ".git" || name == "__pycache__"
+}
 func copyDirectory(src, dst string) error {
 	total := int64(0)
 	return filepath.WalkDir(src, func(path string, d fs.DirEntry, e error) error {
 		if e != nil {
 			return e
 		}
-		if path != src && d.IsDir() && (d.Name() == "target" || d.Name() == ".git" || d.Name() == "__pycache__") {
+		if path != src && d.IsDir() && unmaintainedDir(d.Name()) {
 			return filepath.SkipDir
 		}
 		if d.Type()&os.ModeSymlink != 0 {

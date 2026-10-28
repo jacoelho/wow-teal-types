@@ -46,7 +46,7 @@ func TestNativeMetadataRejectsUnsupportedContracts(t *testing.T) {
 		{"malformed default", `Functions={{Name="Run",Type="Function",Arguments={{Name="value",Type="number",Default={}}}}}`, "Default must be a scalar or named constant"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			raw, err := ParseLua([]byte(`local Test={Name="Test",`+tc.body+`}`), "contract.lua")
+			raw, err := parseLua([]byte(`local Test={Name="Test",`+tc.body+`}`), "contract.lua")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -77,7 +77,7 @@ func TestNativeMetadataAcceptsSupportedDiscriminators(t *testing.T) {
 		{"ignored documentation", `Documentation={"system description"},Functions={{Name="Run",Type="Function",Documentation={"call description"},Arguments={{Name="value",Type="number",Documentation={"argument description"}}}}}`},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			raw, err := ParseLua([]byte(`local Test={Name="Test",`+tc.body+`}`), "contract.lua")
+			raw, err := parseLua([]byte(`local Test={Name="Test",`+tc.body+`}`), "contract.lua")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -103,7 +103,7 @@ func TestNativePolicyPresenceAndSecrecy(t *testing.T) {
 		{"explicit empty aspects", `SecretReturnsForAspect={}`, `{"SecretReturnsForAspect": []}`, false, false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			raw, err := ParseLua([]byte(`local Test={Functions={{Name="Run",Type="Function",`+tc.flags+`}}}`), "policy.lua")
+			raw, err := parseLua([]byte(`local Test={Functions={{Name="Run",Type="Function",`+tc.flags+`}}}`), "policy.lua")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -135,7 +135,7 @@ func TestNativeParameterFlagPresence(t *testing.T) {
 		{"true", "NeverSecret=true", true, false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			raw, err := ParseLua([]byte(`local Test={Name="value",Type="number",SecretValue=true,`+tc.flag+`}`), "parameter.lua")
+			raw, err := parseLua([]byte(`local Test={Name="value",Type="number",SecretValue=true,`+tc.flag+`}`), "parameter.lua")
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -154,7 +154,7 @@ func TestNativeParameterFlagPresence(t *testing.T) {
 }
 
 func TestNativeFunctionCloneOwnsPolicy(t *testing.T) {
-	original := &catalogueFunction{Native: &NativeFunction{Policy: NativePolicy{Flags: map[nativeFlag]bool{nativeSecretReturns: true}}}}
+	original := &catalogueFunction{Native: &nativeFunction{Policy: nativePolicy{Flags: map[nativeFlag]bool{nativeSecretReturns: true}}}}
 	variant := original.clone()
 	variant.Native.Policy.Flags[nativeReturnsNeverSecret] = true
 	if !original.Native.Policy.secretResult() || variant.Native.Policy.secretResult() {

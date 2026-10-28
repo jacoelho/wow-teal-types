@@ -27,12 +27,17 @@ func ReadVersion(root string) (Version, error) {
 	if err != nil {
 		return Version{}, err
 	}
+	return parseVersion(data)
+}
+
+func parseVersion(data []byte) (Version, error) {
 	match := versionPattern.FindStringSubmatch(string(data))
 	if match == nil {
 		return Version{}, fmt.Errorf("invalid .wow-version; expected one major.minor.patch.build without leading zeros")
 	}
 	values := make([]int, 4)
 	for i := range values {
+		var err error
 		values[i], err = strconv.Atoi(match[i+1])
 		if err != nil {
 			return Version{}, fmt.Errorf("invalid .wow-version component: %w", err)

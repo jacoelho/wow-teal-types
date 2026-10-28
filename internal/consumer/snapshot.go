@@ -106,56 +106,82 @@ func captureBuildInputs(ctx context.Context, root string, sources, include []str
 	return b, nil
 }
 
-func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
+// verifiedPackage is the result of the one bounded package check shared by
+// Verify and capture.
+type verifiedPackage struct {
+	manifest     PackageManifest
+	manifestData []byte
+}
+
+// readPackage reads package.json and every required file within one aggregate
+// byte bound, rejecting inventory, hash, compiler-version or WoW-version
+// mismatches. keep, when set, receives each verified file's bytes.
+func readPackage(ctx context.Context, root string, keep func(name string, data []byte) error) (verifiedPackage, error) {
 	path, err := checkedPath(root, "package.json")
 	if err != nil {
-		return err
+		return verifiedPackage{}, err
 	}
 	data, err := readInput(path, maxInputBytes)
 	if err != nil {
-		return err
+		return verifiedPackage{}, err
 	}
-	b.manifest, err = ParsePackageManifest(data)
+	manifest, err := ParsePackageManifest(data)
 	if err != nil {
-		return err
+		return verifiedPackage{}, err
 	}
-	files := b.manifest.Files
-	if !slices.Equal(slices.Sorted(maps.Keys(files)), RequiredFiles()) {
-		return fmt.Errorf("package manifest inventory mismatch")
+	if !slices.Equal(slices.Sorted(maps.Keys(manifest.Files)), RequiredFiles()) {
+		return verifiedPackage{}, fmt.Errorf("package manifest inventory mismatch")
 	}
-	b.manifestHash = fingerprint(data)
-	if err = atomicWrite(filepath.Join(b.packageRoot, "package.json"), data, 0644); err != nil {
-		return err
+	if manifest.TealVersion != TealVersion {
+		return verifiedPackage{}, fmt.Errorf("package teal_version %q differs from toolkit Teal %s", manifest.TealVersion, TealVersion)
 	}
+	var version []byte
 	total := len(data)
 	for _, name := range RequiredFiles() {
 		if err = ctx.Err(); err != nil {
-			return err
+			return verifiedPackage{}, err
 		}
 		path, err := checkedPath(root, name)
 		if err != nil {
-			return fmt.Errorf("package integrity mismatch: %s: %w", name, err)
+			return verifiedPackage{}, fmt.Errorf("package integrity mismatch: %s: %w", name, err)
 		}
-		data, err := readInput(path, int64(maxInputBytes-total))
+		content, err := readInput(path, int64(maxInputBytes-total))
 		if err != nil {
-			return err
+			return verifiedPackage{}, err
 		}
-		if fingerprint(data) != files[name] {
-			return fmt.Errorf("package integrity mismatch: %s", name)
+		if fingerprint(content) != manifest.Files[name] {
+			return verifiedPackage{}, fmt.Errorf("package integrity mismatch: %s", name)
 		}
-		total += len(data)
-		if err = atomicWrite(filepath.Join(b.packageRoot, name), data, consumerFileMode(name)); err != nil {
-			return err
+		total += len(content)
+		if name == ".wow-version" {
+			version = content
+		}
+		if keep != nil {
+			if err = keep(name, content); err != nil {
+				return verifiedPackage{}, err
+			}
 		}
 	}
-	selected, err := ReadVersion(b.packageRoot)
+	selected, err := parseVersion(version)
+	if err != nil {
+		return verifiedPackage{}, err
+	}
+	if manifest.WoWBuild != selected.Full {
+		return verifiedPackage{}, fmt.Errorf("package WoW version differs from .wow-version")
+	}
+	return verifiedPackage{manifest: manifest, manifestData: data}, nil
+}
+
+func (b *buildInputs) capturePackage(ctx context.Context, root string) error {
+	verified, err := readPackage(ctx, root, func(name string, data []byte) error {
+		return atomicWrite(filepath.Join(b.packageRoot, name), data, consumerFileMode(name))
+	})
 	if err != nil {
 		return err
 	}
-	if b.manifest.WoWBuild != selected.Full {
-		return fmt.Errorf("package WoW version differs from .wow-version")
-	}
-	return nil
+	b.manifest = verified.manifest
+	b.manifestHash = fingerprint(verified.manifestData)
+	return atomicWrite(filepath.Join(b.packageRoot, "package.json"), verified.manifestData, 0644)
 }
 
 func (b *buildInputs) captureSources(ctx context.Context, sources, include []string) error {

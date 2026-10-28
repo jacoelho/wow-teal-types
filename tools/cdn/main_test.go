@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"io/fs"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -12,14 +14,23 @@ import (
 	"testing"
 )
 
-const configFixture = `{"product":"wow","region":"eu","locale":"enUS","build":70575,"version":"12.1.5.70575","build_config":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","cdn_config":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","product_config":"cccccccccccccccccccccccccccccccc"}`
+// testdata/extractor-config.json is the release-written config.json; release's
+// schema test asserts it produces these exact bytes.
+func configFixture(t *testing.T) []byte {
+	t.Helper()
+	data, err := os.ReadFile("testdata/extractor-config.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return data
+}
 
 func TestRunRejectsOverlappingDirectoriesBeforeAcquisition(t *testing.T) {
 	for _, mode := range []string{"identical", "nested-cache", "nested-output", "cache-alias", "output-alias", "missing-suffix"} {
 		t.Run(mode, func(t *testing.T) {
 			root := t.TempDir()
 			configPath := filepath.Join(root, "config.json")
-			if err := os.WriteFile(configPath, []byte(configFixture), 0o600); err != nil {
+			if err := os.WriteFile(configPath, configFixture(t), 0o600); err != nil {
 				t.Fatal(err)
 			}
 			destination := filepath.Join(root, "destination")
@@ -47,7 +58,7 @@ func TestRunRejectsOverlappingDirectoriesBeforeAcquisition(t *testing.T) {
 			// Cancellation prevents network work if path validation regresses.
 			ctx, cancel := context.WithCancel(t.Context())
 			cancel()
-			err := run(ctx, []string{configPath, output, cache})
+			err := run(ctx, []string{configPath, output, cache}, io.Discard)
 			if err == nil || !strings.Contains(err.Error(), "must not overlap") {
 				t.Fatalf("overlap error = %v", err)
 			}
@@ -118,7 +129,7 @@ func TestRunRejectsCaseAliasedDirectoriesBeforeAcquisition(t *testing.T) {
 				t.Skip("filesystem preserves case-distinct directory identities")
 			}
 			configPath := filepath.Join(root, "config.json")
-			if err := os.WriteFile(configPath, []byte(configFixture), 0o600); err != nil {
+			if err := os.WriteFile(configPath, configFixture(t), 0o600); err != nil {
 				t.Fatal(err)
 			}
 			output, cache := filepath.Join(root, "Output"), filepath.Join(root, "output")
@@ -143,7 +154,7 @@ func TestRunRejectsCaseAliasedDirectoriesBeforeAcquisition(t *testing.T) {
 			}
 			ctx, cancel := context.WithCancel(t.Context())
 			cancel()
-			err = run(ctx, []string{configPath, output, cache})
+			err = run(ctx, []string{configPath, output, cache}, io.Discard)
 			if err == nil || !strings.Contains(err.Error(), "must not overlap") {
 				t.Fatalf("case-alias overlap error = %v", err)
 			}
@@ -208,5 +219,64 @@ func TestExtractorReceiptWireContract(t *testing.T) {
 		if !slices.Equal(actualFiles, expectedFiles) {
 			t.Fatalf("receipt files = %+v; want %+v", actualFiles, expectedFiles)
 		}
+	}
+}
+
+func TestExtractorConfigWireContract(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config.json")
+	if err := os.WriteFile(path, configFixture(t), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	job, err := readConfig(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []manifestID{{6067012, "Interface/ui-code-list.txt"}, {6076661, "Interface/ui-gen-addon-list.txt"}, {6067013, "Interface/ui-toc-list.txt"}}
+	if !slices.Equal(job.manifests, want) {
+		t.Fatalf("manifests = %+v; want %+v", job.manifests, want)
+	}
+	if job.identity.Build != 70575 || job.identity.Region != "eu" || job.buildName != "WOW-70575patch12.1.5_Retail" {
+		t.Fatalf("identity = %+v, build name %q", job.identity, job.buildName)
+	}
+}
+
+func TestExtractorConfigRejectsInvalidManifests(t *testing.T) {
+	var base map[string]json.RawMessage
+	if err := json.Unmarshal(configFixture(t), &base); err != nil {
+		t.Fatal(err)
+	}
+	for _, test := range []struct {
+		name  string
+		field string
+		value string
+	}{
+		{"missing", "manifests", ""},
+		{"empty", "manifests", `{}`},
+		{"null", "manifests", `null`},
+		{"duplicate-id", "manifests", `{"Interface/a.txt": 7, "Interface/b.txt": 7}`},
+		{"zero-id", "manifests", `{"Interface/a.txt": 0}`},
+		{"negative-id", "manifests", `{"Interface/a.txt": -1}`},
+		{"unsafe-path", "manifests", `{"Interface/../a.txt": 7}`},
+		{"unknown-key", "installation", `"/Applications/World of Warcraft"`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			fields := maps.Clone(base)
+			if test.value == "" {
+				delete(fields, test.field)
+			} else {
+				fields[test.field] = json.RawMessage(test.value)
+			}
+			data, err := json.Marshal(fields)
+			if err != nil {
+				t.Fatal(err)
+			}
+			path := filepath.Join(t.TempDir(), "config.json")
+			if err := os.WriteFile(path, data, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := readConfig(path); err == nil {
+				t.Fatalf("accepted %s", data)
+			}
+		})
 	}
 }

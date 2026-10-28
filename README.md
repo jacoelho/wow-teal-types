@@ -1,15 +1,15 @@
 # WoW Teal Types
 
 World of Warcraft API declarations and secret-value checks for Teal addons.
-Targets Retail **12.1.5.70575** with the bundled **Teal 0.24.8-wow.1**, generating Lua 5.1 without
+Targets Retail **12.1.5.70575** with stock **Teal 0.24.8**, generating Lua 5.1 without
 compatibility code. Nothing from this package needs to run inside WoW.
 
 ## Add to your addon
 
 Place a pinned checkout or extracted package at `vendor/wow-teal-types`.
-The development tools support Linux and macOS. Install Go 1.27+ and LuaJIT.
-The package includes its pinned compiler. Set `LUA` to use another Lua 5.1
-interpreter. A `TL` override must provide the same compiler version and capabilities.
+The development tools support Linux and macOS. Install Go 1.27+ and Teal
+exactly 0.24.8 with `luarocks install tl 0.24.8`. The command uses `TL` when set,
+otherwise `tl` on `PATH`, and rejects any other compiler version.
 
 ```text
 MyAddon/
@@ -83,25 +83,33 @@ your project settings explicitly.
 
 ## Secret values
 
-Opaque values can be forwarded to supported native sinks. Inspecting them in
-Lua requires access checks; converting them to ordinary scalars also requires
-a non-secret result and the expected shape:
+Secret-capable results are typed `W.MaybeSecret<T>` (or `W.Secret<T>` for
+handles and tables). They can be forwarded to native positions that accept them
+and to positions you declare `MaybeSecret`. Inspecting them needs a check on the
+same value: `canaccessvalue` grants access, and `issecretvalue` returning false
+proves the value public, which also grants access. Unwrapping to a plain value
+needs publicness and an `as` to the declared payload type:
 
 ```teal
 local health = UnitHealth("player")
-if canaccessvalue(health) and not issecretvalue(health) and health is number then
-   local public_health: number = health
+if not issecretvalue(health) then
+   local public_health = health as number
    print(public_health + 1)
 end
 ```
 
 Keep those checks in the consuming function. A cast, a helper's permission check
 or a previous getter result does not establish access to the current value.
-Plain `tl check` does not enforce all these rules; use the `wow-teal` command.
-Generated declarations use opaque `unknown` where source precision is missing.
+An untyped secret result is `W.SecretData`; it also needs a kind proof
+(`type(v) ~= "table"`) and unwraps as `W.Atom`, or as `W.SecretTable` after
+`type(v) == "table"` and `canaccesstable(v)`.
+`any`, `W.Data` and authored generic type variables are plain positions, so a
+secret value cannot be passed through them. Plain `tl check` does not enforce
+these rules; use the `wow-teal` command.
 
 Some declarations cover legacy APIs or optional libraries; check availability
-before using them. Retain nil guards. Type checking cannot grant protected-call
+before using them. Nilable results are declared without `| nil` (Teal admits
+nil for every type), so keep runtime absence checks. Type checking cannot grant protected-call
 permission or establish runtime behavior. `--secure` selects secure declarations
 without granting native privileges.
 

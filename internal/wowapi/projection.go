@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"slices"
 	"strings"
 )
@@ -12,8 +13,7 @@ import (
 type declarationKind uint8
 
 const (
-	declarationExternal declarationKind = iota + 1
-	declarationEnum
+	declarationEnum declarationKind = iota + 1
 	declarationAlias
 	declarationCallback
 	declarationRecord
@@ -59,7 +59,7 @@ type declarationProjection struct {
 // normalized declaration. Repeated passes are bounded and compare semantic input
 // state; rendering is never used as a discovery pass.
 func (c *catalogue) finalize(ctx context.Context) (projection declarationProjection, err error) {
-	defer captureError(&err)
+	defer recoverConversion(&err)
 	c.reconcileInheritance()
 	c.prepareGlobals()
 	for pass := 0; pass < 32; pass++ {
@@ -68,7 +68,7 @@ func (c *catalogue) finalize(ctx context.Context) (projection declarationProject
 		}
 		before := c.projectionState()
 		projection = c.projectDeclarations()
-		c.prepareSecrecy()
+		c.prepareSecrecy(ctx)
 		if len(c.errors) > 0 {
 			return declarationProjection{}, fmt.Errorf("%d conversion errors: %s", len(c.errors), strings.Join(uniqueStrings(c.errors), "\n"))
 		}
@@ -87,26 +87,19 @@ func (c *catalogue) projectionState() []byte {
 		SecretStructs map[string]bool
 	}{c.defs, c.aliases, c.globals, c.secretStructs})
 	if err != nil {
-		reject(fmt.Sprintf("encode declaration projection state: %s", err))
+		rejectErr(fmt.Errorf("encode declaration projection state: %w", err))
 	}
 	return data
 }
 
 func (c *catalogue) projectAttempt(label string, fn func()) {
-	defer func() {
-		if r := recover(); r != nil {
-			if e, ok := r.(conversionError); ok {
-				c.errors = append(c.errors, label+": "+e.Error())
-			} else {
-				panic(r)
-			}
-		}
-	}()
-	fn()
+	if err := attempt(fn); err != nil {
+		c.errors = append(c.errors, label+": "+err.Error())
+	}
 }
 
 func (c *catalogue) projectDeclarations() declarationProjection {
-	projection := declarationProjection{secureGlobals: sortedSet(c.secureGlobals)}
+	projection := declarationProjection{secureGlobals: slices.Sorted(maps.Keys(c.secureGlobals))}
 	for _, name := range append([]string{}, c.globalOrder...) {
 		item := c.globals[name]
 		if item.TypeName == "" {
@@ -134,9 +127,6 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 		}
 		for _, name := range c.orderDeclarations(pending) {
 			seen[name] = true
-			if name == "OpaqueValue" {
-				continue
-			}
 			c.projectAttempt(name, func() {
 				declaration, emit := c.projectDeclaration(name)
 				if !emit {
@@ -146,18 +136,14 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 			})
 		}
 	}
-	exports := map[string]bool{"OpaqueNumber": true, "OpaqueText": true, "NumberLike": true, "TextLike": true}
-	for name := range c.defs {
-		if name != "unknown" && name != "any" {
-			exports[ident(name)] = true
+	exports := map[string]bool{}
+	for _, name := range slices.Concat(slices.Collect(maps.Keys(c.defs)), slices.Collect(maps.Keys(c.aliases))) {
+		if slices.Contains(nativeValueExports, ident(name)) {
+			reject(fmt.Sprintf("catalogue type %s collides with a native value export", name))
 		}
+		exports[ident(name)] = true
 	}
-	for name := range c.aliases {
-		if name != "unknown" && name != "any" {
-			exports[ident(name)] = true
-		}
-	}
-	for _, name := range sortedKeys(c.globals) {
+	for _, name := range slices.Sorted(maps.Keys(c.globals)) {
 		c.projectAttempt("global "+name, func() {
 			if strings.Contains(name, ".") || !plainIdentifier.MatchString(name) {
 				reject(fmt.Sprintf("unrepresentable global %s", name))
@@ -167,12 +153,12 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 			if value != "" {
 				value = ident(value)
 			} else {
-				value = c.signatureValue(item, "")
+				value = omitNil(c.signatureValue(item, ""))
 			}
-			global := projectedGlobal{name: name, expression: value, public: !containsString([]string{"math", "string", "table"}, name) && !c.secureGlobals[name] && !strings.HasPrefix(item.Source, "questie:Libraries/")}
+			global := projectedGlobal{name: name, expression: value, public: !slices.Contains([]string{"math", "string", "table"}, name) && !c.secureGlobals[name] && !strings.HasPrefix(item.Source, "questie:Libraries/")}
 			direct := value
 			if def := c.defs[value]; def != nil && def.Signature != "" {
-				direct = def.Signature
+				direct = omitNil(def.Signature)
 			}
 			if strings.HasPrefix(direct, "function") {
 				global.ambientExpression = qualifyExports(direct, exports)
@@ -217,7 +203,7 @@ func (c *catalogue) orderDeclarations(pending map[string]bool) []string {
 		visited[name] = true
 		delete(visiting, name)
 	}
-	for _, name := range sortedKeys(pending) {
+	for _, name := range slices.Sorted(maps.Keys(pending)) {
 		visit(name, 0)
 	}
 	return ordered
@@ -233,40 +219,38 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 		}
 		declaration.kind, declaration.source = declarationAlias, alias.Source
 		if value := alias.Signature; value != nil {
-			declaration.expression = c.signatureValue(value, "")
+			declaration.expression = omitNil(c.signatureValue(value, ""))
 		} else {
-			declaration.expression = c.tealValue(alias.Expression, "", nil)
+			declaration.expression = omitNil(c.tealValue(alias.Expression, "", nil, outputPosition))
 		}
 		return declaration, true
 	}
 	declaration.source = item.Source
 	kind := item.Kind
 	switch kind {
-	case "external":
-		declaration.kind = declarationExternal
-	case "enum":
+	case kindEnum:
 		declaration.kind = declarationEnum
 		for _, value := range item.Values {
-			declaration.values = append(declaration.values, requireStringJSON(value))
+			declaration.values = append(declaration.values, luaQuote(value))
 		}
-	case "callback":
+	case kindCallback:
 		declaration.kind = declarationCallback
 		declaration.name = name
 		declaration.generics = slices.Clone(item.Generics)
-		declaration.expression = item.Signature
-	case "record", "interface", "converted_record":
+		declaration.expression = omitNil(item.Signature)
+	case kindRecord, kindInterface, kindConvertedRecord:
 		declaration.kind = declarationRecord
-		if kind == "interface" {
+		if kind == kindInterface {
 			declaration.kind = declarationInterface
 		}
 		if item.Opaque {
 			declaration.bases = append(declaration.bases, "userdata")
 		}
 		for _, base := range item.Bases {
-			declaration.bases = append(declaration.bases, c.resolve(base))
+			declaration.bases = append(declaration.bases, c.resolve(base, outputPosition))
 		}
 		fields, methods := item.Fields, item.Methods
-		for _, nameOfField := range sortedKeys(fields) {
+		for _, nameOfField := range slices.Sorted(maps.Keys(fields)) {
 			value := fields[nameOfField]
 			field := value
 			if methods[nameOfField] != nil && field.Native == nil {
@@ -274,24 +258,24 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 			}
 			expression := ""
 			switch {
-			case kind == "converted_record":
+			case kind == kindConvertedRecord:
 				expression = field.Type
 			case field.Resolved != nil:
 				expression = *field.Resolved
 			case field.Native != nil:
-				expression = c.nativeTypeValue(*field.Native, c.secretStructs[name])
+				expression = c.nativeTypeValue(*field.Native, c.secretStructs[name], outputPosition)
 			default:
-				expression = c.tealValue(field.Type, name, nil)
+				expression = c.tealValue(field.Type, name, nil, outputPosition)
 			}
 			if c.secretStructs[name] && !(field.Native != nil && (enabled(field.Native.NeverSecret) || enabled(field.Native.NeverSecretContents))) {
-				expression = c.projectSecret(expression)
+				expression = c.projectSecret(expression, outputPosition)
 			}
 			if !plainIdentifier.MatchString(nameOfField) || tealKeywords[nameOfField] {
-				nameOfField = "[" + requireStringJSON(strings.Trim(nameOfField, "[]\"'")) + "]"
+				nameOfField = "[" + luaQuote(strings.Trim(nameOfField, "[]\"'")) + "]"
 			}
-			declaration.fields = append(declaration.fields, projectedField{name: nameOfField, expression: expression})
+			declaration.fields = append(declaration.fields, projectedField{name: nameOfField, expression: omitNil(expression)})
 		}
-		for _, nameOfMethod := range sortedKeys(methods) {
+		for _, nameOfMethod := range slices.Sorted(maps.Keys(methods)) {
 			method := methods[nameOfMethod]
 			projected := projectedMethod{name: nameOfMethod, signatures: c.projectCallable(method, name, name+"."+nameOfMethod)}
 			if method.Native != nil {

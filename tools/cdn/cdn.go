@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"crypto/md5"
 	"encoding/binary"
@@ -20,16 +19,19 @@ import (
 )
 
 type cdnClient struct {
-	cache        string
-	installation string
-	client       *http.Client
-	hosts        []string
-	indices      []archiveIndex
-	cacheLocks   [64]sync.Mutex
+	// cache must be a resolved path (prepareDirectory); cdnCheckParents trusts
+	// it as the root of the symlink-free tree.
+	cache   string
+	client  *http.Client
+	hosts   []string
+	indices []archiveIndex
+	// indexBudget bounds the aggregate bytes of retained archive indexes.
+	indexBudget int64
+	cacheLocks  [64]sync.Mutex
 }
 
-func newCDN(cache, installation string) *cdnClient {
-	return &cdnClient{cache: cache, installation: installation,
+func newCDN(cache string) *cdnClient {
+	return &cdnClient{cache: cache, indexBudget: archiveIndexTotal,
 		client: &http.Client{Transport: &http.Transport{MaxConnsPerHost: 4, MaxIdleConns: 8,
 			MaxIdleConnsPerHost: 4, IdleConnTimeout: 60 * time.Second, DisableCompression: true},
 			CheckRedirect: func(_ *http.Request, _ []*http.Request) error { return errors.New("CDN redirects are not permitted") }},
@@ -57,7 +59,7 @@ func (c *cdnClient) config(ctx context.Context, namespace string, k key) ([]byte
 				return errors.New("config MD5 mismatch")
 			}
 			return nil
-		}, func() ([]byte, error) { return c.download(ctx, cdnPath(namespace, kind, k), 8<<20, nil, nil) })
+		}, func() ([]byte, error) { return c.download(ctx, cdnPath(namespace, kind, k), 8<<20, nil) })
 }
 
 func (c *cdnClient) encoded(ctx context.Context, k key, limit int64) ([]byte, error) {
@@ -71,10 +73,10 @@ func (c *cdnClient) encoded(ctx context.Context, k key, limit int64) ([]byte, er
 					if int64(location.size) > limit {
 						return nil, fmt.Errorf("encoded file %x exceeds limit %d", k, limit)
 					}
-					return c.download(ctx, cdnPath("wow", "data", location.archive), limit, &location, nil)
+					return c.download(ctx, cdnPath("wow", "data", location.archive), limit, &location)
 				}
 			}
-			return c.download(ctx, cdnPath("wow", "data", k), limit, nil, nil)
+			return c.download(ctx, cdnPath("wow", "data", k), limit, nil)
 		})
 }
 
@@ -117,79 +119,39 @@ func (c *cdnClient) prepareIndexes(ctx context.Context, values map[string][]stri
 			return fmt.Errorf("archive %s has invalid size hint %q", archive, sizes[i])
 		}
 	}
-	run, cancel := context.WithCancel(ctx)
-	defer cancel()
-	var consumed, next atomic.Int64
-	account := func(count int) error {
-		if consumed.Add(int64(count)) > archiveIndexTotal {
-			return errors.New("archive index reads exceed 384 MiB")
-		}
-		return nil
-	}
+	var consumed atomic.Int64
 	indices := make([]archiveIndex, len(keys))
-	var firstError error
-	var once sync.Once
-	var workers sync.WaitGroup
-	for range min(4, len(keys)) {
-		workers.Go(func() {
-			for {
-				if run.Err() != nil {
-					return
-				}
-				i := int(next.Add(1) - 1)
-				if i >= len(keys) {
-					return
-				}
-				index, err := c.archiveIndex(run, keys[i], account)
-				if err != nil {
-					once.Do(func() { firstError = err; cancel() })
-					return
-				}
-				indices[i] = index
-			}
-		})
-	}
-	workers.Wait()
-	if firstError != nil {
-		return firstError
-	}
-	if err := ctx.Err(); err != nil {
+	err := forEach(ctx, len(keys), maxWorkers, func(ctx context.Context, i int) error {
+		index, err := c.archiveIndex(ctx, keys[i])
+		if err != nil {
+			return err
+		}
+		// Charged once per verified index, whether cached or downloaded, so a
+		// failed attempt on one host never consumes budget.
+		if consumed.Add(int64(len(index.data))) > c.indexBudget {
+			return fmt.Errorf("archive index bytes exceed %d", c.indexBudget)
+		}
+		indices[i] = index
+		return nil
+	})
+	if err != nil {
 		return err
 	}
 	c.indices = indices
 	return nil
 }
 
-func (c *cdnClient) archiveIndex(ctx context.Context, k key, account func(int) error) (archiveIndex, error) {
+func (c *cdnClient) archiveIndex(ctx context.Context, k key) (archiveIndex, error) {
 	var parsed archiveIndex
-	charged := false
 	_, err := c.cached(ctx, filepath.Join("tpr", "wow", "data", hex.EncodeToString(k[:])+".index"), archiveIndexLimit,
 		func(data []byte) error {
-			if !charged {
-				if err := account(len(data)); err != nil {
-					return err
-				}
-			}
 			index, err := parseArchiveIndex(data, k)
 			if err == nil {
 				parsed = index
 			}
 			return err
 		}, func() ([]byte, error) {
-			if c.installation != "" {
-				path := filepath.Join(c.installation, "Data", "indices", hex.EncodeToString(k[:])+".index")
-				data, exists, err := cdnReadFile(path, archiveIndexLimit)
-				if err != nil {
-					return nil, err
-				}
-				if exists {
-					charged = true
-					return data, account(len(data))
-				}
-			}
-			data, err := c.download(ctx, cdnPath("wow", "data", k)+".index", archiveIndexLimit, nil, account)
-			charged = err == nil
-			return data, err
+			return c.download(ctx, cdnPath("wow", "data", k)+".index", archiveIndexLimit, nil)
 		})
 	return parsed, err
 }
@@ -202,7 +164,7 @@ func (c *cdnClient) cached(ctx context.Context, relative string, limit int64, va
 		return nil, err
 	}
 	path := filepath.Join(c.cache, relative)
-	if err := cdnCheckParents(path); err != nil {
+	if err := cdnCheckParents(c.cache, path); err != nil {
 		return nil, err
 	}
 	data, exists, err := cdnReadFile(path, limit)
@@ -228,7 +190,7 @@ func (c *cdnClient) cached(ctx context.Context, relative string, limit int64, va
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
-	if err := cdnWriteFile(path, data); err != nil {
+	if err := cdnWriteFile(c.cache, path, data); err != nil {
 		return nil, err
 	}
 	return data, nil
@@ -251,13 +213,19 @@ func cdnReadFile(path string, limit int64) ([]byte, bool, error) {
 	}
 	defer file.Close()
 	data, err := io.ReadAll(io.LimitReader(file, limit+1))
-	if err != nil || int64(len(data)) > limit {
-		return nil, false, fmt.Errorf("read bounded CDN cache %s: %w", path, errors.Join(err, errors.New("content limit or read failure")))
+	if err != nil {
+		return nil, false, fmt.Errorf("read CDN cache %s: %w", path, err)
+	}
+	if int64(len(data)) > limit {
+		return nil, false, fmt.Errorf("CDN cache %s grew beyond %d bytes while reading", path, limit)
 	}
 	return data, true, nil
 }
 
-func cdnCheckParents(path string) error {
+// cdnCheckParents rejects symlinks and non-directories between path and the
+// resolved cache root. Ancestors above the root were resolved by EvalSymlinks
+// when the root was prepared.
+func cdnCheckParents(root, path string) error {
 	for current := filepath.Dir(path); ; current = filepath.Dir(current) {
 		info, err := os.Lstat(current)
 		if err == nil && (info.Mode()&os.ModeSymlink != 0 || !info.IsDir()) {
@@ -266,14 +234,17 @@ func cdnCheckParents(path string) error {
 		if err != nil && !errors.Is(err, os.ErrNotExist) {
 			return err
 		}
-		if filepath.Dir(current) == current {
+		if current == root {
 			return nil
+		}
+		if filepath.Dir(current) == current {
+			return fmt.Errorf("CDN cache path %s is outside cache root %s", path, root)
 		}
 	}
 }
 
-func cdnWriteFile(path string, data []byte) error {
-	if err := cdnCheckParents(path); err != nil {
+func cdnWriteFile(root, path string, data []byte) error {
+	if err := cdnCheckParents(root, path); err != nil {
 		return err
 	}
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
@@ -295,13 +266,13 @@ func cdnWriteFile(path string, data []byte) error {
 	return os.Rename(temporary, path)
 }
 
-func (c *cdnClient) download(ctx context.Context, path string, limit int64, location *archiveLocation, account func(int) error) ([]byte, error) {
+func (c *cdnClient) download(ctx context.Context, path string, limit int64, location *archiveLocation) ([]byte, error) {
 	var last error
 	for _, host := range c.hosts {
 		if err := ctx.Err(); err != nil {
 			return nil, err
 		}
-		data, err := c.request(ctx, host+"/"+path, limit, location, account)
+		data, err := c.request(ctx, host+"/"+path, limit, location)
 		if err == nil {
 			return data, nil
 		}
@@ -310,7 +281,7 @@ func (c *cdnClient) download(ctx context.Context, path string, limit int64, loca
 	return nil, fmt.Errorf("CDN acquisition %s failed on %d configured hosts: %w", path, len(c.hosts), last)
 }
 
-func (c *cdnClient) request(ctx context.Context, url string, limit int64, location *archiveLocation, account func(int) error) ([]byte, error) {
+func (c *cdnClient) request(ctx context.Context, url string, limit int64, location *archiveLocation) ([]byte, error) {
 	requestContext, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	request, err := http.NewRequestWithContext(requestContext, http.MethodGet, url, nil)
@@ -346,32 +317,17 @@ func (c *cdnClient) request(ctx context.Context, url string, limit int64, locati
 			return nil, fmt.Errorf("%s range Content-Length differs from index", url)
 		}
 	}
-	var body bytes.Buffer
-	buffer := make([]byte, 64<<10)
-	for {
-		count, readErr := response.Body.Read(buffer)
-		if count > 0 {
-			if account != nil {
-				if err := account(count); err != nil {
-					return nil, err
-				}
-			}
-			if int64(body.Len())+int64(count) > limit {
-				return nil, fmt.Errorf("%s response exceeds %d bytes", url, limit)
-			}
-			body.Write(buffer[:count])
-		}
-		if readErr == io.EOF {
-			break
-		}
-		if readErr != nil {
-			return nil, fmt.Errorf("read %s: %w", url, readErr)
-		}
+	body, err := io.ReadAll(io.LimitReader(response.Body, limit+1))
+	if err != nil {
+		return nil, fmt.Errorf("read %s: %w", url, err)
 	}
-	if location != nil && body.Len() != int(location.size) {
+	if int64(len(body)) > limit {
+		return nil, fmt.Errorf("%s response exceeds %d bytes", url, limit)
+	}
+	if location != nil && len(body) != int(location.size) {
 		return nil, fmt.Errorf("%s range body length differs from index", url)
 	}
-	return body.Bytes(), nil
+	return body, nil
 }
 
 func checkContentRange(text string, location archiveLocation) error {

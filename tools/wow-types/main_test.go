@@ -70,13 +70,14 @@ func TestExtractorBuildDoesNotRequireSelectedVersion(t *testing.T) {
 }
 
 func TestMutatingCommandsRejectIgnoredOptions(t *testing.T) {
+	root := t.TempDir()
 	for _, command := range []string{"generate", "recover", "acquire-client", "bootstrap", "stage-release"} {
-		if e := validateOptions(command, map[string]string{"check": "true"}, nil); e == nil {
-			t.Fatalf("%s ignored --check", command)
+		if e := run(t.Context(), []string{"--root", root, command, "--check", "true"}); e == nil || !strings.Contains(e.Error(), "unknown option --check") {
+			t.Fatalf("%s ignored --check: %v", command, e)
 		}
 	}
-	if e := validateOptions("generate", map[string]string{}, []string{"unexpected"}); e == nil {
-		t.Fatal("ignored positional argument")
+	if e := run(t.Context(), []string{"--root", root, "generate", "unexpected"}); e == nil || !strings.Contains(e.Error(), "does not accept positional arguments") {
+		t.Fatalf("ignored positional argument: %v", e)
 	}
 
 }

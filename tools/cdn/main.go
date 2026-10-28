@@ -14,17 +14,26 @@ import (
 	"os/signal"
 	"path/filepath"
 	"regexp"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
-	"time"
 )
 
-const maxFile = 8 << 20
-const maxMetadata = 384 << 20
-const maxFiles = 20000
+const (
+	maxFile = 8 << 20
+	// maxMetadata bounds one encoded or decoded metadata blob (encoding, root)
+	// and is the BLTE decoder's ceiling.
+	maxMetadata = 384 << 20
+	// maxSourceTotal bounds aggregate extracted UI bytes. It is a separate limit
+	// from maxMetadata that mirrors release's maxTotal, which VerifySnapshot
+	// enforces over the same files; the two must stay equal.
+	maxSourceTotal = 384 << 20
+	maxFiles       = 20000
+	maxManifests   = 16
+	maxWorkers     = 4
+	maxConfigBytes = 64 << 10
+)
 
 type clientIdentity struct {
 	Product       string `json:"product"`
@@ -36,16 +45,28 @@ type clientIdentity struct {
 	CDNConfig     string `json:"cdn_config"`
 	ProductConfig string `json:"product_config"`
 }
+
+// sourceConfig is the release-written config.json. Release owns the manifest
+// selection (path to file data ID); the extractor validates and follows it.
 type sourceConfig struct {
 	clientIdentity
-	Installation string `json:"installation,omitzero"`
+	Manifests map[string]uint32 `json:"manifests"`
 }
 type manifestID struct {
 	ID   uint32
 	Path string
 }
 
-var manifests = []manifestID{{6067012, "Interface/ui-code-list.txt"}, {6067013, "Interface/ui-toc-list.txt"}, {6076661, "Interface/ui-gen-addon-list.txt"}}
+// extraction is a validated sourceConfig: every key is parsed and the manifest
+// selection is ordered by path, so extraction has no remaining parse failures.
+type extraction struct {
+	identity      clientIdentity
+	buildConfig   key
+	cdnConfig     key
+	productConfig key
+	buildName     string
+	manifests     []manifestID
+}
 
 type fileReceipt struct {
 	Path       string `json:"path"`
@@ -62,6 +83,8 @@ type preparedFile struct {
 	content key
 	size    uint64
 }
+
+var clientVersion = regexp.MustCompile(`^([0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)$`)
 
 func parseKey(s string) (key, error) {
 	var k key
@@ -118,25 +141,54 @@ func oneKey(values map[string][]string, name string) (key, error) {
 	}
 	return parseKey(entries[0])
 }
-func validateConfig(c sourceConfig) error {
+func validateConfig(c sourceConfig) (extraction, error) {
 	regions := map[string]bool{"eu": true, "us": true, "kr": true, "cn": true, "tw": true}
 	if c.Product != "wow" || c.Locale != "enUS" || !regions[c.Region] {
-		return fmt.Errorf("only explicit wow/enUS and supported regions are accepted")
+		return extraction{}, fmt.Errorf("only explicit wow/enUS and supported regions are accepted")
 	}
-	version := regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+\.([0-9]+)$`).FindStringSubmatch(c.Version)
-	if len(version) != 2 {
-		return fmt.Errorf("invalid client version %q", c.Version)
+	version := clientVersion.FindStringSubmatch(c.Version)
+	if version == nil {
+		return extraction{}, fmt.Errorf("invalid client version %q", c.Version)
 	}
-	build, err := strconv.Atoi(version[1])
+	build, err := strconv.Atoi(version[2])
 	if err != nil || c.Build != build || build <= 0 {
-		return fmt.Errorf("version and build disagree")
+		return extraction{}, fmt.Errorf("version %q and build %d disagree", c.Version, c.Build)
 	}
-	for _, s := range []string{c.BuildConfig, c.CDNConfig, c.ProductConfig} {
-		if _, err := parseKey(s); err != nil {
-			return err
+	var keys [3]key
+	for i, field := range [3]struct{ name, value string }{{"build_config", c.BuildConfig}, {"cdn_config", c.CDNConfig}, {"product_config", c.ProductConfig}} {
+		if keys[i], err = parseKey(field.value); err != nil {
+			return extraction{}, fmt.Errorf("%s: %w", field.name, err)
 		}
 	}
-	return nil
+	if len(c.Manifests) == 0 || len(c.Manifests) > maxManifests {
+		return extraction{}, fmt.Errorf("configuration requires 1..%d manifests", maxManifests)
+	}
+	manifests := make([]manifestID, 0, len(c.Manifests))
+	for path, id := range c.Manifests {
+		manifests = append(manifests, manifestID{id, path})
+	}
+	slices.SortFunc(manifests, func(a, b manifestID) int { return strings.Compare(a.Path, b.Path) })
+	ids := make(map[uint32]string, len(manifests))
+	for _, manifest := range manifests {
+		if err := safePath(manifest.Path); err != nil {
+			return extraction{}, fmt.Errorf("manifest: %w", err)
+		}
+		if manifest.ID == 0 {
+			return extraction{}, fmt.Errorf("manifest %s has zero file data ID", manifest.Path)
+		}
+		if other, ok := ids[manifest.ID]; ok {
+			return extraction{}, fmt.Errorf("manifests %s and %s share file data ID %d", other, manifest.Path, manifest.ID)
+		}
+		ids[manifest.ID] = manifest.Path
+	}
+	return extraction{
+		identity:      c.clientIdentity,
+		buildConfig:   keys[0],
+		cdnConfig:     keys[1],
+		productConfig: keys[2],
+		buildName:     fmt.Sprintf("WOW-%dpatch%s_Retail", build, version[1]),
+		manifests:     manifests,
+	}, nil
 }
 func readContent(ctx context.Context, c *cdnClient, e *encodingTable, k key, limit uint64) ([]byte, error) {
 	entry, err := e.lookup(k)
@@ -188,256 +240,6 @@ func writeSource(output string, file preparedFile, data []byte) (fileReceipt, er
 	sum := sha256.Sum256(data)
 	return fileReceipt{file.path, len(data), hex.EncodeToString(sum[:]), keyText(file.content)}, nil
 }
-func extract(ctx context.Context, config sourceConfig, output, cache string) error {
-	c := newCDN(cache, config.Installation)
-	defer c.close()
-	bkey, _ := parseKey(config.BuildConfig)
-	ckey, _ := parseKey(config.CDNConfig)
-	pkey, _ := parseKey(config.ProductConfig)
-	data, err := c.config(ctx, "wow", bkey)
-	if err != nil {
-		return err
-	}
-	build, err := configValues(data)
-	if err != nil {
-		return err
-	}
-	data, err = c.config(ctx, "wow", ckey)
-	if err != nil {
-		return err
-	}
-	cdn, err := configValues(data)
-	if err != nil {
-		return err
-	}
-	if _, err = c.config(ctx, "configs", pkey); err != nil {
-		return err
-	}
-	expected := fmt.Sprintf("WOW-%dpatch%s_Retail", config.Build, config.Version[:strings.LastIndexByte(config.Version, '.')])
-	if len(build["build-name"]) != 1 || build["build-name"][0] != expected || len(build["build-uid"]) != 1 || build["build-uid"][0] != config.Product {
-		return fmt.Errorf("verified build configuration does not identify %s", expected)
-	}
-	fmt.Printf("Loading pinned %s for enUS...\n", expected)
-	if err := c.prepareIndexes(ctx, cdn); err != nil {
-		return err
-	}
-	keys := build["encoding"]
-	if len(keys) != 2 {
-		return fmt.Errorf("build requires encoding content and encoding keys")
-	}
-	encodingContent, err := parseKey(keys[0])
-	if err != nil {
-		return err
-	}
-	encodingKey, err := parseKey(keys[1])
-	if err != nil {
-		return err
-	}
-	sizes := build["encoding-size"]
-	if len(sizes) != 2 {
-		return fmt.Errorf("build requires decoded and encoded encoding sizes")
-	}
-	decodedSize, err := strconv.ParseUint(sizes[0], 10, 64)
-	if err != nil || decodedSize == 0 || decodedSize > maxMetadata {
-		return fmt.Errorf("unsupported encoding decoded size")
-	}
-	encodedSize, err := strconv.ParseUint(sizes[1], 10, 64)
-	if err != nil || encodedSize == 0 || encodedSize > maxMetadata {
-		return fmt.Errorf("unsupported encoding encoded size")
-	}
-	encoded, err := c.encoded(ctx, encodingKey, maxMetadata)
-	if err != nil {
-		return err
-	}
-	if uint64(len(encoded)) != encodedSize {
-		return fmt.Errorf("encoding manifest encoded size mismatch")
-	}
-	decoded, err := decodeBLTE(encoded, maxMetadata, decodedSize)
-	if err != nil {
-		return fmt.Errorf("encoding: %w", err)
-	}
-	if key(md5.Sum(decoded)) != encodingContent {
-		return fmt.Errorf("encoding manifest content key mismatch")
-	}
-	encoding, err := parseEncoding(decoded)
-	if err != nil {
-		return err
-	}
-	rootKey, err := oneKey(build, "root")
-	if err != nil {
-		return err
-	}
-	root, err := readContent(ctx, c, encoding, rootKey, maxMetadata)
-	if err != nil {
-		return fmt.Errorf("root manifest: %w", err)
-	}
-	wanted := map[uint32]bool{}
-	for _, manifest := range manifests {
-		wanted[manifest.ID] = true
-	}
-	byID, _, err := scanRoot(root, wanted, nil)
-	if err != nil {
-		return err
-	}
-	paths := map[string]string{}
-	receipts := []fileReceipt{}
-	prepared := map[string]preparedFile{}
-	var total uint64
-	addPath := func(name string) error {
-		if err := safePath(name); err != nil {
-			return err
-		}
-		folded := strings.ToLower(name)
-		if old, ok := paths[folded]; ok && old != name {
-			return fmt.Errorf("case-colliding manifest paths %q and %q", old, name)
-		}
-		paths[folded] = name
-		if len(paths) > maxFiles {
-			return fmt.Errorf("UI manifest file count exceeds %d", maxFiles)
-		}
-		return nil
-	}
-	prepare := func(name string, k key) (preparedFile, error) {
-		entry, err := encoding.lookup(k)
-		if err != nil {
-			return preparedFile{}, err
-		}
-		if entry.Size > maxFile {
-			return preparedFile{}, fmt.Errorf("%s exceeds per-file limit", name)
-		}
-		total += entry.Size
-		if total > maxMetadata {
-			return preparedFile{}, fmt.Errorf("UI files exceed aggregate limit")
-		}
-		return preparedFile{name, k, entry.Size}, nil
-	}
-	for _, manifest := range manifests {
-		k, ok := byID[manifest.ID]
-		if !ok {
-			return fmt.Errorf("%s: no eligible enUS root entry for FDID %d", manifest.Path, manifest.ID)
-		}
-		if err := addPath(manifest.Path); err != nil {
-			return err
-		}
-		file, err := prepare(manifest.Path, k)
-		if err != nil {
-			return err
-		}
-		data, err := readContent(ctx, c, encoding, k, maxFile)
-		if err != nil {
-			return err
-		}
-		receipt, err := writeSource(output, file, data)
-		if err != nil {
-			return err
-		}
-		receipts = append(receipts, receipt)
-		prepared[file.path] = file
-		seen := map[string]bool{}
-		for line := range strings.SplitSeq(strings.TrimPrefix(string(data), "\xef\xbb\xbf"), "\n") {
-			name := strings.ReplaceAll(strings.TrimSpace(line), "\\", "/")
-			if name == "" {
-				continue
-			}
-			if seen[name] {
-				return fmt.Errorf("%s: duplicate manifest path %q", manifest.Path, name)
-			}
-			seen[name] = true
-			if err := addPath(name); err != nil {
-				return err
-			}
-		}
-	}
-	if len(paths) <= len(manifests) {
-		return fmt.Errorf("empty complete UI manifest inventory")
-	}
-	names := make([]string, 0, len(paths))
-	hashes := map[uint64]bool{}
-	for _, name := range paths {
-		names = append(names, name)
-		if _, ok := prepared[name]; !ok {
-			hashes[pathHash(name)] = true
-		}
-	}
-	sort.Strings(names)
-	_, byHash, err := scanRoot(root, nil, hashes)
-	if err != nil {
-		return err
-	}
-	files := []preparedFile{}
-	for _, name := range names {
-		if _, ok := prepared[name]; ok {
-			continue
-		}
-		k, ok := byHash[pathHash(name)]
-		if !ok {
-			return fmt.Errorf("%s: no unambiguous named enUS root entry", name)
-		}
-		file, err := prepare(name, k)
-		if err != nil {
-			return fmt.Errorf("%s: %w", name, err)
-		}
-		files = append(files, file)
-	}
-	fmt.Printf("Extracting %d files (%d bytes), maximum 4 workers...\n", len(paths), total)
-	workCtx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	jobs := make(chan int)
-	results := make([]fileReceipt, len(files))
-	var wg sync.WaitGroup
-	var first error
-	var once sync.Once
-	for range 4 {
-		wg.Go(func() {
-			for i := range jobs {
-				if workCtx.Err() != nil {
-					continue
-				}
-				file := files[i]
-				data, err := readContent(workCtx, c, encoding, file.content, maxFile)
-				if err == nil {
-					results[i], err = writeSource(output, file, data)
-				}
-				if err != nil {
-					once.Do(func() { first = fmt.Errorf("%s: %w", file.path, err); cancel() })
-				}
-			}
-		})
-	}
-sendFiles:
-	for i := range files {
-		select {
-		case jobs <- i:
-		case <-workCtx.Done():
-			break sendFiles
-		}
-	}
-	close(jobs)
-	wg.Wait()
-	if first != nil {
-		return first
-	}
-	if ctx.Err() != nil {
-		return ctx.Err()
-	}
-	receipts = append(receipts, results...)
-	sort.Slice(receipts, func(i, j int) bool { return receipts[i].Path < receipts[j].Path })
-	receipt := extractorReceipt{config.clientIdentity, receipts}
-	data, err = json.MarshalIndent(receipt, "", "  ")
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	path := filepath.Join(output, "extractor-result.json")
-	if err := os.WriteFile(path+".tmp", data, 0644); err != nil {
-		return err
-	}
-	if err := os.Rename(path+".tmp", path); err != nil {
-		return err
-	}
-	fmt.Printf("Verified extraction receipt: %s\n", path)
-	return nil
-}
 
 // Prepare directories before comparing identities so missing path components
 // and filesystem aliases are resolved by the filesystem itself.
@@ -476,33 +278,13 @@ func checkDirectorySeparation(output, cache string) error {
 	return nil
 }
 
-func run(ctx context.Context, args []string) error {
+func run(ctx context.Context, args []string, progress io.Writer) error {
 	if len(args) != 3 {
 		return fmt.Errorf("usage: wow-cdn CONFIG_JSON OUTPUT_DIR CACHE_DIR")
 	}
-	f, err := os.Open(args[0])
+	job, err := readConfig(args[0])
 	if err != nil {
-		return err
-	}
-	defer f.Close()
-	info, err := f.Stat()
-	if err != nil {
-		return err
-	}
-	if info.Size() > 64<<10 {
-		return fmt.Errorf("configuration exceeds 64 KiB")
-	}
-	var config sourceConfig
-	dec := json.NewDecoder(io.LimitReader(f, (64<<10)+1))
-	dec.DisallowUnknownFields()
-	if err := dec.Decode(&config); err != nil {
-		return err
-	}
-	if err := dec.Decode(new(json.RawMessage)); err != io.EOF {
-		return fmt.Errorf("unexpected configuration suffix")
-	}
-	if err := validateConfig(config); err != nil {
-		return err
+		return fmt.Errorf("configuration %s: %w", args[0], err)
 	}
 	output, err := prepareDirectory(args[1])
 	if err != nil {
@@ -522,14 +304,40 @@ func run(ctx context.Context, args []string) error {
 	if len(entries) != 0 {
 		return fmt.Errorf("extraction output must be empty")
 	}
-	return extract(ctx, config, output, cache)
+	return extract(ctx, job, output, cache, progress)
 }
+
+func readConfig(path string) (extraction, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return extraction{}, err
+	}
+	defer f.Close()
+	info, err := f.Stat()
+	if err != nil {
+		return extraction{}, err
+	}
+	if info.Size() > maxConfigBytes {
+		return extraction{}, fmt.Errorf("exceeds %d bytes", maxConfigBytes)
+	}
+	var config sourceConfig
+	dec := json.NewDecoder(io.LimitReader(f, maxConfigBytes+1))
+	dec.DisallowUnknownFields()
+	if err := dec.Decode(&config); err != nil {
+		return extraction{}, err
+	}
+	if err := dec.Decode(new(json.RawMessage)); err != io.EOF {
+		return extraction{}, fmt.Errorf("unexpected suffix")
+	}
+	return validateConfig(config)
+}
+
+// The release process owns the extraction deadline; this command only stops on
+// interruption.
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
-	ctx, cancel := context.WithTimeout(ctx, 20*time.Minute)
-	defer cancel()
-	if err := run(ctx, os.Args[1:]); err != nil {
+	if err := run(ctx, os.Args[1:], os.Stdout); err != nil {
 		fmt.Fprintln(os.Stderr, "source extraction failed:", err)
 		os.Exit(1)
 	}

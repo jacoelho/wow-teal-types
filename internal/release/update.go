@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,25 +12,6 @@ import (
 	"wow-teal-types/internal/sourcelock"
 	"wow-teal-types/internal/wowapi"
 )
-
-func ensureSnapshot(ctx context.Context, root string, lock sourcelock.Snapshot) (string, error) {
-	snapshot := filepath.Join(root, "build/wow-client", fmt.Sprint(lock.Build))
-	if exists(snapshot) {
-		_, e := VerifySnapshot(snapshot, &lock)
-		return snapshot, e
-	}
-	lockData, e := jsonBytes(lock)
-	if e != nil {
-		return "", e
-	}
-	snapshot = filepath.Join(root, "build/wow-update/snapshots", sha(lockData))
-	if exists(snapshot) {
-		_, e = VerifySnapshot(snapshot, &lock)
-		return snapshot, e
-	}
-	_, e = Stage(ctx, root, snapshot, "", lock.Identity(), &lock)
-	return snapshot, e
-}
 
 // writeCandidateArtifacts only writes inside the private workspace owned by Update.
 func writeCandidateArtifacts(workspace string, files map[string][]byte) error {
@@ -50,7 +32,7 @@ func compareArtifacts(root string, files map[string][]byte) error {
 		if err != nil {
 			return err
 		}
-		data, err := readFile(path, maxPayload)
+		data, err := sourcelock.ReadRegular(path, maxPayload)
 		if err != nil {
 			return err
 		}
@@ -60,119 +42,102 @@ func compareArtifacts(root string, files map[string][]byte) error {
 	}
 	return nil
 }
-func generateCandidate(ctx context.Context, root, runDir string, selected consumer.Version) (string, error) {
-	lock, e := sourcelock.ReadSnapshot(filepath.Join(root, "internal/wowapi/inputs/client_sources.json"))
+
+// generateCandidate returns the checked workspace and the names of every output
+// it derived there.
+func generateCandidate(ctx context.Context, root, runDir string, selected consumer.Version) (string, []string, error) {
+	lock, e := sourcelock.ReadSnapshot(wowapi.NewProject(root).ClientSourcesPath())
 	if e != nil {
-		return "", e
+		return "", nil, e
 	}
 	target := filepath.Join(runDir, "workspace")
 	if e = copyMaintained(root, target); e != nil {
-		return "", e
+		return "", nil, e
 	}
 	if e = seedCaches(root, target); e != nil {
-		return "", e
+		return "", nil, e
 	}
-	var snapshot string
+	f := newFetcher()
+	selection := lockedSelection(lock)
 	if selected.Full != lock.Version {
-		targetSnapshot := filepath.Join(root, "build/wow-client", fmt.Sprint(selected.Build))
-		if exists(targetSnapshot) {
-			record, e := VerifySnapshot(targetSnapshot, nil)
-			if e != nil {
-				return "", e
-			}
-			if e = selected.Require(record.Version, record.Build); e != nil {
-				return "", e
-			}
-		} else {
-			targetSnapshot = filepath.Join(root, "build/wow-update/snapshots", selected.Full)
-			if exists(targetSnapshot) {
-				record, e := VerifySnapshot(targetSnapshot, nil)
-				if e != nil {
-					return "", e
-				}
-				if e = selected.Require(record.Version, record.Build); e != nil {
-					return "", e
-				}
-			} else {
-				identity, e := ResolveBuild(ctx, lock.Region, selected.Build)
-				if e != nil {
-					return "", e
-				}
-				if e = selected.Require(identity.Version, identity.Build); e != nil {
-					return "", e
-				}
-				if _, e = Stage(ctx, root, targetSnapshot, "", identity, nil); e != nil {
-					return "", e
-				}
-			}
-		}
-		if _, e = stageNative(target, targetSnapshot); e != nil {
-			return "", e
-		}
-		snapshot = targetSnapshot
-
-	} else {
-		snapshot, e = ensureSnapshot(ctx, root, lock)
-		if e != nil {
-			return "", e
+		selection = offeredSelection(selected, f, lock.Region)
+	}
+	snapshot, e := resolveSnapshot(ctx, root, selection, extractor(root, ""))
+	if e != nil {
+		return "", nil, e
+	}
+	if selection.lock == nil {
+		if e = stageNative(target, snapshot); e != nil {
+			return "", nil, e
 		}
 	}
-
-	p, e := Bootstrap(ctx, target, snapshot)
+	p, e := bootstrap(ctx, f, target, snapshot)
 	if e != nil {
-		return "", e
+		return "", nil, e
 	}
 
 	artifacts, e := p.Generate(ctx)
 	if e != nil {
-		return "", e
+		return "", nil, e
 	}
 	if e = writeCandidateArtifacts(target, artifacts.Files); e != nil {
-		return "", e
+		return "", nil, e
 	}
 	metadata, e := prepareMetadata(target)
 	if e != nil {
-		return "", e
+		return "", nil, e
 	}
 	if e = writeCandidateArtifacts(target, metadata); e != nil {
-		return "", e
+		return "", nil, e
 	}
-	for _, args := range [][]string{{"verify"}, {"check-types"}, {"check", filepath.Join(target, "examples/minimal")}} {
-		log := filepath.Join(runDir, "logs/consumer-"+args[0]+".log")
+	example := consumer.Selection{Sources: []string{filepath.Join(target, "examples/minimal")}}
+	checks := []struct {
+		name string
+		run  func(io.Writer) error
+	}{
+		{"verify", func(io.Writer) error { _, e := consumer.Verify(target); return e }},
+		{"check-types", func(w io.Writer) error { return consumer.CheckTypes(ctx, target, w, w) }},
+		{"check", func(w io.Writer) error { return consumer.Check(ctx, target, example, w, w) }},
+	}
+	for _, check := range checks {
+		log := filepath.Join(runDir, "logs/consumer-"+check.name+".log")
 		f, e := os.Create(log)
 		if e != nil {
 			if er := os.MkdirAll(filepath.Dir(log), 0755); er != nil {
-				return "", er
+				return "", nil, er
 			}
 			f, e = os.Create(log)
 		}
 		if e != nil {
-			return "", e
+			return "", nil, e
 		}
-		e = consumer.Run(ctx, target, args, f, f)
+		e = check.run(f)
 		ce := f.Close()
 		if e != nil {
-			return "", fmt.Errorf("consumer checks failed; see %s: %w", log, e)
+			return "", nil, fmt.Errorf("consumer checks failed; see %s: %w", log, e)
 		}
 		if ce != nil {
-			return "", ce
+			return "", nil, ce
 		}
 	}
 	again, e := p.Generate(ctx)
 	if e != nil {
-		return "", e
+		return "", nil, e
 	}
 	if e = compareArtifacts(target, again.Files); e != nil {
-		return "", e
+		return "", nil, e
 	}
 	metadata, e = prepareMetadata(target)
 	if e != nil {
-		return "", e
+		return "", nil, e
 	}
 	if e = compareArtifacts(target, metadata); e != nil {
-		return "", e
+		return "", nil, e
 	}
-	return target, nil
+	outputs := []string{wowapi.SourcesFile, wowapi.ClientSourcesFile}
+	outputs = append(outputs, keys(artifacts.Files)...)
+	outputs = append(outputs, keys(metadata)...)
+	return target, outputs, nil
 }
 
 // Update acquires and validates a private candidate before changing active outputs.
@@ -201,12 +166,12 @@ func Update(ctx context.Context, root string) (UpdateResult, error) {
 	if e != nil {
 		return UpdateResult{}, e
 	}
-	workspace, e := generateCandidate(ctx, root, runDir, selected)
+	workspace, outputs, e := generateCandidate(ctx, root, runDir, selected)
 	if e != nil {
 		_ = writeObject(filepath.Join(runDir, "failure.json"), updateFailure{Status: "failed", WoWVersion: selected.Full, Error: e.Error(), Candidate: runDir, ActiveOutputs: "not published"})
 		return UpdateResult{}, fmt.Errorf("catalogue update stopped; candidate retained at %s: %w", runDir, e)
 	}
-	changed, e := publish(ctx, root, workspace, runDir, expected, os.Rename)
+	changed, e := publish(ctx, root, workspace, runDir, outputs, expected, os.Rename)
 	if e != nil {
 		_ = writeObject(filepath.Join(runDir, "failure.json"), updateFailure{Status: "failed", Error: e.Error(), Candidate: runDir})
 		return UpdateResult{}, e
@@ -243,7 +208,7 @@ func CheckGenerator(ctx context.Context, root, snapshot string) (wowapi.Catalogu
 		return wowapi.CatalogueStatistics{}, err
 	}
 	var diagnostics bytes.Buffer
-	if err = consumer.Run(ctx, root, []string{"check-types"}, &diagnostics, &diagnostics); err != nil {
+	if err = consumer.CheckTypes(ctx, root, &diagnostics, &diagnostics); err != nil {
 		return wowapi.CatalogueStatistics{}, fmt.Errorf("generated declaration check: %w\n%s", err, strings.TrimSpace(diagnostics.String()))
 	}
 	return artifacts.Statistics, nil

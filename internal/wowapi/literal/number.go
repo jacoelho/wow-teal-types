@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-// Float keeps Python's historical shortest float spelling, including 1.0 and
+// jsonFloat keeps Python's historical shortest float spelling, including 1.0 and
 // -0.0, when encoding literal numbers.
-type Float float64
+type jsonFloat float64
 
-func (v Float) MarshalJSON() ([]byte, error) {
+func (v jsonFloat) MarshalJSON() ([]byte, error) {
 	if math.IsNaN(float64(v)) || math.IsInf(float64(v), 0) {
 		return nil, fmt.Errorf("non-finite JSON number")
 	}

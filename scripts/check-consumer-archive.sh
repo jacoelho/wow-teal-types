@@ -9,9 +9,11 @@ workspace=$(mktemp -d)
 trap 'rm -rf "$workspace"' EXIT HUP INT TERM
 unzip -q "$archive" -d "$workspace"
 cd "$workspace/wow-teal-types"
-for omitted in scripts internal/release internal/wowapi tools/cdn tools/wow-types .github; do
+# The compiler is external (stock Teal pinned by exact version), so tools/teal
+# must not reappear alongside the producer-only trees.
+for omitted in scripts internal/release internal/wowapi tools/cdn tools/wow-types tools/teal .github; do
     if test -e "$omitted"; then
-        echo "consumer archive contains producer files: $omitted" >&2
+        echo "consumer archive contains excluded files: $omitted" >&2
         exit 1
     fi
 done
