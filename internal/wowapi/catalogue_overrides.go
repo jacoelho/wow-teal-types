@@ -22,7 +22,8 @@ type catalogueOverrides struct {
 // selects the created type, and optionally by a template literal. Overload is
 // the signature pattern of a narrowed overload: {type}, {template} and
 // {result} stand for the literals and the selected type. Generic, when set,
-// replaces an unrepresentable source contract as the fallback overload.
+// replaces an unrepresentable source contract as the fallback overload; a
+// native-backed factory renders its own fallback and cannot declare one.
 type literalFactoryOverride struct {
 	Symbol    string                    `json:"symbol"`
 	Base      string                    `json:"base"`
@@ -60,6 +61,7 @@ type supplementalExclusion struct {
 	Source    string `json:"source"`
 	Signature string `json:"signature"`
 }
+
 // receiverHierarchyOverride replaces owner's reviewed bases. Owner keeps the
 // own methods of each InheritMethodsFrom base it detaches from, unless it
 // declares them itself.
@@ -308,6 +310,12 @@ func (c *catalogue) applyLiteralFactory(factory literalFactoryOverride) {
 		reject(fmt.Sprintf("literal factory %s overload lacks a placeholder: %s", symbol, factory.Overload))
 	}
 	item := c.symbolItem(symbol)
+	if item.Native != nil {
+		if factory.Generic != "" {
+			reject(fmt.Sprintf("literal factory %s has a native contract and cannot declare a generic fallback", symbol))
+		}
+		c.checkNativeFactoryParameters(symbol, item, factory.Overload)
+	}
 	if factory.Generic != "" {
 		// The reviewed signature replaces only the unrepresentable source
 		// contract; the native permission still applies to every overload.
@@ -356,6 +364,28 @@ func (c *catalogue) applyLiteralFactory(factory literalFactoryOverride) {
 	// The first overload takes the symbol's place, keeping its identity for
 	// every owner that already shares it.
 	*c.symbolItem(symbol) = *overloads[0]
+}
+
+// checkNativeFactoryParameters keeps a native-backed pattern aligned with the
+// native parameters. Native permissions are granted by position, so a pattern
+// may only replace a native string parameter with a literal placeholder; every
+// other parameter must render exactly as the native does at that position.
+func (c *catalogue) checkNativeFactoryParameters(symbol string, item *catalogueFunction, pattern string) {
+	reference := item.clone()
+	reference.Variants = nil
+	native := c.signatureValue(reference, "")
+	want, wantOK := signatureParameters(native)
+	got, gotOK := signatureParameters(pattern)
+	if !wantOK || !gotOK || len(got) != len(want) {
+		reject(fmt.Sprintf("literal factory %s overload %s does not match native parameters %s", symbol, pattern, native))
+	}
+	for i, parameter := range got {
+		native := strings.TrimPrefix(want[i], "? ")
+		literal := (parameter == "{type}" || parameter == "{template}") && (native == "string" || native == maybeSecretOf("string"))
+		if parameter != want[i] && !literal {
+			reject(fmt.Sprintf("literal factory %s overload parameter %d is %s, native parameter is %s", symbol, i+1, parameter, want[i]))
+		}
+	}
 }
 
 // extends reports whether the definition name is base or inherits from it.

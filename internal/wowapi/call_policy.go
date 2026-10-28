@@ -80,17 +80,9 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 		policy.Guard = "secret"
 	}
 	slots := c.argumentSlots(contract.Native)
-	opening := strings.IndexByte(signature, '(')
-	closing := -1
-	if opening >= 0 {
-		closing = matchingClose(signature, opening)
-	}
-	if closing < 0 {
+	arguments, ok := signatureParameters(signature)
+	if !ok {
 		reject(fmt.Sprintf("invalid finalized native signature: %s", symbol))
-	}
-	arguments := splitTop(signature[opening+1:closing], ',')
-	if len(arguments) == 1 && arguments[0] == "" {
-		arguments = nil
 	}
 	// The rendered parameters must be exactly the native slots, so every grant
 	// lands on the parameter whose declared type the slot produced.
@@ -127,6 +119,23 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 		}
 	}
 	return policy
+}
+
+// signatureParameters splits a function signature's parameter list.
+func signatureParameters(signature string) ([]string, bool) {
+	opening := strings.IndexByte(signature, '(')
+	if opening < 0 {
+		return nil, false
+	}
+	closing := matchingClose(signature, opening)
+	if closing < 0 {
+		return nil, false
+	}
+	parameters := splitTop(signature[opening+1:closing], ',')
+	if len(parameters) == 1 && parameters[0] == "" {
+		return nil, true
+	}
+	return parameters, true
 }
 
 // argumentSlot is one native argument's secret permission. The declared

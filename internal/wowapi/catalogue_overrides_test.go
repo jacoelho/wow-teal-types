@@ -61,7 +61,9 @@ func TestLiteralFactoriesRejectUnreviewedConfiguration(t *testing.T) {
 		}
 	}
 	t.Run("symbol declared twice", func(t *testing.T) {
-		err := attempt(func() { literalFactoryFixture().applyLiteralFactories([]literalFactoryOverride{valid["global"], valid["global"]}) })
+		err := attempt(func() {
+			literalFactoryFixture().applyLiteralFactories([]literalFactoryOverride{valid["global"], valid["global"]})
+		})
 		if err == nil || !strings.Contains(err.Error(), "declared twice") {
 			t.Fatalf("error = %v, want duplicate rejection", err)
 		}
@@ -72,68 +74,108 @@ func TestLiteralFactoriesRejectUnreviewedConfiguration(t *testing.T) {
 // template literals, then type literals in listed order, then the fallback.
 // Every overload keeps the factory's native permission.
 func TestLiteralFactoryOverloadsKeepOrderAndNativePolicy(t *testing.T) {
-	for _, test := range []struct {
-		name, generic, fallback string
-	}{
-		{"source fallback", "", "function(self, W.MaybeSecret<string>, ? W.MaybeSecret<string>): Widget"},
-		{"reviewed generic fallback", "function(self, string, ? string): Widget", "function(self, string, ? string): Widget"},
-	} {
-		t.Run(test.name, func(t *testing.T) {
-			c := newCatalogue()
-			c.record("Widget", "fixture", kindRecord)
-			c.record("A", "fixture", kindRecord).Bases = []string{"Widget"}
-			c.record("B", "fixture", kindRecord).Bases = []string{"Widget"}
-			c.record("Tpl", "fixture", kindInterface)
-			c.record("Factory", "fixture", kindRecord).Methods["Make"] = &catalogueFunction{Source: "fixture", Method: true, Native: &nativeFunction{
-				Arguments: []nativeParameter{{Name: "kind", Type: "string"}, {Name: "template", Type: "string", Nilable: new(true)}},
-				Returns:   []nativeParameter{{Name: "made", Type: "Widget"}},
-				Policy:    nativePolicy{SecretArguments: new("AllowedWhenTainted")},
-			}}
-			c.applyLiteralFactories([]literalFactoryOverride{{
-				Symbol: "Factory.Make", Base: "Widget", Generic: test.generic,
-				Overload: "function(self, {type}, {template}): {result}", Types: []string{"A", "B"},
-				Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"B"}}},
-			}})
-			projection, err := c.finalize(t.Context())
-			if err != nil {
-				t.Fatal(err)
-			}
-			outputs := projection.render()
-			var got []string
-			for line := range strings.SplitSeq(string(outputs["wow.d.tl"]), "\n") {
-				if signature, ok := strings.CutPrefix(line, "      Make: "); ok {
-					got = append(got, signature)
-				}
-			}
-			literal := func(value string) string { return c.literal([]string{value}) }
-			want := []string{
-				"function(self, " + literal("B") + ", " + literal("Tpl") + "): B_Tpl",
-				"function(self, " + literal("A") + ", ? string): A",
-				"function(self, " + literal("B") + ", ? string): B",
-				test.fallback,
-			}
-			if !slices.Equal(got, want) {
-				t.Fatalf("overloads = %q, want %q", got, want)
-			}
-			if policy := string(outputs["call_policy.lua"]); strings.Count(policy, `symbol = "Factory.Make"`) != len(want) || strings.Count(policy, "secret_parameters = {2, 3}") != len(want) {
-				t.Errorf("want %d Factory.Make entries granting arguments 2 and 3:\n%s", len(want), policy)
-			}
-		})
+	c := newCatalogue()
+	c.record("Widget", "fixture", kindRecord)
+	c.record("A", "fixture", kindRecord).Bases = []string{"Widget"}
+	c.record("B", "fixture", kindRecord).Bases = []string{"Widget"}
+	c.record("Tpl", "fixture", kindInterface)
+	c.record("Factory", "fixture", kindRecord).Methods["Make"] = &catalogueFunction{Source: "fixture", Method: true, Native: &nativeFunction{
+		Arguments: []nativeParameter{{Name: "kind", Type: "string"}, {Name: "template", Type: "string", Nilable: new(true)}},
+		Returns:   []nativeParameter{{Name: "made", Type: "Widget"}},
+		Policy:    nativePolicy{SecretArguments: new("AllowedWhenTainted")},
+	}}
+	c.applyLiteralFactories([]literalFactoryOverride{{
+		Symbol: "Factory.Make", Base: "Widget",
+		Overload: "function(self, {type}, {template}): {result}", Types: []string{"A", "B"},
+		Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"B"}}},
+	}})
+	projection, err := c.finalize(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	outputs := projection.render()
+	var got []string
+	for line := range strings.SplitSeq(string(outputs["wow.d.tl"]), "\n") {
+		if signature, ok := strings.CutPrefix(line, "      Make: "); ok {
+			got = append(got, signature)
+		}
+	}
+	literal := func(value string) string { return c.literal([]string{value}) }
+	want := []string{
+		"function(self, " + literal("B") + ", " + literal("Tpl") + "): B_Tpl",
+		"function(self, " + literal("A") + ", ? string): A",
+		"function(self, " + literal("B") + ", ? string): B",
+		"function(self, W.MaybeSecret<string>, ? W.MaybeSecret<string>): Widget",
+	}
+	if !slices.Equal(got, want) {
+		t.Fatalf("overloads = %q, want %q", got, want)
+	}
+	if policy := string(outputs["call_policy.lua"]); strings.Count(policy, `symbol = "Factory.Make"`) != len(want) || strings.Count(policy, "secret_parameters = {2, 3}") != len(want) {
+		t.Errorf("want %d Factory.Make entries granting arguments 2 and 3:\n%s", len(want), policy)
 	}
 }
 
-// A reviewed overload pattern that drifts from the native's arity is rejected
-// instead of moving the native permissions onto other parameters.
-func TestLiteralFactoryPatternMustMatchNativeArity(t *testing.T) {
+// A non-native factory's reviewed generic replaces the unrepresentable source
+// contract as the last overload.
+func TestLiteralFactoryGenericFallbackIsLast(t *testing.T) {
+	c := newCatalogue()
+	c.record("Widget", "fixture", kindRecord)
+	c.record("A", "fixture", kindRecord).Bases = []string{"Widget"}
+	c.record("B", "fixture", kindRecord).Bases = []string{"Widget"}
+	c.record("Factory", "fixture", kindRecord).Methods["Make"] = &catalogueFunction{Source: "fixture", Method: true, ResolvedSignature: new("function(self, string): Widget")}
+	c.applyLiteralFactories([]literalFactoryOverride{{
+		Symbol: "Factory.Make", Base: "Widget", Generic: "function(self, string, ? string): Widget",
+		Overload: "function(self, {type}, ? string): {result}", Types: []string{"A", "B"},
+	}})
+	projection, err := c.finalize(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for line := range strings.SplitSeq(string(projection.render()["wow.d.tl"]), "\n") {
+		if signature, ok := strings.CutPrefix(line, "      Make: "); ok {
+			got = append(got, signature)
+		}
+	}
+	want := []string{
+		"function(self, " + c.literal([]string{"A"}) + ", ? string): A",
+		"function(self, " + c.literal([]string{"B"}) + ", ? string): B",
+		"function(self, string, ? string): Widget",
+	}
+	if !slices.Equal(got, want) {
+		t.Fatalf("overloads = %q, want %q", got, want)
+	}
+}
+
+// Native permissions are granted by position, so a native-backed factory's
+// pattern must keep every native parameter where the native renders it, with
+// literal placeholders only over native strings.
+func TestLiteralFactoryPatternMustMatchNativeParameters(t *testing.T) {
+	str := nativeParameter{Name: "kind", Type: "string"}
+	optional := nativeParameter{Name: "name", Type: "string", Nilable: new(true)}
+	count := nativeParameter{Name: "count", Type: "number"}
+	flag := nativeParameter{Name: "flag", Type: "boolean"}
 	for _, test := range []struct {
 		name      string
 		arguments []nativeParameter
 		factory   literalFactoryOverride
+		reject    string // "" accepts
+		policy    string
 	}{
-		{"more than the native", []nativeParameter{{Name: "kind", Type: "string"}}, literalFactoryOverride{
+		{name: "more than the native", arguments: []nativeParameter{str}, reject: "Factory.Make", factory: literalFactoryOverride{
 			Overload: "function(self, {type}, {template}): {result}", Templates: []literalTemplateOverride{{Name: "Tpl", Type: "Tpl", Types: []string{"A"}}}}},
-		{"fewer than the native", []nativeParameter{{Name: "kind", Type: "string"}, {Name: "name", Type: "string"}}, literalFactoryOverride{
+		{name: "fewer than the native", arguments: []nativeParameter{str, str}, reject: "Factory.Make", factory: literalFactoryOverride{
 			Overload: "function(self, {type}): {result}"}},
+		{name: "placeholder over a non-string native", arguments: []nativeParameter{count, str}, reject: "Factory.Make", factory: literalFactoryOverride{
+			Overload: "function(self, {type}, W.MaybeSecret<string>): {result}"}},
+		{name: "parameter differs from the native", arguments: []nativeParameter{str, flag}, reject: "Factory.Make", factory: literalFactoryOverride{
+			Overload: "function(self, {type}, string): {result}"}},
+		{name: "generic on a native-backed factory", arguments: []nativeParameter{str, optional}, reject: "cannot declare a generic fallback", factory: literalFactoryOverride{
+			Generic: "function(self, string, ? string): Widget", Overload: "function(self, {type}, ? W.MaybeSecret<string>): {result}"}},
+		{name: "placeholder over a nilable native string", arguments: []nativeParameter{str, optional}, policy: "secret_parameters = {2, 3}", factory: literalFactoryOverride{
+			Overload: "function(self, W.MaybeSecret<string>, {type}): {result}"}},
+		{name: "parameter equal to the native", arguments: []nativeParameter{str, count}, policy: "secret_parameters = {2, 3}", factory: literalFactoryOverride{
+			Overload: "function(self, {type}, W.MaybeSecret<number>): {result}"}},
 	} {
 		t.Run(test.name, func(t *testing.T) {
 			c := newCatalogue()
@@ -147,9 +189,25 @@ func TestLiteralFactoryPatternMustMatchNativeArity(t *testing.T) {
 			}}
 			factory := test.factory
 			factory.Symbol, factory.Base, factory.Types = "Factory.Make", "Widget", []string{"A"}
-			c.applyLiteralFactories([]literalFactoryOverride{factory})
-			if _, err := c.finalize(t.Context()); err == nil || !strings.Contains(err.Error(), "Factory.Make") {
-				t.Fatalf("finalize = %v; want a rejection naming Factory.Make", err)
+			var projection declarationProjection
+			err := attempt(func() {
+				c.applyLiteralFactories([]literalFactoryOverride{factory})
+				var err error
+				if projection, err = c.finalize(t.Context()); err != nil {
+					rejectErr(err)
+				}
+			})
+			if test.reject != "" {
+				if err == nil || !strings.Contains(err.Error(), test.reject) {
+					t.Fatalf("err = %v; want a rejection containing %q", err, test.reject)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if policy := string(projection.render()["call_policy.lua"]); strings.Count(policy, test.policy) != 2 {
+				t.Errorf("want the narrowed overload and the fallback to carry %s:\n%s", test.policy, policy)
 			}
 		})
 	}
