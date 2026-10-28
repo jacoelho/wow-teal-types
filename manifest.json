@@ -15,7 +15,7 @@
     "tools/wow-teal/main.go": "2ca06d90d252482b62403c7cd61526b2bf2c3ba1358e31b44e224fbcca22159f",
     "types/wow/call_policy.lua": "ed7a2e92bf17060b1156ce691ec695ce053ece18e00af1f5c8fc422408c7f8c2",
     "types/wow/native_values.d.tl": "04d41293a124d7546d842f22b9068704d4d4ceb904571516118bdecc90e4e251",
-    "types/wow/wow.d.tl": "041b4e9d672df990173b046145e208d08a747517b39a5fa10d60507c30e67ac3",
+    "types/wow/wow.d.tl": "bcb0c26a33da34d2fa6150de703e9ddafc8a1d2b0a3c2afdccf6ec8882f26736",
     "types/wow/wow_env.d.tl": "9138d91e0e535519dd25943d75a1c9294259a7dd43351ca0781952deefa6cec7",
     "types/wow/wow_secure_env.d.tl": "d56153d08736c12594cbd76dd136fe2b4940694d37964d318b0d33a02d5f75d9"
   },

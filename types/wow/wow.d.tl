@@ -14904,13 +14904,13 @@ local record CatalogueTypes
    -- blizzard:UnitDocumentation.lua
    record Callable_UnitHealthPercent
       metamethod __call: function(self, string, ? boolean, ? CurveObject): W.MaybeSecret<number>
-      metamethod __call: function(self, string, ? boolean, ? CurveObjectBase): W.MaybeSecret<number | colorRGBA>
+      metamethod __call: function(self, string, ? boolean, ? CurveObjectBase): W.MaybeSecret<number> | colorRGBA
    end
 
    -- blizzard:UnitDocumentation.lua
    record Callable_UnitPowerPercent
       metamethod __call: function(self, string, ? number, ? boolean, ? CurveObject): W.MaybeSecret<number>
-      metamethod __call: function(self, string, ? number, ? boolean, ? CurveObjectBase): W.MaybeSecret<number | colorRGBA>
+      metamethod __call: function(self, string, ? number, ? boolean, ? CurveObjectBase): W.MaybeSecret<number> | colorRGBA
    end
 
    -- questie:Data/Wiki.lua
@@ -17792,19 +17792,19 @@ local record CatalogueTypes
       Copy: function(self): DurationObject
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted", "SecretWhenCurveSecret": true}
       EvaluateElapsedDuration: function(self, CurveObject, ? number): W.MaybeSecret<number>
-      EvaluateElapsedDuration: function(self, CurveObjectBase, ? number): W.MaybeSecret<number | colorRGBA>
+      EvaluateElapsedDuration: function(self, CurveObjectBase, ? number): W.MaybeSecret<number> | colorRGBA
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted", "SecretWhenCurveSecret": true}
       EvaluateElapsedPercent: function(self, CurveObject, ? number): W.MaybeSecret<number>
-      EvaluateElapsedPercent: function(self, CurveObjectBase, ? number): W.MaybeSecret<number | colorRGBA>
+      EvaluateElapsedPercent: function(self, CurveObjectBase, ? number): W.MaybeSecret<number> | colorRGBA
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted", "SecretWhenCurveSecret": true}
       EvaluateRemainingDuration: function(self, CurveObject, ? number): W.MaybeSecret<number>
-      EvaluateRemainingDuration: function(self, CurveObjectBase, ? number): W.MaybeSecret<number | colorRGBA>
+      EvaluateRemainingDuration: function(self, CurveObjectBase, ? number): W.MaybeSecret<number> | colorRGBA
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted", "SecretWhenCurveSecret": true}
       EvaluateRemainingPercent: function(self, CurveObject, ? number): W.MaybeSecret<number>
-      EvaluateRemainingPercent: function(self, CurveObjectBase, ? number): W.MaybeSecret<number | colorRGBA>
+      EvaluateRemainingPercent: function(self, CurveObjectBase, ? number): W.MaybeSecret<number> | colorRGBA
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted", "SecretWhenCurveSecret": true}
       EvaluateTotalDuration: function(self, CurveObject, ? number): W.MaybeSecret<number>
-      EvaluateTotalDuration: function(self, CurveObjectBase, ? number): W.MaybeSecret<number | colorRGBA>
+      EvaluateTotalDuration: function(self, CurveObjectBase, ? number): W.MaybeSecret<number> | colorRGBA
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted", "SecretWhenNumericFormatterSecret": true}
       FormatElapsedDuration: function(self, NumericFormatter, ? number): W.MaybeSecret<string>
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted", "SecretWhenNumericFormatterSecret": true}

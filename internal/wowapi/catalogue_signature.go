@@ -26,7 +26,7 @@ func (c *catalogue) projectSecret(expression string, position typePosition) stri
 		switch {
 		case member == "nil":
 			nilable = true
-		case member == "any" || member == secretDataType || strings.HasPrefix(member, maybeSecretPrefix) || strings.HasPrefix(member, secretPrefix):
+		case member == "any" && position == inputPosition, member == secretDataType, strings.HasPrefix(member, maybeSecretPrefix) || strings.HasPrefix(member, secretPrefix):
 			kept = append(kept, member)
 		case member == dataType || primitive == "any" || strings.HasPrefix(member, "function"):
 			plain = append(plain, dataType)

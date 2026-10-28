@@ -675,35 +675,13 @@ func (c *catalogue) nativeTypeValue(item nativeParameter, secret bool, position 
 	default:
 		result = c.resolve(raw, position)
 		if secret {
-			result = c.secretNative(raw, result, position)
+			result = c.projectSecret(result, position)
 		}
 	}
 	if enabled(item.Nilable) && result != "any" {
 		result += " | nil"
 	}
 	return result
-}
-
-// secretNative declares a possibly secret native value of raw type, already
-// resolved to result.
-func (c *catalogue) secretNative(raw, result string, position typePosition) string {
-	switch primitive := c.primitive(raw); primitive {
-	case "number", "string", "boolean":
-		return maybeSecretOf(primitive)
-	case "any":
-		if position == inputPosition {
-			return "any"
-		}
-		return secretDataType
-	}
-	if c.isUserdata(raw) {
-		return secretOf(result)
-	}
-	// Secret structures project their own fields instead.
-	if name, ok := c.defNamed(result); ok && c.defs[name].Kind.isTableLike() {
-		return result
-	}
-	return maybeSecretOf(result)
 }
 
 type frameXMLSupplement struct {
