@@ -102,16 +102,12 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 		if item.Method {
 			args = append(args, "self")
 		}
-		nativeArgs := native.Arguments
-		taintedSecrets := stringValue(native.Policy.SecretArguments) == "AllowedWhenTainted"
-		for index, argument := range nativeArgs {
-			if argument.StrideIndex != nil && *argument.StrideIndex != 0 {
-				// The collapsed vararg accepts secrets exactly when signaturePolicy
-				// grants secret_vararg_from: every member must permit them.
-				acceptsSecret := taintedSecrets
+		for index, slot := range c.argumentSlots(native) {
+			argument := native.Arguments[index]
+			acceptsSecret := slot.acceptsSecret
+			if slot.variadic {
 				tail := []string{}
-				for _, v := range nativeArgs[index:] {
-					acceptsSecret = acceptsSecret && !enabled(v.NeverSecret)
+				for _, v := range native.Arguments[index:] {
 					tail = append(tail, c.nativeTypeValue(v, false, inputPosition))
 				}
 				value := strings.Join(uniqueStrings(tail), " | ")
@@ -122,7 +118,6 @@ func (c *catalogue) signatureValue(item *catalogueFunction, owner string) string
 				break
 			}
 			raw := argument.Type
-			acceptsSecret := taintedSecrets && !enabled(argument.NeverSecret)
 			if tuple, ok := c.abiTuples[raw]; ok {
 				for _, value := range tuple {
 					if acceptsSecret {

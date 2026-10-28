@@ -63,7 +63,8 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 	case "issecretvalue":
 		policy.Guard = "secret"
 	}
-	if stringValue(contract.Native.Policy.SecretArguments) != "AllowedWhenTainted" {
+	slots := c.argumentSlots(contract.Native)
+	if !slices.ContainsFunc(slots, func(s argumentSlot) bool { return s.acceptsSecret }) {
 		return policy
 	}
 	opening := strings.IndexByte(signature, '(')
@@ -82,36 +83,55 @@ func (c *catalogue) signaturePolicy(item *catalogueFunction, symbol, signature s
 	if item.Method {
 		position++
 	}
-	for index, parameter := range contract.Native.Arguments {
-		root := !enabled(parameter.NeverSecret)
-		// No frozen source establishes recursive input permission. Output secrecy
-		// flags and the absence of a prohibition cannot grant that permission.
-		width := 1
-		if tuple, ok := c.abiTuples[parameter.Type]; ok {
-			width = len(tuple)
-		}
-		variadic := parameter.StrideIndex != nil && *parameter.StrideIndex != 0
-		if variadic {
-			// A repeating source tuple becomes one union vararg. Every member
-			// must permit a secret root before that collapsed slot can permit it.
-			for _, member := range contract.Native.Arguments[index:] {
-				root = root && !enabled(member.NeverSecret)
-			}
-			if root {
+	for _, slot := range slots {
+		if slot.variadic {
+			if slot.acceptsSecret {
 				policy.SecretVarargFrom = position
 			}
 			break
 		}
-		for range width {
-			if position <= len(arguments) {
-				if root {
-					policy.SecretParameters = append(policy.SecretParameters, position)
-				}
+		for range slot.width {
+			if slot.acceptsSecret && position <= len(arguments) {
+				policy.SecretParameters = append(policy.SecretParameters, position)
 			}
 			position++
 		}
 	}
 	return policy
+}
+
+// argumentSlot is one native argument's secret permission. The declared
+// parameter types and call_policy.lua both derive from it, so a permitted
+// position is exactly a position whose declared type admits a Secret.
+type argumentSlot struct {
+	width         int // declared parameters; an ABI tuple spans several
+	acceptsSecret bool
+	variadic      bool // the collapsed repeating tail; always the last slot
+}
+
+// argumentSlots returns one slot per native argument up to the repeating tail.
+// No frozen source establishes recursive input permission. Output secrecy
+// flags and the absence of a prohibition cannot grant that permission.
+func (c *catalogue) argumentSlots(native *nativeFunction) []argumentSlot {
+	tainted := stringValue(native.Policy.SecretArguments) == "AllowedWhenTainted"
+	slots := []argumentSlot{}
+	for index, argument := range native.Arguments {
+		if argument.StrideIndex != nil && *argument.StrideIndex != 0 {
+			// A repeating source tuple becomes one union vararg. Every member
+			// must permit a secret root before that collapsed slot can permit it.
+			accepts := tainted
+			for _, member := range native.Arguments[index:] {
+				accepts = accepts && !enabled(member.NeverSecret)
+			}
+			return append(slots, argumentSlot{width: 1, acceptsSecret: accepts, variadic: true})
+		}
+		width := 1
+		if tuple, ok := c.abiTuples[argument.Type]; ok {
+			width = len(tuple)
+		}
+		slots = append(slots, argumentSlot{width: width, acceptsSecret: tainted && !enabled(argument.NeverSecret)})
+	}
+	return slots
 }
 
 func renderCallPolicy(locations map[string]map[string]callPolicy) []byte {
