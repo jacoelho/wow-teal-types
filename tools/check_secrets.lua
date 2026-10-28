@@ -71,30 +71,6 @@ local policy_ok, policy_error = pcall(function()
 end)
 if not policy_ok then fail_closed(policy_error) end
 
--- Opacity identity: the Secret, Data, Atom, SecretData and SecretTable declarations in
--- native_values.d.tl. Spelling elsewhere never confers opacity.
-local native_values = root .. "/types/wow/native_values.d.tl"
-local marker_lines = {}
-do
-   local source = io.open(native_values, "r")
-   if not source then fail_closed("missing opaque marker definitions") end
-   local patterns = {
-      Secret = "^%s*record%s+Secret%f[^%w_]", Data = "^%s*type%s+Data%s*=", Atom = "^%s*type%s+Atom%s*=",
-      SecretData = "^%s*type%s+SecretData%s*=", SecretTable = "^%s*type%s+SecretTable%s*=",
-   }
-   local line_number, counts = 0, {}
-   for line in source:lines() do
-      line_number = line_number + 1
-      for name, pattern in pairs(patterns) do
-         if line:match(pattern) then marker_lines[name], counts[name] = line_number, (counts[name] or 0) + 1 end
-      end
-   end
-   source:close()
-   for name in pairs(patterns) do
-      if counts[name] ~= 1 then fail_closed("opaque marker definitions changed: " .. native_values) end
-   end
-end
-
 local syntax_fields = { "e1", "e2", "vars", "exps", "body", "args", "name", "fn_owner", "if_blocks", "exp", "var", "from", "to", "step", "key", "value", "macrodef" }
 local function syntax_children(node, consume)
    for _, child in ipairs(node) do if type(child) == "table" then consume(child) end end
@@ -207,6 +183,23 @@ for _, loaded_name in ipairs(env.loaded_order) do
 end
 if failed then os.exit(1) end
 
+-- Opacity identity: the typedecls that Teal loaded for native_values. Teal
+-- resolves every nominal reference to one of these objects, so a same-named
+-- declaration elsewhere never confers opacity. Only Secret, Data and
+-- SecretTable are compared; the rest of the vocabulary is required so that a
+-- renamed or removed value fails closed instead of silently becoming plain.
+local markers = {}
+do
+   local module = env.modules.native_values
+   local fields = type(module) == "table" and module.typename == "typedecl" and type(module.def) == "table" and module.def.fields
+   if type(fields) ~= "table" then fail_closed("opaque marker definition changed: native_values") end
+   for _, name in ipairs({ "Secret", "MaybeSecret", "Data", "Atom", "SecretData", "SecretTable" }) do
+      local decl = fields[name]
+      if type(decl) ~= "table" or decl.typename ~= "typedecl" then fail_closed("opaque marker definition changed: " .. name) end
+      markers[name] = decl
+   end
+end
+
 -- Stdlib builtins are identified by declaration location, so a shadowing
 -- local or record field never inherits a builtin exemption.
 local stdlib_names, stdlib_declarations = {}, {}
@@ -272,12 +265,8 @@ local function lookup(map, node)
 end
 
 -- Type model over Teal's raw type objects.
-local function declared_at(decl, name)
-   return type(decl) == "table" and decl.typename == "typedecl" and decl.y == marker_lines[name]
-      and type(decl.f) == "string" and canonical(decl.f) == native_values
-end
 local function is_marker(t, name)
-   return t.typename == "nominal" and declared_at(t.found, name)
+   return t.typename == "nominal" and t.found == markers[name]
 end
 local function is_secret(t) return is_marker(t, "Secret") end
 local function is_data(t) return is_marker(t, "Data") end

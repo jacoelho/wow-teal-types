@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -198,7 +199,8 @@ local n = count(source())`, ""},
 if canaccesstable(raw) then local t = raw as W.SecretTable local field = t["key"] end`, ""},
 		{"secret table unguarded", `local t = tableSource() as W.SecretTable`, "secret-value type assertion"},
 		{"lookalike marker is plain", `local record Secret<T> is userdata end
-local function f(s: Secret<number>) print(s) end`, ""},
+local function f(s: Secret<number>) if s then print(1) end end`, ""},
+		{"native marker is opaque", `local function f(s: W.Secret<number>) if s then print(1) end end`, "secret-value truthiness"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -235,31 +237,25 @@ func TestNativePolicyProtocolFailsClosed(t *testing.T) {
 		edit                func(t *testing.T, files map[string]string)
 	}
 	var cases []protocolCase
-	// Each marker must be declared exactly once in native_values.d.tl.
-	for _, marker := range []struct{ name, declaration, duplicate string }{
-		{"Secret", "   record Secret<T>", "record Secret<T> is userdata end"},
-		{"Data", "   type Data =", "type Data = number"},
-		{"Atom", "   type Atom =", "type Atom = number"},
-		{"SecretData", "   type SecretData =", "type SecretData = number"},
-		{"SecretTable", "   type SecretTable =", "type SecretTable = number"},
-	} {
-		const values = "types/wow/native_values.d.tl"
-		cases = append(cases,
-			protocolCase{name: "duplicate marker " + marker.name, want: "opaque marker definitions changed", edit: func(t *testing.T, files map[string]string) {
-				if !strings.Contains(files[values], marker.declaration) {
-					t.Fatalf("fixture lacks %q", marker.declaration)
-				}
-				files[values] = strings.Replace(files[values], "   type Data =", "   record Shadow\n      "+marker.duplicate+"\n   end\n   type Data =", 1)
-			}},
-			protocolCase{name: "missing marker " + marker.name, want: "opaque marker definitions changed", edit: func(t *testing.T, files map[string]string) {
-				renamed := strings.Replace(files[values], marker.declaration, strings.Replace(marker.declaration, marker.name, marker.name+"Renamed", 1), 1)
-				if renamed == files[values] {
-					t.Fatalf("fixture lacks %q", marker.declaration)
-				}
-				files[values] = renamed
-			}},
-		)
+	// Opacity follows the native_values declarations Teal loaded. Renaming a
+	// marker consistently still compiles, so only the checker can reject it.
+	for _, marker := range []string{"Secret", "MaybeSecret", "Data", "Atom", "SecretData", "SecretTable"} {
+		cases = append(cases, protocolCase{name: "missing marker " + marker, want: "opaque marker definition changed: " + marker, edit: func(t *testing.T, files map[string]string) {
+			const values, wow = "types/wow/native_values.d.tl", "types/wow/wow.d.tl"
+			renamed := regexp.MustCompile(`\b`+marker+`\b`).ReplaceAllString(files[values], marker+"Renamed")
+			if renamed == files[values] {
+				t.Fatalf("fixture lacks %s", marker)
+			}
+			files[values] = renamed
+			files[wow] = strings.Replace(files[wow], "N."+marker+"\n", "N."+marker+"Renamed\n", 1)
+			files[wow] = strings.Replace(files[wow], "N."+marker+"<T>", "N."+marker+"Renamed<T>", 1)
+		}})
 	}
+	cases = append(cases, protocolCase{name: "markers outside native_values", want: "declaration identity mismatch: native_values", edit: func(t *testing.T, files map[string]string) {
+		// wow.d.tl declares the same vocabulary itself and never loads native_values.
+		const wow = "types/wow/wow.d.tl"
+		files[wow] = strings.ReplaceAll(files["types/wow/native_values.d.tl"], "Values", "W")
+	}})
 	for _, tc := range append(cases, []protocolCase{
 		{name: "compiler version", wrapper: `tl.version = function() return "0.24.8-wow.1" end`, want: "unsupported Teal version"},
 		{name: "stdlib identity", wrapper: `local new_env = tl.new_env

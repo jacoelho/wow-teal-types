@@ -64,8 +64,10 @@ type SecretTable = {SecretData: SecretData}
 secret value of undocumented shape: a scalar or function, or a table whose keys
 and values are again `SecretData`, so nested reads stay opaque at every depth.
 
-Opacity comes only from these declarations, identified by file and line. A
-record of the same name elsewhere is an ordinary type. Teal rejects a union of
+Opacity comes only from these declarations. The checker takes them from the
+`native_values` module that Teal loaded and compares the declaration object
+that each type reference resolves to, so a record of the same name elsewhere is
+an ordinary type. Renaming or removing any of the six names fails closed. Teal rejects a union of
 two userdata types, so `MaybeSecret<Frame>` cannot be used; secret handles are
 emitted as `Secret<Frame>` alone.
 

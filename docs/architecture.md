@@ -47,6 +47,15 @@ Bundling an unmodified Teal was rejected: it duplicates the LuaRocks
 distribution and grows the archive without adding a guarantee the version pin
 lacks. Treating every `any` as opaque was rejected because most untyped inputs
 are not secret, so it would be untrue to the sources.
+
+The checker identifies the secrecy markers by the declaration objects Teal
+loaded for `native_values`, after verifying that module's path. Every type
+reference resolves to one of those objects, so a same-named declaration in an
+addon or nested record is an ordinary type. All six native value names must be
+present, or the check fails closed. Matching declaration lines with a pattern
+and comparing file and line was rejected: it read the file a second time,
+outside the compiler, and nested or reformatted declarations could disagree
+with what Teal loaded.
 Selected sources and admitted `.tl`/`.lua` dependencies share one mirrored physical
 namespace, preserving identity for overlapping include roots. Teal retains control
 of module suffix and include-root precedence. Native declarations precede caller
