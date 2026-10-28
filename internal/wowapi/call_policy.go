@@ -28,18 +28,35 @@ func (p *callPolicy) equal(other *callPolicy) bool {
 
 func (c *catalogue) projectCallable(item *catalogueFunction, owner, symbol string) []projectedSignature {
 	out := []projectedSignature{}
+	for _, choice := range c.distinctChoices(item, owner, symbol) {
+		out = append(out, choice.signature)
+	}
+	return out
+}
+
+// distinctChoice is one overload in its projected identity, with the contract
+// that produced it.
+type distinctChoice struct {
+	signature projectedSignature
+	contract  *catalogueFunction
+}
+
+// distinctChoices owns overload identity: variants that differ only by nil are
+// one overload, and must agree on permissions.
+func (c *catalogue) distinctChoices(item *catalogueFunction, owner, symbol string) []distinctChoice {
+	out := []distinctChoice{}
 	seen := map[projectedType]int{}
 	for _, choice := range c.signatureChoices(item, owner) {
 		expression := projectType(choice.expression)
 		policy := c.signaturePolicy(choice.contract, symbol, string(expression))
 		if index, ok := seen[expression]; ok {
-			if !out[index].policy.equal(policy) {
+			if !out[index].signature.policy.equal(policy) {
 				reject(fmt.Sprintf("ambiguous permissions for identical overload: %s", symbol))
 			}
 			continue
 		}
 		seen[expression] = len(out)
-		out = append(out, projectedSignature{expression: expression, policy: policy})
+		out = append(out, distinctChoice{signature: projectedSignature{expression: expression, policy: policy}, contract: choice.contract})
 	}
 	return out
 }

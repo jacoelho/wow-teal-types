@@ -384,17 +384,15 @@ func (c *catalogue) prepareGlobals() {
 		if item == nil || item.TypeName != "" {
 			continue
 		}
-		// projectCallable owns overload identity: variants that differ only by
-		// nil are one overload, and must agree on permissions.
-		if len(c.projectCallable(item, "", name)) < 2 {
+		choices := c.distinctChoices(item, "", name)
+		if len(choices) < 2 {
 			continue
 		}
-		choices := c.signatureChoices(item, "")
 		key := "Callable_" + ident(name)
 		record := c.record(key, item.Source, kindRecord)
 		calls := []*catalogueFunction{}
 		for _, choice := range choices {
-			call := strings.Replace(choice.expression, "(", "(self, ", 1)
+			call := strings.Replace(string(choice.signature.expression), "(", "(self, ", 1)
 			call = strings.ReplaceAll(call, "self, )", "self)")
 			calls = append(calls, &catalogueFunction{ResolvedSignature: &call, CallableContract: choice.contract, Method: true, PolicySymbol: name})
 		}
