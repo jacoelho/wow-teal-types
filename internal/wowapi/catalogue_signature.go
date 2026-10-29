@@ -365,12 +365,7 @@ func (c *catalogue) signatureChoices(item *catalogueFunction, owner string) []si
 		overloads = item.Annotation.Overloads
 	}
 	for _, raw := range overloads {
-		// An overload is a function the game provides: its parameters are inputs.
-		converted := c.tealValue(raw, owner, nil, outputPosition)
-		signature := converted
-		if def := c.defs[converted]; kindOf(def) == kindCallback {
-			signature = def.Signature
-		}
+		signature, _ := c.methodValue(raw, owner)
 		if c.secretStructs[owner] && !item.returnsNeverSecret() {
 			signature = c.projectSignature(signature)
 		}
@@ -500,23 +495,31 @@ func (c *catalogue) reconcileInheritance() {
 const secrecyPassLimit = 32768
 
 func (c *catalogue) prepareSecrecy(ctx context.Context) {
-	var targets func(string, map[string]bool) map[string]bool
-	targets = func(expression string, seen map[string]bool) map[string]bool {
+	// A function reached through a secret structure is projected to Data, so
+	// nothing in its signature is reachable from the secret value.
+	names := func(expression string) []string {
+		return dottedIdentifiers.FindAllString(withoutFunctionTypes(expression), -1)
+	}
+	// targets reads converted Teal text or a bare type name. An alias expands
+	// through its converted text, which never names an alias, so a function
+	// type is removed at any depth whichever path reaches it.
+	targets := func(expression string) map[string]bool {
 		out := map[string]bool{}
-		if seen[expression] || strings.HasPrefix(expression, "fun(") || strings.HasPrefix(expression, "function(") {
-			return out
-		}
-		next := map[string]bool{}
-		maps.Copy(next, seen)
-		next[expression] = true
-		for _, token := range dottedIdentifiers.FindAllString(expression, -1) {
+		mark := func(token string) {
 			if c.primitive(token) != "" || slices.Contains([]string{"nil", "table", "self"}, token) {
+				return
+			}
+			if name, ok := c.defNamed(ident(token)); ok && !c.isHandle(name) && c.defs[name].Kind.isTableLike() {
+				out[name] = true
+			}
+		}
+		for _, token := range names(expression) {
+			if c.aliases[token] == nil || c.defs[token] != nil {
+				mark(token)
 				continue
 			}
-			if c.aliases[token] != nil && c.defs[token] == nil {
-				maps.Copy(out, targets(c.aliases[token].Expression, next))
-			} else if record := c.defs[token]; record != nil && !c.isHandle(token) && record.Kind.isTableLike() {
-				out[token] = true
+			for _, expanded := range names(c.resolve(token, outputPosition)) {
+				mark(expanded)
 			}
 		}
 		return out
@@ -526,7 +529,7 @@ func (c *catalogue) prepareSecrecy(ctx context.Context) {
 			return map[string]bool{}
 		}
 		if inherited || item.secretResult() {
-			return targets(cmp.Or(item.InnerType, item.Type), map[string]bool{})
+			return targets(cmp.Or(item.InnerType, item.Type))
 		}
 		return map[string]bool{}
 	}
@@ -571,7 +574,7 @@ func (c *catalogue) prepareSecrecy(ctx context.Context) {
 			}
 			bases := map[string]bool{}
 			for _, base := range record.Bases {
-				maps.Copy(bases, targets(base, map[string]bool{}))
+				maps.Copy(bases, targets(base))
 			}
 			for base := range bases {
 				if c.secretStructs[base] {
@@ -592,7 +595,7 @@ func (c *catalogue) prepareSecrecy(ctx context.Context) {
 					} else if record.Kind != kindConvertedRecord {
 						expression = c.tealValue(field.Type, name, nil, outputPosition)
 					}
-					maps.Copy(c.secretStructs, targets(expression, map[string]bool{}))
+					maps.Copy(c.secretStructs, targets(expression))
 				}
 			}
 			for _, method := range slices.Sorted(maps.Keys(record.Methods)) {
@@ -604,15 +607,11 @@ func (c *catalogue) prepareSecrecy(ctx context.Context) {
 					for _, output := range item.Native.Returns {
 						maps.Copy(c.secretStructs, seed(output, true))
 					}
-				} else if item.Annotation != nil {
-					for _, output := range item.Annotation.Returns {
-						maps.Copy(c.secretStructs, targets(output.Type, map[string]bool{}))
-					}
 				}
 				for _, signature := range c.signaturesValue(item, name) {
 					parts := splitTop(signature, ':')
 					if len(parts) > 1 {
-						maps.Copy(c.secretStructs, targets(strings.Join(parts[1:], ":"), map[string]bool{}))
+						maps.Copy(c.secretStructs, targets(strings.Join(parts[1:], ":")))
 					}
 				}
 			}

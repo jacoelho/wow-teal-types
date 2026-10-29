@@ -2,303 +2,6 @@
 -- Canonical native declarations. See docs/api/teal-catalogue.md.
 local type W = require("native_values")
 local record CatalogueTypes
-   -- named LuaLS callback
-   type Callback_01413e4a5d73 = function(number, ? string)
-
-   -- named LuaLS callback
-   type Callback_03059a8143c0 = function(TooltipDataHandlerMixin, number): boolean
-
-   -- named LuaLS callback
-   type Callback_03c0b50da3e0 = function(CallbackHandlerRegistry, any, string)
-
-   -- named LuaLS callback
-   type Callback_05a8255de844 = function(number, Vector2DMixin, ? number): UiMapPoint
-
-   -- named LuaLS callback
-   type Callback_08cc7a05a5e5 = function(Callback_2197f66ced24)
-
-   -- named LuaLS callback
-   type Callback_08d44b7626a0 = function(AceGUIWidget, Literal_73288166ef67, ? number, ? number)
-
-   -- named LuaLS callback
-   type Callback_12fcf8bc35c1 = function(Literal_3a064e09ef93, string, ? number): any
-
-   -- named LuaLS callback
-   type Callback_148d90de31f3 = function(EditModeManagerFrame): boolean
-
-   -- named LuaLS callback
-   type Callback_1547b5eb3604 = function(string)
-
-   -- named LuaLS callback
-   type Callback_18e17c792cdd = function(GameTooltip, ElementMenuDescriptionProxy)
-
-   -- named LuaLS callback
-   type Callback_1df329697fd3 = function(LibQTip_Cell<any, any>, ? any): W.Data, W.Data
-
-   -- named LuaLS callback
-   type Callback_1f24faab15fc = function(MapCanvasDataProviderMixin): MapCanvasMixin
-
-   -- named LuaLS callback
-   type Callback_1fe22104bd65 = function(string, any)
-
-   -- named LuaLS callback
-   type Callback_2197f66ced24 = function(W.Data...)
-
-   -- named LuaLS callback
-   type Callback_220e4a3fa810 = function(ScrollingMessageFrame, string, ? number, ? number, ? number, any...)
-
-   -- named LuaLS callback
-   type Callback_23810861cf61 = function(MenuProxy, SharedMenuDescriptionProxy)
-
-   -- named LuaLS callback
-   type Callback_27e0d96a7eac = function(MenuProxy, number)
-
-   -- named LuaLS callback
-   type Callback_284ef80ec2bc = function(EditModeManagerFrame): boolean
-
-   -- named LuaLS callback
-   type Callback_290432078bb6 = function(SettingsCategoryMixin)
-
-   -- named LuaLS callback
-   type Callback_2b2d9a7f4d1a = function(Frame, string, string)
-
-   -- named LuaLS callback
-   type Callback_312081f5b7ca = function({MissionInfo}, number)
-
-   -- named LuaLS callback
-   type Callback_35cb555a891e = function(LibQTip_Tooltip<any, any>, ? any): W.Data, W.Data
-
-   -- named LuaLS callback
-   type Callback_373ba55346b1 = function(MapCanvasMixin, MapCanvasDataProviderMixin)
-
-   -- named LuaLS callback
-   type Callback_3c005cb9052e = function(any, MenuInputData, MenuProxy): number
-
-   -- named LuaLS callback
-   type Callback_3e59a5f74001 = function({string: string}, ? string): string, string
-
-   -- named LuaLS callback
-   type Callback_3ec4fdf48b4f = function(AceAddon, string, any, string...)
-
-   -- named LuaLS callback
-   type Callback_42c10352f5a6 = function()
-
-   -- named LuaLS callback
-   type Callback_4345a39e918d = function(GameTooltip, W.Data...)
-
-   -- named LuaLS callback
-   type Callback_440d17e6e23d = function(ElementMenuDescriptionProxy): boolean
-
-   -- named LuaLS callback
-   type Callback_4933ba48aa75 = function(Frame, string, Frame)
-
-   -- named LuaLS callback
-   type Callback_49bbf91b6c33<A, R> = function(A...): R...
-
-   -- named LuaLS callback
-   type Callback_4af858cf56d4 = function(SettingsCategoryMixin, Frame, string): SettingsCategoryMixin, SettingsCanvasLayoutMixin
-
-   -- named LuaLS callback
-   type Callback_4c67338a3ded = function(W.Data, MenuInputData, MenuProxy): number
-
-   -- named LuaLS callback
-   type Callback_4cd1f316ab01 = function(number, number, number, ? number): UiMapPoint
-
-   -- named LuaLS callback
-   type Callback_4dd9cc277bfa = function(EditModeLayoutDialog): string
-
-   -- named LuaLS callback
-   type Callback_4e9d3d5ad0fc = function(RaidWarningFrameMixin, string, any...)
-
-   -- named LuaLS callback
-   type Callback_55043f4f4e7b = function(MapCanvasPinMixin, any...)
-
-   -- named LuaLS callback
-   type Callback_5799dfecc20d = function(number, Literal_b7e0de2fb994): number
-
-   -- named LuaLS callback
-   type Callback_5ed4c95d7d25 = function(EditModeManagerFrame): {EditModeLayoutInfo}
-
-   -- named LuaLS callback
-   type Callback_5f799a79e215 = function(AceGUIWidget, Literal_73288166ef67, Region | string, ? number, ? number)
-
-   -- named LuaLS callback
-   type Callback_60307e2f4821 = function(CustomAuraContainer)
-
-   -- named LuaLS callback
-   type Callback_636b9224c325 = function(AceAddon_3_0, string, string...): W.Data
-
-   -- named LuaLS callback
-   type Callback_637ee03a355f = function(Frame, string): SettingsCategoryMixin, SettingsCanvasLayoutMixin
-
-   -- named LuaLS callback
-   type Callback_63961a063db3 = function(MapCanvasPinMixin, number, number, ? number)
-
-   -- named LuaLS callback
-   type Callback_6af77eca61d7 = function(Frame, ElementMenuDescriptionProxy)
-
-   -- named LuaLS callback
-   type Callback_6dc034cef83a = function(string, ? EditBox)
-
-   -- named LuaLS callback
-   type Callback_756a10786a51 = function(ElementMenuDescriptionProxy): number
-
-   -- named LuaLS callback
-   type Callback_7649559cdfa2 = function(SettingsCategoryMixin): string
-
-   -- named LuaLS callback
-   type Callback_7788fec2c014 = function(EditModeLayoutDialog): EditModeLayoutInfo
-
-   -- named LuaLS callback
-   type Callback_78ba9eea13ac = function(CustomAuraContainer): string
-
-   -- named LuaLS callback
-   type Callback_7f32b7c0d06e = function(FunctionContainer)
-
-   -- named LuaLS callback
-   type Callback_82ca5204df88 = function(CustomAuraContainer): boolean
-
-   -- named LuaLS callback
-   type Callback_854c98a187fb = function(MapCanvasPinMixin, number, ? number, ? number)
-
-   -- named LuaLS callback
-   type Callback_88481f38e71a = function(Frame, string, ChatTypeColor, ? number)
-
-   -- named LuaLS callback
-   type Callback_89634d3352ac = function(Frame)
-
-   -- named LuaLS callback
-   type Callback_8c7a74399e4b = function(SettingsCanvasLayoutMixin): Frame
-
-   -- named LuaLS callback
-   type Callback_8f2a72c76334<V> = function(V): string
-
-   -- named LuaLS callback
-   type Callback_91116618e4b4 = function(ElementMenuDescriptionProxy): boolean
-
-   -- named LuaLS callback
-   type Callback_978e5fb8e9be = function(EditModeManagerFrame, boolean)
-
-   -- named LuaLS callback
-   type Callback_9de61f1753e8 = function(MapCanvasPinMixin, string...)
-
-   -- named LuaLS callback
-   type Callback_a0ed567cd40f = function(Region, RootMenuDescriptionProxy, W.Data)
-
-   -- named LuaLS callback
-   type Callback_a3063ef31ab4 = function(Frame, ElementMenuDescriptionProxy, MenuProxy)
-
-   -- named LuaLS callback
-   type Callback_a7bf358ce778 = function(Literal_3a064e09ef93, string, ? number): W.Data
-
-   -- named LuaLS callback
-   type Callback_a8569325e554 = function(? number, ? number, ? number)
-
-   -- named LuaLS callback
-   type Callback_ab2d0031b812 = function(MapCanvasPinMixin, string, ? number)
-
-   -- named LuaLS callback
-   type Callback_acbd3bf37beb = function(Frame, W.Data...)
-
-   -- named LuaLS callback
-   type Callback_acbfc7e33545 = function(W.Data): boolean
-
-   -- named LuaLS callback
-   type Callback_ad2d122842f1 = function(number, number, number, number)
-
-   -- named LuaLS callback
-   type Callback_ad6e0666d24b = function(Literal_3a064e09ef93, string, string): W.Data
-
-   -- named LuaLS callback
-   type Callback_b12a0b829f70 = function(GameTooltip)
-
-   -- named LuaLS callback
-   type Callback_b18972c48a4e = function({string: Callback_12fcf8bc35c1}, ? string): string, Callback_a7bf358ce778
-
-   -- named LuaLS callback
-   type Callback_b1e8f201bfa6 = function(): number, ElementMenuDescriptionProxy
-
-   -- named LuaLS callback
-   type Callback_bcb28754c1a2 = function(EditModeManagerFrame): EditModeLayoutInfo
-
-   -- named LuaLS callback
-   type Callback_bee733b13fdd = function(MapCanvasDataProviderMixin, ? boolean)
-
-   -- named LuaLS callback
-   type Callback_c0d474b2407a = function(string, boolean)
-
-   -- named LuaLS callback
-   type Callback_ca8df2f43ab8 = function(MapCanvasMixin, string)
-
-   -- named LuaLS callback
-   type Callback_cadd0f36726f = function(Frame, string)
-
-   -- named LuaLS callback
-   type Callback_cb70861f0b9e = function(MapCanvasDataProviderMixin, MapCanvasMixin)
-
-   -- named LuaLS callback
-   type Callback_ce01a755e083 = function(EditModeLayoutDialog): {string: W.Data}
-
-   -- named LuaLS callback
-   type Callback_cfbf58d6956b = function(MapCanvasMixin): number
-
-   -- named LuaLS callback
-   type Callback_d2bebbbcf9c0 = function(Frame, ElementMenuDescriptionProxy, Frame, number, number)
-
-   -- named LuaLS callback
-   type Callback_d82d71a5fd2e = function(MapCanvasMixin, string, any...): MapCanvasPin
-
-   -- named LuaLS callback
-   type Callback_d98d32bf2385 = function(string, ? boolean)
-
-   -- named LuaLS callback
-   type Callback_dd95c2c8336e = function(Frame, number)
-
-   -- named LuaLS callback
-   type Callback_ddd094b75a29 = function(EditModeLayoutDialog): number
-
-   -- named LuaLS callback
-   type Callback_de8823f4c88e = function(EditModeManagerFrame)
-
-   -- named LuaLS callback
-   type Callback_def77e0306d5 = function(number, Vector3DType): UiMapPoint
-
-   -- named LuaLS callback
-   type Callback_e007ccc4073d = function(Literal_3a064e09ef93, string, string): any
-
-   -- named LuaLS callback
-   type Callback_e00847e9e259 = function(MenuProxy)
-
-   -- named LuaLS callback
-   type Callback_e3593162b86d = function(CustomAuraContainer, boolean)
-
-   -- named LuaLS callback
-   type Callback_e3ca125fbb5d = function(number, number)
-
-   -- named LuaLS callback
-   type Callback_e62163c5b5be = function(CustomAuraContainer, string)
-
-   -- named LuaLS callback
-   type Callback_e7176cc03c05 = function(Region, RootMenuDescriptionProxy, W.Data...)
-
-   -- named LuaLS callback
-   type Callback_eff084b7b696 = function(Frame, string, Frame, string, ? string)
-
-   -- named LuaLS callback
-   type Callback_f4d6b3f85a43 = function(MapCanvasDataProviderMixin)
-
-   -- named LuaLS callback
-   type Callback_fa07745fedba = function(CustomAuraContainer, string, string, ? AuraContainerGroupOptions)
-
-   -- named LuaLS callback
-   type Callback_fae6a84418b7 = function(number, string)
-
-   -- named LuaLS callback
-   type Callback_fb50e9ce6f1a = function(SettingsCategoryMixin): number
-
-   -- named LuaLS callback
-   type Callback_fe15fad53a14 = function(MapCanvasPinMixin)
-
    -- interned LuaLS string literals
    enum Literal_0082599e053d
       "Model"
@@ -2184,7 +1887,7 @@ local record CatalogueTypes
       IsModule: function(self): boolean
       IterateModules: function(self): W.Data, W.Data, number
       NewModule: function(self, string, string...): AceModule
-      NewModule: function(AceAddon, string, any, string...)
+      NewModule: function(self, string, any, string...)
       SetDefaultModuleLibraries: function(self, string...)
       SetDefaultModulePrototype: function(self, any)
       SetDefaultModuleState: function(self, boolean)
@@ -2197,7 +1900,7 @@ local record CatalogueTypes
       IterateAddonStatus: function(self): W.Data, W.Data, number
       IterateAddons: function(self): W.Data, W.Data, number
       NewAddon: function(self, any, string, string...): W.Data
-      NewAddon: function(AceAddon_3_0, string, string...): W.Data
+      NewAddon: function(self, string, string...): W.Data
    end
 
    -- questie:Libraries/Ace3/AceBucket-3.0.lua
@@ -2289,7 +1992,7 @@ local record CatalogueTypes
    -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
    interface AceConfigRegistry_3_0
       GetOptionsTable: function(self, string, ? Literal_3a064e09ef93, ? string): W.Data
-      IterateOptionsTables: function(self): Callback_b18972c48a4e, W.Data
+      IterateOptionsTables: function(self): function({string: function(Literal_3a064e09ef93, string, ? number): (any)}, ? string): (string, function(Literal_3a064e09ef93, string, ? number): (W.Data)), W.Data
       NotifyChange: function(self, string)
       RegisterOptionsTable: function(self, string, any, ? boolean)
       ValidateOptionsTable: function(self, any, string, ? number)
@@ -2301,7 +2004,7 @@ local record CatalogueTypes
       embeds: W.Data
       weakcommands: W.Data
       GetArgs: function(self, string, ? number, ? number): W.Data...
-      IterateChatCommands: function(self): Callback_3e59a5f74001
+      IterateChatCommands: function(self): function({string: string}, ? string): (string, string)
       Print: function(self, any...)
       Print: function(self, Frame, any...)
       Printf: function(self, string, any...)
@@ -2413,8 +2116,8 @@ local record CatalogueTypes
       SetHeight: function(self, number)
       SetParent: function(self, ? Region | string)
       SetPoint: function(self, Literal_73288166ef67, Region | string, string, ? number, ? number)
-      SetPoint: function(AceGUIWidget, Literal_73288166ef67, Region | string, ? number, ? number)
-      SetPoint: function(AceGUIWidget, Literal_73288166ef67, ? number, ? number)
+      SetPoint: function(self, Literal_73288166ef67, Region | string, ? number, ? number)
+      SetPoint: function(self, Literal_73288166ef67, ? number, ? number)
       SetRelativeWidth: function(self, number)
       SetUserData: function(self, any, any)
       SetWidth: function(self, number)
@@ -3292,7 +2995,7 @@ local record CatalogueTypes
    -- reviewed FrameXML supplement
    interface AuraContainerGroupOptions
       candidateFilters: AuraContainerCandidateFilters
-      initializeFrame: Callback_89634d3352ac
+      initializeFrame: function(Frame)
       layout: AuraContainerLayout
       maxFrameCount: number
       sortDirection: number
@@ -13073,11 +12776,11 @@ local record CatalogueTypes
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted"}
       After: function(number, function())
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted"}
-      NewTicker: function(number, FunctionContainer | Callback_7f32b7c0d06e, ? number): FunctionContainer
+      NewTicker: function(number, FunctionContainer | function(FunctionContainer), ? number): FunctionContainer
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted"}
       NewTimedSignalMap: function(function(W.MaybeSecret<number>)): TimedSignalMap
       -- {"Environment": "All", "SecretArguments": "AllowedWhenUntainted"}
-      NewTimer: function(number, FunctionContainer | Callback_7f32b7c0d06e): FunctionContainer
+      NewTimer: function(number, FunctionContainer | function(FunctionContainer)): FunctionContainer
    end
 
    -- questie:Blizzard_APIDocumentationGenerated/TimerunningUIDocumentation.lua
@@ -14968,7 +14671,7 @@ local record CatalogueTypes
 
    -- questie:Data/Wiki.lua
    record Callable_securecall
-      metamethod __call: function<A, R>(self, Callback_49bbf91b6c33<A, R>, A...): R...
+      metamethod __call: function<A, R>(self, function(A...): (R...), A...): R...
       metamethod __call: function(self, string, any...): W.Data...
    end
 
@@ -14979,8 +14682,8 @@ local record CatalogueTypes
 
    -- questie:Libraries/CallbackHandler-1.0/CallbackHandler-1.0.lua
    interface CallbackHandlerRegistry
-      OnUnused: Callback_03c0b50da3e0
-      OnUsed: Callback_03c0b50da3e0
+      OnUnused: function(CallbackHandlerRegistry, any, string)
+      OnUsed: function(CallbackHandlerRegistry, any, string)
       Fire: function(self, string, any...)
    end
 
@@ -17699,20 +17402,20 @@ local record CatalogueTypes
 
    -- questie:FrameXML/Blizzard_Menu/Proxies/SharedMenuDescriptionProxy.lua
    interface SharedMenuDescriptionProxy
-      AddInitializer: function(self, Callback_a3063ef31ab4, ? number)
+      AddInitializer: function(self, function(Frame, ElementMenuDescriptionProxy, MenuProxy), ? number)
       AddQueuedDescription: function(self, ElementMenuDescriptionProxy)
-      AddResetter: function(self, Callback_89634d3352ac)
+      AddResetter: function(self, function(Frame))
       ClearQueuedDescriptions: function(self)
-      CreateButton: function(self, string, ? Callback_4c67338a3ded, ? any): ElementMenuDescriptionProxy
-      CreateCheckbox: function(self, string, Callback_acbfc7e33545, ? Callback_4c67338a3ded, ? any): ElementMenuDescriptionProxy
-      CreateColorSwatch: function(self, string, ? Callback_4c67338a3ded, colorRGBA): ElementMenuDescriptionProxy
+      CreateButton: function(self, string, ? function(W.Data, MenuInputData, MenuProxy): (number), ? any): ElementMenuDescriptionProxy
+      CreateCheckbox: function(self, string, function(W.Data): (boolean), ? function(W.Data, MenuInputData, MenuProxy): (number), ? any): ElementMenuDescriptionProxy
+      CreateColorSwatch: function(self, string, ? function(W.Data, MenuInputData, MenuProxy): (number), colorRGBA): ElementMenuDescriptionProxy
       CreateDivider: function(self): ElementMenuDescriptionProxy
       CreateFrame: function(self): ElementMenuDescriptionProxy
-      CreateRadio: function(self, string, Callback_acbfc7e33545, ? Callback_4c67338a3ded, ? any): ElementMenuDescriptionProxy
+      CreateRadio: function(self, string, function(W.Data): (boolean), ? function(W.Data, MenuInputData, MenuProxy): (number), ? any): ElementMenuDescriptionProxy
       CreateSpacer: function(self, ? number): ElementMenuDescriptionProxy
       CreateTemplate: function(self, Literal_6efddcdaa800): ElementMenuDescriptionProxy
       CreateTitle: function(self, string, ? colorRGBA): ElementMenuDescriptionProxy
-      EnumerateElementDescriptions: function(self): Callback_b1e8f201bfa6
+      EnumerateElementDescriptions: function(self): function(): (number, ElementMenuDescriptionProxy)
       GetMinimumWidth: function(self): number
       GetTag: function(self): string, W.Data
       HasElements: function(self): boolean
@@ -17720,14 +17423,14 @@ local record CatalogueTypes
       QueueDivider: function(self, ? boolean)
       QueueSpacer: function(self, ? number, ? boolean)
       QueueTitle: function(self, string, ? colorRGBA, ? boolean)
-      SetFinalInitializer: function(self, Callback_a3063ef31ab4)
+      SetFinalInitializer: function(self, function(Frame, ElementMenuDescriptionProxy, MenuProxy))
       SetGridMode: function(self, number, ? number, ? number, ? number)
       SetMaximumWidth: function(self, number)
       SetMinimumWidth: function(self, number)
       SetScrollMode: function(self, ? number)
       SetTag: function(self, string, ? any)
       SetTitleAndTextTooltip: function(self, string, string)
-      SetTooltip: function(self, Callback_18e17c792cdd)
+      SetTooltip: function(self, function(GameTooltip, ElementMenuDescriptionProxy))
    end
 
    -- questie:FrameXML/Blizzard_Menu/Proxies/ElementMenuDescriptionProxy.lua
@@ -17739,14 +17442,14 @@ local record CatalogueTypes
       ForceOpenSubmenu: function(self)
       GetData: function(self): W.Data
       GetDefaultResponse: function(self, number, Literal_b7e0de2fb994): number
-      GetOnEnter: function(self): Callback_6af77eca61d7
-      GetOnLeave: function(self): Callback_6af77eca61d7
+      GetOnEnter: function(self): function(Frame, ElementMenuDescriptionProxy)
+      GetOnLeave: function(self): function(Frame, ElementMenuDescriptionProxy)
       GetSoundKit: function(self): number
       HandleOnEnter: function(self, Frame)
       HandleOnLeave: function(self, Frame)
-      HookOnEnter: function(self, Callback_6af77eca61d7)
-      HookOnLeave: function(self, Callback_6af77eca61d7)
-      HookResponder: function(self, Callback_4c67338a3ded)
+      HookOnEnter: function(self, function(Frame, ElementMenuDescriptionProxy))
+      HookOnLeave: function(self, function(Frame, ElementMenuDescriptionProxy))
+      HookResponder: function(self, function(W.Data, MenuInputData, MenuProxy): (number))
       IsEnabled: function(self): boolean
       IsRadio: function(self): boolean
       IsSelected: function(self): boolean
@@ -17755,18 +17458,18 @@ local record CatalogueTypes
       SetCanSelect: function(self, boolean)
       SetData: function(self, any)
       SetElementFactory: function(self, any)
-      SetEnabled: function(self, boolean | Callback_440d17e6e23d)
-      SetFinalizeGridLayout: function(self, Callback_d2bebbbcf9c0)
-      SetIsSelected: function(self, Callback_acbfc7e33545)
-      SetOnEnter: function(self, Callback_6af77eca61d7)
-      SetOnLeave: function(self, Callback_6af77eca61d7)
+      SetEnabled: function(self, boolean | function(ElementMenuDescriptionProxy): (boolean))
+      SetFinalizeGridLayout: function(self, function(Frame, ElementMenuDescriptionProxy, Frame, number, number))
+      SetIsSelected: function(self, function(W.Data): (boolean))
+      SetOnEnter: function(self, function(Frame, ElementMenuDescriptionProxy))
+      SetOnLeave: function(self, function(Frame, ElementMenuDescriptionProxy))
       SetRadio: function(self, boolean)
-      SetResponder: function(self, Callback_4c67338a3ded)
-      SetResponse: function(self, number | Callback_5799dfecc20d)
+      SetResponder: function(self, function(W.Data, MenuInputData, MenuProxy): (number))
+      SetResponse: function(self, number | function(number, Literal_b7e0de2fb994): (number))
       SetSelectionIgnored: function(self)
       SetShouldPlaySoundOnSubmenuClick: function(self, boolean)
       SetShouldRespondIfSubmenu: function(self, boolean)
-      SetSoundKit: function(self, number | Callback_756a10786a51)
+      SetSoundKit: function(self, number | function(ElementMenuDescriptionProxy): (number))
       ShouldPlaySoundOnSubmenuClick: function(self): boolean
       ShouldPollEnabled: function(self): boolean
       ShouldRespondIfSubmenu: function(self): boolean
@@ -40004,7 +39707,7 @@ local record CatalogueTypes
 
    -- questie:Libraries/LibDataBroker-1.1/LibDataBroker-1.1.lua
    interface LibDataBroker_DataObjectCommonFields
-      OnTooltipShow: Callback_b12a0b829f70
+      OnTooltipShow: function(GameTooltip)
       iconB: number
       iconCoords: W.Data
       iconG: number
@@ -40018,9 +39721,9 @@ local record CatalogueTypes
    -- questie:Libraries/LibDataBroker-1.1/LibDataBroker-1.1.lua
    interface LibDataBroker_DataDisplay
       is LibDataBroker_DataObjectCommonFields, TableVariants_c75555b0a664
-      OnClick: Callback_cadd0f36726f
-      OnEnter: Callback_89634d3352ac
-      OnLeave: Callback_89634d3352ac
+      OnClick: function(Frame, string)
+      OnEnter: function(Frame)
+      OnLeave: function(Frame)
       icon: string
       label: string
       suffix: string
@@ -40033,7 +39736,7 @@ local record CatalogueTypes
    -- questie:Libraries/LibDataBroker-1.1/LibDataBroker-1.1.lua
    interface LibDataBroker_QuickLauncher
       is LibDataBroker_DataObjectCommonFields, TableVariants_c75555b0a664
-      OnClick: Callback_cadd0f36726f
+      OnClick: function(Frame, string)
       icon: string
       label: string
       tocname: string
@@ -40150,7 +39853,7 @@ local record CatalogueTypes
       Acquire: function(self, any, ? number, Literal_3be0cb965eac...): LibQTip_Tooltip
       CreateCellProvider: function(self, ? LibQTip_CellProvider): LibQTip_CellProvider, W.Data, W.Data
       IsAcquired: function(self, any): boolean
-      IterateTooltips: function(self): Callback_35cb555a891e, LibQTip_Tooltip
+      IterateTooltips: function(self): function(LibQTip_Tooltip<any, any>, ? any): (W.Data, W.Data), LibQTip_Tooltip
       Release: function(self, LibQTip_Tooltip)
    end
 
@@ -40166,7 +39869,7 @@ local record CatalogueTypes
    interface LibQTip_CellProvider
       AcquireCell: function(self, LibQTip_Tooltip): LibQTip_Cell
       GetCellPrototype: function(self): W.Data, W.Data
-      IterateCells: function(self): Callback_1df329697fd3, LibQTip_Cell
+      IterateCells: function(self): function(LibQTip_Cell<any, any>, ? any): (W.Data, W.Data), LibQTip_Cell
       ReleaseCell: function(self, LibQTip_Cell)
    end
 
@@ -40183,14 +39886,14 @@ local record CatalogueTypes
       GetFont: function(self): Font
       GetHeaderFont: function(self): Font
       GetLineCount: function(self): number
-      SetAutoHideDelay: function(self, number, ? Frame, ? Callback_dd95c2c8336e)
+      SetAutoHideDelay: function(self, number, ? Frame, ? function(Frame, number))
       SetCell: function(self, number, number, any, ? string | Font, ? Literal_3be0cb965eac, ? number, ? LibQTip_CellProvider, ? number, ? number, ? number, ? number, any...): number, number
       SetCellMarginH: function(self, number)
       SetCellMarginV: function(self, number)
-      SetCellScript: function(self, number, number, Literal_5fadaef201d5, Callback_acbd3bf37beb, ? any)
+      SetCellScript: function(self, number, number, Literal_5fadaef201d5, function(Frame, W.Data...), ? any)
       SetColumnColor: function(self, number, ? number, ? number, ? number, ? number)
       SetColumnLayout: function(self, number, Literal_3be0cb965eac...)
-      SetColumnScript: function(self, number, Literal_5fadaef201d5, Callback_acbd3bf37beb, ? any)
+      SetColumnScript: function(self, number, Literal_5fadaef201d5, function(Frame, W.Data...), ? any)
       SetColumnTextColor: function(self, number, ? number, ? number, ? number, ? number)
       SetDefaultProvider: function(self, LibQTip_CellProvider)
       SetFont: function(self, string | Font)
@@ -40199,7 +39902,7 @@ local record CatalogueTypes
       SetHighlightTexCoord: function(number, number, number, number)
       SetHighlightTexture: function(self, string | number, ? Literal_61586155aabd, ? Literal_61586155aabd, ? Literal_322608a5af35)
       SetLineColor: function(self, number, ? number, ? number, ? number, ? number)
-      SetLineScript: function(self, number, Literal_5fadaef201d5, Callback_acbd3bf37beb, ? any)
+      SetLineScript: function(self, number, Literal_5fadaef201d5, function(Frame, W.Data...), ? any)
       SetLineTextColor: function(self, number, ? number, ? number, ? number, ? number)
       SetScrollStep: function(self, number)
       SmartAnchorTo: function(self, Frame)
@@ -40846,8 +40549,8 @@ local record CatalogueTypes
       CreateRootMenuDescription: function(any): RootMenuDescriptionProxy
       GetManager: function(): MenuManagerProxy
       GetOpenMenuTags: function(): {string}
-      ModifyMenu: function(string, Callback_a0ed567cd40f)
-      PopulateDescription: function(Callback_e7176cc03c05, Region, RootMenuDescriptionProxy, any...)
+      ModifyMenu: function(string, function(Region, RootMenuDescriptionProxy, W.Data))
+      PopulateDescription: function(function(Region, RootMenuDescriptionProxy, W.Data...), Region, RootMenuDescriptionProxy, any...)
       PrintOpenMenuTags: function()
    end
 
@@ -40879,40 +40582,40 @@ local record CatalogueTypes
       OnLoad: function(self)
       ReinitializeAll: function(self)
       SendResponse: function(self, any, any)
-      SetClosedCallback: function(self, Callback_e00847e9e259)
+      SetClosedCallback: function(self, function(MenuProxy))
       SetMenuDescription: function(self, any)
    end
 
    -- questie:FrameXML/Blizzard_Menu/MenuUtil.lua
    record MenuUtil
-      CreateButton: function(string, Callback_4c67338a3ded, ? any): ElementMenuDescriptionProxy
-      CreateButtonContextMenu: function(? Region, {string, Callback_4c67338a3ded, any}...): MenuProxy
-      CreateButtonMenu: function(DropdownButton, {string, Callback_4c67338a3ded, any}...)
-      CreateCheckbox: function(string, Callback_acbfc7e33545, Callback_4c67338a3ded, ? any): ElementMenuDescriptionProxy
-      CreateCheckboxContextMenu: function(? Region, Callback_acbfc7e33545, Callback_4c67338a3ded, {string, any}...): MenuProxy
-      CreateCheckboxMenu: function(DropdownButton, Callback_acbfc7e33545, Callback_4c67338a3ded, {string, any}...)
-      CreateColorSwatch: function(string, Callback_4c67338a3ded, colorRGBA): ElementMenuDescriptionProxy
-      CreateContextMenu: function(? Region, Callback_e7176cc03c05, any...): MenuProxy
+      CreateButton: function(string, function(W.Data, MenuInputData, MenuProxy): (number), ? any): ElementMenuDescriptionProxy
+      CreateButtonContextMenu: function(? Region, {string, function(W.Data, MenuInputData, MenuProxy): (number), any}...): MenuProxy
+      CreateButtonMenu: function(DropdownButton, {string, function(W.Data, MenuInputData, MenuProxy): (number), any}...)
+      CreateCheckbox: function(string, function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), ? any): ElementMenuDescriptionProxy
+      CreateCheckboxContextMenu: function(? Region, function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), {string, any}...): MenuProxy
+      CreateCheckboxMenu: function(DropdownButton, function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), {string, any}...)
+      CreateColorSwatch: function(string, function(W.Data, MenuInputData, MenuProxy): (number), colorRGBA): ElementMenuDescriptionProxy
+      CreateContextMenu: function(? Region, function(Region, RootMenuDescriptionProxy, W.Data...), any...): MenuProxy
       CreateDivider: function(): ElementMenuDescriptionProxy
-      CreateEnumRadioContextMenu: function<V>(? Region, {string: V}, Callback_8f2a72c76334<V>, Callback_acbfc7e33545, Callback_4c67338a3ded, ? {V: number}): MenuProxy
-      CreateEnumRadioMenu: function<V>(DropdownButton, {string: V}, Callback_8f2a72c76334<V>, Callback_acbfc7e33545, Callback_4c67338a3ded, ? {V: number})
+      CreateEnumRadioContextMenu: function<V>(? Region, {string: V}, function(V): (string), function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), ? {V: number}): MenuProxy
+      CreateEnumRadioMenu: function<V>(DropdownButton, {string: V}, function(V): (string), function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), ? {V: number})
       CreateFrame: function(): ElementMenuDescriptionProxy
-      CreateRadio: function(string, Callback_acbfc7e33545, Callback_4c67338a3ded, ? any): ElementMenuDescriptionProxy
-      CreateRadioContextMenu: function(? Region, Callback_acbfc7e33545, Callback_4c67338a3ded, {string, any}...): MenuProxy
-      CreateRadioMenu: function(DropdownButton, Callback_acbfc7e33545, Callback_4c67338a3ded, {string, any}...)
+      CreateRadio: function(string, function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), ? any): ElementMenuDescriptionProxy
+      CreateRadioContextMenu: function(? Region, function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), {string, any}...): MenuProxy
+      CreateRadioMenu: function(DropdownButton, function(W.Data): (boolean), function(W.Data, MenuInputData, MenuProxy): (number), {string, any}...)
       CreateRootMenuDescription: function(any): RootMenuDescriptionProxy
       CreateSpacer: function(? number): ElementMenuDescriptionProxy
       CreateTemplate: function(Literal_6efddcdaa800): ElementMenuDescriptionProxy
       CreateTitle: function(string, ? colorRGBA): ElementMenuDescriptionProxy
       GetElementText: function(ElementMenuDescriptionProxy): string
-      GetSelections: function(RootMenuDescriptionProxy, ? Callback_440d17e6e23d)
-      GetSelections: function(ElementMenuDescriptionProxy, ? Callback_440d17e6e23d)
+      GetSelections: function(RootMenuDescriptionProxy, ? function(ElementMenuDescriptionProxy): (boolean))
+      GetSelections: function(ElementMenuDescriptionProxy, ? function(ElementMenuDescriptionProxy): (boolean))
       HideTooltip: function(Region)
-      HookTooltipScripts: function(Region, Callback_b12a0b829f70)
+      HookTooltipScripts: function(Region, function(GameTooltip))
       SetElementText: function(ElementMenuDescriptionProxy, string)
-      ShowTooltip: function(Region, Callback_4345a39e918d, any...)
-      TraverseMenu: function(RootMenuDescriptionProxy, Callback_91116618e4b4, ? Callback_440d17e6e23d): boolean
-      TraverseMenu: function(ElementMenuDescriptionProxy, Callback_91116618e4b4, ? Callback_440d17e6e23d): boolean
+      ShowTooltip: function(Region, function(GameTooltip, W.Data...), any...)
+      TraverseMenu: function(RootMenuDescriptionProxy, function(ElementMenuDescriptionProxy): (boolean), ? function(ElementMenuDescriptionProxy): (boolean)): boolean
+      TraverseMenu: function(ElementMenuDescriptionProxy, function(ElementMenuDescriptionProxy): (boolean), ? function(ElementMenuDescriptionProxy): (boolean)): boolean
    end
 
    -- blizzard:MerchantFrameDocumentation.lua
@@ -43050,10 +42753,10 @@ local record CatalogueTypes
    -- questie:FrameXML/Blizzard_Menu/Proxies/RootMenuDescriptionProxy.lua
    interface RootMenuDescriptionProxy
       is SharedMenuDescriptionProxy
-      AddMenuAcquiredCallback: function(self, Callback_e00847e9e259)
-      AddMenuChangedCallback: function(self, Callback_42c10352f5a6)
-      AddMenuReleasedCallback: function(self, Callback_27e0d96a7eac)
-      AddMenuResponseCallback: function(self, Callback_23810861cf61)
+      AddMenuAcquiredCallback: function(self, function(MenuProxy))
+      AddMenuChangedCallback: function(self, function())
+      AddMenuReleasedCallback: function(self, function(MenuProxy, number))
+      AddMenuResponseCallback: function(self, function(MenuProxy, SharedMenuDescriptionProxy))
       DisableCompositor: function(self)
       DisableReacquireFrames: function(self)
    end
@@ -43645,10 +43348,10 @@ local record CatalogueTypes
 
    -- reviewed FrameXML supplement
    interface SettingsNamespace
-      OpenToCategory: Callback_01413e4a5d73
-      RegisterAddOnCategory: Callback_290432078bb6
-      RegisterCanvasLayoutCategory: Callback_637ee03a355f
-      RegisterCanvasLayoutSubcategory: Callback_4af858cf56d4
+      OpenToCategory: function(number, ? string)
+      RegisterAddOnCategory: function(SettingsCategoryMixin)
+      RegisterCanvasLayoutCategory: function(Frame, string): (SettingsCategoryMixin, SettingsCanvasLayoutMixin)
+      RegisterCanvasLayoutSubcategory: function(SettingsCategoryMixin, Frame, string): (SettingsCategoryMixin, SettingsCanvasLayoutMixin)
    end
 
    -- interned LuaLS record
@@ -45344,9 +45047,9 @@ local record CatalogueTypes
 
    -- reviewed FrameXML supplement
    interface UiMapPointFactory
-      CreateFromCoordinates: Callback_4cd1f316ab01
-      CreateFromVector2D: Callback_05a8255de844
-      CreateFromVector3D: Callback_def77e0306d5
+      CreateFromCoordinates: function(number, number, number, ? number): (UiMapPoint)
+      CreateFromVector2D: function(number, Vector2DMixin, ? number): (UiMapPoint)
+      CreateFromVector3D: function(number, Vector3DType): (UiMapPoint)
    end
 
    -- blizzard:UnitConstantsDocumentation.lua
@@ -46327,10 +46030,10 @@ local record CatalogueTypes
    type AceConfig_OptionsTable_Width = number | Literal_18f964a7429c
 
    -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
-   type AceConfigRegistry_OptionsGenerator = Callback_ad6e0666d24b
+   type AceConfigRegistry_OptionsGenerator = function(Literal_3a064e09ef93, string, string): (W.Data)
 
    -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
-   type AceConfigRegistry_OptionsGetter = Callback_a7bf358ce778
+   type AceConfigRegistry_OptionsGetter = function(Literal_3a064e09ef93, string, ? number): (W.Data)
 
    -- questie:Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua
    type AceConfigRegistry_UIType = Literal_3a064e09ef93
@@ -50926,7 +50629,7 @@ local record CatalogueTypes
    type MatchDetailType = number
 
    -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
-   type MenuDescriptionInitializer = Callback_a3063ef31ab4
+   type MenuDescriptionInitializer = function(Frame, ElementMenuDescriptionProxy, MenuProxy)
 
    -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    type MenuGridDirection = number
@@ -50935,7 +50638,7 @@ local record CatalogueTypes
    type MenuInputContext = number
 
    -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
-   type MenuResponder = Callback_3c005cb9052e
+   type MenuResponder = function(any, MenuInputData, MenuProxy): (number)
 
    -- questie:FrameXML/Blizzard_Menu/MenuTypes.lua
    type MenuResponse = number
@@ -51907,7 +51610,7 @@ local record CatalogueTypes
    type TextureAssetDisk = number | string
 
    -- reviewed timer callback/handle carrier
-   type TickerCallback = FunctionContainer | Callback_7f32b7c0d06e
+   type TickerCallback = FunctionContainer | function(FunctionContainer)
 
    -- blizzard:DelvesUIDocumentation.lua
    type TieredEntranceRewardType = number
@@ -54978,7 +54681,7 @@ local record CatalogueTypes
    type Global_REFUND_TOOLTIP_COLOR = ColorMixin
    type Global_RPE_FONT_COLOR = ColorMixin
    type Global_RUNEFORGE_LEGEDARY_SPEC_COLOR = ColorMixin
-   type Global_RaidNotice_AddMessage = Callback_88481f38e71a
+   type Global_RaidNotice_AddMessage = function(Frame, string, ChatTypeColor, ? number)
    type Global_RaidProfileExists = function(any): W.Data...
    type Global_RaidProfileHasUnsavedChanges = function(): W.Data...
    type Global_RaidWarningFrame = RaidWarningFrameTemplate
@@ -54987,7 +54690,7 @@ local record CatalogueTypes
    type Global_RefreshLFGList = function(): W.Data...
    type Global_RegisterCVar = function(string, ? string)
    type Global_RegisterEventCallback = function(string, function())
-   type Global_RegisterStateDriver = Callback_2b2d9a7f4d1a
+   type Global_RegisterStateDriver = function(Frame, string, string)
    type Global_RegisterStaticConstants = function(any): W.Data...
    type Global_RegisterUnitEventCallback = function(string, function(), string)
    type Global_RejectProposal = function(): W.Data...
@@ -55050,7 +54753,7 @@ local record CatalogueTypes
    type Global_RollOnLoot = function(number, ? number): W.Data...
    type Global_RunBinding = function(string, ? string): W.Data...
    type Global_RunMacro = function(number | string): W.Data...
-   type Global_RunNextFrame = Callback_08cc7a05a5e5
+   type Global_RunNextFrame = function(function(W.Data...))
    type Global_RunScript = function(string)
    type Global_SCENARIO_STAGE_COLOR = ColorMixin
    type Global_SCENARIO_SUBTITLE_COLOR = ColorMixin
@@ -55087,8 +54790,8 @@ local record CatalogueTypes
    type Global_SecondsToTime = function(number, ? boolean, ? boolean, ? number, ? boolean): string
    type Global_SecondsToTimeAbbrev = function(number): string, number
    type Global_SecureCmdOptionParse = function(string): string, string
-   type Global_SecureHandlerSetFrameRef = Callback_4933ba48aa75
-   type Global_SecureHandlerWrapScript = Callback_eff084b7b696
+   type Global_SecureHandlerSetFrameRef = function(Frame, string, Frame)
+   type Global_SecureHandlerWrapScript = function(Frame, string, Frame, string, ? string)
    type Global_SelectActiveQuest = function(): W.Data...
    type Global_SelectAvailableQuest = function(): W.Data...
    type Global_SelectTrainerService = function(number): W.Data...
@@ -55239,7 +54942,7 @@ local record CatalogueTypes
    type Global_SimulateMouseUp = function(Literal_b7e0de2fb994)
    type Global_SimulateMouseWheel = function(number)
    type Global_SitStandOrDescendStart = function()
-   type Global_SlashCmdList = {string: Callback_6dc034cef83a}
+   type Global_SlashCmdList = {string: function(string, ? EditBox)}
    type Global_SocketInventoryItem = function(any): W.Data...
    type Global_SocketItemToArtifact = function(): boolean
    type Global_SolveArtifact = function(): W.Data...
@@ -55709,7 +55412,7 @@ local record CatalogueTypes
    type Global_secretunwrap = function(any...): W.Data...
    type Global_secretwrap = function(any...): W.SecretData...
    type Global_securecall = Callable_securecall
-   type Global_securecallfunction = function<A, R>(Callback_49bbf91b6c33<A, R>, A...): R...
+   type Global_securecallfunction = function<A, R>(function(A...): (R...), A...): R...
    type Global_securecallmethod = function(any, string, any...): W.Data...
    type Global_securecopy = function(? any, ? SecureCopyOptions): W.Data
    type Global_secureexecuterange = function(any, any, any...): W.Data...

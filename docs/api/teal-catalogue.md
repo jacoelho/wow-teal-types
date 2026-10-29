@@ -19,7 +19,8 @@ complete acquired client UI inventory. Original packaged bytes remain intact.
 Missing or modified Blizzard files fail without a source-mirror fallback.
 
 Blizzard metadata selects native arity, ordered returns, defaults, absence and
-restrictions. Questie annotations supplement missing surfaces. Explicit
+restrictions. Questie annotations supplement missing surfaces; Questie vendors
+them from Ketho's `vscode-wow-api` LuaLS annotations. Explicit
 [FrameXML additions](../../internal/wowapi/inputs/framexml.json) and
 [contract corrections](../../internal/wowapi/inputs/overrides.json) fill selected gaps.
 Native decoding rejects unsupported fields and value shapes before interpretation.
@@ -34,6 +35,19 @@ The retained surface is not a claim to infer every client global or mixin.
 FrameXML identity helpers keep their argument types through contract corrections:
 `Mixin` returns its first argument (`function<T>(T, any...): T`), and
 `CopyTable`, `tInvert` and `tFilter` keep or invert their map types.
+
+LuaLS `fun(...)` types render inline as Teal function types, never as named
+aliases. Their results are always grouped, as in `function(number): (string)`:
+Teal result lists are greedy, so an ungrouped inner function would absorb a
+following parameter, result or union member. Teal prints the group without
+parentheses in diagnostics. A converted function used as a whole declaration
+(an overload, FrameXML method or FrameXML global) drops the group so it compares
+equal to other generated signatures. An overload whose first parameter is
+`self`, untyped or of the owning type, renders that receiver as `self`, as the
+method's own signature does, so a repeated overload collapses into it. A
+FrameXML method must declare `self: Owner` and renders it the same way. Hash-named aliases (`Callback_<hash>`) were
+rejected: diagnostics showed the hash instead of the signature, and paths that
+unwrapped an alias left unused declarations behind.
 
 The five draw-layer and vertex-color methods from `SimpleRegionAPI` belong to
 `LayeredRegion`. `Frame` retains common `Region` capabilities; `ModelScene` keeps
@@ -131,8 +145,13 @@ Stock Teal type-checks ordinary flows. The checker adds:
   `(t as any) as {MaybeSecret<number>}`. Top-level and result positions stay
   allowed (`a as W.MaybeSecret<number>`, `a as function(): W.MaybeSecret<number>`).
 - **Iteration and raw access.** `pairs` and `next` over a `SecretTable` yield
-  `SecretData` keys and values that need proofs before use. `rawget` is the stdlib
-  generic, so a read from a `SecretTable` stays `SecretData`.
+  `SecretData` keys and values that need proofs before use. Teal types
+  `rawget(t, k)` as the index `t[k]`, so a read from a `SecretTable` stays
+  `SecretData`. Called directly or
+  as a `pcall`/`xpcall` target, `rawget` needs the access proofs of an index
+  expression on its table and key. Each argument is judged by its own type,
+  including both results of a call that fills the two arguments
+  (`rawget(pair())`).
 - **Lookalikes.** A cast `S as R` to an authored record `R` is compared against
   the generated handles the value could be at runtime when `R` has generated bases
   or is userdata, or when `S` is a generated type, `userdata`, or an authored
@@ -156,24 +175,138 @@ Stock Teal type-checks ordinary flows. The checker adds:
   the actual type must not meet a plain position in the expected type. The
   comparison is deep: containers in both directions, function parameters
   contravariantly and results covariantly. A table constructor is compared item
-  by item.
+  by item, and a call or `...` as its last positional item for every value it
+  expands to (`{ g() }`). A function value flowing to an overloaded type must
+  fit every overload, since a caller may call through any of them. Each overload
+  of an overloaded value flowing to a function or overloaded type must fit every
+  target signature: Teal accepts `nil` for any parameter and an explicit
+  trailing `nil` where a call through the target omits it, so neither parameter
+  types nor arity prove which overload a call runs. The one exception is two
+  overloaded types whose parameter lists match position by position, in the
+  same order, with the same arity and varargs. A position that holds one type
+  in every overload of the source and one type in every overload of the target,
+  such as a receiver (named `self` or not), is skipped: it admits an argument
+  for all overloads of a side or for none, so it never decides which overload
+  runs. Teal's first-match choice then picks the same position on both sides
+  for every call, so each overload is compared only with its counterpart.
+  Parameters match structurally: scalars, arrays, maps, unions, nominal types,
+  function types (parameters, results, minimum arity and varargs) and generic
+  overloads (type parameters equal up to renaming, with equal constraints).
+  When any other position differs, every overload is compared with every
+  target overload and may be rejected. Teal may also pick a
+  later overload when an earlier one fits the arguments but not the declared
+  destination, and the checker judges the call by the overload Teal picked.
+  That is sound while overloads that accept the same arguments agree on which
+  results are opaque: a function assigned to an overloaded field must fit every
+  overload, overload-set copies are compared as above, and the checker fails
+  closed when a generated overload set has two overloads with overlapping arity
+  whose results differ in opacity. Recursive types
+  (`interface Unit` whose method takes `other: Unit`, `record Box<T>` with
+  `next: Box<T>`) are compared coinductively: a comparison already in progress
+  is assumed to hold, since a leak has a shortest witness that never repeats
+  one. A generic instantiation is identified by its declaration and type
+  arguments, and substitution keeps every part no type argument reaches, so
+  `Box<T>`, `Box<string>` or `Box<U>` met inside `Box<T>` names one type at
+  every level. The coinductive search can still grow exponentially with
+  mutually recursive interfaces; it stops at the checker's visit budget and
+  fails closed.
+- **Undeclared results.** A function returns every result it has, whatever its
+  type declares, and a call in last position passes them all on. A result
+  position the receiving type lacks is therefore judged as reaching `any`:
+  - Narrowing `function(): (string, W.Secret<number>)` to `function(): string`
+    is rejected at every flow point, and so is narrowing a variadic
+    `function(): W.Secret<number>...` to a fixed result count.
+  - A `return` is compared against the function's whole declared result list:
+    a call or `...` in last position meets every later declared result, and a
+    variadic one (`return g()`, `return ...`) every later result of a variadic
+    declaration and, under a fixed declared count, the extra results it may
+    return.
+  - A dropped type-variable result is rejected, as a type variable reaching
+    `any` is, since the caller may bind it to a Secret.
+  - Native callback parameters get no exemption: `C_Timer.After(1, f)` with
+    `f` returning a Secret is rejected; wrap it as `function() f() end`. This
+    matches `SetScript`, whose `any` handler parameter rejects the same `f`,
+    and keeps one rule for every function position. As at any trusted sink,
+    a native callback may drop a handle result (`C_Timer.After(0, build)`
+    with `build(): W.Frame`), while an authored function type may not
+    (`local cb: function() = build` is rejected, as storing a frame in an
+    authored `{any}` is).
 - **Sinks.** `any` and `Data` are plain positions, so a Secret cannot reach them.
   At stdlib and generated-declaration sinks, methods and other function-typed
   record members are not inspected (see consequences).
   An authored generic type variable is also a sink, and a value of type-variable
   type cannot reach `any`/`Data` (generic records are instantiated without a
-  checked call); `MaybeSecret<T>` is the generic transport. Type variables of
+  checked call); `MaybeSecret<T>` is the generic transport. A value of authored
+  type-variable type, or of a union with one, also needs the proofs a Secret
+  needs before it is tested, compared, operated on, indexed, called or narrowed,
+  and a cast to a type that is neither opaque nor type-variable-typed needs
+  `not issecretvalue(x)`: a record's type parameter may be instantiated with
+  `W.MaybeSecret<number>`, and its method bodies see only `T`. A generic
+  function's type parameter gets the same rule, since a method may pass its
+  record's `T` on to it. Proofs bind locals, so copy a field first
+  (`local v = self.v`). Teal 0.24.8 does not instantiate a generic record's type
+  parameters inside its nested type declarations, where `T` unifies with any
+  type (`local b: boolean = box.get()` compiles for `Box<W.Secret<number>>` when
+  `get` is a nested `type Getter = function(): T`). A nested type declaration
+  that mentions a type parameter of its generic owner is therefore rejected;
+  declare it at top level with its own parameter
+  (`local type Getter<T> = function(): T`, then `get: Getter<T>`). A callback
+  argument is compared against the callee's declared callback parameter, or
+  against each function member of a declared union, so an authored callee's
+  type variable cannot reach a callback's `any` parameter, whether the callback
+  is a function literal, a named function or a table-constructor field. Type variables of
   stdlib and generated declarations transport values: each argument is compared
   against its declared parameter, and every value bound to a type variable must
   be admitted, under the authored rule, by every caller-owned position that
   variable flows out to (`table.insert(list, v)`, `rawset`, callback
-  parameters). The call result is re-typed from the bound arguments, so its
-  destination is checked where the call expression flows; the method exemption
-  applies only when that destination is a trusted `any`/`Data` parameter. An
+  parameters, including those a vararg callback parameter receives). A type
+  variable no argument binds is the callee's choice and reaches those positions
+  as an authored type variable would; a callback's own results and parameter
+  containers do not bind it. A `nil` argument, explicit or omitted, binds a type
+  variable that is its whole parameter to `nil`, and nothing inside a structured
+  parameter such as a callback or table, so `securecallfunction(f)` passes on
+  exactly what `securecallfunction(f, nil)` does. No position after a last
+  argument with variadic results, such as `g()` returning `T...`, is omitted:
+  that call may fill it, so its results are compared against every later
+  parameter (`sink(g())` with `sink(a, b?: any)` and `g` returning
+  `W.MaybeSecret<number>...` is rejected). This trusts declared result counts as the checker
+  trusts declared result types; the undeclared-results rule keeps a narrower
+  function type or a `return` from hiding a result. An
+  argument whose shape hides a use of a type variable from that matching (a
+  callback inside a union, for example) gets the authored rule, and the call
+  may not bind a Secret to any type variable. The call result is re-typed from
+  the bound arguments, so its destination is checked where the call expression
+  flows; the method exemption applies only when that destination is a trusted
+  `any`/`Data` parameter. A callable record such as `securecall` binds itself
+  as its `__call` receiver, and `pcall`/`xpcall` re-type the protected target's
+  results after their leading `boolean`. Where nothing annotates that
+  destination (an unannotated `local`, a table item, a module `return`, an
+  argument of an overloaded callee such as `table.insert`), the re-typed result
+  must fit the type Teal inferred for the call. Teal types every result of
+  `securecallfunction(f)` and `securecall(f)` as `f`'s first result, so a
+  callback returning `(number, W.Secret<number>)` is rejected there; annotate
+  the destination as `W.MaybeSecret<number>`, or for an overloaded callee bind
+  the result to such a `local` first; a `pcall` read only for its status takes
+  `local ok: boolean = pcall(...)`. A call whose results are discarded is not
+  checked. An
   opaque argument whose parameter shape the checker cannot match to the type
   variables (for example a record passed as a `{K:V}` map) is rejected rather
   than trusted. `error`, `coroutine.resume` and `coroutine.yield` hand their
-  `any` inputs back to authored code as `any`, so they get the authored rule.
+  `any` inputs back to authored code as `any`, and `assert` raises its message
+  and on success returns every argument, though Teal declares only the first.
+  Their arguments, from the message on for `assert`, are therefore judged as
+  reaching authored `any`: `assert(fr, "missing frame")` is accepted, while
+  `assert(ok, s)` or `assert(ok, "x", fr)` with a Secret `s` or frame `fr` is
+  rejected. Callbacks are re-emitted the same way: an `xpcall` handler's results
+  come back as `xpcall`'s, a `coroutine.create` body's as `coroutine.resume`'s,
+  so both are judged under the authored rule (a handler returning a frame is
+  rejected), and a `coroutine.wrap` function passes the arguments of every call
+  after the first to the `coroutine.yield` that resumes, so the body's
+  parameters are judged as reaching `any`.
+- **Protected calls.** `pcall` and `xpcall` run their target on the arguments
+  after it, so the target's own rules apply: `pcall(assert, s, "m")` needs the
+  truthiness proof `assert(s, "m")` does, and `pcall(type, s)` the publicness
+  proof `type(s)` does.
 - **Builtins.** `select`, `pcall`, `xpcall`, `table.pack`, `table.unpack`,
   `ipairs`, `pairs` and the other stdlib transports are recognized by their
   stdlib declaration location. A shadowing local has a different location and
@@ -224,9 +357,10 @@ authority. Policy provenance is the source coordinate plus the package hash.
 
 The checker fails closed on a wrong compiler version, a missing or malformed
 policy, changed marker declarations, a missing stdlib identity, a declaration
-module loaded from outside the package, or an expression whose type the compiler
-did not record. Arbitrary Lua, unselected source bodies and runtime permissions
-remain outside this static claim.
+module loaded from outside the package, a generated overload set whose
+arity-overlapping overloads disagree on the opacity of a result, or an
+expression whose type the compiler did not record. Arbitrary Lua, unselected
+source bodies and runtime permissions remain outside this static claim.
 
 ### Consequences and lost guarantees
 
@@ -242,9 +376,14 @@ remain outside this static claim.
 - An upcast that hides an opaque value field is rejected, since a later
   downcast could re-type the field as plain. A record with a `MaybeSecret`
   field therefore cannot be passed, stored or returned as a supertype that
-  lacks the field (an interface, or `W.Frame` for `record Pane is W.Frame`). Hiding a method is
-  allowed so handle hierarchies keep working; the lookalike rule catches the
-  later downcast.
+  lacks the field (an interface, or `W.Frame` for `record Pane is W.Frame`). Hiding a method or
+  function-typed field is allowed so handle hierarchies keep working; the
+  lookalike rule catches a later downcast only when the hidden member belongs
+  to a generated handle, since only generated types are candidates. A member
+  only an authored type declares is a known gap: a record whose `get` returns
+  a Secret, upcast to an empty interface, to `W.Frame` (as `record Pane is
+  W.Frame`), or cast to `W.Frame` outright, and then cast to a lookalike whose
+  `get` returns `string`, is accepted.
 - Casts between containers compare elements invariantly when either side is
   opaque, so `{number} as {MaybeSecret<number>}` is rejected.
 - Lookalike limit: casts from `any` or `Data` to an authored record without
@@ -259,13 +398,24 @@ remain outside this static claim.
 - Laundering limit: `(plain as any) as W.Secret<W.SecretTable>` is accepted
   (the conservative entry), after which a write through the plain alias is not
   tracked.
+- Overload choice limit: an authored declaration of code the checker does not
+  see is trusted as written. When its overloads accept overlapping arguments
+  and disagree on result opacity (`get: function(string): W.Secret<number>`
+  and `get: function(string | number): number`), Teal picks the second for
+  `local n: number = s.get("x")` and the Secret is typed plain. Generated
+  declarations are checked for this at load; an authored implementation cannot
+  produce such a set, because a function assigned to an overloaded field must
+  fit every overload.
 - Secrecy is a property of a type, not of a value. Curve evaluation returns
   `colorRGBA`, so every `ColorMixin` field is `MaybeSecret<number>`, including
   static constants such as `RAID_CLASS_COLORS[class].r` and
   `GRAY_FONT_COLOR.r`. Arithmetic on them needs the access checks and an `as`
   unwrap. A curve point that is a number or a colour is
   `MaybeSecret<number> | colorRGBA`: only the primitive member is wrapped, and
-  the colour carries its secrecy in its fields.
+  the colour carries its secrecy in its fields. A function-typed field or
+  method result of a secret structure is `W.SecretData`, so a structure named
+  only in that function's signature does not become secret through it, whether
+  the function is written inline, in an overload or behind an alias.
   Rejected alternative: a separate plain colour type for FrameXML constants.
   Derived types inherit their base's secrecy, so it would have to duplicate
   `ColorMixin` instead of extending it, and it could not be passed where
@@ -302,7 +452,16 @@ remain outside this static claim.
   read-only `SecretTable` rule (any same-shaped map bypasses an alias-name rule,
   and tl 0.24.8 raw types carry no alias identity); per-native re-emitter or
   allowlist policies (they break real senders such as `SetAttribute` and miss
-  unlisted natives).
+  unlisted natives). For the authored-lookalike gap: rejecting upcasts that
+  hide a Secret method (it rejects ordinary `{Unit}` lists of records with
+  extra methods, and every authored frame with such a method passed where
+  `W.Frame` is expected); adding authored records as lookalike candidates.
+  That is a partial fix with a false-positive cost: nominal ancestry would
+  close an in-file `record Pane is W.Frame` upcast, but each selected file is
+  checked alone, so records reached only through the addon namespace stay
+  invisible, a sidecast `b as W.Frame` has no ancestry to follow, and every
+  cast from `W.Frame` would also be compared against each authored record
+  extending it, rejecting lookalikes of frames that are never that record.
 - Treating every `any` as opaque was rejected: most `any` inputs are untyped
   rather than secret, so it would be untrue to the sources.
 - Outside secrecy, soundness is stock Teal's: arrays and maps are covariant (an

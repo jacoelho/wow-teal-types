@@ -168,7 +168,8 @@ func (c *catalogue) resolve(name string, position typePosition) string {
 		defer delete(c.resolving, name)
 		alias := c.aliases[name]
 		if alias.Signature != nil {
-			return c.signatureValue(alias.Signature, "")
+			// Resolved text is written into other types.
+			return groupedSignature(c.signatureValue(alias.Signature, ""))
 		}
 		return c.tealValue(alias.Expression, "", nil, position)
 	}
@@ -178,25 +179,6 @@ func (c *catalogue) resolve(name string, position typePosition) string {
 	unsupported(name, "unresolved named type")
 	return ""
 }
-func pythonTuple(values []string) string {
-	if len(values) == 0 {
-		return "()"
-	}
-	out := []string{}
-	for _, v := range values {
-		quote := "'"
-		if strings.Contains(v, "'") && !strings.Contains(v, "\"") {
-			quote = "\""
-		}
-		v = strings.ReplaceAll(v, "\\", "\\\\")
-		v = strings.ReplaceAll(v, quote, "\\"+quote)
-		out = append(out, quote+v+quote)
-	}
-	if len(out) == 1 {
-		return "(" + out[0] + ",)"
-	}
-	return "(" + strings.Join(out, ", ") + ")"
-}
 func (c *catalogue) tealValue(expression, owner string, generics []string, position typePosition) string {
 	converter := typeConverter{raw: expression, self: ident(owner), position: position, literal: c.literal, record: c.anonymous}
 	converter.resolve = func(name string, position typePosition) string {
@@ -204,22 +186,6 @@ func (c *catalogue) tealValue(expression, owner string, generics []string, posit
 			return ident(name)
 		}
 		return c.resolve(name, position)
-	}
-	converter.callback = func(signature string) string {
-		usedGenerics := []string{}
-		for _, generic := range generics {
-			if regexp.MustCompile(`\b` + regexp.QuoteMeta(generic) + `\b`).MatchString(signature) {
-				usedGenerics = append(usedGenerics, generic)
-			}
-		}
-		key := "Callback_" + sha256hex([]byte(signature + pythonTuple(usedGenerics)))[:12]
-		if _, ok := c.defs[key]; !ok {
-			c.setDef(key, &catalogueDefinition{Kind: kindCallback, Signature: signature, Generics: usedGenerics, Source: "named LuaLS callback"})
-		}
-		if len(usedGenerics) > 0 {
-			return key + "<" + strings.Join(usedGenerics, ", ") + ">"
-		}
-		return key
 	}
 	converter.union = func(values []string) string {
 		all := []string{}
@@ -726,7 +692,7 @@ func (c *catalogue) loadFrameXML(supplement frameXMLSupplement) (err error) {
 		}
 	}
 	for _, name := range slices.Sorted(maps.Keys(supplement.Globals)) {
-		c.setGlobal(name, &catalogueFunction{ResolvedSignature: new(c.tealValue(supplement.Globals[name], "", nil, outputPosition)), Source: source})
+		c.setGlobal(name, &catalogueFunction{ResolvedSignature: new(wholeSignature(c.tealValue(supplement.Globals[name], "", nil, outputPosition))), Source: source})
 	}
 	return nil
 }
@@ -736,17 +702,26 @@ func (c *catalogue) frameXMLMethod(expression, owner string) (signature string, 
 	if !pattern.MatchString(expression) {
 		reject("expected an explicit owning receiver")
 	}
-	// The method is a value the game provides: its parameters are inputs.
-	callback := c.defs[c.tealValue(expression, owner, nil, outputPosition)]
-	if callback == nil || callback.Kind != kindCallback {
-		reject("expected a method function")
-	}
-	signature = callback.Signature
-	receiver := "function(" + ident(owner)
-	if !strings.HasPrefix(signature, receiver) || len(signature) <= len(receiver) || !strings.ContainsRune(",)", rune(signature[len(receiver)])) {
+	signature, owned := c.methodValue(expression, owner)
+	if !owned {
 		reject("expected an explicit owning receiver")
 	}
-	return "function(self" + signature[len(receiver):], nil
+	return signature, nil
+}
+
+var selfParameter = regexp.MustCompile(`^fun\(\s*self\s*[:,)]`)
+
+// methodValue converts expression, a function the game provides, so its
+// parameters are inputs. A first parameter named self that converts to owner
+// is the owning receiver and renders as self, the spelling every method
+// signature of owner uses; owned reports whether expression had one.
+func (c *catalogue) methodValue(expression, owner string) (signature string, owned bool) {
+	signature = wholeSignature(c.tealValue(expression, owner, nil, outputPosition))
+	receiver := "function(" + ident(owner)
+	if owner == "" || !selfParameter.MatchString(expression) || !strings.HasPrefix(signature, receiver) || len(signature) <= len(receiver) || !strings.ContainsRune(",)", rune(signature[len(receiver)])) {
+		return signature, false
+	}
+	return "function(self" + signature[len(receiver):], true
 }
 
 func (c *catalogue) statistics() CatalogueStatistics {

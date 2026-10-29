@@ -31,6 +31,16 @@ function unboundResult() end
 ---@return fun(state:table<K,V>,index?:K):K,V
 ---@return table<K,V>
 function unboundIterator() end
+---@param cb fun():string,number
+---@param n number
+function composedParameter(cb, n) end
+---@param x (fun():string)|"a"|"b"
+function unionParameter(x) end
+---@param cb fun():(fun():number)
+function nestedParameter(cb) end
+---@return fun():string,number
+---@return boolean
+function composedResult() end
 `
 	doc, err := parseAnnotations([]byte(source), "callbacks.lua")
 	if err != nil {
@@ -95,6 +105,22 @@ callback()`, true},
 local wrong=callback("text")`, true},
 		{"output generic cannot forge scalar", `local wrong:number=unboundResult()`, true},
 		{"output generics cannot forge state", `local iterator,state:any,{string:number}=unboundIterator()`, true},
+		// Inline callbacks sit before parameters, results and union members;
+		// none of those may become another result of the callback.
+		{"inline callbacks keep their boundaries", `composedParameter(function(): (string, number) return "x", 1 end, 2)
+unionParameter("a")
+unionParameter(function(): string return "s" end)
+nestedParameter(function(): (function(): number) return function(): number return 1 end end)
+local fn, ok = composedResult()
+local flag:boolean = ok
+local text, count: string, number = fn()`, false},
+		{"callback parameter keeps the next parameter", `composedParameter(function(): (string, number) return "x", 1 end)`, true},
+		{"callback parameter keeps its results", `composedParameter(function(): (number, number) return 1, 1 end, 2)`, true},
+		{"callback union keeps its literals", `unionParameter("c")`, true},
+		{"callback union keeps callback results", `unionParameter(function(): number return 1 end)`, true},
+		{"nested callback keeps inner results", `nestedParameter(function(): (function(): string) return function(): string return "s" end end)`, true},
+		{"callback result keeps the next result", `local fn, ok = composedResult()
+local wrong:string = ok`, true},
 	}
 	tl := StockTeal(t)
 	for _, tc := range cases {
