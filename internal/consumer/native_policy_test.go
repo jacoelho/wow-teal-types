@@ -418,14 +418,21 @@ func TestDeclarationErrorsFailEverySource(t *testing.T) {
 
 // Teal may type a call by a later overload than the first that fits, so
 // generated overloads whose arities overlap must agree on the opacity of every
-// result. A generated set that disagrees fails every source.
+// result and callback parameter. A generated set that disagrees fails every
+// source.
 func TestGeneratedOverloadOpacityDisagreementFailsEverySource(t *testing.T) {
-	cases := []struct{ name, first, second, want string }{
-		{"overlapping arities", "function(self): number", "function(self, ? number): N.Secret<number>", "result 1"},
-		{"opaque contents", "function(self): {number}", "function(self, ? number): {N.Secret<number>}", "result 1"},
-		{"later result", "function(self): number, number", "function(self, ? number): number, N.Secret<number>", "result 2"},
-		{"disjoint arities", "function(self): number", "function(self, number): N.Secret<number>", ""},
-		{"agreeing opacity", "function(self): number", "function(self, ? number): number", ""},
+	cases := []struct{ name, member, first, second, want string }{
+		{"overlapping arities", "get", "function(self): number", "function(self, ? number): N.Secret<number>", "get disagree on the opacity of result 1"},
+		{"opaque contents", "get", "function(self): {number}", "function(self, ? number): {N.Secret<number>}", "get disagree on the opacity of result 1"},
+		{"later result of the second overload", "get", "function(self): number", "function(self, ? number): number, N.Secret<number>", "get disagree on the opacity of result 2"},
+		{"later result of the first overload", "get", "function(self): number, N.Secret<number>", "function(self, ? number): number", "get disagree on the opacity of result 2"},
+		{"vararg overlap", "get", "function(self, string, ...: number): N.Secret<number>", "function(self, string, number, number, number): number", "get disagree on the opacity of result 1"},
+		{"callback parameter", "on", "function(self, function(N.Secret<number>), string): string", "function(self, function(number), number): number", "on disagree on the opacity of parameter 2 callback parameter 1"},
+		{"vararg callback of the first overload", "on", "function(self, ...: function(N.Secret<number>)): string", "function(self, function(N.Secret<number>), function(number)): number", "on disagree on the opacity of parameter 3 callback parameter 1"},
+		{"vararg callback of the second overload", "on", "function(self, function(N.Secret<number>), function(number)): number", "function(self, ...: function(N.Secret<number>)): string", "on disagree on the opacity of parameter 3 callback parameter 1"},
+		{"metamethod", "metamethod __call", "function(self, string): N.Secret<number>", "function(self, string | number): number", "__call disagree on the opacity of result 1"},
+		{"disjoint arities", "get", "function(self): number", "function(self, number): N.Secret<number>", ""},
+		{"agreeing opacity", "get", "function(self): number", "function(self, ? number): number", ""},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -435,7 +442,7 @@ func TestGeneratedOverloadOpacityDisagreementFailsEverySource(t *testing.T) {
 				if !strings.HasSuffix(files[wow], end) {
 					t.Fatalf("fixture %s does not end with %q", wow, end)
 				}
-				probe := "   record Probe\n      get: " + tc.first + "\n      get: " + tc.second + "\n   end\n"
+				probe := "   record Probe\n      " + tc.member + ": " + tc.first + "\n      " + tc.member + ": " + tc.second + "\n   end\n"
 				files[wow] = strings.TrimSuffix(files[wow], end) + probe + end
 			})
 			// The check runs once per checker run; the second source shows a
@@ -447,9 +454,12 @@ func TestGeneratedOverloadOpacityDisagreementFailsEverySource(t *testing.T) {
 				}
 				return
 			}
-			want := "generated overloads of wow.Probe.get disagree on the opacity of " + tc.want
+			want := "generated overloads of wow.Probe." + tc.want
 			for _, name := range []string{"caller.tl", "other.tl"} {
-				if err == nil || !slices.ContainsFunc(diagnostics[name], func(d diagnostic) bool { return strings.Contains(d.message, want) }) {
+				if err == nil || !slices.ContainsFunc(diagnostics[name], func(d diagnostic) bool {
+					// The middle is Lua's error position inside the checker.
+					return strings.HasPrefix(d.message, "secret check failed closed: ") && strings.HasSuffix(d.message, ": "+want)
+				}) {
 					t.Fatalf("missing fail-closed rejection %q on %s: %v\n%s", want, name, err, output)
 				}
 			}

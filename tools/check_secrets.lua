@@ -320,6 +320,31 @@ local function check_source(filename)
    local function stdlib_name(typ)
       if typ and typ.f == "stdlib.d.tl" then return stdlib_names[tostring(typ.y) .. ":" .. tostring(typ.x)] or "stdlib" end
    end
+   -- Lua reads a metatable's `__index` table on a missed key and never writes
+   -- through it (`__newindex` receives the writes), so a record table placed
+   -- there is inert, but only the table itself: a table nested in the
+   -- `__index` value is read back typed by the instance's field. Only a fresh
+   -- table constructor or an upcast record puts it there; assigning
+   -- `mt.__index` reaches a slot another alias of the same table may type
+   -- (`local t = { __index = seed }; local mt: metatable<H> = t`). The Teal
+   -- prelude's `metatable` record is identified by its declaration location,
+   -- which its instantiations keep. The position is the `__index` key of such
+   -- a record, not its field type: Teal gives that type object to a local
+   -- inferred from `mt.__index`.
+   local metatable_declaration
+   do
+      local decl = env.globals.metatable and env.globals.metatable.t
+      local def = decl and decl.def
+      def = def and def.typename == "generic" and def.t or def
+      if not (def and def.typename == "record" and def.f == "prelude.d.tl" and def.fields and def.fields.__index) then
+         fail_closed("compiler omitted stdlib identity: metatable")
+      end
+      metatable_declaration = def
+   end
+   local function is_metatable(t)
+      local d = metatable_declaration
+      return t.typename == "record" and t.f == d.f and t.y == d.y and t.x == d.x
+   end
    -- The builtin name shared by every overload of a poly stdlib function.
    local function stdlib_member_name(typ)
       if typ.typename ~= "poly" then return stdlib_name(typ) end
@@ -435,7 +460,9 @@ local function check_source(filename)
       cache[INSTANCE] = result
       return result
    end
-   local function resolve(t)
+   -- `quantified`, when given, collects the type arguments of the generics
+   -- passed through.
+   local function resolve(t, quantified)
       for _ = 1, 64 do
          if type(t) ~= "table" then error("compiler omitted type identity") end
          local name = t.typename
@@ -448,12 +475,27 @@ local function check_source(filename)
             if not next_type or next_type == t then return t end
             t = next_type
          elseif name == "typedecl" then t = t.def
-         elseif name == "generic" then t = t.t
+         elseif name == "generic" then
+            for _, argument in ipairs(quantified and t.typeargs or {}) do quantified[argument.typearg] = true end
+            t = t.t
          elseif name == "literal_table_item" then t = t.vtype
          else return t end
       end
       error("cannot resolve bounded type identity")
    end
+   -- A generic record's own table (`Box` read as a value, not a `Box<T>`):
+   -- one table that every instantiation reads through `__index`. Teal types it
+   -- as the generic's body with its type parameters unbound, so it admits
+   -- writes of any type to their fields. Returns that body when `t` resolves
+   -- through a generic to a record or interface; an instance never does, its
+   -- nominal resolves to an instantiated copy.
+   local function record_table(t)
+      local quantified = {}
+      local body = resolve(t, quantified)
+      if next(quantified) and (body.typename == "record" or body.typename == "interface") then return body end
+      return nil
+   end
+   local function record_table_name(body) return tostring(body.declname or "of a generic record") end
    local function payload(t)
       local typevals = t.typevals
       if not typevals or #typevals ~= 1 then error("compiler omitted Secret payload") end
@@ -514,6 +556,86 @@ local function check_source(filename)
       end
       if name == "function" then
          return deep(t.args, seen, depth, values) or deep(t.rets, seen, depth, values)
+      end
+      return false
+   end
+   -- An authored type variable may be instantiated with a Secret
+   -- (`Box<MaybeSecret<number>>` is legal), so a value of type-variable type,
+   -- or a union holding one, is tested, compared, operated on and cast only
+   -- under the proofs a Secret needs.
+   local function variable_typed(t)
+      t = resolve(t)
+      if t.typename == "typevar" or t.typename == "typearg" then return true end
+      if t.typename ~= "union" then return false end
+      for _, member in ipairs(t.types) do
+         if variable_typed(member) then return true end
+      end
+      return false
+   end
+   -- Teal 0.24.8 gives a generic referenced by name fresh type variables
+   -- (`U@12`, fresh_typeargs): a callee's own, which Teal binds at the call
+   -- from the arguments the checker compares there. Any other is a type
+   -- parameter of the code around the call, which the call does not bind.
+   local function instance_variable(name)
+      return name:find("@", 1, true) ~= nil
+   end
+   -- A type parameter of the authored code being checked: not quantified by a
+   -- generic inside the type (`function<A>(A): A`), nor a call's instance.
+   local function parameter_variable(t, bound)
+      local name = t.typename == "typevar" and t.typevar or t.typename == "typearg" and t.typearg
+      return name and not (bound and bound[name]) and not instance_variable(name) or false
+   end
+   -- Such a parameter anywhere inside the type, traversed as deep does. It may
+   -- be instantiated with a Secret, so a value holding one reaches `any`, Data
+   -- and plain positions only as a Secret would.
+   -- A record table's parameters are free: the table reaches typed positions
+   -- only as a value holding them. `inert` binds them where the table is held
+   -- inert (see the record table rule in leak): nothing writes its fields
+   -- there, so they hold nothing. Nested type declarations are not values; a
+   -- table read through one is checked where it is read.
+   local QUANTIFIED = {}
+   local function holds_variable(t, values, inert, bound, seen, depth)
+      if t == nil then return false end
+      bound, seen, depth = bound or { [QUANTIFIED] = "" }, seen or {}, (depth or 0) + 1
+      if depth > 64 then error("type variable search exceeds type depth") end
+      local quantified = {}
+      t = resolve(t, quantified)
+      if not inert and (t.typename == "record" or t.typename == "interface") then quantified = {} end
+      if next(quantified) then
+         local inner, names = {}, {}
+         for name in pairs(bound) do inner[name] = true end
+         for name in pairs(quantified) do inner[name] = true end
+         for name in pairs(inner) do if type(name) == "string" then names[#names + 1] = name end end
+         table.sort(names)
+         inner[QUANTIFIED] = table.concat(names, ",")
+         bound = inner
+      end
+      local marks = seen[t] or {}
+      seen[t] = marks
+      if marks[bound[QUANTIFIED]] then return false end
+      marks[bound[QUANTIFIED]] = true
+      local name = t.typename
+      if name == "typevar" or name == "typearg" then return parameter_variable(t, bound) end
+      if is_secret(t) or is_data(t) then return false end
+      local function any_of(list)
+         for _, member in ipairs(list or {}) do
+            if holds_variable(member, values, inert, bound, seen, depth) then return true end
+         end
+         return false
+      end
+      if name == "array" then return holds_variable(t.elements, values, inert, bound, seen, depth) end
+      if name == "map" then return holds_variable(t.keys, values, inert, bound, seen, depth) or holds_variable(t.values, values, inert, bound, seen, depth) end
+      if name == "tuple" then return any_of(t.tuple) end
+      if name == "union" or name == "tupletable" or name == "poly" then return any_of(t.types) end
+      if name == "record" or name == "interface" then
+         for _, field in pairs(t.fields or {}) do
+            if field.typename ~= "typedecl" and not (values and callable_member(field))
+               and holds_variable(field, values, inert, bound, seen, depth) then return true end
+         end
+         return t.elements ~= nil and holds_variable(t.elements, values, inert, bound, seen, depth)
+      end
+      if name == "function" then
+         return holds_variable(t.args, values, inert, bound, seen, depth) or holds_variable(t.rets, values, inert, bound, seen, depth)
       end
       return false
    end
@@ -653,9 +775,13 @@ local function check_source(filename)
    -- `ctx.transport` names the side ("actual" or "expected") holding a trusted
    -- callee's own signature; its type variables are transports whose bindings
    -- check_bindings owns. Reversing a comparison reverses that side.
+   -- `ctx.inert` marks a position that only reads a record table (an argument
+   -- of `print` or `tostring`, a metatable's `__index`), and `ctx.written` an
+   -- argument the callee writes into (Mixin's target); both describe the
+   -- forward position, so a reversal drops them.
    local function reversed(ctx)
-      if not ctx.transport then return ctx end
-      return { trusted = ctx.trusted, fresh = ctx.fresh, cast = ctx.cast, exempt = ctx.exempt, transport = ctx.transport == "actual" and "expected" or "actual" }
+      local transport = ctx.transport and (ctx.transport == "actual" and "expected" or "actual")
+      return { trusted = ctx.trusted, fresh = ctx.fresh, cast = ctx.cast, exempt = ctx.exempt, transport = transport }
    end
    local function invariant(actual, expected, ctx, depth, what)
       local reason = leak(actual, expected, ctx, depth) or (not ctx.fresh and leak(expected, actual, reversed(ctx), depth))
@@ -711,26 +837,48 @@ local function check_source(filename)
    -- whose method takes `other: Unit`). A comparison already in progress is
    -- assumed to hold: a leak has a shortest witness, which never repeats one.
    local comparing = {}
+   local function inert_ctx(ctx)
+      return { trusted = ctx.trusted, fresh = ctx.fresh, cast = ctx.cast, exempt = ctx.exempt, transport = ctx.transport, inert = true }
+   end
+   local function record_table_reason(body)
+      return "record table " .. record_table_name(body) .. " reaches a position that can write it"
+   end
    leak = function(actual, expected, ctx, depth)
       visit()
       depth = (depth or 0) + 1
       if depth > 64 then error("flow comparison exceeds type depth") end
       if actual == nil or expected == nil then return nil end
       local a, e = resolve(actual), resolve(expected)
-      local key = string.format("%s|%s|%s|%s|%s", tostring(ctx.trusted), tostring(ctx.fresh), tostring(ctx.cast), tostring(ctx.transport), tostring(ctx.exempt))
+      -- Every ctx field that changes the verdict is in the key: an inert
+      -- comparison in progress must not assume a non-inert one on the same pair.
+      local key = string.format("%s|%s|%s|%s|%s|%s|%s", tostring(ctx.trusted), tostring(ctx.fresh), tostring(ctx.cast), tostring(ctx.transport), tostring(ctx.exempt), tostring(ctx.inert), tostring(ctx.written))
       local by_actual = comparing[a] or {}
       comparing[a] = by_actual
       local keys = by_actual[e] or {}
       by_actual[e] = keys
       if keys[key] then return nil end
       keys[key] = true
-      local reason = compare(a, e, ctx, depth)
+      local reason
+      -- Any position but its own type can write a record table's parameter
+      -- fields under an instantiation the other instances do not share: an
+      -- instance type directly, `any` and Data through rawset or a downcast.
+      -- It may reach only its own type, an inert position, and a trusted type
+      -- variable check_bindings follows to its destinations, unless the callee
+      -- writes into that argument.
+      local table_body = record_table(actual)
+      if table_body and not ctx.inert
+         and not ((e.typename == "typevar" or e.typename == "typearg") and ctx.trusted and ctx.transport == "expected" and not ctx.written)
+         and record_table(expected) ~= table_body then
+         reason = record_table_reason(table_body)
+      else
+         reason = compare(a, e, ctx, depth, actual)
+      end
       keys[key] = nil
       if next(keys) == nil then by_actual[e] = nil end
       if next(by_actual) == nil then comparing[a] = nil end
       return reason
    end
-   compare = function(a, e, ctx, depth)
+   compare = function(a, e, ctx, depth, actual)
       if e.typename == "boolean_context" then return nil end
       -- A single position receives only a tuple's first value.
       if a.typename == "tuple" and e.typename ~= "tuple" then return leak(member_of(a, 1), e, ctx, depth) end
@@ -747,13 +895,26 @@ local function check_source(filename)
       end
       -- A type variable may be instantiated with a Secret without a checked call
       -- (`Box<MaybeSecret<T>>`), so it cannot reach a sink, trusted or not.
-      if (a.typename == "typevar" or a.typename == "typearg") and (e.typename == "any" or is_data(e)) and ctx.transport ~= "actual" then
+      -- Nor can it reach a plain position, where a later read types it plain
+      -- (`xs as {number}`, a constrained `T` returned as its constraint).
+      local variable_actual = (a.typename == "typevar" or a.typename == "typearg") and ctx.transport ~= "actual"
+      if variable_actual and (e.typename == "any" or is_data(e)) then
          return "type variable reaches " .. (is_data(e) and "Data" or "any")
+      end
+      if variable_actual and parameter_variable(a) and not variable_typed(e) and not opaque(e) then
+         return "type variable reaches a plain position"
       end
       -- A trusted (stdlib or types/wow) sink checks value positions only: it cannot
       -- recast a handle to a lookalike record with plain methods. Authored sinks and
       -- casts keep the full rule, since `x as L` from `any` is unchecked.
-      if sink(e, ctx) then return deep(a, nil, nil, ctx.trusted and not ctx.cast) and "Secret reaches " .. (is_data(e) and "Data" or e.typename == "any" and "any" or "type variable") or nil end
+      if sink(e, ctx) then
+         local values = ctx.trusted and not ctx.cast
+         if deep(a, nil, nil, values) then return "Secret reaches " .. (is_data(e) and "Data" or e.typename == "any" and "any" or "type variable") end
+         if (e.typename == "any" or is_data(e)) and ctx.transport ~= "actual" and holds_variable(actual, values, ctx.inert) then
+            return "type variable reaches " .. (is_data(e) and "Data" or "any")
+         end
+         return nil
+      end
       if a.typename == "any" or a.typename == "nil" or a.typename == "typevar" or a.typename == "typearg" then return nil end
       -- A trusted stdlib type variable transports the value unchanged.
       if e.typename == "typevar" or e.typename == "typearg" then return nil end
@@ -818,7 +979,7 @@ local function check_source(filename)
          end
          return nil
       end
-      if not deep(a) and not deep(e) then return nil end
+      if not deep(a) and not deep(e) and (ctx.transport == "actual" or not holds_variable(a)) then return nil end
       if opaque(a) and not opaque(e) then return "Secret reaches a plain position" end
       if a.typename == "union" then
          for _, member in ipairs(a.types) do
@@ -872,7 +1033,8 @@ local function check_source(filename)
          for _, name in ipairs(field_names(e)) do
             local expected_field = e.fields[name]
             local actual_field = not (ctx.exempt and ctx.exempt[name]) and a.fields and a.fields[name]
-            local reason = actual_field and invariant(actual_field, expected_field, element_ctx, depth, "field " .. name)
+            local field_ctx = name == "__index" and is_metatable(e) and actual_field and record_table(actual_field) and inert_ctx(element_ctx) or element_ctx
+            local reason = actual_field and invariant(actual_field, expected_field, field_ctx, depth, "field " .. name)
             if reason then return reason end
          end
          -- An upcast that hides an opaque value field lets a later downcast to a
@@ -880,8 +1042,9 @@ local function check_source(filename)
          -- hierarchies); see the method-hiding note in teal-catalogue.md.
          for _, name in ipairs(field_names(a)) do
             local actual_field = a.fields[name]
-            if actual_field and not (e.fields and e.fields[name]) and not callable_member(actual_field) and deep(actual_field) then
-               return "field " .. name .. ": Secret hidden by upcast"
+            if actual_field and not (e.fields and e.fields[name]) and not callable_member(actual_field) then
+               if deep(actual_field) then return "field " .. name .. ": Secret hidden by upcast" end
+               if ctx.transport ~= "actual" and holds_variable(actual_field) then return "field " .. name .. ": type variable hidden by upcast" end
             end
          end
          return nil
@@ -1042,8 +1205,10 @@ local function check_source(filename)
          if last and last.variadic and e.typename == "tupletable" and position then
             count = math.max(count, #e.types - position + 1)
          end
+         local index_item = name == "__index" and is_metatable(e)
          for offset = 1, count do
             local value = value_at(values, offset)
+            local item_ctx = index_item and value.type and record_table(value.type) and inert_ctx(ctx) or ctx
             local at = position and position + offset - 1
             local target
             if sink(e, ctx) then target = e
@@ -1052,7 +1217,7 @@ local function check_source(filename)
             elseif e.typename == "array" or (record and at) then target = e.elements
             elseif e.typename == "map" then target = e.values end
             local reason = target and value.node and value.type and
-               (value.expanded and leak(value.type, target, ctx, depth) or flow_leak(value.node, value.type, target, ctx, depth))
+               (value.expanded and leak(value.type, target, item_ctx, depth) or flow_leak(value.node, value.type, target, item_ctx, depth))
             if reason then return reason end
          end
       end
@@ -1117,6 +1282,16 @@ local function check_source(filename)
    -- Parameters of literal callbacks that check_arguments compared against the
    -- callee's declared callback parameter; that comparison owns their flow.
    local call_checked_parameters = {}
+   -- Record tables at the `__index` key of a table constructor typed as a
+   -- `metatable`. flows compares them as inert positions.
+   local inert_positions = {}
+   local function mark_inert(value)
+      while value do
+         inert_positions[value] = true
+         if value.kind ~= "paren" then return end
+         value = value.e1
+      end
+   end
    -- Follow grammar children only: the checker attaches resolved types and native
    -- macro definitions to ordinary variable nodes during type checking.
    local function check_record_refinement(typ, owner, origin)
@@ -1283,16 +1458,25 @@ local function check_source(filename)
       if node.kind == "assignment" then
          for _, variable in ipairs(node.vars or {}) do
             if variable.kind == "variable" then mutated_names[variable.tk] = true end
-            if variable.kind == "op" and (variable.op.op == "." or variable.op.op == "@index")
-               and variable.e1.kind == "variable" and variable.e1.tk == "_G" then
-               local key = variable.e2 and variable.e2.tk
-               if key then mutated_names[key:gsub("^['\"]", ""):gsub("['\"]$", "")] = true end
+            if variable.kind == "op" and (variable.op.op == "." or variable.op.op == "@index") then
+               local base = variable.e1
+               while base.kind == "paren" do base = base.e1 end
+               -- Teal accepts only a constant key on `_G`: a field name or a
+               -- string literal in any quoting.
+               local key = variable.e2.conststr or variable.e2.tk
+               if base.kind == "variable" and base.tk == "_G" and key then mutated_names[key] = true end
             end
          end
       elseif node.kind == "global_function" and node.name then
          mutated_names[node.name.tk] = true
       elseif node.kind == "global_declaration" then
          for _, variable in ipairs(node.vars or {}) do mutated_names[variable.tk] = true end
+      end
+      if node.kind == "literal_table" and node.expected and is_metatable(resolve(node.expected)) then
+         for _, item in ipairs(node) do
+            local value_type = item.key and item.key.conststr == "__index" and node_type(item.value)
+            if value_type and record_table(value_type) then mark_inert(item.value) end
+         end
       end
       syntax_children(node, function(child) prepass(child, seen, depth) end)
    end
@@ -1346,19 +1530,6 @@ local function check_source(filename)
       local binding = state.bindings[node.tk]
       if binding and not binding.global then return binding end
    end
-   -- An authored type variable may be instantiated with a Secret
-   -- (`Box<MaybeSecret<number>>` is legal), so a value of type-variable type,
-   -- or a union holding one, is tested, compared, operated on and cast only
-   -- under the proofs a Secret needs.
-   local function variable_typed(t)
-      t = resolve(t)
-      if t.typename == "typevar" or t.typename == "typearg" then return true end
-      if t.typename ~= "union" then return false end
-      for _, member in ipairs(t.types) do
-         if variable_typed(member) then return true end
-      end
-      return false
-   end
    -- typ overrides the node's type for one result of a call expanded into
    -- several values, which shares the call node but not its type.
    local function is_opaque(node, state, typ)
@@ -1408,33 +1579,35 @@ local function check_source(filename)
    -- `variance` is "in" (the caller's value flows into the variable), "out" (the
    -- variable's value flows to the caller) or "both" (mutable storage).
    local flip = { ["in"] = "out", out = "in", both = "both" }
-   local function mentions_typevar(t, seen, depth)
+   local function mentions_typevar(t, seen, depth, own)
       if type(t) ~= "table" then return false end
       depth = (depth or 0) + 1
       if depth > 64 then error("type variable search exceeds type depth") end
       seen = seen or {}
       if seen[t] then return false end
       seen[t] = true
-      if t.typename == "typevar" then return true end
+      if t.typename == "typevar" then return own == nil or own(t.typevar) end
       if t.typename == "nominal" then
-         for _, value in ipairs(t.typevals or {}) do if mentions_typevar(value, seen, depth) then return true end end
+         for _, value in ipairs(t.typevals or {}) do if mentions_typevar(value, seen, depth, own) then return true end end
          return false
       end
       for _, field in ipairs({ "elements", "keys", "values", "args", "rets" }) do
-         if mentions_typevar(t[field], seen, depth) then return true end
+         if mentions_typevar(t[field], seen, depth, own) then return true end
       end
-      for _, member in ipairs(t.tuple or {}) do if mentions_typevar(member, seen, depth) then return true end end
-      for _, member in ipairs(t.types or {}) do if mentions_typevar(member, seen, depth) then return true end end
-      for _, member in pairs(t.fields or {}) do if mentions_typevar(member, seen, depth) then return true end end
+      for _, member in ipairs(t.tuple or {}) do if mentions_typevar(member, seen, depth, own) then return true end end
+      for _, member in ipairs(t.types or {}) do if mentions_typevar(member, seen, depth, own) then return true end end
+      for _, member in pairs(t.fields or {}) do if mentions_typevar(member, seen, depth, own) then return true end end
       return false
    end
    -- Returns false when the declared shape holds a type variable that the actual
    -- type could not be matched against, so the caller can fail closed.
    -- A use recorded beneath a function type is marked `callback`.
-   local function bind_uses(declared, actual, variance, uses, callback, depth)
+   -- `own`, when given, names the callee's own type variables; others do not bind.
+   local function bind_uses(declared, actual, variance, uses, callback, depth, own)
       depth = (depth or 0) + 1
       if depth > 64 then error("generic binding exceeds type depth") end
       if declared == nil or actual == nil then return true end
+      if declared.typename == "typevar" and own and not own(declared.typevar) then return true end
       if declared.typename == "typevar" then
          local list = uses[declared.typevar] or {}
          uses[declared.typevar] = list
@@ -1448,18 +1621,28 @@ local function check_source(filename)
          local ok = true
          for index = 1, math.max(#actual_tuple.tuple, #declared_tuple.tuple) do
             local member, value = member_of(declared_tuple, index), member_of(actual_tuple, index)
-            if member and value and not bind_uses(member, value, variance, uses, callback, depth) then ok = false end
+            if member and value and not bind_uses(member, value, variance, uses, callback, depth, own) then ok = false end
+         end
+         return ok
+      end
+      -- Two instantiations of one generic record (`Box<U>` given `Box<T>`) bind
+      -- their type arguments pairwise; fields are writable, so both ways.
+      if declared.typename == "nominal" and actual.typename == "nominal" and declared.typevals and actual.typevals
+         and declared.found ~= nil and declared.found == actual.found and #declared.typevals == #actual.typevals then
+         local ok = true
+         for index, value in ipairs(declared.typevals) do
+            if not bind_uses(value, actual.typevals[index], "both", uses, callback, depth, own) then ok = false end
          end
          return ok
       end
       local d, a = resolve(declared), resolve(actual)
-      if d.typename == "typevar" then return bind_uses(d, actual, variance, uses, callback, depth) end
+      if d.typename == "typevar" then return bind_uses(d, actual, variance, uses, callback, depth, own) end
       -- nil holds nothing the callee could read, write or call.
-      if not mentions_typevar(d) or a.typename == "nil" then return true end
+      if not mentions_typevar(d, nil, nil, own) or a.typename == "nil" then return true end
       local function all(pairs_list, beneath)
          local ok = true
          for _, pair in ipairs(pairs_list) do
-            if not bind_uses(pair[1], pair[2], pair[3], uses, callback or beneath, depth) then ok = false end
+            if not bind_uses(pair[1], pair[2], pair[3], uses, callback or beneath, depth, own) then ok = false end
          end
          return ok
       end
@@ -1469,8 +1652,8 @@ local function check_source(filename)
          local modelled = true
          for _, member in ipairs(d.types) do
             local resolved = resolve(member)
-            if resolved.typename == "typevar" then bind_uses(member, actual, variance, uses, callback, depth)
-            elseif mentions_typevar(resolved) then modelled = false end
+            if resolved.typename == "typevar" then bind_uses(member, actual, variance, uses, callback, depth, own)
+            elseif mentions_typevar(resolved, nil, nil, own) then modelled = false end
          end
          return modelled
       end
@@ -1516,6 +1699,9 @@ local function check_source(filename)
                if not complete and deep(source.type) then
                   return "generic transport: Secret is bound beside a parameter shape the checker does not model"
                end
+               if not complete and holds_variable(source.type) then
+                  return "generic transport: type variable is bound beside a parameter shape the checker does not model"
+               end
                for _, destination in ipairs(list) do
                   if destination ~= source and destination.variance ~= "in" then
                      local reason = leak(source.type, destination.type, { trusted = false, fresh = false })
@@ -1539,6 +1725,22 @@ local function check_source(filename)
       if stdlib_name(typ) then return true end
       local path = typ.f and canonical(typ.f)
       return path ~= nil and path:sub(1, #root + 11) == root .. "/types/wow/"
+   end
+   -- The generated `Mixin(target, ...)`, by declaration identity: it copies
+   -- its other arguments' fields into its target.
+   local function mixin_declaration(typ)
+      local global = env.globals.Mixin and env.globals.Mixin.t
+      global = global and global.typename == "generic" and global.t or global
+      return typ ~= nil and global ~= nil and typ.f == global.f and typ.y == global.y and typ.x == global.x
+   end
+   -- Trusted sinks that only read their arguments.
+   local reading_sinks = { print = true, tostring = true }
+   -- A callee runs the builtin `name` only when it names that unshadowed
+   -- global, never assigned: `local p = print; p = f` keeps print's declared
+   -- type.
+   local function builtin_callee(callee, state, name)
+      return callee.kind == "variable" and callee.tk == name
+         and not state.bindings[name] and not mutated_names[name]
    end
    -- Puts the receiver a callee takes first in `values`: a method call's object,
    -- or a callable record itself, which Teal passes to its `__call`.
@@ -1576,14 +1778,14 @@ local function check_source(filename)
       if signature == nil then return nil end
       if signature == "indexing" then return { indexing = true, values = arguments } end
       local builtin = stdlib_name(signature)
-      if builtin ~= "pcall" and builtin ~= "xpcall" then return { signature = signature, values = arguments } end
+      if builtin ~= "pcall" and builtin ~= "xpcall" then return { signature = signature, values = arguments, callee = node.e1 } end
       local target = node.e2 and node.e2[1]
       if not target then error("missing protected call target") end
       local values = {}
       for index = (builtin == "pcall" and 1 or 2) + 1, #arguments do values[#values + 1] = arguments[index] end
       local target_signature = run_signature(target, values)
       if target_signature == nil then error("compiler omitted protected call target identity") end
-      local shape = { values = values, protector = signature, arguments = arguments }
+      local shape = { values = values, protector = signature, arguments = arguments, callee = target }
       if target_signature == "indexing" then shape.indexing = true else shape.signature = target_signature end
       return shape
    end
@@ -1601,14 +1803,20 @@ local function check_source(filename)
       transported[node] = false
       local shape = call_shape(node)
       -- Teal's own type is the result of a `rawget` it ran: the indexed type.
-      if not shape or not shape.signature or not trusted_declaration(shape.signature) then return nil end
+      if not shape or not shape.signature then return nil end
       local signature, values, protector = shape.signature, shape.values, shape.protector
+      -- Teal infers an authored generic's result from context too
+      -- (`print(id(x))` binds `any`), so a type variable it carries is
+      -- re-typed as well; a Secret passed to it was rejected as an argument.
+      local trusted = trusted_declaration(signature)
+      local own = not trusted and instance_variable or nil
       if stdlib_name(signature) then signature = stdlib_declaration(signature) end
       local uses = {}
       for position, value in ipairs(values) do
          local parameter = member_of(signature.args, position)
          -- An unmodeled shape is rejected by check_arguments; keep Teal's type.
-         if parameter and not bind_uses(parameter, value.type, "in", uses) and deep(value.type) then return nil end
+         if parameter and not bind_uses(parameter, value.type, "in", uses, nil, nil, own)
+            and ((trusted and deep(value.type)) or holds_variable(value.type)) then return nil end
       end
       local inferred = lookup(expression_types, node)
       if inferred and protector then
@@ -1618,7 +1826,7 @@ local function check_source(filename)
          for index = 2, #inferred.tuple do rest[#rest + 1] = inferred.tuple[index] end
          inferred = retupled(inferred, rest)
       end
-      if inferred then bind_uses(signature.rets, inferred, "out", uses) end
+      if inferred then bind_uses(signature.rets, inferred, "out", uses, nil, nil, own) end
       local bindings, carried = {}, false
       for name, list in pairs(uses) do
          local sources, fallback = {}, nil
@@ -1626,7 +1834,7 @@ local function check_source(filename)
             if use.variance == "out" then fallback = fallback or use.type
             else
                sources[#sources + 1] = use.type
-               carried = carried or deep(use.type)
+               carried = carried or (trusted and deep(use.type)) or holds_variable(use.type)
             end
          end
          bindings[name] = #sources == 1 and sources[1] or #sources > 1 and { typename = "union", types = sources } or fallback
@@ -1657,12 +1865,14 @@ local function check_source(filename)
    -- first to the coroutine.yield that resumes, as `any`.
    local reemitting_parameters = { ["coroutine.wrap"] = 1 }
    -- `first` is the parameter position values[1] fills.
-   local function check_arguments(signature, values, first, origin)
+   -- `reading` marks every argument as only read by the callee.
+   local function check_arguments(signature, values, first, origin, reading)
       local policy = native_policy(signature)
       -- Stdlib and generated native declarations have trusted bodies: their type
       -- variables transport values. Authored generic type variables are sinks.
       local ctx = { trusted = trusted_declaration(signature), fresh = false }
       local builtin = stdlib_name(signature) or ""
+      local mixin = mixin_declaration(signature)
       local reemitted_from, reemitting_callback = reemits[builtin], reemitting_callbacks[builtin]
       local reemitting_parameter = reemitting_parameters[builtin]
       if stdlib_name(signature) then signature = stdlib_declaration(signature) end
@@ -1683,9 +1893,16 @@ local function check_source(filename)
                complete = false
                if deep(value.type) then
                   reject_flow(value.node or origin, "argument " .. position .. ": Secret passes a generic parameter shape the checker does not model")
+               elseif holds_variable(value.type, nil, true) then
+                  -- A record table nested in the argument is compared by the leak
+                  -- below; one bound to a type variable, by check_bindings.
+                  reject_flow(value.node or origin, "argument " .. position .. ": type variable passes a generic parameter shape the checker does not model")
                end
+            elseif not ctx.trusted and holds_variable(value.type) and not bind_uses(parameter, value.type, "in", {}, nil, nil, instance_variable) then
+               reject_flow(value.node or origin, "argument " .. position .. ": type variable passes a generic parameter shape the checker does not model")
             end
-            local fresh_ctx = { trusted = trusted, fresh = value.node.kind == "literal_table" or value.node.kind == "function", transport = modelled and "expected" or nil }
+            local fresh_ctx = { trusted = trusted, fresh = value.node.kind == "literal_table" or value.node.kind == "function", transport = modelled and "expected" or nil,
+               inert = reading, written = mixin and position == 1 or nil }
             local reason = value.expanded and leak(value.type, parameter, fresh_ctx) or flow_leak(value.node, value.type, parameter, fresh_ctx)
             if reason then reject_flow(value.node or origin, "argument " .. position .. ": " .. reason) end
             if position == reemitting_parameter then
@@ -1788,8 +2005,16 @@ local function check_source(filename)
       local shape = call_shape(node)
       if not shape then error("compiler omitted callee identity") end
       local signature, values = shape.signature, shape.values
-      if shape.protector and stdlib_name(shape.protector) == "xpcall" then
-         check_arguments(shape.protector, { shape.arguments[2] }, 2, node)
+      if shape.protector then
+         -- Only the builtin runs its target on the values after it: a variable
+         -- typed like pcall may hold any function, which receives them as `any`.
+         if not builtin_callee(node.e1, state, stdlib_name(shape.protector)) then
+            check_arguments(shape.protector, shape.arguments, 1, node)
+            return
+         end
+         if stdlib_name(shape.protector) == "xpcall" then
+            check_arguments(shape.protector, { shape.arguments[2] }, 2, node)
+         end
       end
       -- A protected call runs its target on `values`, so the rules below are
       -- those of the target.
@@ -1797,27 +2022,36 @@ local function check_source(filename)
          -- `rawget(t, k)`, direct or protected, gets the indexing rules; the
          -- result keeps the indexed type and is compared where it flows.
          if #values ~= 2 then error("unsupported rawget shape") end
+         -- Its result is typed as the member `t[k]`, which a caller may write.
+         local body = record_table(values[1].type)
+         if body then reject_flow(values[1].node, "argument 1: " .. record_table_reason(body)) end
          require_access(values[1].node, state, "operation indexing", true, values[1].type)
          require_access(values[2].node, state, "table key", nil, values[2].type)
          return
       end
       local builtin = stdlib_name(signature)
-      if builtin == "type" then
+      -- The rules below that skip or relax the argument checks hold only for
+      -- the builtin itself, not for a variable typed like it.
+      local genuine = builtin ~= nil and builtin_callee(shape.callee, state, builtin)
+      -- `type(x)` and `assert(x)` observe x as a condition does, so a value
+      -- typed by a type variable needs the same proof as a Secret.
+      if builtin == "type" and genuine then
          for _, value in ipairs(values) do
-            if opaque(value.type) then
+            if is_opaque(value.node, state, value.type) then
                require_public(value.node, state, "type observation")
             end
          end
          return
       end
-      if builtin == "assert" and values[1] and opaque(values[1].type) then
-         require_access(values[1].node, state, "truthiness")
+      if builtin == "assert" and values[1] then
+         require_access(values[1].node, state, "truthiness", nil, values[1].type)
       end
-      if builtin == "select" and resolve(signature.args.tuple[1]).typename == "string" then
-         -- select("#", ...) observes only the count.
+      if builtin == "select" and genuine and values[1] and values[1].node.conststr == "#" then
+         -- select("#", ...) observes only the count. Any other string selector
+         -- is coerced to an index (`select("1", s)` returns s).
          return
       end
-      check_arguments(signature, values, 1, node)
+      check_arguments(signature, values, 1, node, genuine and reading_sinks[builtin] or nil)
    end
 
    condition = function(node, state)
@@ -1936,32 +2170,58 @@ local function check_source(filename)
    -- by a later one when the expected result type rules the first out, and
    -- overload pairing assumes overloads accepting the same calls agree. Both
    -- are sound for generated declarations only while such overloads agree on
-   -- the opacity of every result.
+   -- the opacity of every value the native hands back: each result, and each
+   -- parameter of a callback it is passed. Metamethods (`__call`) included.
    local function check_generated_overloads()
       local module = env.modules.wow
       module = module and module.typename == "typedecl" and module.def or module
       if not module or not module.fields then error("compiler omitted declaration module identity") end
       local function arity(f) return f.min_arity or 0, f.args.is_va and math.huge or #f.args.tuple end
+      local function differ(x, y)
+         return opaque(x) ~= opaque(y) or (x ~= nil and deep(x, nil, nil, true)) ~= (y ~= nil and deep(y, nil, nil, true))
+      end
+      -- The first position of `left` and `right` whose opacity differs.
+      local function disagreement(left, right, what)
+         for index = 1, math.max(#left.tuple, #right.tuple) do
+            if differ(member_of(left, index), member_of(right, index)) then return what .. " " .. index end
+         end
+         return nil
+      end
+      local function compare_overloads(left, right)
+         local reason = disagreement(left.rets, right.rets, "result")
+         if reason then return reason end
+         for position = 1, math.max(#left.args.tuple, #right.args.tuple) do
+            local x, y = member_of(left.args, position), member_of(right.args, position)
+            for _, left_callback in ipairs(x and callback_targets(resolve(x)) or {}) do
+               for _, right_callback in ipairs(y and callback_targets(resolve(y)) or {}) do
+                  reason = disagreement(left_callback.args, right_callback.args, "parameter " .. position .. " callback parameter")
+                  if reason then return reason end
+               end
+            end
+         end
+         return nil
+      end
       local seen = {}
       local function scan(t, path)
          if seen[t] then return end
          seen[t] = true
-         for _, name in ipairs(field_names(t)) do
-            local field = t.fields[name]
-            if not field then
-            elseif field.typename == "typedecl" and field.def and record_like(field.def) then
-               scan(field.def, path .. "." .. name)
-            elseif field.typename == "poly" then
-               for i = 1, #field.types do
-                  for j = i + 1, #field.types do
-                     local left, right = resolve(field.types[i]), resolve(field.types[j])
-                     local left_min, left_max = arity(left)
-                     local right_min, right_max = arity(right)
-                     if math.max(left_min, right_min) <= math.min(left_max, right_max) then
-                        for index = 1, math.max(#left.rets.tuple, #right.rets.tuple) do
-                           local x, y = member_of(left.rets, index), member_of(right.rets, index)
-                           if opaque(x) ~= opaque(y) or (x ~= nil and deep(x, nil, nil, true)) ~= (y ~= nil and deep(y, nil, nil, true)) then
-                              error("generated overloads of " .. path .. "." .. name .. " disagree on the opacity of result " .. index)
+         for _, members in ipairs({ { t.fields or {}, field_names(t) }, { t.meta_fields or {}, field_names({ fields = t.meta_fields }) } }) do
+            local fields, names = members[1], members[2]
+            for _, name in ipairs(names) do
+               local field = fields[name]
+               if not field then
+               elseif field.typename == "typedecl" and field.def and record_like(field.def) then
+                  scan(field.def, path .. "." .. name)
+               elseif field.typename == "poly" then
+                  for i = 1, #field.types do
+                     for j = i + 1, #field.types do
+                        local left, right = resolve(field.types[i]), resolve(field.types[j])
+                        local left_min, left_max = arity(left)
+                        local right_min, right_max = arity(right)
+                        if math.max(left_min, right_min) <= math.min(left_max, right_max) then
+                           local reason = compare_overloads(left, right)
+                           if reason then
+                              error("generated overloads of " .. path .. "." .. name .. " disagree on the opacity of " .. reason)
                            end
                         end
                      end
@@ -2023,10 +2283,7 @@ local function check_source(filename)
    local function mixin_call(node)
       while node.kind == "paren" do node = node.e1 end
       if node.kind ~= "op" or node.op.op ~= "@funcall" then return nil end
-      local callee = lookup(callee_types, node.e1)
-      local global = env.globals.Mixin and env.globals.Mixin.t
-      global = global and global.typename == "generic" and global.t or global
-      if not callee or not global or callee.f ~= global.f or callee.y ~= global.y or callee.x ~= global.x then return nil end
+      if not mixin_declaration(lookup(callee_types, node.e1)) then return nil end
       return node
    end
    -- Members of `target` supplied by a checked body of a mixin argument of a
@@ -2284,13 +2541,53 @@ local function check_source(filename)
       local exempt = mixin_bodies(operand, resolved_target)
       if table_capable(target, false) and not table_capable(operand_type, true) and not source.is_userdata then
          report(node.e2, "unwrap target", ": " .. type_text(operand_type) .. " holds no table")
-      elseif deep(operand_type) or deep(target) then
+      elseif deep(operand_type) or deep(target) or (holds_variable(operand_type) and not scalar_target(target)) then
          -- Containers are mutable aliases, so a cast compares them invariantly in
          -- both directions: `plain as {MaybeSecret<T>}` would admit secret writes.
+         -- A type variable read as a scalar takes the publicness proof above;
+         -- anywhere else it may hold a Secret the target types plain.
          local reason = leak(operand_type, target, { trusted = false, fresh = false, cast = true, exempt = exempt })
          if reason then report(node.e2, "unwrap target", ": " .. reason); return end
       end
       check_lookalike(node, source, resolved_target, exempt)
+   end
+
+   -- A record table's parameter-typed fields are shared by every instance
+   -- through `__index`, so writing one would type the value for every
+   -- instantiation at once; reading one is rejected too, since a container read
+   -- from it is written in place. A method is read to be called with an
+   -- instance, which the call compares; assigning one is a write.
+   -- The member is judged at its declared type: Teal gives a read fresh type
+   -- variables (`T@12`), as it does a generic referenced by name. Teal 0.24.8
+   -- indexes a record only by a member name or string literal.
+   local assigned_members = {}
+   local function check_record_table(node)
+      local base = node_type(node.e1)
+      if base and base.typename == "tuple" then base = base.tuple[1] end
+      local body = base and record_table(base)
+      if not body then return end
+      local key = node.op.op == "@index" and node.e2.conststr or node.op.op ~= "@index" and node.e2.tk
+      if not key then error("compiler indexed a record table by a computed key") end
+      local member = body.fields and body.fields[key]
+      if member == nil then error("compiler omitted record table member " .. key) end
+      if not holds_variable(member) or (callable_member(member) and not assigned_members[node]) then return end
+      report(node, "record table member", ": " .. record_table_name(body) .. "." .. key
+         .. " has a type-parameter type every instance shares; read and write it through an instance")
+   end
+   -- A method body defined inside a function can capture values of that
+   -- function's instantiation (an outer `T`, or `self`'s) and return them at
+   -- the record's parameter types, which every instance shares.
+   local function check_record_method(node, state)
+      if state.owner == result.ast then return end
+      local owner = lookup(expression_types, node.fn_owner)
+      if owner == nil then error("compiler omitted record method owner identity") end
+      local body = record_table(owner)
+      if not body then return end
+      local name = node.name and node.name.tk
+      local member = name and body.fields and body.fields[name]
+      if member and not holds_variable(member) then return end
+      report(node, "record table method", ": " .. record_table_name(body) .. "." .. tostring(name)
+         .. " is defined inside a function, where it can capture values at the record's type parameters; define it at chunk level")
    end
 
    expression = function(node, state)
@@ -2342,8 +2639,10 @@ local function check_source(filename)
             check_unwrap(node, state)
          elseif op == "@index" then
             require_access(node.e1, state, "operation indexing", true); require_access(node.e2, state, "table key")
+            check_record_table(node)
          elseif op == "." or op == ":" then
             require_access(node.e1, state, "operation indexing", true)
+            check_record_table(node)
          elseif op == "@funcall" then
             require_access(node.e1, state, "operation call")
             check_call(node, state)
@@ -2429,7 +2728,10 @@ local function check_source(filename)
          -- Lua evaluates every target subexpression before assigning, so
          -- `a, t[a as number] = 1, 2` indexes with the old `a`: check targets first.
          for _, variable in ipairs(node.vars or {}) do
-            if variable.kind ~= "variable" then expression(variable, state) end
+            if variable.kind ~= "variable" then
+               assigned_members[variable] = true
+               expression(variable, state)
+            end
          end
          for index, variable in ipairs(node.vars or {}) do
             local binding = variable.kind == "variable" and state.bindings[variable.tk]
@@ -2441,6 +2743,7 @@ local function check_source(filename)
          end
       elseif kind == "local_function" or kind == "global_function" or kind == "record_function" then
          if node.name and node.name.tk and kind == "local_function" then state.bindings[node.name.tk] = { owner = state.owner } end
+         if kind == "record_function" then check_record_method(node, state) end
          function_body(node, state)
       elseif kind == "if" then
          local remaining, outcomes = state_copy(state), {}
@@ -2519,7 +2822,7 @@ local function check_source(filename)
          and not call_checked_parameters[node] and expected.typename ~= "boolean_context" then
          local actual = node_type(node)
          if actual == nil then error(string.format("compiler omitted expression identity at %d:%d", node.y or 0, node.x or 0)) end
-         local ctx = { trusted = false, fresh = node.kind == "literal_table" or node.kind == "function" }
+         local ctx = { trusted = false, fresh = node.kind == "literal_table" or node.kind == "function", inert = inert_positions[node] }
          -- A literal callback's parameter receives the contextual type, so the
          -- flow runs from the expected type into the declared one. Teal assigns
          -- that type before inferring a generic callee, leaving its type

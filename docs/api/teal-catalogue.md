@@ -197,10 +197,11 @@ Stock Teal type-checks ordinary flows. The checker adds:
   later overload when an earlier one fits the arguments but not the declared
   destination, and the checker judges the call by the overload Teal picked.
   That is sound while overloads that accept the same arguments agree on which
-  results are opaque: a function assigned to an overloaded field must fit every
-  overload, overload-set copies are compared as above, and the checker fails
-  closed when a generated overload set has two overloads with overlapping arity
-  whose results differ in opacity. Recursive types
+  results and callback parameters are opaque: a function assigned to an
+  overloaded field must fit every overload, overload-set copies are compared as
+  above, and the checker fails closed when a generated overload set, metamethods
+  such as `__call` included, has two overloads with overlapping arity whose
+  results or callback parameters differ in opacity. Recursive types
   (`interface Unit` whose method takes `other: Unit`, `record Box<T>` with
   `next: Box<T>`) are compared coinductively: a comparison already in progress
   is assumed to hold, since a leak has a shortest witness that never repeats
@@ -235,12 +236,19 @@ Stock Teal type-checks ordinary flows. The checker adds:
   At stdlib and generated-declaration sinks, methods and other function-typed
   record members are not inspected (see consequences).
   An authored generic type variable is also a sink, and a value of type-variable
-  type cannot reach `any`/`Data` (generic records are instantiated without a
-  checked call); `MaybeSecret<T>` is the generic transport. A value of authored
+  type, or one holding such a value (`{T}`, a record with a `T` field), cannot
+  reach `any`/`Data` (generic records are instantiated without a checked call);
+  `MaybeSecret<T>` is the generic transport. Nor can it reach a position that is
+  neither opaque nor type-variable-typed: `xs as {number}` from `{T}`,
+  `g as function(): number` from `function(): T`, `self as Box<number>` inside
+  `Box<T>`, a constrained `T is Shown` returned as `Shown`, and an upcast that
+  hides a `T` field are rejected. A value of authored
   type-variable type, or of a union with one, also needs the proofs a Secret
-  needs before it is tested, compared, operated on, indexed, called or narrowed,
-  and a cast to a type that is neither opaque nor type-variable-typed needs
-  `not issecretvalue(x)`: a record's type parameter may be instantiated with
+  needs before it is tested (`if v`, `assert(v)`, `type(v)`), compared,
+  operated on, indexed, called or narrowed.
+  A cast of it to a scalar type needs `not issecretvalue(x)`, and a cast to any
+  other plain type (`any`, a table) is rejected, since `T` may be a table that
+  holds Secrets: a record's type parameter may be instantiated with
   `W.MaybeSecret<number>`, and its method bodies see only `T`. A generic
   function's type parameter gets the same rule, since a method may pass its
   record's `T` on to it. Proofs bind locals, so copy a field first
@@ -250,7 +258,44 @@ Stock Teal type-checks ordinary flows. The checker adds:
   `get` is a nested `type Getter = function(): T`). A nested type declaration
   that mentions a type parameter of its generic owner is therefore rejected;
   declare it at top level with its own parameter
-  (`local type Getter<T> = function(): T`, then `get: Getter<T>`). A callback
+  (`local type Getter<T> = function(): T`, then `get: Getter<T>`). A generic
+  record's own table (`Box` as a value, its instances' `__index`) holds one set
+  of fields for every instantiation, and Teal 0.24.8 accepts writes of any type
+  to its `T` fields: a value stored by `Box.v = x` through
+  `Box<W.MaybeSecret<number>>` is read as `number` through `Box<number>`. The
+  table is recognised by its type, which resolves through the generic
+  declaration (an instance's does not), so aliases and `require` results count.
+  Reading or writing a member of it whose declared type mentions a type
+  parameter (`Box.v`, `Box.items`, `Box["v"]`), assigning such a member
+  (`Box.get = f`), and defining a method of it inside a function, where the
+  method can capture values at the record's type parameters, are rejected.
+  Every other position can write those fields: an instance type directly,
+  `any` and `Data` through `rawset`, `Mixin` or a downcast. The table therefore
+  reaches only its own table type; the arguments of `print`, `tostring` and
+  `type`, which do not write it; the `__index` value of a table constructor
+  typed as a `metatable` (or of a record upcast to one), which Lua reads
+  through (writes go to `__newindex`); and a stdlib or generated type variable
+  whose destinations are checked in turn (`print(select(1, Box))`), except
+  `Mixin`'s target, which `Mixin` writes into. Only the table itself is exempt
+  at `__index`: a table holding it (`{ __index = { b = Box } }`) is checked
+  like any other value. The assignment `mt.__index = Box` is rejected, since
+  another alias may type that slot and write through it
+  (`local t = { __index = seed }`, then `local mt: metatable<H> = t`), and so
+  is `setmetatable(Box, { __index = Base })`, which supplies `Base`'s fields
+  to every instantiation of `Box`; set the metatable on instances, or build
+  the class table from a non-generic record. The builtins, and a `pcall` or
+  `xpcall` running them, count only when called by name as globals the file
+  never shadows or assigns (`print(Box)`, `pcall(print, Box)`):
+  `local p = print; p(Box)`, `local pc = pcall; pc(print, Box)`,
+  `_G.print(Box)`, `(print)(Box)` and `print(Box)` in a file that assigns
+  `_G.print` are rejected. `Box:set(s)`,
+  `local b: Box<T> = Box`, `table.insert(boxes, Box)`, `local t: any = Box`,
+  `rawset(Box, k, v)`, `rawget(Box, k)`, `Mixin(Box, m)`,
+  `{ __newindex = Box }`, `mt.__index = Box` and `setmetatable(Box, mt)` are
+  rejected; `print(Box)`, `setmetatable({}, { __index = Box })`,
+  `local mt: metatable<Box<number>> = { __index = Box }` and static calls such
+  as `Box.new(v)` are accepted. A record table read back as `any` is no
+  longer recognised (see the lookalike limit). A callback
   argument is compared against the callee's declared callback parameter, or
   against each function member of a declared union, so an authored callee's
   type variable cannot reach a callback's `any` parameter, whether the callback
@@ -274,10 +319,15 @@ Stock Teal type-checks ordinary flows. The checker adds:
   function type or a `return` from hiding a result. An
   argument whose shape hides a use of a type variable from that matching (a
   callback inside a union, for example) gets the authored rule, and the call
-  may not bind a Secret to any type variable. The call result is re-typed from
-  the bound arguments, so its destination is checked where the call expression
-  flows; the method exemption applies only when that destination is a trusted
-  `any`/`Data` parameter. A callable record such as `securecall` binds itself
+  may not bind a Secret or a type-variable value to any type variable. The call
+  result is re-typed from the bound arguments, so its destination is checked
+  where the call expression flows; the method exemption applies only when that
+  destination is a trusted `any`/`Data` parameter. Teal infers an authored
+  generic's result from context too (`print(id(x))` binds `any`), so a call
+  whose arguments carry a type variable into the callee's own type variables
+  (the fresh `U@12` Teal 0.24.8 creates at each reference) is re-typed the same
+  way, and a type-variable argument whose parameter shape hides such a use is
+  rejected. A callable record such as `securecall` binds itself
   as its `__call` receiver, and `pcall`/`xpcall` re-type the protected target's
   results after their leading `boolean`. Where nothing annotates that
   destination (an unannotated `local`, a table item, a module `return`, an
@@ -306,11 +356,21 @@ Stock Teal type-checks ordinary flows. The checker adds:
 - **Protected calls.** `pcall` and `xpcall` run their target on the arguments
   after it, so the target's own rules apply: `pcall(assert, s, "m")` needs the
   truthiness proof `assert(s, "m")` does, and `pcall(type, s)` the publicness
-  proof `type(s)` does.
+  proof `type(s)` does. Only the unshadowed, never-assigned globals run their
+  target: any other callee typed like them (`local pc = pcall`, a reassigned
+  `_G.pcall`) may hold a function that receives the arguments as `any`, so the
+  call is checked against the declared `pcall` or `xpcall` signature.
 - **Builtins.** `select`, `pcall`, `xpcall`, `table.pack`, `table.unpack`,
   `ipairs`, `pairs` and the other stdlib transports are recognized by their
   stdlib declaration location. A shadowing local has a different location and
-  is checked as authored code.
+  is checked as authored code. The rules that relax a builtin's argument
+  checks (`type`, `select` with the literal selector `"#"`, and `print` and
+  `tostring` reading a class table) also need the call to name the
+  unshadowed global, directly or as the target of such a `pcall`/`xpcall`, in
+  a file that never assigns it: a local or global assigned another function
+  keeps the builtin's declared type. Any other `select` selector is checked
+  like an index, since Lua coerces a numeric string (`select("1", s)` returns
+  `s` typed `integer`); a `"#"` held in a variable is a false positive.
 
 Proofs are invalidated by reassignment, by writes in loops and by calls to
 closures that write the guarded binding. A cast, a helper's permission check or
@@ -357,15 +417,42 @@ authority. Policy provenance is the source coordinate plus the package hash.
 
 The checker fails closed on a wrong compiler version, a missing or malformed
 policy, changed marker declarations, a missing stdlib identity, a declaration
-module loaded from outside the package, a generated overload set whose
-arity-overlapping overloads disagree on the opacity of a result, or an
-expression whose type the compiler did not record. Arbitrary Lua, unselected
+module loaded from outside the package, a generated overload set (metamethods
+included) whose arity-overlapping overloads disagree on the opacity of a result
+or a callback parameter, or an expression whose type the compiler did not
+record. Arbitrary Lua, unselected
 source bodies and runtime permissions remain outside this static claim.
 
 ### Consequences and lost guarantees
 
 - `any` is a sink: an authored pass-through such as `function(v: any): any` no
   longer accepts a Secret. Declare the position `MaybeSecret<T>` or unwrap first.
+- An authored type parameter is treated as possibly Secret in every generic
+  body, whatever its instantiations: a constrained `T is Shown` cannot be
+  returned or stored as `Shown`, `{T}` cannot be cast to `{number}`, and `T` is
+  cast only to a scalar after `not issecretvalue(x)`. Keep the position `T` or
+  declare it `MaybeSecret<T>`. Rejected alternative: checking each
+  instantiation (`Box<W.Secret<number>>`, `keep(s)`) and trusting the bodies.
+  Teal 0.24.8 instantiates generic records without a checked call and infers
+  type arguments from context, so not every instantiation is visible, and a
+  body is checked once for all of them.
+- A generic record's own table is a class table, not an instance: its
+  type-parameter members are not read or written through it, it is not
+  passed where it could be written, methods are defined at chunk level, and
+  shared state lives in instances or in a non-generic record. The positions
+  it may reach are an allow list, so a reading callee that takes `any`
+  (an authored `show(x: any)`, `error(Box)`, a native `Data` input,
+  `Mixin({}, Box)`, a local alias `p` of `print` or `pc` of `pcall`) is a false
+  positive, and so
+  are inheritance through `mt.__index = Box` and
+  `setmetatable(Box, { __index = Base })`. Rejected alternatives: a registry of
+  authored class tables (the table's type already identifies it, including
+  through aliases and `require`, which a registry keyed on declarations would
+  miss); rejecting generic records outright (constructors and methods built
+  on `setmetatable` stay sound under the rules above); and admitting it to
+  every `any`/`Data` position as a plain value, since `rawset`, `Mixin`, an
+  authored `any` parameter and a downcast all write through such a position,
+  and listing every writer is not possible.
 - A handle is not itself secret. At a stdlib or generated-declaration sink
   (`print`, `tostring`, `Mixin`'s mixin arguments, untyped native inputs) the sink check ignores
   function-typed record members, so a frame whose methods return `MaybeSecret`
@@ -389,7 +476,27 @@ source bodies and runtime permissions remain outside this static claim.
 - Lookalike limit: casts from `any` or `Data` to an authored record without
   generated bases are not compared, so `a as Named` with a plain `GetName` is
   accepted. Authored `any` already rejects handles; a handle reaches such a cast
-  only through a native delivery (below).
+  only through a native delivery (below). A record table has the same limit
+  where Teal hands it back as `any`: a `metatable`'s `__index` field
+  (`getmetatable(a).__index`, or `mt.__index` of a declared `metatable`) is
+  `any`, so `getmetatable(a).__index as Box<number>`,
+  `rawset(getmetatable(a).__index, "items", {})` and a cast of the
+  `metatable` to a record whose `__index` is `Box<number>` write the class
+  table unchecked.
+- Shared prototype limit: instance fields that a metatable's `__index`
+  supplies from a table other than the class table are not tracked.
+  `setmetatable({} as Box<T>, { __index = shared })`, where `shared` is a plain
+  record value with `items: {number}`, gives every instantiation the same `items`, so a
+  value stored through `Box<W.MaybeSecret<number>>` is read as `number` through
+  `Box<number>`. Give each instance its own fields.
+- Builtin identity limit: a global counts as the builtin `print`, `tostring`,
+  `type`, `select`, `pcall` or `xpcall` while the file being checked assigns
+  no variable of that name, by name or through `_G` (`_G.print`,
+  `_G["print"]`, `_G[ [[print]] ]`, `(_G).print`). A reassignment in another
+  file, through `rawset(_G, ...)` or through an alias of `_G` is not seen; the
+  canonical guards share this limit. The names are not scoped, so assigning a
+  local `select` anywhere in the file is a false positive for every
+  `select("#", ...)` in it.
 - Handler payload limit: `SetScript`, `RegisterCallback` and similar natives take
   the handler as `any`, so a handler's declared parameters
   (`function(self, event, x: number)`, `function(_, f: Pane)`) receive event
@@ -402,10 +509,12 @@ source bodies and runtime permissions remain outside this static claim.
   see is trusted as written. When its overloads accept overlapping arguments
   and disagree on result opacity (`get: function(string): W.Secret<number>`
   and `get: function(string | number): number`), Teal picks the second for
-  `local n: number = s.get("x")` and the Secret is typed plain. Generated
-  declarations are checked for this at load; an authored implementation cannot
-  produce such a set, because a function assigned to an overloaded field must
-  fit every overload.
+  `local n: number = s.get("x")` and the Secret is typed plain; overloads that
+  disagree on a callback parameter's opacity hand a plain-typed callback a
+  Secret the same way. Generated declarations, metamethods included, are
+  checked for both at load; an authored implementation cannot produce such a
+  set, because a function assigned to an overloaded field must fit every
+  overload.
 - Secrecy is a property of a type, not of a value. Curve evaluation returns
   `colorRGBA`, so every `ColorMixin` field is `MaybeSecret<number>`, including
   static constants such as `RAID_CLASS_COLORS[class].r` and
