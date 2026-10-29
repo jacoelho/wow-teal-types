@@ -1,0 +1,5 @@
+## Interface: 120105
+## Title: WoW Teal Example
+## Notes: Example addon built with WoW Teal Types.
+## Version: 0.1.0
+build\WowTealExample.lua

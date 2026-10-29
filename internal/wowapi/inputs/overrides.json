@@ -1,0 +1,357 @@
+{
+  "aliases": {
+    "ClubMemberOpaqueId": {
+      "type": "number"
+    },
+    "ConnectionProtocol": {
+      "type": "number"
+    },
+    "DurationTextBinding": {
+      "type": "DurationTextBindingObject"
+    },
+    "FontAsset": {
+      "type": "string"
+    },
+    "LuaDurationClock": {
+      "type": "LuaDurationClockObject"
+    },
+    "LuaInventorySlot": {
+      "type": "number"
+    },
+    "LuaValueVariant": {
+      "type": "any"
+    },
+    "MenuTemplateBase": {
+      "type": "Frame"
+    },
+    "Milliseconds": {
+      "type": "number"
+    },
+    "ScriptTypeName": {
+      "type": "ScriptType"
+    },
+    "UnitCastBarID": {
+      "type": "number"
+    },
+    "kstringAuroraName": {
+      "type": "string"
+    },
+    "CVarValue": {
+      "type": "string|number"
+    }
+  },
+  "opaque_objects": {
+    "AnchorMixin": {
+      "representation": "table"
+    },
+    "DiscordID": {
+      "representation": "opaque-native-value"
+    }
+  },
+  "abi_tuples": {
+    "uiRect": [
+      "number",
+      "number",
+      "number",
+      "number"
+    ]
+  },
+  "secret_effects": [
+    {
+      "symbols": [
+        "CurveObject.Evaluate",
+        "ColorCurveObject.Evaluate",
+        "ColorCurveObject.EvaluateUnpacked"
+      ]
+    },
+    {
+      "symbols": [
+        "C_CurveUtil.EvaluateColorFromBoolean",
+        "C_CurveUtil.EvaluateColorValueFromBoolean"
+      ]
+    },
+    {
+      "symbols": [
+        "DurationObject.GetElapsedDuration",
+        "DurationObject.GetElapsedPercent",
+        "DurationObject.GetEndTime",
+        "DurationObject.GetModRate",
+        "DurationObject.GetRemainingDuration",
+        "DurationObject.GetRemainingPercent",
+        "DurationObject.GetStartTime",
+        "DurationObject.GetTotalDuration",
+        "DurationObject.HasExpired",
+        "DurationObject.HasStarted",
+        "DurationObject.IsActive",
+        "DurationObject.IsZero"
+      ]
+    },
+    {
+      "symbols": [
+        "CurveObject.GetPoint",
+        "CurveObject.GetPoints",
+        "ColorCurveObject.GetPoint",
+        "ColorCurveObject.GetPoints"
+      ]
+    },
+    {
+      "symbols": [
+        "secretwrap"
+      ]
+    }
+  ],
+  "native_contracts": [
+    {
+      "symbols": [
+        "Mixin"
+      ],
+      "signature": "function<T>(T, any...): T"
+    },
+    {
+      "symbols": [
+        "CopyTable"
+      ],
+      "signature": "function<K, V>({K: V}, ? boolean): {K: V}"
+    },
+    {
+      "symbols": [
+        "tInvert"
+      ],
+      "signature": "function<K, V>({K: V}): {V: K}"
+    },
+    {
+      "symbols": [
+        "tFilter"
+      ],
+      "signature": "function<K, V>({K: V}, function(V): (any), ? boolean): {K: V}"
+    },
+    {
+      "symbols": [
+        "GetCursorInfo"
+      ],
+      "signature": "function(): string | nil, W.SecretData..."
+    },
+    {
+      "symbols": [
+        "ModelScene.CreateActor",
+        "ModelScene.GetActorAtIndex"
+      ],
+      "returns": [
+        {
+          "Name": "actor",
+          "Type": "ModelSceneFrameActor",
+          "Nilable": true
+        }
+      ]
+    },
+    {
+      "symbols": [
+        "Frame.GetAttribute"
+      ],
+      "returns": [
+        {
+          "Name": "value",
+          "Type": "any",
+          "Nilable": true,
+          "ConditionalSecret": true
+        }
+      ]
+    },
+    {
+      "symbols": [
+        "Button.SetNormalFontObject",
+        "Button.SetHighlightFontObject",
+        "Button.SetDisabledFontObject"
+      ],
+      "argument_types": {
+        "font": "FontObject"
+      }
+    },
+    {
+      "symbols": [
+        "C_CVar.SetCVar"
+      ],
+      "argument_types": {
+        "value": "CVarValue"
+      }
+    }
+  ],
+  "supplemental_method_exclusions": [
+    {
+      "owner": "FrameScriptObject",
+      "method": "SetPreventSecretValues",
+      "source": "questie:Widget/Base/FrameScriptObject.lua",
+      "signature": "function(self, boolean)"
+    }
+  ],
+  "receiver_hierarchy": [
+    {
+      "owner": "Region",
+      "expected_bases": [
+        "ScriptRegion",
+        "ScriptRegionResizing",
+        "AnimatableObject"
+      ],
+      "bases": [
+        "ScriptRegion",
+        "ScriptRegionResizing"
+      ]
+    },
+    {
+      "owner": "Frame",
+      "expected_bases": [
+        "Region",
+        "ScriptObject"
+      ],
+      "bases": [
+        "Region",
+        "ScriptObject",
+        "AnimatableObject"
+      ]
+    },
+    {
+      "owner": "TextureBase",
+      "expected_bases": [
+        "Region"
+      ],
+      "bases": [
+        "LayeredRegion",
+        "AnimatableObject"
+      ]
+    },
+    {
+      "owner": "FontString",
+      "expected_bases": [
+        "Region"
+      ],
+      "bases": [
+        "LayeredRegion",
+        "AnimatableObject"
+      ]
+    },
+    {
+      "owner": "RadialProgress",
+      "expected_bases": [],
+      "bases": [
+        "Animation"
+      ]
+    },
+    {
+      "owner": "VectorGraphics",
+      "expected_bases": [],
+      "bases": [
+        "LayeredRegion"
+      ]
+    },
+    {
+      "owner": "LayeredRegion",
+      "expected_bases": [],
+      "bases": [
+        "Region"
+      ]
+    },
+    {
+      "owner": "ModelSceneFrameActor",
+      "expected_bases": [],
+      "bases": [
+        "ModelSceneFrameActorBase"
+      ]
+    },
+    {
+      "owner": "ModelSceneActor",
+      "expected_bases": [
+        "ModelSceneActorBase"
+      ],
+      "bases": [
+        "Object"
+      ],
+      "inherit_methods_from": [
+        "ModelSceneActorBase"
+      ]
+    },
+    {
+      "owner": "LuaDurationManualClock",
+      "expected_bases": [],
+      "bases": [
+        "LuaDurationClockObject"
+      ]
+    },
+    {
+      "owner": "SecondsFormatter",
+      "expected_bases": [],
+      "bases": [
+        "NumericFormatter"
+      ]
+    }
+  ],
+  "literal_factories": [
+    {
+      "symbol": "CreateFrame",
+      "base": "Frame",
+      "generic": "function(string, ? string, ? Frame, ? string, ? number): Frame",
+      "overload": "function({type}, ? string, ? Frame, {template}, ? number): {result}",
+      "types": [
+        "Frame",
+        "Button",
+        "CheckButton",
+        "EditBox",
+        "ScrollFrame",
+        "Slider",
+        "StatusBar",
+        "Cooldown",
+        "GameTooltip",
+        "ColorSelect",
+        "MessageFrame",
+        "ScrollingMessageFrame",
+        "SimpleHTML",
+        "Model",
+        "PlayerModel",
+        "DressUpModel",
+        "CinematicModel",
+        "TabardModel",
+        "ModelScene",
+        "MovieFrame",
+        "FogOfWarFrame",
+        "UnitPositionFrame",
+        "ArchaeologyDigSiteFrame",
+        "QuestPOIFrame",
+        "ScenarioPOIFrame",
+        "DropdownButton",
+        "EventFrame"
+      ],
+      "templates": [
+        {
+          "name": "BackdropTemplate",
+          "type": "BackdropTemplate",
+          "types": [
+            "Frame",
+            "Button",
+            "CheckButton",
+            "EditBox",
+            "ScrollFrame",
+            "Slider",
+            "StatusBar"
+          ]
+        }
+      ]
+    },
+    {
+      "symbol": "AnimationGroup.CreateAnimation",
+      "base": "Animation",
+      "overload": "function(self, {type}, ? string, ? string): {result}",
+      "types": [
+        "Alpha",
+        "Scale",
+        "LineScale",
+        "Translation",
+        "LineTranslation",
+        "Rotation",
+        "Path",
+        "FlipBook",
+        "TextureCoordTranslation",
+        "VertexColor",
+        "RadialProgress"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "build": 70575,
+  "build_config": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "cdn_config": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "locale": "enUS",
+  "product": "wow",
+  "product_config": "cccccccccccccccccccccccccccccccc",
+  "region": "eu",
+  "version": "12.1.5.70575",
+  "manifests": {
+    "Interface/ui-code-list.txt": 6067012,
+    "Interface/ui-gen-addon-list.txt": 6076661,
+    "Interface/ui-toc-list.txt": 6067013
+  },
+  "max_file": 8388608,
+  "max_total": 402653184
+}

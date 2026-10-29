@@ -1,0 +1,333 @@
+{
+  "description": "Public FrameXML contracts missing from generated API metadata and Questie Core; selected additions, not complete FrameXML coverage.",
+  "classes": [
+    {
+      "name": "UiMapPointFactory",
+      "bases": [],
+      "fields": {
+        "CreateFromCoordinates": "fun(mapID:number, x:number, y:number, z?:number):UiMapPoint",
+        "CreateFromVector2D": "fun(mapID:number, position:Vector2DMixin, z?:number):UiMapPoint",
+        "CreateFromVector3D": "fun(mapID:number, position:Vector3DType):UiMapPoint"
+      },
+      "methods": {}
+    },
+    {
+      "name": "ChatTypeColor",
+      "bases": [],
+      "fields": {
+        "r": "number",
+        "g": "number",
+        "b": "number"
+      },
+      "methods": {}
+    },
+    {
+      "name": "ScrollingMessageFrame",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {},
+      "methods": {
+        "AddMessage": "fun(self:ScrollingMessageFrame, message:string, r?:number, g?:number, b?:number, ...:any)"
+      }
+    },
+    {
+      "name": "MapCanvasPinMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "OnLoad": "fun(self:MapCanvasPinMixin)",
+        "OnAcquired": "fun(self:MapCanvasPinMixin, ...:any)",
+        "OnReleased": "fun(self:MapCanvasPinMixin)",
+        "OnMouseEnter": "fun(self:MapCanvasPinMixin)",
+        "OnMouseLeave": "fun(self:MapCanvasPinMixin)",
+        "SetPosition": "fun(self:MapCanvasPinMixin, normalizedX:number, normalizedY:number, insetIndex?:number)",
+        "SetScalingLimits": "fun(self:MapCanvasPinMixin, scaleFactor:number, startScale?:number, endScale?:number)",
+        "UseFrameLevelType": "fun(self:MapCanvasPinMixin, pinFrameLevelType:string, index?:number)",
+        "CheckMouseButtonPassthrough": "fun(self:MapCanvasPinMixin, ...:string)"
+      }
+    },
+    {
+      "name": "MapCanvasPin",
+      "bases": [
+        "Frame",
+        "MapCanvasPinMixin"
+      ],
+      "fields": {},
+      "methods": {}
+    },
+    {
+      "name": "MapCanvasDataProviderMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "OnAdded": "fun(self:MapCanvasDataProviderMixin, owningMap:MapCanvasMixin)",
+        "OnRemoved": "fun(self:MapCanvasDataProviderMixin, owningMap:MapCanvasMixin)",
+        "RemoveAllData": "fun(self:MapCanvasDataProviderMixin)",
+        "RefreshAllData": "fun(self:MapCanvasDataProviderMixin, fromOnShow?:boolean)",
+        "OnShow": "fun(self:MapCanvasDataProviderMixin)",
+        "OnHide": "fun(self:MapCanvasDataProviderMixin)",
+        "GetMap": "fun(self:MapCanvasDataProviderMixin):MapCanvasMixin?"
+      }
+    },
+    {
+      "name": "MapCanvasMixin",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {},
+      "methods": {
+        "GetMapID": "fun(self:MapCanvasMixin):number?",
+        "AddDataProvider": "fun(self:MapCanvasMixin, dataProvider:MapCanvasDataProviderMixin)",
+        "RemoveDataProvider": "fun(self:MapCanvasMixin, dataProvider:MapCanvasDataProviderMixin)",
+        "RemoveAllPinsByTemplate": "fun(self:MapCanvasMixin, pinTemplate:string)",
+        "AcquirePin": "fun(self:MapCanvasMixin, pinTemplate:string, ...:any):MapCanvasPin"
+      }
+    },
+    {
+      "name": "EditModeManagerFrame",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {
+        "SaveChangesButton": "Button",
+        "RevertAllChangesButton": "Button"
+      },
+      "methods": {
+        "IsEditModeActive": "fun(self:EditModeManagerFrame):boolean",
+        "IsActiveLayoutPreset": "fun(self:EditModeManagerFrame):boolean?",
+        "GetActiveLayoutInfo": "fun(self:EditModeManagerFrame):EditModeLayoutInfo?",
+        "GetLayouts": "fun(self:EditModeManagerFrame):EditModeLayoutInfo[]",
+        "SetHasActiveChanges": "fun(self:EditModeManagerFrame, hasActiveChanges:boolean)",
+        "CheckForSystemActiveChanges": "fun(self:EditModeManagerFrame)"
+      }
+    },
+    {
+      "name": "EditModeLayoutDialog",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {
+        "modes": "table<string,EditModeDialogMode>"
+      },
+      "methods": {
+        "GetModeData": "fun(self:EditModeLayoutDialog):EditModeDialogMode?",
+        "GetLayoutInfo": "fun(self:EditModeLayoutDialog):EditModeLayoutInfo?",
+        "GetEditBoxText": "fun(self:EditModeLayoutDialog):string?",
+        "GetDesiredLayoutType": "fun(self:EditModeLayoutDialog):number"
+      }
+    },
+    {
+      "name": "EditModeUnsavedChangesDialog",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {
+        "SaveAndProceedButton": "Button"
+      },
+      "methods": {}
+    },
+    {
+      "name": "SettingsCategoryMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "GetID": "fun(self:SettingsCategoryMixin):number",
+        "GetName": "fun(self:SettingsCategoryMixin):string"
+      }
+    },
+    {
+      "name": "SettingsCanvasLayoutMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "GetFrame": "fun(self:SettingsCanvasLayoutMixin):Frame"
+      }
+    },
+    {
+      "name": "SettingsNamespace",
+      "bases": [],
+      "fields": {
+        "RegisterCanvasLayoutCategory": "fun(frame:Frame, name:string):SettingsCategoryMixin, SettingsCanvasLayoutMixin",
+        "RegisterCanvasLayoutSubcategory": "fun(parentCategory:SettingsCategoryMixin, frame:Frame, name:string):SettingsCategoryMixin, SettingsCanvasLayoutMixin",
+        "RegisterAddOnCategory": "fun(category:SettingsCategoryMixin)",
+        "OpenToCategory": "fun(categoryID:number, scrollToElementName?:string)"
+      },
+      "methods": {}
+    },
+    {
+      "name": "AuraContainerCandidateFilters",
+      "bases": [],
+      "fields": {
+        "includeSpellIDs": "table<number,boolean>?",
+        "excludeSpellIDs": "table<number,boolean>?",
+        "includeDispelTypes": "table<string,boolean>?",
+        "excludeDispelTypes": "table<string,boolean>?",
+        "maxDuration": "number?",
+        "processedAuraType": "number?",
+        "isFromPlayerOrPlayerPet": "boolean?",
+        "isRoleAura": "boolean?",
+        "isPriorityAura": "boolean?",
+        "isStealable": "boolean?",
+        "nameplateShowAll": "boolean?",
+        "nameplateShowPersonal": "boolean?",
+        "canApplyAura": "boolean?",
+        "isBossAura": "boolean?",
+        "isBossOrRoleAura": "boolean?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "AuraContainerLayout",
+      "bases": [],
+      "fields": {
+        "elementWidth": "number?",
+        "elementHeight": "number?",
+        "elementSpacing": "number?",
+        "lineSpacing": "number?",
+        "groupSpacing": "number?",
+        "groupLineSpacing": "number?",
+        "forceNewLine": "boolean?",
+        "layoutIndex": "number?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "AuraContainerGroupOptions",
+      "bases": [],
+      "fields": {
+        "maxFrameCount": "number?",
+        "candidateFilters": "AuraContainerCandidateFilters?",
+        "initializeFrame": "(fun(frame:Frame))?",
+        "templateNames": "string[]?",
+        "sortMethod": "number?",
+        "sortDirection": "number?",
+        "layout": "AuraContainerLayout?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "CustomAuraContainer",
+      "bases": [
+        "Frame"
+      ],
+      "fields": {},
+      "methods": {
+        "AddAuraGroup": "fun(self:CustomAuraContainer, groupKey:string, filterString:string, options?:AuraContainerGroupOptions)",
+        "SetUnit": "fun(self:CustomAuraContainer, unitToken:string)",
+        "GetUnit": "fun(self:CustomAuraContainer):string",
+        "SetEnabled": "fun(self:CustomAuraContainer, enabled:boolean)",
+        "IsEnabled": "fun(self:CustomAuraContainer):boolean",
+        "UpdateAllAuras": "fun(self:CustomAuraContainer)"
+      }
+    },
+    {
+      "name": "NamePlateUnitFrame",
+      "bases": [
+        "Button"
+      ],
+      "fields": {
+        "unitExists": "boolean?",
+        "displayedUnit": "string?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "NamePlateBaseMixin",
+      "bases": [],
+      "fields": {
+        "UnitFrame": "NamePlateUnitFrame?"
+      },
+      "methods": {}
+    },
+    {
+      "name": "ColorMixin",
+      "bases": [],
+      "fields": {
+        "r": "number",
+        "g": "number",
+        "b": "number",
+        "a": "number"
+      },
+      "methods": {}
+    },
+    {
+      "name": "TooltipDataHandlerMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "IsTooltipType": "fun(self:TooltipDataHandlerMixin, tooltipType:number):boolean"
+      }
+    },
+    {
+      "name": "GameTooltipDataMixin",
+      "bases": [
+        "TooltipDataHandlerMixin"
+      ],
+      "fields": {},
+      "methods": {}
+    },
+    {
+      "name": "GameTooltipTemplate",
+      "bases": [
+        "GameTooltip",
+        "GameTooltipDataMixin"
+      ],
+      "fields": {},
+      "methods": {}
+    },
+    {
+      "name": "RaidWarningFrameMixin",
+      "bases": [],
+      "fields": {},
+      "methods": {
+        "OnEvent": "fun(self:RaidWarningFrameMixin, event:string, ...:any)"
+      }
+    },
+    {
+      "name": "RaidWarningFrameTemplate",
+      "bases": [
+        "Frame",
+        "RaidWarningFrameMixin"
+      ],
+      "fields": {},
+      "methods": {}
+    }
+  ],
+  "aliases": {
+    "EditModeDialogMode": "table<string,any>"
+  },
+  "globals": {
+    "UiMapPoint": "UiMapPointFactory",
+    "ChatTypeInfo": "table<string,ChatTypeColor>",
+    "SOUNDKIT": "table<string,number>",
+    "RaidWarningFrame": "RaidWarningFrameTemplate",
+    "RaidNotice_AddMessage": "fun(noticeFrame:Frame, textString:string, colorInfo:ChatTypeColor, displayTime?:number)",
+    "DEFAULT_CHAT_FRAME": "ScrollingMessageFrame",
+    "MapCanvasPinMixin": "MapCanvasPinMixin",
+    "MapCanvasDataProviderMixin": "MapCanvasDataProviderMixin",
+    "WorldMapFrame": "MapCanvasMixin",
+    "EditModeManagerFrame": "EditModeManagerFrame",
+    "EditModeLayoutDialog": "EditModeLayoutDialog",
+    "EditModeUnsavedChangesDialog": "EditModeUnsavedChangesDialog",
+    "RegisterStateDriver": "fun(frame:Frame, state:string, values:string)",
+    "RunNextFrame": "fun(callback:fun(...:any))",
+    "SecureHandlerSetFrameRef": "fun(frame:Frame, label:string, refFrame:Frame)",
+    "SecureHandlerWrapScript": "fun(frame:Frame, script:string, header:Frame, preBody:string, postBody?:string)",
+    "Settings": "SettingsNamespace",
+    "SlashCmdList": "table<string,fun(msg:string, editBox?:EditBox)>",
+    "UISpecialFrames": "string[]",
+    "GameTooltip": "GameTooltipTemplate",
+    "RAID_CLASS_COLORS": "table<string,colorRGB>",
+    "ChatFrame1": "ScrollingMessageFrame",
+    "ChatFrame2": "ScrollingMessageFrame",
+    "ChatFrame3": "ScrollingMessageFrame",
+    "ChatFrame4": "ScrollingMessageFrame",
+    "ChatFrame5": "ScrollingMessageFrame",
+    "ChatFrame6": "ScrollingMessageFrame",
+    "ChatFrame7": "ScrollingMessageFrame",
+    "ChatFrame8": "ScrollingMessageFrame",
+    "ChatFrame9": "ScrollingMessageFrame",
+    "ChatFrame10": "ScrollingMessageFrame"
+  }
+}

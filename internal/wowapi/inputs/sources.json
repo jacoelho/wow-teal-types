@@ -1,0 +1,5761 @@
+{
+  "blizzard": {
+    "repository": "Gethe/wow-ui-source",
+    "ref": "live",
+    "commit": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+    "path": "Interface/AddOns/Blizzard_APIDocumentationGenerated",
+    "files": [
+      {
+        "name": "AbbreviateConfigAPIDocumentation.lua",
+        "sha": "6d2250acd3be64f4b4950a9b2f6d39ee4b83b41f",
+        "size": 779
+      },
+      {
+        "name": "AbbreviatedNumberFormatterAPIDocumentation.lua",
+        "sha": "8b98f45eb75e560deee0e179358628ad55299344",
+        "size": 1974
+      },
+      {
+        "name": "AccessibilityOptionsDocumentation.lua",
+        "sha": "ade4601e750f6fcc6cea9aea02b93ff546f5701f",
+        "size": 286
+      },
+      {
+        "name": "AccountConstantsDocumentation.lua",
+        "sha": "124880ebb41b740d1a86698eef73cfb6563ff77c",
+        "size": 13965
+      },
+      {
+        "name": "AccountInfoDocumentation.lua",
+        "sha": "783b7944d8dcd75425bab3116e8956e3da07c73f",
+        "size": 1138
+      },
+      {
+        "name": "AccountStoreDocumentation.lua",
+        "sha": "8039f939147b02bba1be46dc3f8dde07ff0dcc92",
+        "size": 6299
+      },
+      {
+        "name": "AchievementInfoDocumentation.lua",
+        "sha": "3b0359fca41ce31f5aa4b78a83217ec58f804333",
+        "size": 4466
+      },
+      {
+        "name": "AchievementTelemetryDocumentation.lua",
+        "sha": "18d446d6bfff29badacb8bd3c8393e103dff7ca7",
+        "size": 812
+      },
+      {
+        "name": "ActionBarFrameDocumentation.lua",
+        "sha": "d3ddd5eed3b1d1b0efe997f0ff9e7ff6724265a8",
+        "size": 24619
+      },
+      {
+        "name": "ActionBarSharedDocumentation.lua",
+        "sha": "39604a03313daf80fdd34bd2224579f4289400d9",
+        "size": 490
+      },
+      {
+        "name": "ActionDocumentation.lua",
+        "sha": "f0f7cddf9ca66a7e005bbfaa695b2f128e4ef381",
+        "size": 205
+      },
+      {
+        "name": "AddOnProfilerConstantsDocumentation.lua",
+        "sha": "f3191442995310d7d7fc7e183648b0d23145e37a",
+        "size": 2733
+      },
+      {
+        "name": "AddOnProfilerDocumentation.lua",
+        "sha": "f1fe480a2a00e8e280532aac062e373fc4f41e01",
+        "size": 6571
+      },
+      {
+        "name": "AddOnsDocumentation.lua",
+        "sha": "6c77f1966a830c92e5ad9766396c2d6b32144fd6",
+        "size": 10149
+      },
+      {
+        "name": "AdventureJournalDocumentation.lua",
+        "sha": "2a251ee9348396314378c8346f8ece7cf6ce7bee",
+        "size": 2535
+      },
+      {
+        "name": "AdventureMapDocumentation.lua",
+        "sha": "53d690ff52417bff06bec51567c48a5419a01d62",
+        "size": 2474
+      },
+      {
+        "name": "AlliedRacesFrameDocumentation.lua",
+        "sha": "98ffb062e5acba18eb583033f63ceb947ccbcc8f",
+        "size": 2384
+      },
+      {
+        "name": "AnimaDiversionUIDocumentation.lua",
+        "sha": "3caf09bbb539db10388d783bfe145636a81c0c02",
+        "size": 3575
+      },
+      {
+        "name": "AppearanceSourceDocumentation.lua",
+        "sha": "1dbaf1e1d1be80e78a008e80ba7b77ba05ae264d",
+        "size": 1424
+      },
+      {
+        "name": "ArdenwealdGardeningDocumentation.lua",
+        "sha": "e626779b40a599756a8b188530c85ae03500a7d5",
+        "size": 860
+      },
+      {
+        "name": "AreaPoiInfoDocumentation.lua",
+        "sha": "933ab9a06229fa501402bd3b9b64cb7d375bc6da",
+        "size": 4983
+      },
+      {
+        "name": "ArrowCalloutConstantsDocumentation.lua",
+        "sha": "953f785669979c395bf6e8e955129c5ebfb1053e",
+        "size": 1061
+      },
+      {
+        "name": "ArtifactUIDocumentation.lua",
+        "sha": "9f9a7b071ab26d5817b2ffd4236013e9afc5c047",
+        "size": 26664
+      },
+      {
+        "name": "AssistedCombatDocumentation.lua",
+        "sha": "c331dbf1820553364437dee6b644c0d8863f0aa9",
+        "size": 1242
+      },
+      {
+        "name": "AsyncAssistActionsConstantsDocumentation.lua",
+        "sha": "fcb8879f6cc87e851bfd95a61fa82b5419a2b65e",
+        "size": 790
+      },
+      {
+        "name": "AuctionHouseConstantsDocumentation.lua",
+        "sha": "1ee85704d93e0ab8b336c36e792c76623b142ce3",
+        "size": 303
+      },
+      {
+        "name": "AuctionHouseDocumentation.lua",
+        "sha": "be435881532a9ebda13806aad5ef2b2feeeea34f",
+        "size": 43055
+      },
+      {
+        "name": "AuctionHouseEnumsDocumentation.lua",
+        "sha": "01ce7732849a8e992b8b739c9ed5f3043977acb5",
+        "size": 6281
+      },
+      {
+        "name": "AuraContainerSharedDocumentation.lua",
+        "sha": "845a062934848ec13265caf7403b325052cf3b9f",
+        "size": 2232
+      },
+      {
+        "name": "AuraContainerUtilDocumentation.lua",
+        "sha": "a28788fd0e14df2ecbb77e9170f099ac4b6a8a52",
+        "size": 14864
+      },
+      {
+        "name": "AutoCompleteDocumentation.lua",
+        "sha": "b37b10e2fb9781562978171f593e1163b3af958a",
+        "size": 2043
+      },
+      {
+        "name": "AutoCompleteSharedDocumentation.lua",
+        "sha": "ac5b98c93e419846884f4c0fd569d7e4ff601105",
+        "size": 1627
+      },
+      {
+        "name": "AzeriteConstantsDocumentation.lua",
+        "sha": "9c4f2cd355ce94080af8edd567770377f33f3e72",
+        "size": 572
+      },
+      {
+        "name": "AzeriteEmpoweredItemDocumentation.lua",
+        "sha": "cfdaf12852e4bd6294815db3c3d8c72770f4403f",
+        "size": 8559
+      },
+      {
+        "name": "AzeriteEssenceDocumentation.lua",
+        "sha": "f2daf45c85dfbebc8b1d79e7d6792dc5b0865d65",
+        "size": 7504
+      },
+      {
+        "name": "AzeriteItemDocumentation.lua",
+        "sha": "99c94c6513b75cab335719070b8e8ec33da40ce2",
+        "size": 4571
+      },
+      {
+        "name": "BNetOutageDocumentation.lua",
+        "sha": "13085b64dbc135ee31d41b6ea5da0fff92aaeb32",
+        "size": 386
+      },
+      {
+        "name": "BagConstantsDocumentation.lua",
+        "sha": "cdd88742b1c6f62e709253089ab46d72e85b1f8d",
+        "size": 3044
+      },
+      {
+        "name": "BagIndexConstantsDocumentation.lua",
+        "sha": "ac2c7ba23c01256ccc23544fbe2e239729b6ba5b",
+        "size": 1705
+      },
+      {
+        "name": "BankDocumentation.lua",
+        "sha": "07ec23c5eabef0fe7e3ac8d32d0e4a6d95b6f18e",
+        "size": 9398
+      },
+      {
+        "name": "BarberShopDocumentation.lua",
+        "sha": "1cd93f227734254699a4b0fc84c058be18d0a17f",
+        "size": 6487
+      },
+      {
+        "name": "BarberShopInternalDocumentation.lua",
+        "sha": "9d7836932aa7920de4fd9d48139997079153d2c6",
+        "size": 460
+      },
+      {
+        "name": "BaseDocumentation.lua",
+        "sha": "d70833c149ecbbef0dea9c441265404eba4cc504",
+        "size": 184
+      },
+      {
+        "name": "BattleNetDocumentation.lua",
+        "sha": "1230226d74b116048ecd61573da9ad73631ae5ff",
+        "size": 11788
+      },
+      {
+        "name": "BattleNetSharedDocumentation.lua",
+        "sha": "c9282a8952c8f041b8adaf7693a7a78781985f52",
+        "size": 1338
+      },
+      {
+        "name": "BattlePetConstantsDocumentation.lua",
+        "sha": "aa816bc98a696dc3ebe2324aa9846959a1fdf60a",
+        "size": 2470
+      },
+      {
+        "name": "BattlePetDocumentation.lua",
+        "sha": "5fdf4ec1b108ff8585c53d64907ef91a80efea93",
+        "size": 6377
+      },
+      {
+        "name": "BattlepayConstantsDocumentation.lua",
+        "sha": "0dd3477e4aadaf23836df94d8bf3f9b2d0edbfaa",
+        "size": 23689
+      },
+      {
+        "name": "BehavioralMessagingDocumentation.lua",
+        "sha": "e7d9b277e5ee2d3a01fcfc41515aba0e2ab9cfba",
+        "size": 921
+      },
+      {
+        "name": "BlackMarketInfoDocumentation.lua",
+        "sha": "0061588e2496a2efaf7f498a39aff59af3b27db4",
+        "size": 1605
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated.toc",
+        "sha": "29b62e616771d6f0ee8392ef7e6868123fbde976",
+        "size": 21079
+      },
+      {
+        "name": "BountySharedDocumentation.lua",
+        "sha": "23e7d4770765f065fa145e9b73595f3b46680bf6",
+        "size": 517
+      },
+      {
+        "name": "BrowserDocumentation.lua",
+        "sha": "bcba7f6de60972d37b11f738e691857b92c879f5",
+        "size": 1552
+      },
+      {
+        "name": "BuildDocumentation.lua",
+        "sha": "d2504efb85075852978d7f3fbca64787be25d268",
+        "size": 2485
+      },
+      {
+        "name": "ButtonStateDocumentation.lua",
+        "sha": "8ec2f276e53b915bed538214be0d5252afa84806",
+        "size": 117
+      },
+      {
+        "name": "CVarDocumentation.lua",
+        "sha": "b71c94878c8dca929ed567a2112d66407d4a1328",
+        "size": 4344
+      },
+      {
+        "name": "CalendarConstantsDocumentation.lua",
+        "sha": "5d75f44b62b2004ac5dd3be30e0ec0e8bd312b24",
+        "size": 14001
+      },
+      {
+        "name": "CalendarDocumentation.lua",
+        "sha": "cc8f7006d7096ebc7386ede428efc6959190e9f6",
+        "size": 27804
+      },
+      {
+        "name": "CameraConstantsDocumentation.lua",
+        "sha": "e38a321e105cf1fd39f599770640e4c121849bda",
+        "size": 599
+      },
+      {
+        "name": "CameraDocumentation.lua",
+        "sha": "8c83a16032e78d78d04df863c6061cfa1ef5af5d",
+        "size": 1356
+      },
+      {
+        "name": "CatalogShopConstantsDocumentation.lua",
+        "sha": "3966c54e6b735fa103945d5c8d45000af3bf11c7",
+        "size": 402
+      },
+      {
+        "name": "CatalogShopDocumentation.lua",
+        "sha": "390068c8cd158ab5fa212d9480ec242c5a8d95ad",
+        "size": 23715
+      },
+      {
+        "name": "ChallengeModeInfoDocumentation.lua",
+        "sha": "daa9b0b173a58f8f8da9b41ecb949ff69d000b43",
+        "size": 13808
+      },
+      {
+        "name": "CharacterCreationConstantsDocumentation.lua",
+        "sha": "977de11b6f79b88473e336d0cf8c048ced676498",
+        "size": 1397
+      },
+      {
+        "name": "CharacterCustomizationSharedDocumentation.lua",
+        "sha": "096be6e4a1baa73caeea04c86ea213a371e45194",
+        "size": 5695
+      },
+      {
+        "name": "CharacterSelectionConstantsDocumentation.lua",
+        "sha": "8bbbe8cd6dd7cdcdbaa9bd0d5215e5a109e47c3e",
+        "size": 5230
+      },
+      {
+        "name": "CharacterServicesConstantsDocumentation.lua",
+        "sha": "9099390918cc5a73fb9906b3aa10b100549105cf",
+        "size": 1294
+      },
+      {
+        "name": "ChatBubblesDocumentation.lua",
+        "sha": "027a80e410fd8794b648586c8172fc26693b2519",
+        "size": 587
+      },
+      {
+        "name": "ChatConstantsDocumentation.lua",
+        "sha": "fdb111e11cc27cddda6e1b2471d2c36599fe93b6",
+        "size": 8640
+      },
+      {
+        "name": "ChatInfoDocumentation.lua",
+        "sha": "2e3d0108ace702494034d057d57039dc16bf1b27",
+        "size": 131420
+      },
+      {
+        "name": "ChatSharedDocumentation.lua",
+        "sha": "8a5409591337a125bacbed20bdb31150d8f55cbc",
+        "size": 563
+      },
+      {
+        "name": "ChromieTimeUIDocumentation.lua",
+        "sha": "31a093b8562e249f3bbdf4699fc4d51b86f24c55",
+        "size": 1705
+      },
+      {
+        "name": "CinematicConstantsDocumentation.lua",
+        "sha": "4c67984d2eaf1cc17a48f718fd1a9477b05362aa",
+        "size": 553
+      },
+      {
+        "name": "CinematicDocumentation.lua",
+        "sha": "3a5ecd2c7e4f169138277c0ba5637fa9cf3663c4",
+        "size": 2647
+      },
+      {
+        "name": "CinematicListDocumentation.lua",
+        "sha": "cf2c9693c48e7897c7af307e24500235b0bbd621",
+        "size": 988
+      },
+      {
+        "name": "ClassColorDocumentation.lua",
+        "sha": "d8244d7b4d64530ae166ef7b722bf746af93cf16",
+        "size": 661
+      },
+      {
+        "name": "ClassTalentsDocumentation.lua",
+        "sha": "dc4120dd1b568a49f19de43d3b0e21e31abdeb24",
+        "size": 13258
+      },
+      {
+        "name": "ClassTrialDocumentation.lua",
+        "sha": "5aeb645897460e04d3fb6a0262066708f9c990fc",
+        "size": 524
+      },
+      {
+        "name": "ClickBindingsConstantsDocumentation.lua",
+        "sha": "f3ad8892c26a04f96d89f5c885bcf1151fe0b8a5",
+        "size": 1388
+      },
+      {
+        "name": "ClickBindingsDocumentation.lua",
+        "sha": "5a308f45854ab102b1d2b2088b44acb4665c17ef",
+        "size": 2642
+      },
+      {
+        "name": "ClientDocumentation.lua",
+        "sha": "c18288e83fe4c0864ea5c0f58c9ddd0aa2938311",
+        "size": 1691
+      },
+      {
+        "name": "ClientSceneDocumentation.lua",
+        "sha": "0794c490b64115c4e684689895726f35542e1506",
+        "size": 1186
+      },
+      {
+        "name": "ClientSettingsDocumentation.lua",
+        "sha": "ef539978aa71e99608a5afd5e4710f4b779b03ee",
+        "size": 1133
+      },
+      {
+        "name": "ClubDocumentation.lua",
+        "sha": "8af97a418e7bf42eb888f9903c156b61f068a5ee",
+        "size": 61011
+      },
+      {
+        "name": "ClubFinderDocumentation.lua",
+        "sha": "d3cfa85e819f20d0ed3b0beb9c2dcb980173f37d",
+        "size": 27540
+      },
+      {
+        "name": "ClubSharedDocumentation.lua",
+        "sha": "28b1696693f792cdd038878fb29e8f4c7aa1a759",
+        "size": 534
+      },
+      {
+        "name": "ColorDocumentation.lua",
+        "sha": "b20f7a0bd6834c4180e0ca96094f96cecf389224",
+        "size": 105
+      },
+      {
+        "name": "ColorOverrideConstantsDocumentation.lua",
+        "sha": "75bdf3c1a20002096ac56b36723c056987d6bea5",
+        "size": 877
+      },
+      {
+        "name": "ColorOverridesDocumentation.lua",
+        "sha": "e718bc7ea1c12ac6565d83beca081f753227d2b2",
+        "size": 2434
+      },
+      {
+        "name": "ColorUtilDocumentation.lua",
+        "sha": "dcbb88c479e4533933ba6f87e717bf57303b124b",
+        "size": 4497
+      },
+      {
+        "name": "CombatAudioAlertConstantsDocumentation.lua",
+        "sha": "4b34d08d3cd8686517a921037144469d68f57308",
+        "size": 3155
+      },
+      {
+        "name": "CombatAudioAlertDocumentation.lua",
+        "sha": "22e98eb4e4f767a1bcd9d967739ee03d203ac57d",
+        "size": 5336
+      },
+      {
+        "name": "CombatAudioAlertSharedDocumentation.lua",
+        "sha": "d0b7898cb124cceb9b88f1ddb36475dcf6ae5efe",
+        "size": 12593
+      },
+      {
+        "name": "CombatLogConstantsDocumentation.lua",
+        "sha": "d5bbd3adb73e4254fb2c1ec65906084cae4a71e6",
+        "size": 3674
+      },
+      {
+        "name": "CombatLogDocumentation.lua",
+        "sha": "0d5844ffd9eda8513a2b5f723ad9d8e45b0e3c48",
+        "size": 2910
+      },
+      {
+        "name": "CombatLogInternalDocumentation.lua",
+        "sha": "3bc1d6782a48e75c093f98bd5df893eb9d8fe06a",
+        "size": 547
+      },
+      {
+        "name": "CombatLogSecureDocumentation.lua",
+        "sha": "ae8290fa2bb432ecddc1921d972827ab12ff5940",
+        "size": 3307
+      },
+      {
+        "name": "CombatLogSharedDocumentation.lua",
+        "sha": "9c2ca5ff1e8e9b9e553c1c369f70431792e711ee",
+        "size": 500
+      },
+      {
+        "name": "CombatTextDocumentation.lua",
+        "sha": "8af96fe3aa952942e22dc8992ab5f51c64e7d251",
+        "size": 990
+      },
+      {
+        "name": "CombatTextSharedDocumentation.lua",
+        "sha": "ccccdb73873b29a80007ac7c96e8548a6de94193",
+        "size": 215
+      },
+      {
+        "name": "CommentatorFrameDocumentation.lua",
+        "sha": "f708e7ca4249c8d26d69f09fc816d3cdb80d21d3",
+        "size": 45659
+      },
+      {
+        "name": "CommentatorSharedDocumentation.lua",
+        "sha": "91abf1ec05c5f3b51b31d762e8a3c6c827146d87",
+        "size": 848
+      },
+      {
+        "name": "CompactUnitFramesDocumentation.lua",
+        "sha": "c7426e718df8dbf996200fa961430f914943397d",
+        "size": 429
+      },
+      {
+        "name": "ConfigurationWarningConstantsDocumentation.lua",
+        "sha": "755ebe5a03632148aa8a3a33636c742f2879b9bd",
+        "size": 980
+      },
+      {
+        "name": "ConfigurationWarningsDocumentation.lua",
+        "sha": "a1c2c30c1013e9e0a79f41067019f7f3042fad14",
+        "size": 1582
+      },
+      {
+        "name": "ConnectionDocumentation.lua",
+        "sha": "3df3bebcc83c30dcc03e0d431ef262ea591a9b5c",
+        "size": 1855
+      },
+      {
+        "name": "ConsoleDocumentation.lua",
+        "sha": "c6f7bdec38cabd46597400801cbd4371fb937452",
+        "size": 6851
+      },
+      {
+        "name": "ConsoleScriptCollectionDocumentation.lua",
+        "sha": "214f22f7b9379a1298eaf8637078674d361bde7f",
+        "size": 2625
+      },
+      {
+        "name": "ContainerDocumentation.lua",
+        "sha": "d8ccac7e60f0a575d5ca27fda9b6900a92f1c709",
+        "size": 19085
+      },
+      {
+        "name": "ContentTrackingDocumentation.lua",
+        "sha": "a2db4eff9e049b562e751db1e0a1a7c1f1155397",
+        "size": 8595
+      },
+      {
+        "name": "ContentTrackingTypesDocumentation.lua",
+        "sha": "bf41a525d1f71e229a6bf5cb4349d1ee16c76f9b",
+        "size": 3973
+      },
+      {
+        "name": "ContributionCollectorDocumentation.lua",
+        "sha": "97ae5df89026e123a1bcf2c4b379e26ad04ea1ca",
+        "size": 8746
+      },
+      {
+        "name": "CooldownFrameConstantsDocumentation.lua",
+        "sha": "0350b8fb834d6d013d92d631bec2a6701eda21d3",
+        "size": 692
+      },
+      {
+        "name": "CooldownViewerConstantsDocumentation.lua",
+        "sha": "37a1383338fd66531e22f2d4c40880c485c68ac8",
+        "size": 11752
+      },
+      {
+        "name": "CooldownViewerDocumentation.lua",
+        "sha": "3332eccbe4ea083921c2e80b9ef83be49834339d",
+        "size": 4405
+      },
+      {
+        "name": "CovenantCallingsConstantsDocumentation.lua",
+        "sha": "bfacfaca956613e6a0a70f23b17cbeeeba3909e7",
+        "size": 625
+      },
+      {
+        "name": "CovenantCallingsDocumentation.lua",
+        "sha": "b6abb936d4084436942cdc5ab44da581950a9f7b",
+        "size": 727
+      },
+      {
+        "name": "CovenantPreviewDocumentation.lua",
+        "sha": "c877e4c59a8485d12e7daf54ecb1c56d33441b8c",
+        "size": 2841
+      },
+      {
+        "name": "CovenantSanctumConstantsDocumentation.lua",
+        "sha": "3fcde0aa5d6a431ef7aa8995c39e2b163710b470",
+        "size": 143
+      },
+      {
+        "name": "CovenantSanctumDocumentation.lua",
+        "sha": "56b3820b3bff8edc39308dbfa1779c9c4cd2ae0f",
+        "size": 4994
+      },
+      {
+        "name": "CovenantsConstantsDocumentation.lua",
+        "sha": "cf979f1913861c457fbaf4f90afcfd59a600046e",
+        "size": 487
+      },
+      {
+        "name": "CovenantsDocumentation.lua",
+        "sha": "7b9fede7f31ce6b2e29d889a62a1118e66f320e5",
+        "size": 2222
+      },
+      {
+        "name": "CraftingOrderUIConstantsDocumentation.lua",
+        "sha": "09d794dcb782ab2f6aa0731f2f4ef73f547e71c5",
+        "size": 1185
+      },
+      {
+        "name": "CraftingOrderUIDocumentation.lua",
+        "sha": "ef4b0b42408a74c65708a3a641467c5f3364d8c0",
+        "size": 14611
+      },
+      {
+        "name": "CraftingOrderUISharedDocumentation.lua",
+        "sha": "f299d79ed403f55394e75507f3865016be3be2a2",
+        "size": 10060
+      },
+      {
+        "name": "CreatureInfoDocumentation.lua",
+        "sha": "225e3f9c1f575bd07aaae5087cf79e94d8a4cc3e",
+        "size": 3536
+      },
+      {
+        "name": "CurrencyConstantsDocumentation.lua",
+        "sha": "f6ac995b3b9a36033743771653424c071f83b233",
+        "size": 11275
+      },
+      {
+        "name": "CurrencyConstants_MainlineDocumentation.lua",
+        "sha": "d64d323ca1b0e74cd9975e33596fdb12a81bdb4a",
+        "size": 1699
+      },
+      {
+        "name": "CurrencyInfoDocumentation.lua",
+        "sha": "da1b31f9c6694bcc1beb25ae7d1df81907dc5944",
+        "size": 18116
+      },
+      {
+        "name": "CursorConstDocumentation.lua",
+        "sha": "88312c6efc915b952213f1881619eb415c8d8190",
+        "size": 9759
+      },
+      {
+        "name": "CursorDocumentation.lua",
+        "sha": "208585d79989a608d1ed435676005d45f40f3d4a",
+        "size": 1496
+      },
+      {
+        "name": "CursorUtilDocumentation.lua",
+        "sha": "6ab9f9e6e702658ca3c9babc12c8ac1393fb9749",
+        "size": 447
+      },
+      {
+        "name": "CurveUtilDocumentation.lua",
+        "sha": "e6ddae258fbcf69fd65bf0b0c0949bac263d97c7",
+        "size": 2176
+      },
+      {
+        "name": "DamageConstantsDocumentation.lua",
+        "sha": "9996e9d8942d85d089feb69f182dae5ccceebd31",
+        "size": 5756
+      },
+      {
+        "name": "DamageMeterConstantsDocumentation.lua",
+        "sha": "8b2410fb13638d067843b986b0a4e45bcd4618a4",
+        "size": 4320
+      },
+      {
+        "name": "DamageMeterDocumentation.lua",
+        "sha": "a2c91e624db922e9e43c7b9ef966daa3912ad0b2",
+        "size": 8366
+      },
+      {
+        "name": "DateAndTimeDocumentation.lua",
+        "sha": "e9e5b4a7bdba93547ec84a808444c455262002b0",
+        "size": 3226
+      },
+      {
+        "name": "DeathAlertDocumentation.lua",
+        "sha": "489e616d0bb4fa73db1a37fe3f12cf176c3e4002",
+        "size": 454
+      },
+      {
+        "name": "DeathInfoDocumentation.lua",
+        "sha": "4fbbdcca339b58abc3d30a51a193aa656fa4b99a",
+        "size": 4960
+      },
+      {
+        "name": "DeathRecapDocumentation.lua",
+        "sha": "85c0b6d33c2c4dfb75f6d383223fccf46a67838c",
+        "size": 1568
+      },
+      {
+        "name": "DebugToggleDocumentation.lua",
+        "sha": "476240f421db77102e963a6100957f7ba4414d36",
+        "size": 856
+      },
+      {
+        "name": "DelvesConstantsDocumentation.lua",
+        "sha": "ec3d540ec8187520d2fdb3342a101b9835bbeddd",
+        "size": 3981
+      },
+      {
+        "name": "DelvesUIDocumentation.lua",
+        "sha": "6aaeaba3fcb216314c9274e6633885310d466132",
+        "size": 14156
+      },
+      {
+        "name": "DiscordConstantsDocumentation.lua",
+        "sha": "1b1cc75fc6715d6ec25b680b888af06931febdbc",
+        "size": 2005
+      },
+      {
+        "name": "DiscordDocumentation.lua",
+        "sha": "327050517a8b0f71e7775b1350f321d5efcd8cdf",
+        "size": 5405
+      },
+      {
+        "name": "DuelInfoDocumentation.lua",
+        "sha": "02d101b82dabfcb8278e1245ec0ebeb3bf037ae5",
+        "size": 1027
+      },
+      {
+        "name": "DungeonEncounterConstantsDocumentation.lua",
+        "sha": "3ef37df42296ce4765921044988b35646cc5b86e",
+        "size": 1812
+      },
+      {
+        "name": "DurationTextBindingObjectAPIDocumentation.lua",
+        "sha": "36e42b7973b80c6cf51f5d6f830c4c500f5cf7e5",
+        "size": 9182
+      },
+      {
+        "name": "DurationTextBindingSharedDocumentation.lua",
+        "sha": "3b347fdd7a16afd5bb83bb6a9b7542316d66b081",
+        "size": 1864
+      },
+      {
+        "name": "DurationUtilDocumentation.lua",
+        "sha": "0d59939fe755488bbb33a6c609d07e919a50890b",
+        "size": 1079
+      },
+      {
+        "name": "DyeColorInfoDocumentation.lua",
+        "sha": "4df633ca0f2eb48247b10ff81f8ce3d08946002a",
+        "size": 3288
+      },
+      {
+        "name": "DyeColorInfoSharedDocumentation.lua",
+        "sha": "e195eaaca4c9ac203a1e0746aff955b3185f0193",
+        "size": 1269
+      },
+      {
+        "name": "EditModeManagerConstantsDocumentation.lua",
+        "sha": "7d77a96aa5109e3b2308e548f5354b0a1cfd05a2",
+        "size": 35370
+      },
+      {
+        "name": "EditModeManagerConstants_MainlineDocumentation.lua",
+        "sha": "7b062481f887fef15e2e9419ea2fc23cb7a5e140",
+        "size": 365
+      },
+      {
+        "name": "EditModeManagerDocumentation.lua",
+        "sha": "a34a47f4bf7c49827fdec2410db418e4bf1c9c3e",
+        "size": 4803
+      },
+      {
+        "name": "EncodingUtilConstantsDocumentation.lua",
+        "sha": "18b1e07536e62372d0ca1bf50dde7aea04e059cd",
+        "size": 371
+      },
+      {
+        "name": "EncodingUtilDocumentation.lua",
+        "sha": "25c1b60ac9f255e68ea2df6fe18aae215aa81112",
+        "size": 5671
+      },
+      {
+        "name": "EncounterEventsDocumentation.lua",
+        "sha": "fed8dc5c9358e8ae03b48130a1958e5205bf4dea",
+        "size": 3707
+      },
+      {
+        "name": "EncounterEventsSharedDocumentation.lua",
+        "sha": "814e3d77e1d78c1eeb9ea71d04647f204705b889",
+        "size": 3243
+      },
+      {
+        "name": "EncounterInfoDocumentation.lua",
+        "sha": "33451dabcd3812d147e279c0b70c3955484e3b87",
+        "size": 2754
+      },
+      {
+        "name": "EncounterJournalConstantsDocumentation.lua",
+        "sha": "3e4dbc83337a3918ab50687cba727a79f8fa2879",
+        "size": 4475
+      },
+      {
+        "name": "EncounterJournalDocumentation.lua",
+        "sha": "58d83832277663cd20c349e8e4b1a16f48af0010",
+        "size": 10471
+      },
+      {
+        "name": "EncounterTimelineConstantsDocumentation.lua",
+        "sha": "5c5bb1840764b83729b06900915b0e4218f5d387",
+        "size": 6740
+      },
+      {
+        "name": "EncounterTimelineDocumentation.lua",
+        "sha": "4434ea98ccea13a93d937d58d8c933729643dc78",
+        "size": 22975
+      },
+      {
+        "name": "EncounterWarningsDocumentation.lua",
+        "sha": "ba9512e45b73b37344a02ba075ae12eb19eed0ae",
+        "size": 4646
+      },
+      {
+        "name": "EndOfMatchUIDocumentation.lua",
+        "sha": "1a93e8f26aef8268a3611ce636d0aa5c2d03c12c",
+        "size": 1665
+      },
+      {
+        "name": "EquipmentManagerDocumentation.lua",
+        "sha": "f4bff3737ea6725096416b644188f6f39171935f",
+        "size": 7357
+      },
+      {
+        "name": "EventSchedulerConstantsDocumentation.lua",
+        "sha": "c851eef17f26f49cb2da233c9437e701c4b26418",
+        "size": 558
+      },
+      {
+        "name": "EventSchedulerUIDocumentation.lua",
+        "sha": "06f446fb90a16ff1a599a6749aadfdf0496dd87c",
+        "size": 4942
+      },
+      {
+        "name": "EventUtilsDocumentation.lua",
+        "sha": "abcf8828ce8a348bcb2e2cda71c6f0dec3f476e1",
+        "size": 811
+      },
+      {
+        "name": "ExpansionConstantsDocumentation.lua",
+        "sha": "7563bfc80b705db879cc630d897beaccfd104ec6",
+        "size": 392
+      },
+      {
+        "name": "ExpansionDocumentation.lua",
+        "sha": "71e08a7bac41816dc8a63ea7ff782cb86ad2d1af",
+        "size": 7037
+      },
+      {
+        "name": "ExpansionInfoDocumentation.lua",
+        "sha": "4bbc64e6a95e141ec4afdc4855ad6b32603114d8",
+        "size": 969
+      },
+      {
+        "name": "ExpansionLandingPageConstantsDocumentation.lua",
+        "sha": "df5f08f7afd414a1ec1e670fe6d78659b4fe2582",
+        "size": 450
+      },
+      {
+        "name": "ExpansionLevelConstantsDocumentation.lua",
+        "sha": "536e64a1fd8091fbd4b3542a1a7865e0d3042aca",
+        "size": 1179
+      },
+      {
+        "name": "ExpansionTrialDocumentation.lua",
+        "sha": "bb6bb5d85e23331ba3bdecb203f297fd9b6bda50",
+        "size": 458
+      },
+      {
+        "name": "ExternalEventURLDocumentation.lua",
+        "sha": "27133f48980b0b93f2ae6bc5e17e1d7a6f4ffc36",
+        "size": 766
+      },
+      {
+        "name": "FogOfWarDocumentation.lua",
+        "sha": "af758c47d887a2cd6e919b009cc93a8d20239a3b",
+        "size": 1277
+      },
+      {
+        "name": "FontDocumentation.lua",
+        "sha": "a49bd36fefe0b11b3cd924a613b00a70d882006a",
+        "size": 2144
+      },
+      {
+        "name": "ForbiddenAspectConstantsDocumentation.lua",
+        "sha": "627a9c24114a4a2939b1be47e1fbaaedd7879ac6",
+        "size": 2935
+      },
+      {
+        "name": "FrameAPIArchaeologyDigsiteDocumentation.lua",
+        "sha": "77c85463957824bc7ae2bd3e8871d03081d7146c",
+        "size": 276
+      },
+      {
+        "name": "FrameAPIBlobDocumentation.lua",
+        "sha": "58e772fb68ba14d37a4a12856a9ad2ab473779e8",
+        "size": 2757
+      },
+      {
+        "name": "FrameAPICharacterModelBaseDocumentation.lua",
+        "sha": "81164d2b9d0712181d7a8335ae4d17315ad5c5fa",
+        "size": 5495
+      },
+      {
+        "name": "FrameAPICinematicModelDocumentation.lua",
+        "sha": "6f1580dc4bdba47987b7006bbc6f2871078bf8cb",
+        "size": 4201
+      },
+      {
+        "name": "FrameAPICooldownDocumentation.lua",
+        "sha": "6d5dde57d7cc36efcdbd7ae96795c64d03d22e7f",
+        "size": 13120
+      },
+      {
+        "name": "FrameAPIDressUpModelDocumentation.lua",
+        "sha": "58071ee587579c516365aeb15b11b8e88695e947",
+        "size": 4805
+      },
+      {
+        "name": "FrameAPIFogOfWarFrameDocumentation.lua",
+        "sha": "7ed2293066974457e2130485526aa5d8cc26cb64",
+        "size": 2642
+      },
+      {
+        "name": "FrameAPIModelSceneFrameActorBaseDocumentation.lua",
+        "sha": "6d0430e9ee0b9cbe0afb6756f2db61a8ad7ba32d",
+        "size": 12507
+      },
+      {
+        "name": "FrameAPIModelSceneFrameActorDocumentation.lua",
+        "sha": "3cbf36effd72a3031516806a901d61f465f44ce7",
+        "size": 7485
+      },
+      {
+        "name": "FrameAPIModelSceneFrameDocumentation.lua",
+        "sha": "24beb3d8b31e018a82606841f0556dfe98f279f5",
+        "size": 11916
+      },
+      {
+        "name": "FrameAPIModelSceneFrameSharedDocumentation.lua",
+        "sha": "3adf63376fc34cbc4435a7a6295fd87f0197fc6a",
+        "size": 424
+      },
+      {
+        "name": "FrameAPINamePlateDocumentation.lua",
+        "sha": "95e5a5a919426aa1140a3ef31bf3babc242bd25c",
+        "size": 2559
+      },
+      {
+        "name": "FrameAPIQuestPOIDocumentation.lua",
+        "sha": "c4a2d9fb965a1c5367039d01319251c03488f97b",
+        "size": 1098
+      },
+      {
+        "name": "FrameAPIScenarioPOIDocumentation.lua",
+        "sha": "b6f3f27fa6eecc3773370d7d2b036c26f223a674",
+        "size": 766
+      },
+      {
+        "name": "FrameAPISimpleCheckoutDocumentation.lua",
+        "sha": "fe7d89222dec65225d3bccab7412a5f20755236a",
+        "size": 1343
+      },
+      {
+        "name": "FrameAPITabardModelBaseDocumentation.lua",
+        "sha": "7391306fab20a5b75de11a5b411b76507c22c7cb",
+        "size": 1445
+      },
+      {
+        "name": "FrameAPITabardModelDocumentation.lua",
+        "sha": "4a8f6574ad3f6bf1a4e2ce96198eeea032bb1b76",
+        "size": 1298
+      },
+      {
+        "name": "FrameAPITooltipDocumentation.lua",
+        "sha": "1f740d432a0466bdd19ef06b8abffa0578b6e5e3",
+        "size": 3584
+      },
+      {
+        "name": "FrameAPIUnitPositionFrameDocumentation.lua",
+        "sha": "ca7a5ccadcff634c18bd617a6e8ef6c9ea205494",
+        "size": 3268
+      },
+      {
+        "name": "FrameScriptDocumentation.lua",
+        "sha": "37a45d72e916329c17f393de7e586a1516205440",
+        "size": 17950
+      },
+      {
+        "name": "FriendListDocumentation.lua",
+        "sha": "4eabb093fb7099303e582c1b4a7088cdde3ffc19",
+        "size": 14797
+      },
+      {
+        "name": "GARRISON_FOLLOWER_TYPEConstantsDocumentation.lua",
+        "sha": "a719b2136fbdb465f17d72ce9ef939df2ed67ab6",
+        "size": 783
+      },
+      {
+        "name": "GARRISON_TYPEConstantsDocumentation.lua",
+        "sha": "b2ef7503bd7fd2b4f04e61ad4ea55fa0cd00eccc",
+        "size": 574
+      },
+      {
+        "name": "GMTicketInfoDocumentation.lua",
+        "sha": "639a6e8795ac49e49590f37ac820c2077107c560",
+        "size": 2062
+      },
+      {
+        "name": "GameCursorDocumentation.lua",
+        "sha": "1e8b2d2a8e2f20f65d06a32890f9e3831404996b",
+        "size": 3049
+      },
+      {
+        "name": "GameErrorDocumentation.lua",
+        "sha": "c8bda7737f22af9635e0fa299357eeb5fe997339",
+        "size": 717
+      },
+      {
+        "name": "GamePadConstDocumentation.lua",
+        "sha": "0a882ab24116d7d91cdee51d772b50c256d0d3c4",
+        "size": 664
+      },
+      {
+        "name": "GamePadDocumentation.lua",
+        "sha": "742657d6da45115e71dc45b43e8fc0a2b447ecdb",
+        "size": 10209
+      },
+      {
+        "name": "GameRulesConstantsDocumentation.lua",
+        "sha": "1189de0c800e6270839c5eb027aae708a2942601",
+        "size": 1304
+      },
+      {
+        "name": "GameRulesDocumentation.lua",
+        "sha": "52fbe87d4ff0bf34d23c54f1049315c328d7405e",
+        "size": 7035
+      },
+      {
+        "name": "GameUIDocumentation.lua",
+        "sha": "c7faf70df864bcfaf48149ab93a72859ac954117",
+        "size": 592
+      },
+      {
+        "name": "GarrisonConstantsDocumentation.lua",
+        "sha": "9c4594db97c9b583e15656228f16482317c2b3d0",
+        "size": 14237
+      },
+      {
+        "name": "GarrisonInfoDocumentation.lua",
+        "sha": "db0e12e72102790aca37e3b4002d487a6643bcac",
+        "size": 40152
+      },
+      {
+        "name": "GarrisonSharedDocumentation.lua",
+        "sha": "d6cbc31d2ceec9b5ad30ac801e441a462006effa",
+        "size": 4234
+      },
+      {
+        "name": "GlueDocumentation.lua",
+        "sha": "9c613dfbc4580a24d8744277eb01eec96cc6a2ec",
+        "size": 665
+      },
+      {
+        "name": "GlyphConstantsDocumentation.lua",
+        "sha": "7e074dfaf2d5acfa7d81862ee09ad5cf76a2f76f",
+        "size": 123
+      },
+      {
+        "name": "GlyphInfoDocumentation.lua",
+        "sha": "c39451f4ce58090fdbefd97b5cce3e1dbd77abe2",
+        "size": 759
+      },
+      {
+        "name": "GossipConstantsDocumentation.lua",
+        "sha": "a8e242ed9cba7c4da75ce2a1feaaa018933dd8f2",
+        "size": 6062
+      },
+      {
+        "name": "GossipInfoDocumentation.lua",
+        "sha": "16929e1ed1539cc6b574d49992ba89de3165951b",
+        "size": 10471
+      },
+      {
+        "name": "GroupFinderConstantsDocumentation.lua",
+        "sha": "0acaccc86664b8cdf662fe0fbeb3f957a7a552f7",
+        "size": 135
+      },
+      {
+        "name": "GuildBankDocumentation.lua",
+        "sha": "5b5c7cf81851b9814f806399a656879808c5b454",
+        "size": 1919
+      },
+      {
+        "name": "GuildConstantsDocumentation.lua",
+        "sha": "cacb13e4990e0cac8b84e3ad56ab49d991fd3e11",
+        "size": 4162
+      },
+      {
+        "name": "GuildInfoDocumentation.lua",
+        "sha": "dd9190d015390329128f5933d7baf1fa283639cf",
+        "size": 15273
+      },
+      {
+        "name": "GuildInfoSharedDocumentation.lua",
+        "sha": "4f77ddafb7e02bd24a0b4768cae49ac3968fde63",
+        "size": 606
+      },
+      {
+        "name": "HeirloomInfoDocumentation.lua",
+        "sha": "f513d14c693652f30ca6bf28728719af564f53bd",
+        "size": 2143
+      },
+      {
+        "name": "HouseEditorUIDocumentation.lua",
+        "sha": "1d3d84d48a7c37f8ccb36b0dde45e1bdc611749e",
+        "size": 4711
+      },
+      {
+        "name": "HouseExteriorConstantsDocumentation.lua",
+        "sha": "7c3ccfd3bd3e0ab9c9163488d96c423c460bc825",
+        "size": 3465
+      },
+      {
+        "name": "HouseExteriorUIDocumentation.lua",
+        "sha": "5d514c5e831795525d9d443fc56aaa492bdb2ad1",
+        "size": 9153
+      },
+      {
+        "name": "HousingBasicModeUIDocumentation.lua",
+        "sha": "a589655e303e4c895450124250a9e8608cf1e862",
+        "size": 7537
+      },
+      {
+        "name": "HousingBlueprintConstantsDocumentation.lua",
+        "sha": "87299a0024c784306c101d797a446ff950677ad7",
+        "size": 6213
+      },
+      {
+        "name": "HousingBlueprintUIDocumentation.lua",
+        "sha": "07eb79e258b0c9d68269c4ec11ec073b5dc50bff",
+        "size": 11718
+      },
+      {
+        "name": "HousingCatalogConstantsDocumentation.lua",
+        "sha": "af0c8235d8998601efcde233d83053967b1a89b9",
+        "size": 4394
+      },
+      {
+        "name": "HousingCatalogSearcherAPIDocumentation.lua",
+        "sha": "e9f026589e66dadb582ea58774f79c2a068dc23d",
+        "size": 11902
+      },
+      {
+        "name": "HousingCatalogUIDocumentation.lua",
+        "sha": "ad6a1384a21480d6258973ee35b78a44680046ca",
+        "size": 21166
+      },
+      {
+        "name": "HousingCleanupModeUIDocumentation.lua",
+        "sha": "6cdcd86c79c25aa0cf290d67adc34bc081a25cb3",
+        "size": 1561
+      },
+      {
+        "name": "HousingCustomizeModeUIDocumentation.lua",
+        "sha": "6e447bf19c5a9721e76752f2072659d6b6340a44",
+        "size": 14895
+      },
+      {
+        "name": "HousingDecorSharedDocumentation.lua",
+        "sha": "9bb89cfaa221853e095da9b7e0967fe34bcb0682",
+        "size": 3521
+      },
+      {
+        "name": "HousingDecorUIDocumentation.lua",
+        "sha": "d5739c54bbb95d32e5f4d3229276fd8a0f0caf80",
+        "size": 14766
+      },
+      {
+        "name": "HousingExpertModeUIDocumentation.lua",
+        "sha": "b4d537617296e9938373ddfbd6522b2dfb100a94",
+        "size": 9432
+      },
+      {
+        "name": "HousingFixturePointFrameAPIDocumentation.lua",
+        "sha": "eedf75cd3a45ba95ed470afea31ef2f141d97727",
+        "size": 1152
+      },
+      {
+        "name": "HousingInspectModeUIDocumentation.lua",
+        "sha": "b90da5ecec21cdd9f8ece266d302e2ef5e1dd39b",
+        "size": 1620
+      },
+      {
+        "name": "HousingLayoutPinFrameAPIDocumentation.lua",
+        "sha": "a3e6c26f52d58dafb0b976a168026041f3e5eb27",
+        "size": 3671
+      },
+      {
+        "name": "HousingLayoutUIDocumentation.lua",
+        "sha": "54fb0aabf0d1e2b990623f82317fc948238bd18b",
+        "size": 15138
+      },
+      {
+        "name": "HousingLayoutUITypesDocumentation.lua",
+        "sha": "7d1a77c84b017444b81ad74187115dd60803adf1",
+        "size": 1935
+      },
+      {
+        "name": "HousingNeighborhoodUIDocumentation.lua",
+        "sha": "4d1a54291f2e61a88a66d8f21c91fd692182d450",
+        "size": 10384
+      },
+      {
+        "name": "HousingUIDocumentation.lua",
+        "sha": "d3ce755f499919613b9f5f69c265b37607469b5b",
+        "size": 21733
+      },
+      {
+        "name": "HousingUISharedDocumentation.lua",
+        "sha": "45596cd0032397fbfa8bde9d1e117361511d4c97",
+        "size": 6310
+      },
+      {
+        "name": "ImageSharingConstantsDocumentation.lua",
+        "sha": "3e096b23814b8599c0b2a92b9cb54f7400826c5c",
+        "size": 5141
+      },
+      {
+        "name": "ImmersiveInteractionManagerDocumentation.lua",
+        "sha": "74ad09e0af9c3bfe2533346c50bae7e3752a68ca",
+        "size": 746
+      },
+      {
+        "name": "InGameNavigationDocumentation.lua",
+        "sha": "0422806b788cbd20757b47eeba38a30f3a54877f",
+        "size": 2638
+      },
+      {
+        "name": "IncomingSummonDocumentation.lua",
+        "sha": "3e378b32a813fad784b89ae16c2553ad1c1d4a2a",
+        "size": 1215
+      },
+      {
+        "name": "InputConstantsDocumentation.lua",
+        "sha": "85288be6a38cd7f56c995a92d104972b89ab6bac",
+        "size": 510
+      },
+      {
+        "name": "InputDocumentation.lua",
+        "sha": "7cb9b2c4cd07bc63f2c7f3002c560440c666d33e",
+        "size": 6744
+      },
+      {
+        "name": "InstanceDocumentation.lua",
+        "sha": "2bee732e6de3c3ff6cf7aa70049bf3375956b8e3",
+        "size": 7604
+      },
+      {
+        "name": "InstanceEncounterDocumentation.lua",
+        "sha": "2abf1d3f0b80fbc364c0d5641696b4676e9f110c",
+        "size": 2531
+      },
+      {
+        "name": "InstanceLeaverInfoDocumentation.lua",
+        "sha": "425ca1af7ca362f009046ec4f5a7725559dbc56e",
+        "size": 766
+      },
+      {
+        "name": "InterfaceFileManifestDocumentation.lua",
+        "sha": "09ba900f4f5ccc650799423b2785da2e7767c085",
+        "size": 488
+      },
+      {
+        "name": "IntlDocumentation.lua",
+        "sha": "d1dd337f2d59e3b877b10b7751629d48d8a1eb67",
+        "size": 19023
+      },
+      {
+        "name": "IntlSharedTypesDocumentation.lua",
+        "sha": "da0de2c4e8a36d09b5f0501a87a2f85ee95daf2f",
+        "size": 9181
+      },
+      {
+        "name": "InvasionInfoDocumentation.lua",
+        "sha": "d869bb40b3b0cddf804cef0cb95df84dc209e038",
+        "size": 1843
+      },
+      {
+        "name": "IslandsInfoDocumentation.lua",
+        "sha": "cfb02ad14a3b2a4344738ae19c0c06e1e4f8a839",
+        "size": 716
+      },
+      {
+        "name": "IslandsQueueUIDocumentation.lua",
+        "sha": "a6efc7226968f23a671bb3d8b1d2c23f01cee5c5",
+        "size": 1724
+      },
+      {
+        "name": "ItemConstantsDocumentation.lua",
+        "sha": "00ca64c3466081679757070025f689e14c4e50f3",
+        "size": 39634
+      },
+      {
+        "name": "ItemConstants_MainlineDocumentation.lua",
+        "sha": "17f10c09331925c29d9dd09fb4a3d99d2fdede7b",
+        "size": 3119
+      },
+      {
+        "name": "ItemConstants_SharedDocumentation.lua",
+        "sha": "ae1078f955e576a776b49f0a438d600efd9663dc",
+        "size": 135
+      },
+      {
+        "name": "ItemDocumentation.lua",
+        "sha": "4955484268741dfe40991520d6c04edffb6d8d75",
+        "size": 43163
+      },
+      {
+        "name": "ItemInteractionUIDocumentation.lua",
+        "sha": "2fb7cbaff0b2acdfaf931fc2476d17cb36334beb",
+        "size": 3784
+      },
+      {
+        "name": "ItemQualitiesDocumentation.lua",
+        "sha": "3eefe208130074f62a7a5b834917a7a01efc01a1",
+        "size": 818
+      },
+      {
+        "name": "ItemSharedDocumentation.lua",
+        "sha": "364ac734deaf38724502c90e27a2f9bf5b2fdfa3",
+        "size": 115
+      },
+      {
+        "name": "ItemSocketInfoDocumentation.lua",
+        "sha": "f2ad0503ded6ea1e30fa8379b485ad852d6487ed",
+        "size": 5542
+      },
+      {
+        "name": "ItemTextDocumentation.lua",
+        "sha": "12360aba783f58c53a7d7763d609c0a4e2d37748",
+        "size": 810
+      },
+      {
+        "name": "ItemUpgradeDocumentation.lua",
+        "sha": "821983a0e8eff10281cdd2d9b1fa1a6184a25200",
+        "size": 8380
+      },
+      {
+        "name": "KeyBindingsDocumentation.lua",
+        "sha": "1925378e3e3a2303bdce322ed0442f737b14cbec",
+        "size": 5771
+      },
+      {
+        "name": "LFGConstantsDocumentation.lua",
+        "sha": "a914c6200a991e0fa40b0e800c86d279c85cef08",
+        "size": 5358
+      },
+      {
+        "name": "LFGInfoDocumentation.lua",
+        "sha": "d9fd0535c87234a0f98affae705c70818b88984b",
+        "size": 11337
+      },
+      {
+        "name": "LFGListInfoDocumentation.lua",
+        "sha": "c17ae979fb77c7b03b8d315b0a4b22047073b09b",
+        "size": 30707
+      },
+      {
+        "name": "LegendaryCraftingDocumentation.lua",
+        "sha": "55235044b97dcc040604b2a99f3d37a4519b577f",
+        "size": 8196
+      },
+      {
+        "name": "LegendaryCraftingTypesDocumentation.lua",
+        "sha": "52de66d57122b354893b4388fc8ad1d1fd64ff3a",
+        "size": 2878
+      },
+      {
+        "name": "LevelConstantsDocumentation.lua",
+        "sha": "c32916f1f82d18bb0d0709b283721db1c21358e1",
+        "size": 349
+      },
+      {
+        "name": "LevelLinkDocumentation.lua",
+        "sha": "66c4a2983e12686bced72e06bf2c4c53be65a0c0",
+        "size": 794
+      },
+      {
+        "name": "LevelSquishDocumentation.lua",
+        "sha": "5be0f968746c8f42ddcb311c56fea9e930554049",
+        "size": 889
+      },
+      {
+        "name": "LimitedInputDocumentation.lua",
+        "sha": "f4daaf1a1743466fec1ce2e3eebae464118cf926",
+        "size": 958
+      },
+      {
+        "name": "LiveEventDocumentation.lua",
+        "sha": "d3a9b7a7de9a9926422fb746372f19d1eaeaab67",
+        "size": 721
+      },
+      {
+        "name": "LoadingScreenDocumentation.lua",
+        "sha": "eaea788bf4d48b3ee4ac07d950be2f792bb567f7",
+        "size": 526
+      },
+      {
+        "name": "LobbyMatchmakerInfoDocumentation.lua",
+        "sha": "3c3d5d460c68f4b6aceee627ea82e5025a2b0a6a",
+        "size": 3133
+      },
+      {
+        "name": "LocaleDocumentation.lua",
+        "sha": "5619701c82f271b270989ea6acf66b574c2efced",
+        "size": 1521
+      },
+      {
+        "name": "LocalizationDocumentation.lua",
+        "sha": "ee60a882dbba031a77c558df2ac14d75b563f939",
+        "size": 4488
+      },
+      {
+        "name": "LocalizationSharedDocumentation.lua",
+        "sha": "e8d0de92ca387741145ec431765168b3e30c20db",
+        "size": 2002
+      },
+      {
+        "name": "LogConstantsDocumentation.lua",
+        "sha": "ffb30b404d27b440bdc20849c2e6eb0426371bdc",
+        "size": 625
+      },
+      {
+        "name": "LogDocumentation.lua",
+        "sha": "faf7dd018c384014950be457b2232c675d61e248",
+        "size": 1060
+      },
+      {
+        "name": "LogicConstantsDocumentation.lua",
+        "sha": "1439812f6ab78b7b3e163d3a6a7b42383c0f9cd3",
+        "size": 1539
+      },
+      {
+        "name": "LootConstantsDocumentation.lua",
+        "sha": "3571f176f7c5b3f8f4efdbc8359a594657294026",
+        "size": 1456
+      },
+      {
+        "name": "LootDocumentation.lua",
+        "sha": "00fc3dd960267d69577b931e0eb32e625720c7ea",
+        "size": 11531
+      },
+      {
+        "name": "LootHistoryDocumentation.lua",
+        "sha": "cf6e04be9d7336e983f8958a1e954453dc0093aa",
+        "size": 5326
+      },
+      {
+        "name": "LootJournalDocumentation.lua",
+        "sha": "c255f5171a9e99006c9e1cd7f2641f54003d91b5",
+        "size": 1647
+      },
+      {
+        "name": "LoreTextDocumentation.lua",
+        "sha": "6fd64e652afd12cb1583d2a77d0466577ed49423",
+        "size": 963
+      },
+      {
+        "name": "LossOfControlConstantsDocumentation.lua",
+        "sha": "a4ee537919c83819281939c3f72fcc912cb8bc0e",
+        "size": 302
+      },
+      {
+        "name": "LossOfControlDocumentation.lua",
+        "sha": "bf519912bd794ff9059287ea274a495c202152f9",
+        "size": 3986
+      },
+      {
+        "name": "LuaColorCurveObjectAPIDocumentation.lua",
+        "sha": "7c7c2601284eb0ad577fed1155937bee1b26fbaa",
+        "size": 3936
+      },
+      {
+        "name": "LuaCurveObjectAPIDocumentation.lua",
+        "sha": "2b9fa34363b721fe6a80dbc1d63bfbdfb196fd1e",
+        "size": 3080
+      },
+      {
+        "name": "LuaCurveObjectBaseAPIDocumentation.lua",
+        "sha": "4d3ec5783b9ea0d7e271b2bc60721cbc4b4f2b3f",
+        "size": 1153
+      },
+      {
+        "name": "LuaCurveObjectConstantsDocumentation.lua",
+        "sha": "f5bca00b02aecb5ad655f56108a3982483a5ac9b",
+        "size": 951
+      },
+      {
+        "name": "LuaDurationClockAPIDocumentation.lua",
+        "sha": "e57cc19c3c590762655bddcd41922ac5aaba0aaf",
+        "size": 530
+      },
+      {
+        "name": "LuaDurationManualClockAPIDocumentation.lua",
+        "sha": "43f3747aed3d69b4a6ba4e900d19bb8bbcc385bd",
+        "size": 1231
+      },
+      {
+        "name": "LuaDurationObjectAPIDocumentation.lua",
+        "sha": "55d2520fa63e058f0c32685bb77d7fd34cfb50db",
+        "size": 12873
+      },
+      {
+        "name": "LuaDurationObjectSharedDocumentation.lua",
+        "sha": "df98218afe4670510c3d7a42c9b1c97e23960eba",
+        "size": 677
+      },
+      {
+        "name": "LuaLocaleContextAPIDocumentation.lua",
+        "sha": "476d41e3a05c422a5a0066af6758050ae41391c6",
+        "size": 15544
+      },
+      {
+        "name": "LuaMathExtensionsDocumentation.lua",
+        "sha": "81ffc9c027dd10c1bab138a71afc8422080a1625",
+        "size": 7342
+      },
+      {
+        "name": "LuaStringExtensionsDocumentation.lua",
+        "sha": "2c204ec0dc185952860538961e9a7c38f4c6625e",
+        "size": 3965
+      },
+      {
+        "name": "LuaTableExtensionsDocumentation.lua",
+        "sha": "d55ee6b270fa97da3d48ee7e172980ac09e27c34",
+        "size": 7671
+      },
+      {
+        "name": "LuaValuePredicatesDocumentation.lua",
+        "sha": "277055bbe0e793f5e12d46caeb64d869708e3a4e",
+        "size": 317
+      },
+      {
+        "name": "MacOptionsDocumentation.lua",
+        "sha": "d3ca997d7bea27f3f6f1973b76e39caf631ad755",
+        "size": 1628
+      },
+      {
+        "name": "MacroConstantsDocumentation.lua",
+        "sha": "0abe0cd778eaffca7600eed6127050376fc98fc1",
+        "size": 338
+      },
+      {
+        "name": "MailInfoDocumentation.lua",
+        "sha": "b695c1c5b6769da5167b3995e44ce56921290ac0",
+        "size": 3438
+      },
+      {
+        "name": "MajorFactionsConstantsDocumentation.lua",
+        "sha": "b92a8c0b59a704a61c570c705fa55badbce6fd12",
+        "size": 1361
+      },
+      {
+        "name": "MajorFactionsDocumentation.lua",
+        "sha": "9318d10e8f0f2cd4a088ed0ff8cdba7f99d8f7d5",
+        "size": 8323
+      },
+      {
+        "name": "MapConstantsDocumentation.lua",
+        "sha": "7aa00421a305c6a9e0109cc913f95665f2914f0a",
+        "size": 3801
+      },
+      {
+        "name": "MapDocumentation.lua",
+        "sha": "247a3b2ddfbc4ecca0667fd5bacfeaeea7cfffae",
+        "size": 17470
+      },
+      {
+        "name": "MapExplorationDocumentation.lua",
+        "sha": "393cb1c0128fb0fd819262607f9ae2d6567bac4b",
+        "size": 2122
+      },
+      {
+        "name": "MatrixSharedDocumentation.lua",
+        "sha": "86fe6fd8ee6717dc2c485d8903c387b21bcff8d9",
+        "size": 119
+      },
+      {
+        "name": "MerchantFrameDocumentation.lua",
+        "sha": "1ec65dfdd66bc2d6bad8b1d903add9a844953551",
+        "size": 3190
+      },
+      {
+        "name": "MinimapConstantsDocumentation.lua",
+        "sha": "9f27b5604b98768819d41e29c1f7851816164c2f",
+        "size": 2170
+      },
+      {
+        "name": "MinimapDocumentation.lua",
+        "sha": "04dd0ed59833d3e70fdb83c19757fd9221f95a65",
+        "size": 6610
+      },
+      {
+        "name": "MinimapFrameAPIDocumentation.lua",
+        "sha": "cbe87128c55098a5933b73003b99b3ec60a58513",
+        "size": 5929
+      },
+      {
+        "name": "MirrorTimerDocumentation.lua",
+        "sha": "c8d80912d5132e2c3be8bdb2bff9d7b3d63ebd3f",
+        "size": 1680
+      },
+      {
+        "name": "ModelAnimationSharedDocumentation.lua",
+        "sha": "ff535ca675111f5353bca1f798cb766d0a67014d",
+        "size": 413
+      },
+      {
+        "name": "MoneyConstantsDocumentation.lua",
+        "sha": "3bc6c9f9f23ab724a84fca8bf2f08888318e2afa",
+        "size": 622
+      },
+      {
+        "name": "MountConstantsDocumentation.lua",
+        "sha": "27d5529591933c8b79b970ed28752f9e59a05a6c",
+        "size": 1206
+      },
+      {
+        "name": "MountJournalDocumentation.lua",
+        "sha": "0d1b60c6e9a43d954c5de447979367216283174d",
+        "size": 16597
+      },
+      {
+        "name": "MovieDocumentation.lua",
+        "sha": "26d7d7622cb54e4cca6bc931f61107b56b1409c9",
+        "size": 1833
+      },
+      {
+        "name": "MythicPlusInfoDocumentation.lua",
+        "sha": "fc7f51901d6965b02d71689462295804eb8ba941",
+        "size": 8835
+      },
+      {
+        "name": "MythicPlusInfoSharedDocumentation.lua",
+        "sha": "71407ceb131f4240dc13ce525488761c371e6375",
+        "size": 1494
+      },
+      {
+        "name": "NamePlateConstantsDocumentation.lua",
+        "sha": "1b19e282f2474213d0f5d3aab446280bfc9fbfcf",
+        "size": 5321
+      },
+      {
+        "name": "NamePlateDocumentation.lua",
+        "sha": "745926c485b8c54805f784ebbc1adef6046cddb3",
+        "size": 1286
+      },
+      {
+        "name": "NamePlateManagerDocumentation.lua",
+        "sha": "f65e4d15c75aaa071a179a02012856476201d8e2",
+        "size": 4119
+      },
+      {
+        "name": "NeighborhoodInitiativeDocumentation.lua",
+        "sha": "5e7c354880bfe32f3fa157ec4239974745f899ee",
+        "size": 9091
+      },
+      {
+        "name": "NeighborhoodInitiativesConstantsDocumentation.lua",
+        "sha": "0d99dd932f5413dd0124fe82cc5117b22937aa15",
+        "size": 3532
+      },
+      {
+        "name": "NewItemsDocumentation.lua",
+        "sha": "cf33d62a2c6e39f265b72710a4cb8bc45557cc76",
+        "size": 894
+      },
+      {
+        "name": "NumericFormatterAPIDocumentation.lua",
+        "sha": "00adc21f6840cff98491308f98e177f7dfb25690",
+        "size": 582
+      },
+      {
+        "name": "NumericRuleFormatterAPIDocumentation.lua",
+        "sha": "49c6ed989f695789ee430cab22046335e9b1fd42",
+        "size": 1616
+      },
+      {
+        "name": "NumericRuleFormatterSharedDocumentation.lua",
+        "sha": "0e8a5774db7605e96e2dc358dd8cfbe4ae01bdda",
+        "size": 2720
+      },
+      {
+        "name": "OsDocumentation.lua",
+        "sha": "596fb8acf2341c95fcc0e5ede8cafeaca1364fdd",
+        "size": 718
+      },
+      {
+        "name": "PVPMgrConstantsDocumentation.lua",
+        "sha": "00041d0eca7af34a75628b697b9b8c837c824f12",
+        "size": 409
+      },
+      {
+        "name": "PaperDollInfoDocumentation.lua",
+        "sha": "a68571d5c37fe3e404412f05b5c7926d6fbc1d86",
+        "size": 11316
+      },
+      {
+        "name": "ParentalControlsDocumentation.lua",
+        "sha": "8eccf259d525ac42e82a07f860da9fd2ed57e257",
+        "size": 401
+      },
+      {
+        "name": "PartyConstantsDocumentation.lua",
+        "sha": "24e6046fc875e8d61dc73e0d0d23278e431584aa",
+        "size": 1828
+      },
+      {
+        "name": "PartyInfoDocumentation.lua",
+        "sha": "cc72140499585c97572252528934a49923168907",
+        "size": 22815
+      },
+      {
+        "name": "PartyPoseUIConstantsDocumentation.lua",
+        "sha": "a8b1d844b0399865ff861246cf71dc9dd040d394",
+        "size": 354
+      },
+      {
+        "name": "PartyPoseUIDocumentation.lua",
+        "sha": "e600371af8e6ca8460a549ab539a94c200787db1",
+        "size": 2421
+      },
+      {
+        "name": "PerformanceDocumentation.lua",
+        "sha": "bf722a7c496e0ed95d14efce57d64aeb4a76ee08",
+        "size": 1968
+      },
+      {
+        "name": "PerksActivitiesDocumentation.lua",
+        "sha": "9c797cf1d2554450080b551fc0d8f1947c2f9ebc",
+        "size": 6044
+      },
+      {
+        "name": "PerksProgramDocumentation.lua",
+        "sha": "b2854f8d0826d80c197f65bafd5ccd434903038b",
+        "size": 11515
+      },
+      {
+        "name": "PerksVendorConstantsDocumentation.lua",
+        "sha": "b7a836c51f37def2eaeff5daeb67c7cb0442ad0e",
+        "size": 1639
+      },
+      {
+        "name": "PetBattleConstantsDocumentation.lua",
+        "sha": "ee4788d08164c1a0b86e53dba4784ae48959fe9d",
+        "size": 2981
+      },
+      {
+        "name": "PetBattlesDocumentation.lua",
+        "sha": "264f2959ebb58ab1d295960f92deca4259dcf2bf",
+        "size": 1688
+      },
+      {
+        "name": "PetConstantsDocumentation.lua",
+        "sha": "8e1b9c7141edefa286ccdeaa1bd674bc87f231d8",
+        "size": 8184
+      },
+      {
+        "name": "PetInfoDocumentation.lua",
+        "sha": "eb5328c48263bada37616bc307a6d07a162f3ce8",
+        "size": 4212
+      },
+      {
+        "name": "PetJournalInfoDocumentation.lua",
+        "sha": "0ec1f9e204b0f3b3dce28a5a5b357557ef990cb0",
+        "size": 11695
+      },
+      {
+        "name": "PetScalingConstantsDocumentation.lua",
+        "sha": "0ae7cd703e59cc26f39fae79198041f0f77f4689",
+        "size": 133
+      },
+      {
+        "name": "PhotoSharingUIDocumentation.lua",
+        "sha": "bb691066bef47163c532e04cd2b8f8f0c2ab0e08",
+        "size": 2975
+      },
+      {
+        "name": "PingConstantsDocumentation.lua",
+        "sha": "6c057223edcdccea9335b9a149298fe52bbfe411",
+        "size": 3218
+      },
+      {
+        "name": "PingManagerDocumentation.lua",
+        "sha": "53e2af379e7e61d294820540aad94c2b247bb905",
+        "size": 1961
+      },
+      {
+        "name": "PingManagerSecureDocumentation.lua",
+        "sha": "574b2107fbf08dc0592ad6d5bb66f5cdd0fbce81",
+        "size": 8597
+      },
+      {
+        "name": "PingManagerSharedDocumentation.lua",
+        "sha": "c50f664f08f6a758d8d7ef691e98441c37eb5f34",
+        "size": 668
+      },
+      {
+        "name": "PingPinFrameAPIDocumentation.lua",
+        "sha": "57e3a480254c439f1f5b195979c85326897b487e",
+        "size": 238
+      },
+      {
+        "name": "PlatformDocumentation.lua",
+        "sha": "76f44a6b33c398e7730fdde6108534dabda2b4c3",
+        "size": 521
+      },
+      {
+        "name": "PlayerChoiceConstantsDocumentation.lua",
+        "sha": "1bb3aea97c8e70b62117dfdde6d097af267ca119",
+        "size": 2437
+      },
+      {
+        "name": "PlayerChoiceDocumentation.lua",
+        "sha": "2eb2343830fa46dd65773683114e3d28df397e4d",
+        "size": 6321
+      },
+      {
+        "name": "PlayerDataConstantsDocumentation.lua",
+        "sha": "5eddbd94443e832f9bfaa72e1a830a1bf551a3d1",
+        "size": 879
+      },
+      {
+        "name": "PlayerDocumentation.lua",
+        "sha": "2509c4c5b23fb3a354e02be1dc7f338416a67e88",
+        "size": 107
+      },
+      {
+        "name": "PlayerHousingConstantsDocumentation.lua",
+        "sha": "549f02507db3b23cf0215b3aee7c65e3b7ebdea6",
+        "size": 25924
+      },
+      {
+        "name": "PlayerInfoDocumentation.lua",
+        "sha": "ab51b238ea0bc2f7561cd10a2a49e953b9e685de",
+        "size": 7992
+      },
+      {
+        "name": "PlayerInfoSharedDocumentation.lua",
+        "sha": "e105fe70eeaa765f4cef846562699e394949cc87",
+        "size": 923
+      },
+      {
+        "name": "PlayerInteractionManagerConstantsDocumentation.lua",
+        "sha": "544844200a8b8688eb0ec00e32602b7057e460a9",
+        "size": 6823
+      },
+      {
+        "name": "PlayerInteractionManagerDocumentation.lua",
+        "sha": "6a58a991f0f28c42ab2644600a5df27e203927ab",
+        "size": 2526
+      },
+      {
+        "name": "PlayerLocationDocumentation.lua",
+        "sha": "d4a2e57f6b02e2791070e9f3f7dd71d516465455",
+        "size": 2560
+      },
+      {
+        "name": "PlayerMentorshipConstantsDocumentation.lua",
+        "sha": "1c578f602bd341d0fdb222e8369b9ba889a5ed3e",
+        "size": 929
+      },
+      {
+        "name": "PlayerMentorshipDocumentation.lua",
+        "sha": "1bd93be1fdb6f0d8fae1ee102432204a4a68268b",
+        "size": 1711
+      },
+      {
+        "name": "PlayerScriptDocumentation.lua",
+        "sha": "e00006d8dba2b9f61ea463604047460a8d502cc8",
+        "size": 31498
+      },
+      {
+        "name": "PonyDocumentation.lua",
+        "sha": "e4644be050a52eabcb32abac0e41c0acec423198",
+        "size": 335
+      },
+      {
+        "name": "PowerTypeConstantsDocumentation.lua",
+        "sha": "c550220f976db39521c6aa280e792f465dc32a14",
+        "size": 3541
+      },
+      {
+        "name": "ProceduralSpawnConstantsDocumentation.lua",
+        "sha": "1883f10d3cfd75be44525c175e0358caebb717a0",
+        "size": 865
+      },
+      {
+        "name": "ProfessionConstantsDocumentation.lua",
+        "sha": "800f5f8dcc5e13d07d8f75fca369140a91c397ce",
+        "size": 16678
+      },
+      {
+        "name": "ProfessionSpecConstantsDocumentation.lua",
+        "sha": "86fa72f48fe8c40bf0a1a4fba8834a295fcad086",
+        "size": 2805
+      },
+      {
+        "name": "ProfessionSpecUIDocumentation.lua",
+        "sha": "99958dc2712c06c9d0d6bb4327c3bc4558c41eed",
+        "size": 8231
+      },
+      {
+        "name": "PvPFactionConstantsDocumentation.lua",
+        "sha": "e2e4a2f07ecb1d8f239595697e14b600e46491e3",
+        "size": 389
+      },
+      {
+        "name": "PvpInfoConstantsDocumentation.lua",
+        "sha": "e6f7c5f3808f25a0520539b03744589e3185e46d",
+        "size": 1636
+      },
+      {
+        "name": "PvpInfoDocumentation.lua",
+        "sha": "76d77283d3a4f158ce8b82d2513f0a850c94f153",
+        "size": 50182
+      },
+      {
+        "name": "QuestConstantsDocumentation.lua",
+        "sha": "3b000a1d861224edb14c617549fcbb547b31abda",
+        "size": 5886
+      },
+      {
+        "name": "QuestConstants_MainlineDocumentation.lua",
+        "sha": "2795a42e3b1358dc08e3b67a59aca4d513fa83fa",
+        "size": 141
+      },
+      {
+        "name": "QuestHubInfoDocumentation.lua",
+        "sha": "5b78d33f763e844e4e3053b406ade5418cee2b39",
+        "size": 962
+      },
+      {
+        "name": "QuestInfoSharedDocumentation.lua",
+        "sha": "dc6382cb61efc3b313416c637706e52f30bddec8",
+        "size": 1950
+      },
+      {
+        "name": "QuestInfoSystemDocumentation.lua",
+        "sha": "bba56afb630ec22a76299cdefb63c526cbc10e04",
+        "size": 3225
+      },
+      {
+        "name": "QuestItemUseDocumentation.lua",
+        "sha": "ac97f686136b9f22a55a24b7929ebc4b3027d961",
+        "size": 688
+      },
+      {
+        "name": "QuestLineInfoDocumentation.lua",
+        "sha": "a56042da4580d1af70a4995ab5b5269d8ddd582c",
+        "size": 4118
+      },
+      {
+        "name": "QuestLogDocumentation.lua",
+        "sha": "d249a9462cbd1dbd9c6f57b86a9e045fcf9a075f",
+        "size": 35785
+      },
+      {
+        "name": "QuestOfferDocumentation.lua",
+        "sha": "5f648f5650b7811c8d10d2ac65c3c992d1b1ba8a",
+        "size": 2603
+      },
+      {
+        "name": "QuestRewardsDocumentation.lua",
+        "sha": "35a48c77e00ddc3207157b2974bdc6b4d2d9b9ad",
+        "size": 1644
+      },
+      {
+        "name": "QuestSessionConstantsDocumentation.lua",
+        "sha": "24da612254db30cc59f57b82618d171f4e92e26c",
+        "size": 3293
+      },
+      {
+        "name": "QuestSessionDocumentation.lua",
+        "sha": "5e17239f2ef6b6b45b2c181b323383fab64476fd",
+        "size": 4043
+      },
+      {
+        "name": "QuestTaskInfoDocumentation.lua",
+        "sha": "36a482dd838a5f42fb64a243f0bded4fbde16b96",
+        "size": 4101
+      },
+      {
+        "name": "QueueSpecificDocumentation.lua",
+        "sha": "6e549a038463246c702ff3784525b4b43001ae5a",
+        "size": 830
+      },
+      {
+        "name": "RaidLocksDocumentation.lua",
+        "sha": "b12b6820034a16778ac872b2e12d33c635e9a36f",
+        "size": 1203
+      },
+      {
+        "name": "RaidMarkersDocumentation.lua",
+        "sha": "20d5d3e71c2ffdc1d6e0336e2ffa1ba9b3e85998",
+        "size": 2248
+      },
+      {
+        "name": "RecentAlliesConstantsDocumentation.lua",
+        "sha": "3a60f1f478e82d77048b680f88842d773ae0139e",
+        "size": 1169
+      },
+      {
+        "name": "RecentAlliesDocumentation.lua",
+        "sha": "af5def358c077eeb922e88f1125d544ea381ce3a",
+        "size": 7877
+      },
+      {
+        "name": "RecruitAFriendDocumentation.lua",
+        "sha": "293888efbc803b74a801c78bdf2c5630cb392c90",
+        "size": 12450
+      },
+      {
+        "name": "RecruitAFriendSharedDocumentation.lua",
+        "sha": "6a7e41e04b3da9c36c2653ad036d1f637ec56046",
+        "size": 2011
+      },
+      {
+        "name": "RemixArtifactUIDocumentation.lua",
+        "sha": "9d549525e1aef75b47a02cd990c8151c353e3858",
+        "size": 3745
+      },
+      {
+        "name": "RenownConstantsDocumentation.lua",
+        "sha": "e60fbbc583c934a6e4e9359f26d2a3635cffe5a1",
+        "size": 1459
+      },
+      {
+        "name": "ReportSystemConstantsDocumentation.lua",
+        "sha": "ca7e6fc00f36893c9ee033fb18ed50f55115f89e",
+        "size": 6149
+      },
+      {
+        "name": "ReportSystemDocumentation.lua",
+        "sha": "f482a27158451cdd03adf96d7582c43b8165f385",
+        "size": 3954
+      },
+      {
+        "name": "ReputationInfoDocumentation.lua",
+        "sha": "9b7dcadb42131631e74f3b5b73be4564f609bc3f",
+        "size": 8201
+      },
+      {
+        "name": "ResearchInfoDocumentation.lua",
+        "sha": "1439871c1bafa284c7797d307cc152e1d4a782f6",
+        "size": 2777
+      },
+      {
+        "name": "RestrictedActionsConstantsDocumentation.lua",
+        "sha": "020635e6da16d2f274daaed15e47c32e1ccfd007",
+        "size": 1972
+      },
+      {
+        "name": "RestrictedActionsDocumentation.lua",
+        "sha": "5acf5efde9c50029f03f3367201ee848075badf7",
+        "size": 3486
+      },
+      {
+        "name": "RolesetSystemDocumentation.lua",
+        "sha": "388f80ac2adffbce2c2f96ed3812284d1d2f193e",
+        "size": 1279
+      },
+      {
+        "name": "RolodexConstantsDocumentation.lua",
+        "sha": "8a98eb1748e74c3c3fa176c2e11f258a2c558933",
+        "size": 3142
+      },
+      {
+        "name": "ScenarioInfoDocumentation.lua",
+        "sha": "35ad33b8beced3ea478601a2a9a0d96e932ac984",
+        "size": 10073
+      },
+      {
+        "name": "ScrappingMachineUIDocumentation.lua",
+        "sha": "d3f46a4da0451ef27306008c6e08d666c05de7a6",
+        "size": 2620
+      },
+      {
+        "name": "ScreenDocumentation.lua",
+        "sha": "a2eb2ddf57e3b630384635882b574a81b5e6a612",
+        "size": 986
+      },
+      {
+        "name": "ScreenLocationConstantsDocumentation.lua",
+        "sha": "ceb90b91264f7e9cb694412abbe5b8a781fadc9c",
+        "size": 1138
+      },
+      {
+        "name": "ScriptWarningsDocumentation.lua",
+        "sha": "0b3df5c1fde2bc1dd335158a3f1a6d68ff3d503c",
+        "size": 463
+      },
+      {
+        "name": "ScriptedAnimationsDocumentation.lua",
+        "sha": "0a8a77d8427e4b2bc0ce3ef9b5d6ff54ab7ec576",
+        "size": 4133
+      },
+      {
+        "name": "SeasonInfoDocumentation.lua",
+        "sha": "6a856b3a2c9df7e427fddbc0a020873b5f250eec",
+        "size": 567
+      },
+      {
+        "name": "SeasonsConstantsDocumentation.lua",
+        "sha": "c05f1e48c7daaf8daa14b565b028352af3115e16",
+        "size": 645
+      },
+      {
+        "name": "SecondsFormatterAPIDocumentation.lua",
+        "sha": "09dc4fc9f95b0aab2b322229567134e8ab26ea94",
+        "size": 12247
+      },
+      {
+        "name": "SecondsFormatterSharedDocumentation.lua",
+        "sha": "3bdc211d4f1c11aebbf4496c7de7598fd4ffdca9",
+        "size": 2260
+      },
+      {
+        "name": "SecretAspectConstantsDocumentation.lua",
+        "sha": "5d0ddadd780d58aec193baf66f2112e653a3cf8c",
+        "size": 2343
+      },
+      {
+        "name": "SecretPredicateAPIDocumentation.lua",
+        "sha": "53f3f79f0987f491cbdc88db52cfc65b41d91fd3",
+        "size": 11692
+      },
+      {
+        "name": "SecretPredicatesDocumentation.lua",
+        "sha": "5d0c521ff1c04eb6b816341013e92ce5fa1e2ba1",
+        "size": 7776
+      },
+      {
+        "name": "SecretWrapperConstantsDocumentation.lua",
+        "sha": "157d7bafcfffda6979adf22a739b737ad6c411b9",
+        "size": 763
+      },
+      {
+        "name": "SecureTransferDocumentation.lua",
+        "sha": "4532a910bfcbbd2dfc4e61ceb787ce329cd4ec3c",
+        "size": 2777
+      },
+      {
+        "name": "SettingsUtilDocumentation.lua",
+        "sha": "c040aeba8df75e9b5488bd2f797503a3c9287b45",
+        "size": 1037
+      },
+      {
+        "name": "SharedScriptObjectModelLightDocumentation.lua",
+        "sha": "f09b5898857b5a5a86ae83364fa3f85b81a66540",
+        "size": 861
+      },
+      {
+        "name": "SharedScriptObjectNamePlateFrameDocumentation.lua",
+        "sha": "e484b0d5bd065d4f10caec785381b6ba478f6fd7",
+        "size": 159
+      },
+      {
+        "name": "SharedScriptObjectUnitPositionFrameDocumentation.lua",
+        "sha": "37107ab519bf4f27865042b9afc65cf25b6db2cf",
+        "size": 503
+      },
+      {
+        "name": "SharedTraitsDocumentation.lua",
+        "sha": "f4083e01b514fd071cd50d0e2607c60e409eb65f",
+        "size": 30098
+      },
+      {
+        "name": "SharedTraitsEnumsDocumentation.lua",
+        "sha": "6e39fbb42bbd821d207a0dfb25ece048bcdba031",
+        "size": 129
+      },
+      {
+        "name": "SimpleAnimAPIDocumentation.lua",
+        "sha": "45c27f2366a8da7bab846aeef8b743a03483bc16",
+        "size": 9632
+      },
+      {
+        "name": "SimpleAnimAlphaAPIDocumentation.lua",
+        "sha": "3dcd59b425cc8a0a33824bd1762fbd00577fd558",
+        "size": 1223
+      },
+      {
+        "name": "SimpleAnimFlipBookAPIDocumentation.lua",
+        "sha": "99529e1aa28c3ffcab0cfda570f21d138378849d",
+        "size": 2098
+      },
+      {
+        "name": "SimpleAnimGroupAPIDocumentation.lua",
+        "sha": "db2992f886ebd7621f81d584b0e5c6daf33a8c5f",
+        "size": 7448
+      },
+      {
+        "name": "SimpleAnimPathAPIDocumentation.lua",
+        "sha": "48d915fc80062a7b05d9bace58c30e8d3f7d9c53",
+        "size": 1393
+      },
+      {
+        "name": "SimpleAnimRadialProgressAPIDocumentation.lua",
+        "sha": "b8800d425c58009490ee340cb96f2e16fd1ee783",
+        "size": 994
+      },
+      {
+        "name": "SimpleAnimRotationAPIDocumentation.lua",
+        "sha": "ded58c6d8a7057d16017e9176fe57510c8d8d118",
+        "size": 1552
+      },
+      {
+        "name": "SimpleAnimScaleAPIDocumentation.lua",
+        "sha": "c95dac44d935a44ed1a879b4a6d08637239cac22",
+        "size": 2253
+      },
+      {
+        "name": "SimpleAnimScaleLineAPIDocumentation.lua",
+        "sha": "63ba1c36b7b5a3b77c7c830ce8c91cf07c9ecb45",
+        "size": 259
+      },
+      {
+        "name": "SimpleAnimTextureCoordTranslationAPIDocumentation.lua",
+        "sha": "4f896818615a8618307b8c125171658713de4e7d",
+        "size": 773
+      },
+      {
+        "name": "SimpleAnimTranslationAPIDocumentation.lua",
+        "sha": "74a705c26ef1fd028efd6c7fe3f03261875321c2",
+        "size": 737
+      },
+      {
+        "name": "SimpleAnimTranslationLineAPIDocumentation.lua",
+        "sha": "d0ff74406e308612166ee6612d6767a25d562ea2",
+        "size": 277
+      },
+      {
+        "name": "SimpleAnimVertexColorAPIDocumentation.lua",
+        "sha": "61c7c0c39c166c9dba2f7ff1f45b519f929e8b20",
+        "size": 1069
+      },
+      {
+        "name": "SimpleAnimatableObjectAPIDocumentation.lua",
+        "sha": "58008c92b35f22de2e24bcdd3ff62f92b1d31929",
+        "size": 894
+      },
+      {
+        "name": "SimpleBrowserAPIDocumentation.lua",
+        "sha": "3b28c8c7e7556ecbfc14cb06060e29ac3fd573c4",
+        "size": 1561
+      },
+      {
+        "name": "SimpleButtonAPIDocumentation.lua",
+        "sha": "1e2214ee5348144f5e76e63ab6de22c91b810708",
+        "size": 8888
+      },
+      {
+        "name": "SimpleCheckboxAPIDocumentation.lua",
+        "sha": "6faf2b4db6e54d48add608d8fec4556953e4be45",
+        "size": 1453
+      },
+      {
+        "name": "SimpleColorSelectAPIDocumentation.lua",
+        "sha": "ae804817c73abece63a07722404c98db4ba7b043",
+        "size": 4388
+      },
+      {
+        "name": "SimpleControlPointAPIDocumentation.lua",
+        "sha": "29cfd8ebdbbc973d264f85dbccb3bbdf12485aff",
+        "size": 1358
+      },
+      {
+        "name": "SimpleEditBoxAPIDocumentation.lua",
+        "sha": "9b82eccc3289f66a2deca9b7f6d62c835a239022",
+        "size": 17005
+      },
+      {
+        "name": "SimpleFontAPIDocumentation.lua",
+        "sha": "4070a088b963bbbfa62d6561e97c519fa4ec75c2",
+        "size": 6099
+      },
+      {
+        "name": "SimpleFontStringAPIDocumentation.lua",
+        "sha": "97448b164fc7e86d17178c832134f3744b449af8",
+        "size": 13725
+      },
+      {
+        "name": "SimpleFrameAPIDocumentation.lua",
+        "sha": "f0951c3f8a2556ac881434d33b687d8b9671ca1a",
+        "size": 33423
+      },
+      {
+        "name": "SimpleFrameScriptObjectAPIDocumentation.lua",
+        "sha": "736a214fe7a0c6c776e80ddb577332c306254dd2",
+        "size": 7560
+      },
+      {
+        "name": "SimpleFrameScriptObjectConstantsDocumentation.lua",
+        "sha": "f157ab0c1648a76b735735db9f7f336f6270c145",
+        "size": 3412
+      },
+      {
+        "name": "SimpleHTMLAPIDocumentation.lua",
+        "sha": "38a052b118211c6b8e2fdba3104cde88232b12e5",
+        "size": 7667
+      },
+      {
+        "name": "SimpleHTMLSharedDocumentation.lua",
+        "sha": "8c68743d2bfa726089164b8f42f1a05e92d1f794",
+        "size": 401
+      },
+      {
+        "name": "SimpleLineAPIDocumentation.lua",
+        "sha": "b30bce69c2bd214bb4fbb1cb5779c939ab4f13a8",
+        "size": 2651
+      },
+      {
+        "name": "SimpleMapSceneAPIDocumentation.lua",
+        "sha": "e8c343963758d2bac7703034bc6ecb91bdb78e59",
+        "size": 1570
+      },
+      {
+        "name": "SimpleMaskTextureAPIDocumentation.lua",
+        "sha": "fc70c04abf559b496c642db96feb164a50debe96",
+        "size": 253
+      },
+      {
+        "name": "SimpleMessageFrameAPIDocumentation.lua",
+        "sha": "58bdf724120fbfe9b4c117a974d58d47fa8b88f9",
+        "size": 7895
+      },
+      {
+        "name": "SimpleModelAPIDocumentation.lua",
+        "sha": "4d4725f33d50dcdbbe0ea7c41f9c01869105b00a",
+        "size": 13962
+      },
+      {
+        "name": "SimpleModelFFXAPIDocumentation.lua",
+        "sha": "940e8f723f25d4f13f199367892e1162633b7128",
+        "size": 1071
+      },
+      {
+        "name": "SimpleMovieAPIDocumentation.lua",
+        "sha": "32b3467b82cf702400b9419bd7701f614b806eac",
+        "size": 1406
+      },
+      {
+        "name": "SimpleObjectAPIDocumentation.lua",
+        "sha": "4ebedbb7beebafc0febf723a67c2071dbfc62795",
+        "size": 1333
+      },
+      {
+        "name": "SimpleOffScreenFrameAPIDocumentation.lua",
+        "sha": "da752ac991bb55d0b3754a1846f516baa5f752c0",
+        "size": 2063
+      },
+      {
+        "name": "SimpleRegionAPIDocumentation.lua",
+        "sha": "ca66eb6c9e70d9e30c8f92139c184442c368d136",
+        "size": 4694
+      },
+      {
+        "name": "SimpleScriptRegionAPIDocumentation.lua",
+        "sha": "f77b86089999d35950ce17d6ae62eace15f01f91",
+        "size": 13728
+      },
+      {
+        "name": "SimpleScriptRegionResizingAPIDocumentation.lua",
+        "sha": "6425c8deefe565688f200fbff9d46c364a8f539b",
+        "size": 4656
+      },
+      {
+        "name": "SimpleScrollFrameAPIDocumentation.lua",
+        "sha": "7e157216cbc4378c3e6c6083043b3c495f46a42c",
+        "size": 2331
+      },
+      {
+        "name": "SimpleSliderAPIDocumentation.lua",
+        "sha": "49de282d73eb432fb4f22879f1bc20589ac2ef3f",
+        "size": 3746
+      },
+      {
+        "name": "SimpleStatusBarAPIDocumentation.lua",
+        "sha": "99dd0b3ad25e5bdf33bfeb9d694652b6badfeb90",
+        "size": 7823
+      },
+      {
+        "name": "SimpleStatusBarConstantsDocumentation.lua",
+        "sha": "0038f49c2d9f3b5a626f5c7b0b2120b8bfc91770",
+        "size": 2628
+      },
+      {
+        "name": "SimpleTextureAPIDocumentation.lua",
+        "sha": "4435c4d7bcab5374e9863d277165e3285fae326b",
+        "size": 1250
+      },
+      {
+        "name": "SimpleTextureBaseAPIDocumentation.lua",
+        "sha": "adc0caeaeba3c941e9c2d31c9fa644d102054edf",
+        "size": 15517
+      },
+      {
+        "name": "SimpleVectorGraphicsAPIDocumentation.lua",
+        "sha": "1dda842f24627f03fea7823179d95066e88c8231",
+        "size": 941
+      },
+      {
+        "name": "SkillInfoDocumentation.lua",
+        "sha": "5d79b07ca91006a24be353e5a07361ca1b8a9fb6",
+        "size": 369
+      },
+      {
+        "name": "SlashCommandDocumentation.lua",
+        "sha": "e2559c7ac434a1f6c6de06d304550988a1c5144b",
+        "size": 593
+      },
+      {
+        "name": "SocialConstantsDocumentation.lua",
+        "sha": "9d690be0d83ac7e9b4b5b52e7523254029a96e06",
+        "size": 524
+      },
+      {
+        "name": "SocialQueueDocumentation.lua",
+        "sha": "699cef6fd381b8555eaedb637b61046399d3abca",
+        "size": 7055
+      },
+      {
+        "name": "SocialQueueSystemStatusDocumentation.lua",
+        "sha": "30ea592332a1caa2ae249e461be9d4e65e72aa1d",
+        "size": 765
+      },
+      {
+        "name": "SocialRestrictionsDocumentation.lua",
+        "sha": "b459f41cf124c42604c3163902de9dafb782fe46",
+        "size": 3216
+      },
+      {
+        "name": "SocialUIDocumentation.lua",
+        "sha": "2740c7d88199d56136f9df6d24657d29ab1ee5da",
+        "size": 1970
+      },
+      {
+        "name": "SoftTargetConstantsDocumentation.lua",
+        "sha": "1ba898f04f78fa79a7f462eb1d4b116ce2119310",
+        "size": 558
+      },
+      {
+        "name": "SoulbindsConstantsDocumentation.lua",
+        "sha": "2d292be560434a4a4946e52902d006ed22719b47",
+        "size": 2752
+      },
+      {
+        "name": "SoulbindsDocumentation.lua",
+        "sha": "dbeeb588fb074eaa95fc42db6128f88d9f261c82",
+        "size": 16785
+      },
+      {
+        "name": "SoundDocumentation.lua",
+        "sha": "35cd92a9d50926cd9900ff52d9c3f888552832bf",
+        "size": 3608
+      },
+      {
+        "name": "SpecializationInfoDocumentation.lua",
+        "sha": "d5015ff58318d4a456244027da9f8fa147347c36",
+        "size": 15033
+      },
+      {
+        "name": "SpecializationSharedDocumentation.lua",
+        "sha": "b2b543a50e69e5843c15896d55d24e7479e53387",
+        "size": 3609
+      },
+      {
+        "name": "SpellActivationOverlayDocumentation.lua",
+        "sha": "a02de970a14aa714d3db6020538ecb755d27abf1",
+        "size": 1883
+      },
+      {
+        "name": "SpellBookConstantsDocumentation.lua",
+        "sha": "e260047c236925d510987fe3d457e24158ee8ee3",
+        "size": 1342
+      },
+      {
+        "name": "SpellBookDocumentation.lua",
+        "sha": "c3c5a55b9073ccb2515be4056d2ba26644e0e20e",
+        "size": 32055
+      },
+      {
+        "name": "SpellConstantsDocumentation.lua",
+        "sha": "8d5df54dbe9cf0ff0bcd901e311a074a234a368a",
+        "size": 1438
+      },
+      {
+        "name": "SpellDiminishConstantsDocumentation.lua",
+        "sha": "71175bd928d4fd811286873f39a1e5b8e8e79d74",
+        "size": 1218
+      },
+      {
+        "name": "SpellDiminishUIDocumentation.lua",
+        "sha": "9be750503a4512bf47f77ecdfbad6d52bdf3e6b2",
+        "size": 2789
+      },
+      {
+        "name": "SpellDocumentation.lua",
+        "sha": "d927bfda89f697146dacc9df8cb68b5745232c25",
+        "size": 30930
+      },
+      {
+        "name": "SpellIDDocumentation.lua",
+        "sha": "4560fdbc223c079feef394cc8ab770fc238fcace",
+        "size": 747
+      },
+      {
+        "name": "SpellSharedDocumentation.lua",
+        "sha": "9bd07db4db951c53e681e7f7cdbe1437caa7789d",
+        "size": 5476
+      },
+      {
+        "name": "SplashScreenConstantsDocumentation.lua",
+        "sha": "b1e080413774603110be1c619b309a1ccd1c4f62",
+        "size": 420
+      },
+      {
+        "name": "SplashScreenDocumentation.lua",
+        "sha": "32ee53f7cec53dd03aaa5f270423a64036692aef",
+        "size": 2274
+      },
+      {
+        "name": "StableInfoDocumentation.lua",
+        "sha": "2822e41117b3869c5f4d868073353c26785490aa",
+        "size": 5007
+      },
+      {
+        "name": "StorePublicUIDocumentation.lua",
+        "sha": "8e1ac97cb14a8649ec589188a69c34bed9b897b4",
+        "size": 958
+      },
+      {
+        "name": "StreamingDocumentation.lua",
+        "sha": "716ec2d1a423c061b6cd56b7c47b6f13c1c7435d",
+        "size": 822
+      },
+      {
+        "name": "StringUtilDocumentation.lua",
+        "sha": "9fcbaf19e7d0632fc5a2e204563cbe48fe1ff258",
+        "size": 7149
+      },
+      {
+        "name": "SummonConstantsDocumentation.lua",
+        "sha": "4feabc4637bd6c068f3ed8900c6320f061d9543a",
+        "size": 387
+      },
+      {
+        "name": "SummonInfoDocumentation.lua",
+        "sha": "9d55514df46810b72a6e17ab3d6e9703cebee183",
+        "size": 1158
+      },
+      {
+        "name": "SuperTrackManagerDocumentation.lua",
+        "sha": "a59c2b8d3961980a7e04018a6c139a3d427a633e",
+        "size": 4087
+      },
+      {
+        "name": "SuperTrackManagerSharedDocumentation.lua",
+        "sha": "a2dbc4887b95eb0051a4fc3a5214489b1dbb5351",
+        "size": 1369
+      },
+      {
+        "name": "SystemDocumentation.lua",
+        "sha": "d0c56b8b8c110480b4df55b6caa9690c56c44c6a",
+        "size": 4997
+      },
+      {
+        "name": "SystemTimeDocumentation.lua",
+        "sha": "818872a04c98bff1564409efa55c12928139fc72",
+        "size": 1330
+      },
+      {
+        "name": "TTSSettingsDocumentation.lua",
+        "sha": "d2a6c02a786ad53de998abb97a62cca9166b7ca0",
+        "size": 4609
+      },
+      {
+        "name": "TalentAndGlyphConstantsDocumentation.lua",
+        "sha": "1ca8aec9a84d960323114f481b1f68db5d8d8ad3",
+        "size": 292
+      },
+      {
+        "name": "TalentConstantsDocumentation.lua",
+        "sha": "81ac2bc8607f69f2192076d14f3558382a7ff3b9",
+        "size": 309
+      },
+      {
+        "name": "TalkingHeadDocumentation.lua",
+        "sha": "d71905302e7529c29932abd63fcb130d1c6df935",
+        "size": 506
+      },
+      {
+        "name": "TargetScriptDocumentation.lua",
+        "sha": "0503050547b7bf1bd240f41d6513334d0d0fa288",
+        "size": 4097
+      },
+      {
+        "name": "TaxiMapDocumentation.lua",
+        "sha": "494969ade5be03b3c47808c494a1c535a8b0eb97",
+        "size": 3751
+      },
+      {
+        "name": "TextureSharedDocumentation.lua",
+        "sha": "99b4bc8749f18b3ba87cc1321be3cff055a74508",
+        "size": 121
+      },
+      {
+        "name": "TextureUtilsDocumentation.lua",
+        "sha": "3508893eefe6c6ab2ed999698fda97480c3d2ecd",
+        "size": 5585
+      },
+      {
+        "name": "ThreatDocumentation.lua",
+        "sha": "093a64dd2bcf47cfd345c9884dfcc6c26353ca14",
+        "size": 760
+      },
+      {
+        "name": "TimeDocumentation.lua",
+        "sha": "e2499c1cab2292f68c81a62bd21ccac49e8d1711",
+        "size": 542
+      },
+      {
+        "name": "TimedSignalMapAPIDocumentation.lua",
+        "sha": "08571b855a910bb764b5257e943ab92de3bdb53d",
+        "size": 4339
+      },
+      {
+        "name": "TimedSignalMapSharedDocumentation.lua",
+        "sha": "0252b5c49ea113fa5b668e42bfe74356d684d962",
+        "size": 1231
+      },
+      {
+        "name": "TimerConstantsDocumentation.lua",
+        "sha": "57f71ad1cf56f4af01991d82a6ad18aaa59b6002",
+        "size": 567
+      },
+      {
+        "name": "TimerunningConstantsDocumentation.lua",
+        "sha": "28ca33f774203470b9c71ab83bfcff2266094669",
+        "size": 588
+      },
+      {
+        "name": "TimerunningUIDocumentation.lua",
+        "sha": "9615f28a84546ac3ff75afb1fbe7e99ce6821321",
+        "size": 558
+      },
+      {
+        "name": "TitleDocumentation.lua",
+        "sha": "43a4afdd64a2fc9a9542f2ea4e6f55d073f22340",
+        "size": 1302
+      },
+      {
+        "name": "TooltipComparisonDocumentation.lua",
+        "sha": "6e1592cb0879a178b1c4dc9386df46a841452d44",
+        "size": 2862
+      },
+      {
+        "name": "TooltipConstantsDocumentation.lua",
+        "sha": "a3fe231c4553f4c1b9917f25e9a42de0a92c1c22",
+        "size": 1475
+      },
+      {
+        "name": "TooltipInfoDocumentation.lua",
+        "sha": "7e98596a9076671a19fb3c47d0cb58987c6e5151",
+        "size": 31341
+      },
+      {
+        "name": "TooltipInfoSharedDocumentation.lua",
+        "sha": "c290527321efde762cad5e73af9051fc07b37aea",
+        "size": 9832
+      },
+      {
+        "name": "TotemDocumentation.lua",
+        "sha": "c34c2d0226a780da9e2e54e5af0f32d7cfe58fd7",
+        "size": 2820
+      },
+      {
+        "name": "ToyBoxInfoDocumentation.lua",
+        "sha": "6ce2ea85a99a8dd9be9f1f94710d1c1324bf5b47",
+        "size": 1753
+      },
+      {
+        "name": "TradeInfoDocumentation.lua",
+        "sha": "f44c116fc13f2b550e2f49cc1738e771d44c6be9",
+        "size": 3683
+      },
+      {
+        "name": "TradeSkillUIDocumentation.lua",
+        "sha": "88723be07b7cdc117e4d0381642a0f55770cf99b",
+        "size": 31414
+      },
+      {
+        "name": "TradeSkillUITypesDocumentation.lua",
+        "sha": "8bfb8bdbb810718b8c59a27d72d6dc15176f0625",
+        "size": 17329
+      },
+      {
+        "name": "TrainerDocumentation.lua",
+        "sha": "88cbc65fcb92f9e8db75b062c90bea3a0c558164",
+        "size": 871
+      },
+      {
+        "name": "TraitConfigDocumentation.lua",
+        "sha": "c76bfb5d9f18aa547627988b9d33dc31612d3092",
+        "size": 250
+      },
+      {
+        "name": "TraitConstantsDocumentation.lua",
+        "sha": "796d24334b91b31a2e64ede51ab833664639de19",
+        "size": 11739
+      },
+      {
+        "name": "TransformManipulatorConstantsDocumentation.lua",
+        "sha": "8b6f1b122f760284ae5b57ca60cec19326c23114",
+        "size": 2639
+      },
+      {
+        "name": "TransmogConstantsDocumentation.lua",
+        "sha": "8f4804ce6a4e845032c5fc8fc4a7b29c01160f3e",
+        "size": 1373
+      },
+      {
+        "name": "TransmogDocumentation.lua",
+        "sha": "eab7797f865b9b8b4fa61b5f7ebd4ac5d7b0dc7c",
+        "size": 8190
+      },
+      {
+        "name": "TransmogItemsDocumentation.lua",
+        "sha": "c5324e4837a0fbc63f91e567d2535f666be875e1",
+        "size": 28552
+      },
+      {
+        "name": "TransmogOutfitConstantsDocumentation.lua",
+        "sha": "d7f636c55a49cd9e18faf913273db7fde0aa4728",
+        "size": 17934
+      },
+      {
+        "name": "TransmogOutfitInfoDocumentation.lua",
+        "sha": "2368626b80d50b3d6e9d39b1fd2c5bef26658392",
+        "size": 24830
+      },
+      {
+        "name": "TransmogSetsDocumentation.lua",
+        "sha": "c3b6fc2453a1283080aa973ebdae0c015a9867a1",
+        "size": 11606
+      },
+      {
+        "name": "TransmogSharedDocumentation.lua",
+        "sha": "bd5dbba35b7f5eaa5d3e8a8e4c814c6ee6b94110",
+        "size": 5747
+      },
+      {
+        "name": "TutorialDocumentation.lua",
+        "sha": "dd44a59b3c34d4b162afcb79af676e445fa53e4b",
+        "size": 6266
+      },
+      {
+        "name": "UIActionConstantsDocumentation.lua",
+        "sha": "6a67f93179dbe8bd8a91ce8184ccf68f47b9656e",
+        "size": 406
+      },
+      {
+        "name": "UIActionDocumentation.lua",
+        "sha": "19c5a9b60987daf725c02fa4839cb6acabe1a868",
+        "size": 467
+      },
+      {
+        "name": "UIButtonSharedDocumentation.lua",
+        "sha": "c445b4a63c2f31b0a608104d7e4db1384c6de108",
+        "size": 536
+      },
+      {
+        "name": "UICharacterClassConstantsDocumentation.lua",
+        "sha": "4b0623aeecb63c68364bf40cf593a2d634266a02",
+        "size": 928
+      },
+      {
+        "name": "UIColorDocumentation.lua",
+        "sha": "21357d321025946173384e0a61e74c72b3d10650",
+        "size": 400
+      },
+      {
+        "name": "UIColorSharedDocumentation.lua",
+        "sha": "e8aef5ed4108fe3afec2b08a7c57691a1ee37661",
+        "size": 347
+      },
+      {
+        "name": "UICovenantDisplayInfoConstantsDocumentation.lua",
+        "sha": "6226a4b132882f423e5139aba7005e706b501e3e",
+        "size": 587
+      },
+      {
+        "name": "UIEventToastConstantsDocumentation.lua",
+        "sha": "5fd384fbe1688544d5461dc69e593b97cc9b6af7",
+        "size": 4232
+      },
+      {
+        "name": "UIEventToastManagerDocumentation.lua",
+        "sha": "f7629e2b4bff61cbcfe98349ec26175a7829d9cf",
+        "size": 2916
+      },
+      {
+        "name": "UIFileAssetAPIDocumentation.lua",
+        "sha": "ac051c018ec238fd6a483bec3ca6deaa462abc69",
+        "size": 1844
+      },
+      {
+        "name": "UIFileAssetSharedDocumentation.lua",
+        "sha": "320bb703e303505887181322ef3de680429c1921",
+        "size": 129
+      },
+      {
+        "name": "UIFrameManagerDocumentation.lua",
+        "sha": "2baeb66c6716a14ba8ea6eed89538b0cae23f844",
+        "size": 1250
+      },
+      {
+        "name": "UIGenericWidgetDisplayDocumentation.lua",
+        "sha": "96973c42ba72b9465dbb0439ea5552309728f946",
+        "size": 1191
+      },
+      {
+        "name": "UIMacrosDocumentation.lua",
+        "sha": "46936062e0d2451eb0f1b68297ba2eb8ccfcd9b8",
+        "size": 1592
+      },
+      {
+        "name": "UIManagerDocumentation.lua",
+        "sha": "e884295f8cb103e100eaef53c38dfc156ecf4006",
+        "size": 2215
+      },
+      {
+        "name": "UIMapPinSharedDocumentation.lua",
+        "sha": "e17b5cf2704311fa2b4ddd16fe3046b6ef14cdac",
+        "size": 477
+      },
+      {
+        "name": "UIModelInfoDocumentation.lua",
+        "sha": "0bd5765d2fb5e911f78ae419cc67fe154d46ba50",
+        "size": 5811
+      },
+      {
+        "name": "UIModelInfoSharedDocumentation.lua",
+        "sha": "cf8c81b97aa7d6da36514c202b1051c1f2e3ac05",
+        "size": 2901
+      },
+      {
+        "name": "UIModifiedInstanceDocumentation.lua",
+        "sha": "60bf1555e3486a224145a1e8781e41e0fb5d61de",
+        "size": 1094
+      },
+      {
+        "name": "UISharedDocumentation.lua",
+        "sha": "83aa3db245575a840318cfc638f224d2c5626a21",
+        "size": 1868
+      },
+      {
+        "name": "UISystemVisibilityManagerDocumentation.lua",
+        "sha": "0ba5d82c8abb9b81677d4b5dcef58c7d099f72ae",
+        "size": 926
+      },
+      {
+        "name": "UITextureAssetSharedDocumentation.lua",
+        "sha": "a900ad51837f370d84c25295069e4945628c68e4",
+        "size": 135
+      },
+      {
+        "name": "UITextureConstantsDocumentation.lua",
+        "sha": "c7717ba1f1d9b6f19e911197a5276b214e187531",
+        "size": 1147
+      },
+      {
+        "name": "UITimerDocumentation.lua",
+        "sha": "8aff5217b9b1e4c97cfad2489e669ce561f05123",
+        "size": 2017
+      },
+      {
+        "name": "UIWidgetManagerDocumentation.lua",
+        "sha": "279f75019675e131370b150c838d2f974f79cc40",
+        "size": 87148
+      },
+      {
+        "name": "UIWidgetManagerSharedDocumentation.lua",
+        "sha": "831a3899e35fdeedfbcffb8d54e3210c281c738e",
+        "size": 7297
+      },
+      {
+        "name": "URLDocumentation.lua",
+        "sha": "ea70f1b96ca9ec3d3f169f5c7f11ea9a8e8bdad6",
+        "size": 650
+      },
+      {
+        "name": "UiModelSceneConstantsDocumentation.lua",
+        "sha": "ad2b15bd67cc232e1056e90373dae8b899df818b",
+        "size": 857
+      },
+      {
+        "name": "UiRpcRequestManagerConstantsDocumentation.lua",
+        "sha": "44c58f22415ec02efa3005588620e996983105f0",
+        "size": 151
+      },
+      {
+        "name": "UnitAuraConstantsDocumentation.lua",
+        "sha": "29e287ac4a7deab67887e4867d1ca70f5cc70ac4",
+        "size": 744
+      },
+      {
+        "name": "UnitAuraDocumentation.lua",
+        "sha": "16ed37f4a4d187e8656c8b85b07db943e70d774d",
+        "size": 18810
+      },
+      {
+        "name": "UnitAuraSharedDocumentation.lua",
+        "sha": "d04aa740e1c285157ad435796fbc1779fb8d75d3",
+        "size": 2194
+      },
+      {
+        "name": "UnitConstantsDocumentation.lua",
+        "sha": "124b27389d10c07015b291c803a9d4c044d50aaa",
+        "size": 3676
+      },
+      {
+        "name": "UnitDocumentation.lua",
+        "sha": "95d12e8658a3c2d344834d444ecc61e51b72beda",
+        "size": 117839
+      },
+      {
+        "name": "UnitHealPredictionCalculatorAPIDocumentation.lua",
+        "sha": "9c7649e2d5b0d59a453d98eac14089541b166d2a",
+        "size": 11711
+      },
+      {
+        "name": "UnitHealPredictionCalculatorSharedDocumentation.lua",
+        "sha": "821b84bd32f9a401d8f84d65a9cdd4040604ccbb",
+        "size": 5041
+      },
+      {
+        "name": "UnitRoleDocumentation.lua",
+        "sha": "142956b90f695a96cfe4d0f74363126b15c475fb",
+        "size": 2603
+      },
+      {
+        "name": "UnitSexConstantsDocumentation.lua",
+        "sha": "ad059e7a5a2ac4cbe1456c53eae3dfb5272ccdd9",
+        "size": 542
+      },
+      {
+        "name": "UnitSharedDocumentation.lua",
+        "sha": "de707dac11196536df800dea4f1c81bdf5f8e6e4",
+        "size": 25769
+      },
+      {
+        "name": "UserFeedbackDocumentation.lua",
+        "sha": "8b999805e7d6278ea73e87d07561f6ee9844ce7c",
+        "size": 892
+      },
+      {
+        "name": "ValidateNameConstantsDocumentation.lua",
+        "sha": "dfe64cbf6e8d71f7aa5ed9e44c80c9c75f386f5d",
+        "size": 2133
+      },
+      {
+        "name": "VectorSharedDocumentation.lua",
+        "sha": "c0fcf350f948e0ea4460e9518bab1e8547ba45f5",
+        "size": 119
+      },
+      {
+        "name": "VehicleDocumentation.lua",
+        "sha": "a1c199ed696f3d8624e6b167236690e8e86c8f5f",
+        "size": 3146
+      },
+      {
+        "name": "VideoDocumentation.lua",
+        "sha": "75f3e740d8a4c644b724bcfcd357aac5b52042fd",
+        "size": 6826
+      },
+      {
+        "name": "VignetteConstantsDocumentation.lua",
+        "sha": "bc74c92a9e46b1ed7e2ee62a4cffeffab0b051bd",
+        "size": 969
+      },
+      {
+        "name": "VignetteInfoDocumentation.lua",
+        "sha": "22791a4c040cc3f20db2788a95ba9cea3ed25625",
+        "size": 3908
+      },
+      {
+        "name": "VisualAlertConstantsDocumentation.lua",
+        "sha": "ff05e443fe1eea547db860f0168ae5455e86e9a1",
+        "size": 993
+      },
+      {
+        "name": "VoiceChatDocumentation.lua",
+        "sha": "a58028dde004986de63d673ff34d3d66c83e7e1b",
+        "size": 37750
+      },
+      {
+        "name": "WarCampaignDocumentation.lua",
+        "sha": "b2b7872e005b7d0d51368ffc11ce36c35dd79760",
+        "size": 4613
+      },
+      {
+        "name": "WarbandSceneInfoConstantsDocumentation.lua",
+        "sha": "4b3fb77d9027e40e4c339961dae1c636e7beba68",
+        "size": 671
+      },
+      {
+        "name": "WarbandSceneInfoDocumentation.lua",
+        "sha": "d4e6970b11b15874c568ed4c4ae7545de7cb340e",
+        "size": 3238
+      },
+      {
+        "name": "WeatherConstantsDocumentation.lua",
+        "sha": "467f6c99373dbc14ea6d40d45b458a05ebc6b85b",
+        "size": 576
+      },
+      {
+        "name": "WeatherScriptDocumentation.lua",
+        "sha": "fcdc52566ffc05d0086e24dfcb1e01b0335e2459",
+        "size": 921
+      },
+      {
+        "name": "WeeklyRewardsDocumentation.lua",
+        "sha": "7d12d57deb2fde25b22bbc156ab18c08a566b61a",
+        "size": 8493
+      },
+      {
+        "name": "WeeklyRewardsSharedDocumentation.lua",
+        "sha": "e3b0c5456a312ffd7b2faacc0f14ec2d5f577b33",
+        "size": 133
+      },
+      {
+        "name": "WorldElapsedTimerConstantsDocumentation.lua",
+        "sha": "dc71e30dfa462261a9b88fca55bc01fce35c66c1",
+        "size": 523
+      },
+      {
+        "name": "WorldLootObjectDocumentation.lua",
+        "sha": "2a7ceacb434505f4930c89d9bcd51814a3c2925c",
+        "size": 3256
+      },
+      {
+        "name": "WorldSafeLocsUIInternalDocumentation.lua",
+        "sha": "0253f8bf7e124acb0f1609c9966a856d88a4eb06",
+        "size": 826
+      },
+      {
+        "name": "WorldStateInfoDocumentation.lua",
+        "sha": "f3bfe05af99064ee745acce24ec25554bd0b7e73",
+        "size": 2160
+      },
+      {
+        "name": "WowCSConstantsDocumentation.lua",
+        "sha": "83afafaf453a1c1282512c724697ef3a807016a9",
+        "size": 5908
+      },
+      {
+        "name": "WowEntitlementInfoDocumentation.lua",
+        "sha": "4e910e8cbf6b0b9c58c8890db4277cb4c22823ef",
+        "size": 2176
+      },
+      {
+        "name": "WowSurveyConstantsDocumentation.lua",
+        "sha": "93d7084e3388d78b88793e780bbb8e18be14e276",
+        "size": 1502
+      },
+      {
+        "name": "WowSurveyDocumentation.lua",
+        "sha": "d5b2b3e390b33273d434553c17efc466447d4012",
+        "size": 662
+      },
+      {
+        "name": "WowTokenUIDocumentation.lua",
+        "sha": "fa67354e4a713bdb975b0556025d625a361b0081",
+        "size": 3127
+      },
+      {
+        "name": "XMLUtilDocumentation.lua",
+        "sha": "46b53f12932f5b2d4da23c2838afe6b6ca259380",
+        "size": 1731
+      },
+      {
+        "name": "ZoneAbilityDocumentation.lua",
+        "sha": "5e4322c76bc4807b5b211186e4586a5eb87cf958",
+        "size": 1139
+      },
+      {
+        "name": "ZoneScriptDocumentation.lua",
+        "sha": "4ca25e60ba78c75cba486d060fbc8a95c100cbcc",
+        "size": 1055
+      }
+    ]
+  },
+  "questie": {
+    "repository": "Questie/Questie",
+    "ref": "master",
+    "commit": "30ac9acb7107fdfdd0cfff4d1e03d9bf60b0e374",
+    "path": ".types/Annotations/Core",
+    "files": [
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AccountInfoDocumentation.lua",
+        "sha": "99d2f17ea7b8bdb722415a7d6f324664e16ce740",
+        "size": 701
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AccountStoreDocumentation.lua",
+        "sha": "b910e259e80be5de192a537e29eb609ffef7c971",
+        "size": 3055
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AchievementInfoDocumentation.lua",
+        "sha": "8be890344a03c08e6f34c55bc87ca64caa0c81ea",
+        "size": 1321
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AchievementTelemetryDocumentation.lua",
+        "sha": "59ad9a7273a0885e2332b33101737b2d4071fa01",
+        "size": 603
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ActionBarFrameDocumentation.lua",
+        "sha": "2470aa67c2225810e141615033b7533eb3a0cfaf",
+        "size": 15128
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ActionBarSharedDocumentation.lua",
+        "sha": "e06f68f56df136e2ea8822dfe879df123ab1aa91",
+        "size": 111
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AddOnProfilerDocumentation.lua",
+        "sha": "8631092bdccd54aa895fa5123f634ea73e3850e2",
+        "size": 3639
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AddOnsDocumentation.lua",
+        "sha": "9aff3e423b9bab1c219c8ab823da8234d97caec1",
+        "size": 5850
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AdventureMapDocumentation.lua",
+        "sha": "f91668a410823aa886253969fbfdf1af44b31e58",
+        "size": 639
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AlliedRacesFrameDocumentation.lua",
+        "sha": "6c1652d73d11cc2af52a1b5aff1a16f18918430b",
+        "size": 933
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AnimaDiversionUIDocumentation.lua",
+        "sha": "bc32320ed567522ce45e8aea932f37a9ed129916",
+        "size": 1707
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AppearanceSourceDocumentation.lua",
+        "sha": "3fdcd7fc54ec47749afe7faf3fe8cd65ba88c632",
+        "size": 658
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ArdenwealdGardeningDocumentation.lua",
+        "sha": "ca14fc81f75c436a400c2b8508f772f8dfb3d2e7",
+        "size": 512
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AreaPoiInfoDocumentation.lua",
+        "sha": "8432a2af7a06c7b22b603aa1474072540cb86c39",
+        "size": 2904
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ArenaTeamDocumentation.lua",
+        "sha": "b34e8c018f4ad40f4ffdbe8e8d6bcc241a75c42a",
+        "size": 1008
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ArtifactUIDocumentation.lua",
+        "sha": "ec5046b57de2bc28a4c71865a6cf68531de1de87",
+        "size": 16445
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AssistedCombatDocumentation.lua",
+        "sha": "a229e9b04edf8e33ad64ca53cf02d97f9e087223",
+        "size": 797
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AuctionHouseDocumentation.lua",
+        "sha": "c911e0178aacdc2acdbadc99127352641d4b401a",
+        "size": 22606
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AutoCompleteDocumentation.lua",
+        "sha": "f7638fe3d73fe7a8fa66b938cc576b61b8414a05",
+        "size": 1252
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AzeriteEmpoweredItemDocumentation.lua",
+        "sha": "95e0570b0a48b0fda47d06c6b9296bd16f24a16a",
+        "size": 5305
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AzeriteEssenceDocumentation.lua",
+        "sha": "7f627160d4387bfb3e59e8a5db5af96db272a544",
+        "size": 4424
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/AzeriteItemDocumentation.lua",
+        "sha": "777b7bd2678905964c63af31b20daba5cab98860",
+        "size": 2278
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BNetOutageDocumentation.lua",
+        "sha": "036543a4a27be668d163df2d4a44647d8ed6c032",
+        "size": 204
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BankDocumentation.lua",
+        "sha": "b354fac75ef34ca0268bd51c66a36679325b2050",
+        "size": 5158
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BarberShopDocumentation.lua",
+        "sha": "a7942d97697fd9f9750d2b6676a7f05ae24b1afa",
+        "size": 5187
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BarberShopInternalDocumentation.lua",
+        "sha": "614f97f44ca26384bb70591fadf38e25707fa852",
+        "size": 214
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BaseDocumentation.lua",
+        "sha": "d30d83e3bb778df2bc5b117c30eaca76a7c893c6",
+        "size": 34
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BattleNetDocumentation.lua",
+        "sha": "a1fda962f78ecddcdb36299ab3144c30b86120b4",
+        "size": 4208
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BehavioralMessagingDocumentation.lua",
+        "sha": "8b7f931dc67c6a236c09a06cb3e73f26fa8f1931",
+        "size": 336
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BountySharedDocumentation.lua",
+        "sha": "7859e7ea5e947093bf6ed54e3b6211aac5decc9c",
+        "size": 177
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/BuildDocumentation.lua",
+        "sha": "695ff8a1a89c693659c2195ddde0ba28e49baa98",
+        "size": 1656
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CVarDocumentation.lua",
+        "sha": "85e40a62a94ea29c78ac62c950dfc4ebb7890c59",
+        "size": 2014
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CalendarDocumentation.lua",
+        "sha": "a934ce52efedd925952dadaadd44bd5b12a0ea3e",
+        "size": 19031
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CameraDocumentation.lua",
+        "sha": "3f8b22c75176001b8878d73bedf20cd473491766",
+        "size": 664
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CatalogShopDocumentation.lua",
+        "sha": "15e4dc26c20184724d4f5c58bd742a1b6b85cf92",
+        "size": 12807
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ChallengeModeInfoDocumentation.lua",
+        "sha": "81ee33afb198a8f94e5fdc7e3273d5b93dcd3135",
+        "size": 7904
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CharacterCustomizationSharedDocumentation.lua",
+        "sha": "d134425c7a2688d9c4606aaa6b14612a604fe43f",
+        "size": 1082
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ChatBubblesDocumentation.lua",
+        "sha": "796b19212dc26d4ec0fd2eb08453e9efbe56e7d4",
+        "size": 273
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ChatConstantsDocumentation.lua",
+        "sha": "179c4706d6df53ba67ad629cf0d542dfebd4aa47",
+        "size": 221
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ChatInfoDocumentation.lua",
+        "sha": "8e9f12432ff0e5e99a1744aa08412af8c6167ba2",
+        "size": 10701
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ChatSharedDocumentation.lua",
+        "sha": "da87c56d1d95f72ae79f7433da88ee06fff00f0f",
+        "size": 141
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ChromieTimeUIDocumentation.lua",
+        "sha": "f6f80afc3d754de5bf57870ff85cf2d1c8b759ff",
+        "size": 1112
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CinematicDocumentation.lua",
+        "sha": "3013566ea9c21ad9f63baeb749a9fa56e2ce8489",
+        "size": 1184
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CinematicListDocumentation.lua",
+        "sha": "b4e355fb22200ff503f2dd7e18434eae22606877",
+        "size": 445
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ClassColorDocumentation.lua",
+        "sha": "c2a7a8c5219f56a8750edf173458fa2b0bf0b0ed",
+        "size": 223
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ClassTalentsDocumentation.lua",
+        "sha": "efa27ac2befce7d9628aa4f4747cf9bd4a3ad1ed",
+        "size": 8180
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ClickBindingsConstantsDocumentation.lua",
+        "sha": "96fee4a88433149f058c8743c70484df8970a27b",
+        "size": 152
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ClickBindingsDocumentation.lua",
+        "sha": "21e0af052197443dace2a6a03854af906b58a8c3",
+        "size": 2163
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ClientDocumentation.lua",
+        "sha": "fc06e81d6b5bc653451de77829e5698c8e3b83ae",
+        "size": 1274
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ClubDocumentation.lua",
+        "sha": "454ad38606547dec78500e9cee6eb31afd217dfb",
+        "size": 24451
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ClubFinderDocumentation.lua",
+        "sha": "33f6d5347b47b87832305d58eed189d2a56ae513",
+        "size": 13404
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ColorOverridesDocumentation.lua",
+        "sha": "f038fcb898a222e4fbed5b704114ecbae3aaea6e",
+        "size": 1420
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ColorUtilDocumentation.lua",
+        "sha": "5ddfb5084d53fb853331dd3e8c573ed77864f166",
+        "size": 2204
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CombatAudioAlertDocumentation.lua",
+        "sha": "7af316202edfa82ac7b9f8007b594da456c380ec",
+        "size": 3756
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CombatLogDocumentation.lua",
+        "sha": "91c88cedb696ca00b6aaacf12a429600109acf68",
+        "size": 1905
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CombatLogInternalDocumentation.lua",
+        "sha": "292cb70f67aa591f7d353a4724e8caa8a7953f86",
+        "size": 186
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CombatLogSecureDocumentation.lua",
+        "sha": "f6901fc8fe8d35afb1708d8fa93b1ed3bd1be148",
+        "size": 1806
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CombatLogSharedDocumentation.lua",
+        "sha": "5fcc9bc0984f2432c55750522b0532804bbedb91",
+        "size": 40
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CombatTextDocumentation.lua",
+        "sha": "0bfc9bf7819f3d364265f15d73719dec2cfdba48",
+        "size": 482
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CombatTextSharedDocumentation.lua",
+        "sha": "871e82f128233c56545a7d91e813190963aefda6",
+        "size": 41
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CommentatorFrameDocumentation.lua",
+        "sha": "7c0d020143800b05a85b47f0bc9ea9f959943292",
+        "size": 31680
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ConnectionDocumentation.lua",
+        "sha": "53c938a80b9e2c8795a0715de1051ba74912ed35",
+        "size": 1419
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ConsoleDocumentation.lua",
+        "sha": "1584960767dfd574463930ab2fc78339d14b4951",
+        "size": 2069
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ConsoleScriptCollectionDocumentation.lua",
+        "sha": "b4135c33b9f4e7dbf83f98718d247cf7bb8ac65b",
+        "size": 1479
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ContainerDocumentation.lua",
+        "sha": "fe721b1b6506dd2c8d96a0a980cb015a5888702b",
+        "size": 11191
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ContentTrackingDocumentation.lua",
+        "sha": "00df28e2a4df2fc59c431a418c414ff6a5ecebf5",
+        "size": 5220
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ContentTrackingTypesDocumentation.lua",
+        "sha": "f4550d6205838c0290dc2fb280053b786b1fa890",
+        "size": 709
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ContributionCollectorDocumentation.lua",
+        "sha": "e140b83fa97f5b52cf073ee7902c8e996d234b0f",
+        "size": 4892
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CooldownViewerDocumentation.lua",
+        "sha": "c2a154c6cdfe76769f8223d07586e7dc7c8b2318",
+        "size": 1763
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CovenantCallingsDocumentation.lua",
+        "sha": "33c79fd3c4ee04a202d1d0160d31055b24748393",
+        "size": 351
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CovenantPreviewDocumentation.lua",
+        "sha": "091eb329efd6fbcdb7612d7fc9fbd4a1a77a7c29",
+        "size": 1252
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CovenantSanctumDocumentation.lua",
+        "sha": "9242bd9eb96ad4198717077b8d36569deb882e40",
+        "size": 3713
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CovenantsDocumentation.lua",
+        "sha": "d3b5fddc47cc881270aff3053dcc566f53414764",
+        "size": 1110
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CraftingOrderUIDocumentation.lua",
+        "sha": "f8e9cf80713df78c733fbc958867f171343daed6",
+        "size": 7835
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CraftingOrderUISharedDocumentation.lua",
+        "sha": "6902bde5113e1d405699af8bfad18414c099a4c1",
+        "size": 4783
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CreatureInfoDocumentation.lua",
+        "sha": "f0f06e6e33c7693ded3a41d05123c1e643f8b447",
+        "size": 2076
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CurrencyInfoDocumentation.lua",
+        "sha": "470fde277fd09816212f690b0ca3e88ada0d5a7b",
+        "size": 11706
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CursorDocumentation.lua",
+        "sha": "21a955a2d63dc30a7fc5f26a531a36f37d68b159",
+        "size": 170
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/CurveUtilDocumentation.lua",
+        "sha": "4385dfa332fbdd01d14af90682db9ffabecd39da",
+        "size": 1469
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DamageMeterDocumentation.lua",
+        "sha": "aff40c8c75bd7cf99c24e4dd7ff7f00b9f006e95",
+        "size": 4288
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DateAndTimeDocumentation.lua",
+        "sha": "e84fa85788a9bcf3ad2c5d3e6fd87a60fb41ecd1",
+        "size": 2078
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DeathInfoDocumentation.lua",
+        "sha": "c3a90652437ad4c086dddb9b6bb640cf59a5a8a9",
+        "size": 1447
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DeathRecapDocumentation.lua",
+        "sha": "13ec93998c245363d257d163376f1533af40fd75",
+        "size": 900
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DebugToggleDocumentation.lua",
+        "sha": "b491ac1c0aae8325c6afaba04a28b24b8fa5e030",
+        "size": 982
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DelvesConstantsDocumentation.lua",
+        "sha": "34bd84de64ab0f4a9b18674a3c8eec973a81f0f5",
+        "size": 211
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DelvesUIDocumentation.lua",
+        "sha": "2646e281513a56d6fcf9957fff5d8aaf1d5f69e1",
+        "size": 7790
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DurationUtilDocumentation.lua",
+        "sha": "e2d55bc09eaa5f7b5a1afb3f21f7afb810cb0c3d",
+        "size": 535
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DyeColorInfoDocumentation.lua",
+        "sha": "e939d9770b15d3534b012e2136dadcd00af4dc63",
+        "size": 1888
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/DyeColorInfoSharedDocumentation.lua",
+        "sha": "0ea4ebc8946eace3abb390049e47ff125389a334",
+        "size": 348
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EditModeManagerDocumentation.lua",
+        "sha": "b0efe329d47763721474e451384ca8af750701ed",
+        "size": 2871
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EncodingUtilDocumentation.lua",
+        "sha": "c377db2800346860b7d1432b4d04c55a243f91e6",
+        "size": 2545
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EncounterEventsDocumentation.lua",
+        "sha": "5402458eae89987523b8bebea42da4e298d3a8b3",
+        "size": 2567
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EncounterEventsSharedDocumentation.lua",
+        "sha": "29ddd8b1b00aa08a6c8e048c6312787818a83418",
+        "size": 444
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EncounterJournalDocumentation.lua",
+        "sha": "8c3ce51aee50e15debdc1a9667e1c009b2491ff6",
+        "size": 5451
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EncounterTimelineDocumentation.lua",
+        "sha": "995b2ec009a2c224d405e492a8d58dc47b79e153",
+        "size": 11538
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EncounterWarningsDocumentation.lua",
+        "sha": "4732e183e4db644aa59b465329831d436a3e40bd",
+        "size": 2928
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EndOfMatchUIDocumentation.lua",
+        "sha": "0426930424865e33d41fbc7dc2efbd0cb6bbf95b",
+        "size": 422
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EquipmentManagerDocumentation.lua",
+        "sha": "0ab27e55fea22277c8ce908d0259934571cbdf41",
+        "size": 4889
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EventSchedulerUIDocumentation.lua",
+        "sha": "9dcf132ae06638025268d110054dcf5b73b57121",
+        "size": 3510
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/EventUtilsDocumentation.lua",
+        "sha": "620110027d1f7263ce890ba585d55de2cff3114c",
+        "size": 419
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ExpansionDocumentation.lua",
+        "sha": "37b54b0305616feb858293ae142ac45fa00a44bd",
+        "size": 4376
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ExpansionInfoDocumentation.lua",
+        "sha": "2483285c00c30a2d86ceda95af1bf27ba50fce6f",
+        "size": 546
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ExpansionTrialDocumentation.lua",
+        "sha": "94a4b5d1eb645dc10ffa647e79ce540a36d3f7eb",
+        "size": 349
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ExternalEventURLDocumentation.lua",
+        "sha": "7065213e3cea0fbebe437b13a73dedd596c67ab6",
+        "size": 456
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/FogOfWarDocumentation.lua",
+        "sha": "905326a6c950e80c1db196717a14c1270fb4e6f5",
+        "size": 569
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/FontDocumentation.lua",
+        "sha": "427776afd2afb011639c05425c94267b5fcc38c6",
+        "size": 964
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/FrameScriptDocumentation.lua",
+        "sha": "651656860acda019fb216bb0dc2c6e1146946941",
+        "size": 8178
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/FriendListDocumentation.lua",
+        "sha": "c3cf52dc20caa8108488b5cb5105680822640995",
+        "size": 5625
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GameCursorDocumentation.lua",
+        "sha": "71505ea0955f2adef38b4a369e75865953802da5",
+        "size": 2423
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GameErrorDocumentation.lua",
+        "sha": "5fc48edf867bab6e3f5aa2626d44976dfc325483",
+        "size": 355
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GamePadDocumentation.lua",
+        "sha": "438b3a33c174f3840b159bd4d8282ebe09ec5e98",
+        "size": 5645
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GameRulesDocumentation.lua",
+        "sha": "647ab28e51cbe717990dd1b6d0d661afe3253a3e",
+        "size": 4876
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GameUIDocumentation.lua",
+        "sha": "1ef93119e5eb9d034b4bc072d75b36f568e358d4",
+        "size": 294
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GarrisonInfoDocumentation.lua",
+        "sha": "01642ad2654785d5b2845a1d46a0cd75bf4b45c3",
+        "size": 14651
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GarrisonSharedDocumentation.lua",
+        "sha": "c4d61a8ef53fcbfee9ccd23b8e0b63808cf7405d",
+        "size": 1870
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GlueDocumentation.lua",
+        "sha": "0af02d4c8e71f655d56c88455fcdcd678c8a1399",
+        "size": 343
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GossipInfoDocumentation.lua",
+        "sha": "08122f56671aab93e4b1d58a16be87e055572a88",
+        "size": 5414
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GuildBankDocumentation.lua",
+        "sha": "f3be36acb1f0fdf8b369f3476978817a28274f93",
+        "size": 187
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GuildInfoDocumentation.lua",
+        "sha": "13db7d539e3e02fd0f2f79f1d0a7d238c82acda1",
+        "size": 6544
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/GuildInfoSharedDocumentation.lua",
+        "sha": "c8b5b3c8d7feeda982b94e0bed147aea779d4d1b",
+        "size": 193
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HeirloomInfoDocumentation.lua",
+        "sha": "d943cf9cd30028bbfa247cce42c66eea6d6eb121",
+        "size": 1333
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HouseEditorUIDocumentation.lua",
+        "sha": "65bf06aecbb85e651610c0d204620343bed8b660",
+        "size": 2378
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HouseExteriorConstantsDocumentation.lua",
+        "sha": "3d94a597cb30865583471f45973c0c603e324a24",
+        "size": 1166
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HouseExteriorUIDocumentation.lua",
+        "sha": "45c2aa95419ce9fe8b9664032df05856266b94e3",
+        "size": 5466
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingBasicModeUIDocumentation.lua",
+        "sha": "8c04c828a68d3adcd63b1b9416820bd46e0b155a",
+        "size": 5508
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingCatalogConstantsDocumentation.lua",
+        "sha": "8685f27093ed7b46765ea7dad9f530330960d31b",
+        "size": 563
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingCatalogUIDocumentation.lua",
+        "sha": "44a6571a2dfb8ceb2255a719a5eb785a20ae1249",
+        "size": 10906
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingCleanupModeUIDocumentation.lua",
+        "sha": "7048dac86df8d5e47cd3d0ea8c6065f27297a19c",
+        "size": 562
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingCustomizeModeUIDocumentation.lua",
+        "sha": "85817ffd2179e648e811fb6f8118b8777a88fec7",
+        "size": 10014
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingDecorSharedDocumentation.lua",
+        "sha": "d04f9c5c0a995ad2ec71468d446d5cfacc9da3c2",
+        "size": 639
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingDecorUIDocumentation.lua",
+        "sha": "4ef253c625d1c0a0e3f716fdcede3655b9526016",
+        "size": 7267
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingExpertModeUIDocumentation.lua",
+        "sha": "6a07d99954969b9624ea2e88059381dd6ff74d5c",
+        "size": 5239
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingInspectModeUIDocumentation.lua",
+        "sha": "f897ccfd0f21eaa4aa2ede7467f13265c36558bc",
+        "size": 1207
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingLayoutUIDocumentation.lua",
+        "sha": "767374807aaf936a952eb9649eff4782420de66d",
+        "size": 7489
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingLayoutUITypesDocumentation.lua",
+        "sha": "e58062b9746afe1195b0eb5877927a727feae593",
+        "size": 329
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingNeighborhoodUIDocumentation.lua",
+        "sha": "99983267611425752f23270ee9ea62d22ea12135",
+        "size": 7227
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingPhotoSharingUIDocumentation.lua",
+        "sha": "2e6779eb94bede6f47c59e3bd2566774de0c17ac",
+        "size": 1878
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingUIDocumentation.lua",
+        "sha": "1b7a0c30ef454001876e0ea273e581d749d4a814",
+        "size": 10401
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/HousingUISharedDocumentation.lua",
+        "sha": "ad698bb7bd2ad16609492f092d44a1243eba23a1",
+        "size": 2169
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ImmersiveInteractionManagerDocumentation.lua",
+        "sha": "1aa260fd59b350bf24f998b8163f963e7a86d2e4",
+        "size": 243
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/InGameNavigationDocumentation.lua",
+        "sha": "f18ebd16efb32451106c904ddb95ad28e3c4c11d",
+        "size": 1011
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/IncomingSummonDocumentation.lua",
+        "sha": "9d31b63c71db367481ab0e85ff5f1b99f6493d92",
+        "size": 439
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/InputDocumentation.lua",
+        "sha": "468a6ea6c56e41094f6c4ec257409108c41938fd",
+        "size": 4295
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/InstanceDocumentation.lua",
+        "sha": "3b0019e159526bfafe7eba5078ac58589508eeb2",
+        "size": 4383
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/InstanceEncounterDocumentation.lua",
+        "sha": "20bee9cf84da9f615678e1734a2d53d89dd75cc1",
+        "size": 853
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/InstanceLeaverInfoDocumentation.lua",
+        "sha": "705b3aa66738f7f5de5e8c47e341cbf278afd8cb",
+        "size": 294
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/InterfaceFileManifestDocumentation.lua",
+        "sha": "1ac36cde53f523e73ff55d030a309638b8200ee9",
+        "size": 227
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/InvasionInfoDocumentation.lua",
+        "sha": "77e69714cc42553c605a76acabb9acc1407ba984",
+        "size": 1099
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/IslandsQueueUIDocumentation.lua",
+        "sha": "007a5207db110a04d0b75721cf40694aa1e4e809",
+        "size": 1200
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ItemConstants_SharedDocumentation.lua",
+        "sha": "4bbabf8259c47f691fc67671b3b31c5ba02d91ff",
+        "size": 37
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ItemDocumentation.lua",
+        "sha": "8d65eed2630e8671c68750173b00411aa4bada9e",
+        "size": 24697
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ItemInteractionUIDocumentation.lua",
+        "sha": "c1aed7142e82c2eb3c99c2400e8fc708f120238b",
+        "size": 2471
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ItemSocketInfoDocumentation.lua",
+        "sha": "4a09376a9e3d7da358926bc3543479f19991e0f0",
+        "size": 3280
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ItemUpgradeDocumentation.lua",
+        "sha": "2a85c400f00836f65109f77e99583bccb4c4b320",
+        "size": 4841
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/KeyBindingsDocumentation.lua",
+        "sha": "73c91f3a4543f843ac4eb6a93ecf6eb04ae269ce",
+        "size": 2361
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LFGConstantsDocumentation.lua",
+        "sha": "05b3ab763e78d3cb9261bc91a51ca619b36d9399",
+        "size": 100
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LFGInfoDocumentation.lua",
+        "sha": "6a0380e5525a9385b9bad185c31bad9a4524a134",
+        "size": 4286
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LFGListInfoDocumentation.lua",
+        "sha": "dd6ba499bdffecb8949be6d368916eefaa1c6752",
+        "size": 16617
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LegendaryCraftingDocumentation.lua",
+        "sha": "cde4ac57aa22a42670006a68773cd93ce5c32367",
+        "size": 5457
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LegendaryCraftingTypesDocumentation.lua",
+        "sha": "93171fcd9a4d98e0bd52b3dcb01edccfdb809fa2",
+        "size": 826
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LevelLinkDocumentation.lua",
+        "sha": "4e82174d64ec3d9462fd7621720be7396772093d",
+        "size": 396
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LevelSquishDocumentation.lua",
+        "sha": "0501621def096e6c8dee98b0eb479616386f985d",
+        "size": 478
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LimitedInputDocumentation.lua",
+        "sha": "6492577b9420993f96413f3b93d77ceee513a521",
+        "size": 239
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LiveEventDocumentation.lua",
+        "sha": "11b70ff1316d4882306c8fe33b066da175bab947",
+        "size": 426
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LobbyMatchmakerInfoDocumentation.lua",
+        "sha": "5cde6358d9ab82e23636b7d415852fa82a9ec5b3",
+        "size": 1757
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LocaleDocumentation.lua",
+        "sha": "931e7474a433a4485bd7e2b0dd63774df2d1e76c",
+        "size": 920
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LocalizationDocumentation.lua",
+        "sha": "852b020340f364a3e4c9a5f05215809fcd7a5568",
+        "size": 2337
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LocalizationSharedDocumentation.lua",
+        "sha": "9832041a2c2e6e1992088725a021443df1b0aa86",
+        "size": 232
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LogDocumentation.lua",
+        "sha": "593ec3fda313d2666bd9f35a04d8a3332193a185",
+        "size": 660
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LootDocumentation.lua",
+        "sha": "27baf995ce945dcea4f344e2b9543dd727415ed1",
+        "size": 380
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LootHistoryDocumentation.lua",
+        "sha": "cc47c544d4dff40e41565bab99674b2830ab1f16",
+        "size": 2009
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LootJournalDocumentation.lua",
+        "sha": "15e319f1d751aa2f53c4f337ea90f7b87de6abd5",
+        "size": 668
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LoreTextDocumentation.lua",
+        "sha": "760aee89920d59c8b9ee3ef1ddd6b4f183fd1c7c",
+        "size": 289
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LossOfControlDocumentation.lua",
+        "sha": "75aeb3ebfde9d3883f8c1fcc363dd086b70de62e",
+        "size": 1571
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/LuaTableUtilDocumentation.lua",
+        "sha": "ceb3c3cf7ed1db0cecb839998632be8c9c711fb3",
+        "size": 1646
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MacOptionsDocumentation.lua",
+        "sha": "2a596b0ac28ebf82d6364192288c970edd376804",
+        "size": 1696
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MailInfoDocumentation.lua",
+        "sha": "dd65a583fbc29efdf7c7c49acf71bfcb63725473",
+        "size": 917
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MajorFactionsDocumentation.lua",
+        "sha": "06f9637aa828cd3aa11ec25c9194969fc3b0e83a",
+        "size": 4478
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MapDocumentation.lua",
+        "sha": "cf10cc6f78424057d4f9ae8154423b960f55b926",
+        "size": 9532
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MapExplorationDocumentation.lua",
+        "sha": "cee09d3eb06b4a6883c40e5e4636e3fd8cae1849",
+        "size": 973
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MerchantFrameDocumentation.lua",
+        "sha": "7fd4bdbdc115d7ad78392d1f9e668f19d92b2519",
+        "size": 1566
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MinimapDocumentation.lua",
+        "sha": "c9cca4723ac04a9dc68bec5bb06f8d678750f610",
+        "size": 4785
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MirrorTimerDocumentation.lua",
+        "sha": "ded250477ede8b536fc0cce31b07c1031982ad2a",
+        "size": 712
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MountJournalDocumentation.lua",
+        "sha": "a956a60671c937fbf822e44d353f8d37e67be2d6",
+        "size": 11558
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MovieDocumentation.lua",
+        "sha": "4ff000609b2d5432566c9f9ef4be0e6e5adfb532",
+        "size": 1010
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MythicPlusInfoDocumentation.lua",
+        "sha": "4ad35bc714f6530fc17bf9649f88fbd5c9e6aafc",
+        "size": 5786
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/MythicPlusInfoSharedDocumentation.lua",
+        "sha": "d362e546f44c29508d2def24e2ae4bffbb3398da",
+        "size": 573
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/NamePlateDocumentation.lua",
+        "sha": "efc8111960f64f1f8e3d4220532a5c2da6649012",
+        "size": 842
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/NamePlateManagerDocumentation.lua",
+        "sha": "cca6bb131fb4399c7adddfcf06dc0aa471c377d5",
+        "size": 1682
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/NeighborhoodInitiativeDocumentation.lua",
+        "sha": "9320d732e71eedb580ae17ff54df9ec22c68c432",
+        "size": 5784
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/NewItemsDocumentation.lua",
+        "sha": "9a682c239fb9a69a1198b5cbeeb7f1fb39fd9812",
+        "size": 576
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/NumericRuleFormatterSharedDocumentation.lua",
+        "sha": "6f5ad7ea29eb967784a708869b0aa085bc54440d",
+        "size": 461
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/OsDocumentation.lua",
+        "sha": "ebef8c682c1b1135c3a0bccce0e0064481c829d4",
+        "size": 354
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PaperDollInfoDocumentation.lua",
+        "sha": "c5e819f3b1fb1aa882e3e19041217bc4be4ff40c",
+        "size": 3850
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ParentalControlsDocumentation.lua",
+        "sha": "f82357733478a3eae2a3f7fd5a3ef95a1e168fe6",
+        "size": 181
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PartyInfoDocumentation.lua",
+        "sha": "3d40e11b4f0bc88b4711fa173cc23bdfebd7edd3",
+        "size": 10542
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PartyPoseUIDocumentation.lua",
+        "sha": "2dc0a8f831731e3c32329a43b1b203974ee2d8c2",
+        "size": 1160
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PerformanceDocumentation.lua",
+        "sha": "b9c0c7f5d9bda56f6222a4e8289c50112c332999",
+        "size": 914
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PerksActivitiesDocumentation.lua",
+        "sha": "273a7d33b165b09ecde112d57788b1edd1265557",
+        "size": 3398
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PerksProgramDocumentation.lua",
+        "sha": "79cd3a8580a35914875ae96c7015bb8141230c46",
+        "size": 6287
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PerksVendorConstantsDocumentation.lua",
+        "sha": "d21a6857588f3f27ef4a635b8a1fba2774adb700",
+        "size": 194
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PetBattlesDocumentation.lua",
+        "sha": "d9a84aceab713abc4b7c677370ca54ea7c6d12a6",
+        "size": 1045
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PetInfoDocumentation.lua",
+        "sha": "10eaa0845bd69b196d9e94b27473b841bd5288bd",
+        "size": 1419
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PetJournalInfoDocumentation.lua",
+        "sha": "db9b293d29d6323d0b04b7198dff5da6c24c7a79",
+        "size": 5318
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PhotoSharingUIDocumentation.lua",
+        "sha": "0e3a9b9de390c0add15dd955b4648c245efa2cf1",
+        "size": 1893
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PingConstantsDocumentation.lua",
+        "sha": "16a328c737cd311238edaa199ac0ee61d2f96bce",
+        "size": 339
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PingManagerDocumentation.lua",
+        "sha": "d840fc51cc33edbacf2b6995ba6bb25ef6c7a998",
+        "size": 1264
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PingManagerSecureDocumentation.lua",
+        "sha": "cd4f27a33f6a8410ee8d251a9801e5826247023a",
+        "size": 3719
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PlayerChoiceDocumentation.lua",
+        "sha": "3d8a068df071c22d220cfc3c12a39b613bffdd4a",
+        "size": 3228
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PlayerInfoDocumentation.lua",
+        "sha": "42bdebeeca1fe2cd4607d75e3cbce65c38dc767a",
+        "size": 6441
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PlayerInfoSharedDocumentation.lua",
+        "sha": "616be04fa6d403698aabce9fd460f9a04e1f08ad",
+        "size": 380
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PlayerInteractionManagerDocumentation.lua",
+        "sha": "f15d67382709da3d1fbce03baa618928de190041",
+        "size": 1645
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PlayerLocationDocumentation.lua",
+        "sha": "ff1902e0c0104000d859fd5f576b5c74e8b81655",
+        "size": 1465
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PlayerMentorshipDocumentation.lua",
+        "sha": "460457367876913e4d7f783b408d99d35eb146e1",
+        "size": 1137
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PlayerScriptDocumentation.lua",
+        "sha": "f610eb17d63ba3dc0c350f7775db48cb25fbee0f",
+        "size": 24342
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PortraitDocumentation.lua",
+        "sha": "12666e3ab70254ba20bf4b00d2e09ea040d374c0",
+        "size": 201
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ProfessionSpecConstantsDocumentation.lua",
+        "sha": "4939b8f31c384b83f50816f9e00f5fd270e7b831",
+        "size": 517
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ProfessionSpecUIDocumentation.lua",
+        "sha": "e510fc7bb7303d20ecc6767030ce30a84998980a",
+        "size": 5536
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/PvpInfoDocumentation.lua",
+        "sha": "f4b31cc696994c727788f96c3b0819b78b933bed",
+        "size": 26386
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestHubInfoDocumentation.lua",
+        "sha": "a96dbddc7dce27b17396383112a033e59eb70f1d",
+        "size": 276
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestInfoSharedDocumentation.lua",
+        "sha": "62eef4fd97ced11fe6f6d2699b5c9221f31998ea",
+        "size": 410
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestInfoSystemDocumentation.lua",
+        "sha": "3caaa38d8d72d1a67441caf6ed677a016911729c",
+        "size": 1983
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestItemUseDocumentation.lua",
+        "sha": "9823bd06693007c9ae0515e6f17a0e349b935085",
+        "size": 310
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestLineInfoDocumentation.lua",
+        "sha": "c2f41165bde11d7977e796f69e3871566b753536",
+        "size": 2200
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestLogDocumentation.lua",
+        "sha": "f388eca5298cccfa47312fa41d7380605ae6aa70",
+        "size": 20341
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestOfferDocumentation.lua",
+        "sha": "654107908c799e2289a13b2bf649f3dcd1af8a1e",
+        "size": 1186
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestRewardsDocumentation.lua",
+        "sha": "58fd760ed8c2a87529f1769b58c3b7ba4622354a",
+        "size": 726
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestSessionDocumentation.lua",
+        "sha": "69757650baa079ddc0a789c569ac96596ece667d",
+        "size": 2487
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QuestTaskInfoDocumentation.lua",
+        "sha": "47eb427a23bd39842035be7d211fb34717466869",
+        "size": 2543
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/QueueSpecificDocumentation.lua",
+        "sha": "14bce77b47cb2997d5a279ff7acd280054640eaf",
+        "size": 314
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/RaidLocksDocumentation.lua",
+        "sha": "932442789136e07838cabeb1ea39e60bc8f84259",
+        "size": 779
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/RaidMarkersDocumentation.lua",
+        "sha": "34d47f5075c9171fd8870735dc2a3606a598f5ad",
+        "size": 1284
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/RecentAlliesDocumentation.lua",
+        "sha": "7eff455b06b41cbe99ba662680a2dd2474c4a8d1",
+        "size": 3751
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/RecruitAFriendDocumentation.lua",
+        "sha": "46145e63244594ae959abce0557ff06bb7a37e00",
+        "size": 5715
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/RemixArtifactUIDocumentation.lua",
+        "sha": "a8a40239930d9cfde918df09c9da2fe4a702f7de",
+        "size": 2296
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ReportSystemDocumentation.lua",
+        "sha": "1413c161aff5c66cf0bcf43af09840fd569d5f1c",
+        "size": 2798
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ReputationInfoDocumentation.lua",
+        "sha": "b2fde9ba24b2343187005c8e462d078dbc7292d7",
+        "size": 5936
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ResearchInfoDocumentation.lua",
+        "sha": "6f7c32c6dc15b2d579dd6c240576b007a77ccf56",
+        "size": 400
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/RestrictedActionsDocumentation.lua",
+        "sha": "b38e25983796dfe8e687e352111a3ef336a8c9fa",
+        "size": 1323
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ReturningPlayerUIDocumentation.lua",
+        "sha": "704aaa38bed8cb04059a92b447c08c73cfc292bb",
+        "size": 310
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ScenarioInfoDocumentation.lua",
+        "sha": "7b5a463a991e85e54f577bd0ced60be134527728",
+        "size": 3554
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ScrappingMachineUIDocumentation.lua",
+        "sha": "68a5d6e4c2325fce1c3134136abf15d52933a360",
+        "size": 1976
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ScreenDocumentation.lua",
+        "sha": "db480066ae6c96a906ca57bdd164f01cdf12ff75",
+        "size": 679
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ScriptedAnimationsDocumentation.lua",
+        "sha": "1b41211801623f51749de8ba2c0c3e2f4e2594db",
+        "size": 1215
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SeasonInfoDocumentation.lua",
+        "sha": "35af67311b479793873ffcf89dbc0c33b0e365d1",
+        "size": 397
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SecretPredicateAPIDocumentation.lua",
+        "sha": "afe29e424aa432d22be7a3e43096b117e8ad5058",
+        "size": 8775
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SecureTransferDocumentation.lua",
+        "sha": "5fe3e77968365795bf1a851823e0f175ba9d4d3d",
+        "size": 1842
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SettingsUtilDocumentation.lua",
+        "sha": "ec167e5f2f4c12ad409c57d825fd38163f6e1140",
+        "size": 423
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SharedScriptObjectModelLightDocumentation.lua",
+        "sha": "cae64cb7bceba948ea4dc767afa39e159ec7832b",
+        "size": 267
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SharedTraitsDocumentation.lua",
+        "sha": "12038af3ae0eadcbff63b3ad9f67ba62564db5da",
+        "size": 14392
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SimpleHTMLSharedDocumentation.lua",
+        "sha": "2d81c3f978b91803d948c5156a5947d8af9754c1",
+        "size": 121
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SlashCommandDocumentation.lua",
+        "sha": "c01da4cc287539621f6073c2c03b29defc38d026",
+        "size": 331
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SocialQueueDocumentation.lua",
+        "sha": "a77213da1312a1e41551da36d5a1bb2c7ec2eb54",
+        "size": 3755
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SocialRestrictionsDocumentation.lua",
+        "sha": "6a2fc11c23070847842459fe8bd9233cf6845d95",
+        "size": 1582
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SoulbindsDocumentation.lua",
+        "sha": "1581156c25822c4b78b0a96933d8e978208dd582",
+        "size": 9404
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SoundDocumentation.lua",
+        "sha": "75a3256c60cb651c5bb1c5b2a75d8bdf10fc3750",
+        "size": 1673
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SpecializationInfoDocumentation.lua",
+        "sha": "b490e6446568b0cae0b998d96bc70eb0f51bbee1",
+        "size": 8491
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SpecializationSharedDocumentation.lua",
+        "sha": "333cfe671031e925a1ee474deee2a1fa00dc9db5",
+        "size": 1612
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SpellActivationOverlayDocumentation.lua",
+        "sha": "2c1dbf5cb2eba38a6bfdd748daf9d6b489816c2c",
+        "size": 263
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SpellBookDocumentation.lua",
+        "sha": "431e417ba66daa693d973ccea293734b6120f66b",
+        "size": 18063
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SpellDiminishUIDocumentation.lua",
+        "sha": "5186f29ec66db3af7b7fd5a8c9160bfbc84df3b0",
+        "size": 1362
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SpellDocumentation.lua",
+        "sha": "ff539eff17c0f2ab540fe973df0d10b994e49a41",
+        "size": 17900
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SpellSharedDocumentation.lua",
+        "sha": "56837169a58eadc1bc36cd5136e8c0b13fcbb77e",
+        "size": 929
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SplashScreenDocumentation.lua",
+        "sha": "58408e22d65b7f8b76ba9402ed80d5f2bda05f90",
+        "size": 1439
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/StableInfoDocumentation.lua",
+        "sha": "ae96f82daa8be65b03c7a1ac52b389315befe0fe",
+        "size": 2996
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/StorePublicUIDocumentation.lua",
+        "sha": "782670698a8dbe7d171714207160a12d1360ddf3",
+        "size": 632
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/StreamingDocumentation.lua",
+        "sha": "6213b911d293012a227ceb8db09a675a337dbdc4",
+        "size": 582
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/StringUtilDocumentation.lua",
+        "sha": "c7b15064fb161a1f62cebf8fb225a068f33e2d04",
+        "size": 4490
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SummonInfoDocumentation.lua",
+        "sha": "4f5892c12c966d02b8a325fca3daa2f368f8834f",
+        "size": 1165
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SuperTrackManagerDocumentation.lua",
+        "sha": "6997abaddb5d26a60bf3de2cb440e4ee919566ea",
+        "size": 3978
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SystemDocumentation.lua",
+        "sha": "a03c4f49e828226ce964235e916ec4c053038893",
+        "size": 175
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/SystemTimeDocumentation.lua",
+        "sha": "1b89defb7bd077058d02e2e0254e681c15254132",
+        "size": 926
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TTSSettingsDocumentation.lua",
+        "sha": "90e3729460ae2050a925f93d3fe94a432b4efef6",
+        "size": 3719
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TargetScriptDocumentation.lua",
+        "sha": "15493493040e2898d554ed12bc6787cf5b7873a9",
+        "size": 3309
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TaxiMapDocumentation.lua",
+        "sha": "57bf28bb12631e30dcaabbf52f8455f54862d558",
+        "size": 1335
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TextureUtilsDocumentation.lua",
+        "sha": "41932399ae8483a258fcf35a1e1172b5fae3bb03",
+        "size": 2733
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ThreatDocumentation.lua",
+        "sha": "9d3ec56b6e5dca77cb7422e864c90c80c9e2a36e",
+        "size": 385
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TimeDocumentation.lua",
+        "sha": "7fb202dc491cad70aa5ce6404ed6ed1eb81e3617",
+        "size": 176
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TimerunningUIDocumentation.lua",
+        "sha": "8a9579f31ba93cbe4fa963b1b26a72cd06d5958c",
+        "size": 236
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TitleDocumentation.lua",
+        "sha": "8c08a89f86e290ffdcfbd26ffe8d3befac4b57fb",
+        "size": 759
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TooltipComparisonDocumentation.lua",
+        "sha": "e2dc234cac805a147428bd12be89e143448ee6d4",
+        "size": 1167
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TooltipInfoDocumentation.lua",
+        "sha": "72346489d0c4eda9e034d46c911b9732502932b2",
+        "size": 19372
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TooltipInfoSharedDocumentation.lua",
+        "sha": "f7de78b8739687c5df344c4199f5dfa04df71e57",
+        "size": 302
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TotemDocumentation.lua",
+        "sha": "dc97d79e517204187d2dd0287517bdb59439670e",
+        "size": 1399
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ToyBoxInfoDocumentation.lua",
+        "sha": "8815020534f3ea9629d4eb5f051cd1908c71a699",
+        "size": 874
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TradeInfoDocumentation.lua",
+        "sha": "c96cac302b7a8dc5822665aae08f37c9ac2d08ab",
+        "size": 766
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TradeSkillUIDocumentation.lua",
+        "sha": "82ed6ae1001b271ef8b477a153c869f33197e420",
+        "size": 21072
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TradeSkillUITypesDocumentation.lua",
+        "sha": "0c2f56461600d37153dfb66e7ec5a42a009002e6",
+        "size": 6871
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TransmogDocumentation.lua",
+        "sha": "a68fbf03d164895e81db8317afeb543695f90abe",
+        "size": 2328
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TransmogItemsDocumentation.lua",
+        "sha": "77172dfdd77fd927d0cf531df6cef6ca705f5c43",
+        "size": 21605
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TransmogOutfitInfoDocumentation.lua",
+        "sha": "912167efb2b53027f941d6df5b732cbabcecccc1",
+        "size": 17624
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TransmogSetsDocumentation.lua",
+        "sha": "03515a6fd6fff2a5cc547f21d24a4d829055a829",
+        "size": 8668
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/TutorialDocumentation.lua",
+        "sha": "34bf73585739640a500c2f6237980c75369173ba",
+        "size": 423
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIButtonSharedDocumentation.lua",
+        "sha": "a32b27ae062554a6e832e326f1c288507977f7b9",
+        "size": 194
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIColorDocumentation.lua",
+        "sha": "fa504bba91b2b12e56cc0fa9a1b2c7b37a92b987",
+        "size": 170
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIColorSharedDocumentation.lua",
+        "sha": "c6bd0f21eed74ad437b675e92952080df05014f1",
+        "size": 86
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIEventToastManagerDocumentation.lua",
+        "sha": "bdde195df3e2f9ab092779ee632284305dca7911",
+        "size": 1452
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIFrameManagerDocumentation.lua",
+        "sha": "3c61ad21250547bd7ac36876ff68cc721b513cf7",
+        "size": 255
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIGenericWidgetDisplayDocumentation.lua",
+        "sha": "fe61fb8053d973dc81b2176e7b866e62d779fea9",
+        "size": 564
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIMacrosDocumentation.lua",
+        "sha": "a9786947c673fc1d61d905d5633f0d0d852ff9f9",
+        "size": 810
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIManagerDocumentation.lua",
+        "sha": "460d6139c1bc0a2292b0a28aa2845547bea143d9",
+        "size": 1502
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIMapPinSharedDocumentation.lua",
+        "sha": "1ccda8a1aad5f46a716cef72f3221c1354cff679",
+        "size": 167
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIModelInfoDocumentation.lua",
+        "sha": "97997fcc43adf81489e5a3cdcf99153f43cb17f7",
+        "size": 3359
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIModifiedInstanceDocumentation.lua",
+        "sha": "1569d6bd077240371560fe84d31201014c556b80",
+        "size": 502
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UISharedDocumentation.lua",
+        "sha": "8e952dd57859aff5a775b01d7668205b2fc65b06",
+        "size": 298
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UISystemVisibilityManagerDocumentation.lua",
+        "sha": "ae71937621a1d8777032d847d2f5c78961b8492d",
+        "size": 264
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UITextureConstantsDocumentation.lua",
+        "sha": "86c5f1228eaf89604204ced695b9bdb9bc1c7aa1",
+        "size": 198
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UITimerDocumentation.lua",
+        "sha": "527b4f7e826c2ae765f8b57cd4d86e7ba93e6df3",
+        "size": 861
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UIWidgetManagerDocumentation.lua",
+        "sha": "b15ba76964f6aa0538d5b9be20b2b4ba4f4dc604",
+        "size": 40119
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/URLDocumentation.lua",
+        "sha": "ab2ac551ca6d570302f1f9910fde2c6eca2e0dfe",
+        "size": 279
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UnitAuraDocumentation.lua",
+        "sha": "ef075ea8f5395f5cd5f8d16c6734d94729741d3b",
+        "size": 9311
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UnitConstantsDocumentation.lua",
+        "sha": "3cabe8cc733f477148c4c9dd6c00a692b604020a",
+        "size": 1192
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UnitDocumentation.lua",
+        "sha": "0fd40fff2e7a0e6d8be0e9d6ba9125e6c4378ffd",
+        "size": 44599
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UnitHealPredictionCalculatorSharedDocumentation.lua",
+        "sha": "bb3be19cb699592c4889f157066a381834f7eed6",
+        "size": 639
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UnitRoleDocumentation.lua",
+        "sha": "e8cbeb1715d988b863b6e30fee8ed124a27d1561",
+        "size": 1171
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/UserFeedbackDocumentation.lua",
+        "sha": "1641f43e8889468dc132151049d109b3029fb9f3",
+        "size": 487
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/VideoDocumentation.lua",
+        "sha": "7883917cbadff87064d24d8b5db12dba28f7b232",
+        "size": 1319
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/VignetteInfoDocumentation.lua",
+        "sha": "24506f2c158bb68164b4caa15a8c7c2225ca8a20",
+        "size": 2018
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/VoiceChatDocumentation.lua",
+        "sha": "7d6e67787af764372c4f5fe4a1e51feb0d22aeb8",
+        "size": 15881
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/WarCampaignDocumentation.lua",
+        "sha": "4aae56aa08b500a3e555de586666af9b455bbb78",
+        "size": 2597
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/WarbandSceneInfoDocumentation.lua",
+        "sha": "f63800eebc7a4a4feb7be6c657d920d601858594",
+        "size": 1753
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/WeeklyRewardsDocumentation.lua",
+        "sha": "366e9036ef8da5c094be0f54fb070609c3c8a9b2",
+        "size": 5642
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/WorldLootObjectDocumentation.lua",
+        "sha": "35d70b813dcc5774536e4e05ba0d5213b6cde7d2",
+        "size": 2061
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/WorldSafeLocsUIInternalDocumentation.lua",
+        "sha": "17700027995c772c1b424bded1a90463086a259c",
+        "size": 365
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/WowSurveyDocumentation.lua",
+        "sha": "ae6b03e08db1d2e24fa8afbfe5a5f5fa2b213008",
+        "size": 341
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/WowTokenUIDocumentation.lua",
+        "sha": "37264e562680e5ac405b4ab8a0e3b72c74454d39",
+        "size": 192
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/XMLUtilDocumentation.lua",
+        "sha": "66ddb96154523d6a2eac9164e9fc2e92e4f73110",
+        "size": 759
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ZoneAbilityDocumentation.lua",
+        "sha": "d4a45b200251837848ba5adc68a644be54714b5c",
+        "size": 610
+      },
+      {
+        "name": "Blizzard_APIDocumentationGenerated/ZoneScriptDocumentation.lua",
+        "sha": "d63e46b77e8a521474303ab67b982b785c53855f",
+        "size": 652
+      },
+      {
+        "name": "Data/CVar.lua",
+        "sha": "86a956c20a4d32652cf0dae12d2c4d47dc89bb60",
+        "size": 48799
+      },
+      {
+        "name": "Data/Classic.lua",
+        "sha": "1a949152f19912e9b6262071f81ed8bfc894b34a",
+        "size": 247
+      },
+      {
+        "name": "Data/Enum.lua",
+        "sha": "ef88c54098a5c3c62a917f13043cfc307b7f63f0",
+        "size": 215584
+      },
+      {
+        "name": "Data/Event.lua",
+        "sha": "e2f1305b8799049908ff8c4614ed5abd55628c11",
+        "size": 92308
+      },
+      {
+        "name": "Data/Wiki.lua",
+        "sha": "99de4dee04641ed7d1467c89adebde72656ddce3",
+        "size": 315152
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_11_0_5.lua",
+        "sha": "b4e93dd668989aee2f65b4bf2a3dd7a36046f992",
+        "size": 1446
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_11_0_7.lua",
+        "sha": "6f68e6e83189b95cc6793a74218e6cd2e3d30e1e",
+        "size": 619
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_11_1_5.lua",
+        "sha": "9f733f587d75c9f9b61b358b8dfb5d52be2f22dd",
+        "size": 376
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_11_1_7.lua",
+        "sha": "92fbe317a44b4e45021b1efb04765c9948b41c7c",
+        "size": 471
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_11_2_0.lua",
+        "sha": "64492de6f7d04bb9530136c864a65f076493427f",
+        "size": 501
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_ChatInfo.lua",
+        "sha": "e4a74ae38e3711536b6c122513bef1d0c7a25b28",
+        "size": 322
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_CurrencyScript.lua",
+        "sha": "b091c83a9ee3961993c294714922875aa0c74805",
+        "size": 768
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_GuildScript.lua",
+        "sha": "fb17875027c147658865c7dc3c4494b9ce78d1e9",
+        "size": 1268
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_ItemScript.lua",
+        "sha": "d9b1f8ac9895ed96cc212da9a0d7c70e03bd14d3",
+        "size": 10811
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_PvpScript.lua",
+        "sha": "aa0b0bc66e3c3f264187a8f4ec12507f21198f81",
+        "size": 712
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_SoundScript.lua",
+        "sha": "8cc5cdc888a10b6e372c2059395ff9eff6ce8681",
+        "size": 248
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_Specialization_Standard.lua",
+        "sha": "68764b4a0fbf63ab7a08ac28fb4d5ac9fce371d4",
+        "size": 2739
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_SpellBook.lua.lua",
+        "sha": "bb964656fa43300c07a3b0baa2dcecf2015f7517",
+        "size": 747
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_SpellScript.lua",
+        "sha": "180b3e0e20f039b950dc34922b498f87c9790465",
+        "size": 820
+      },
+      {
+        "name": "FrameXML/Blizzard_Deprecated/Deprecated_UnitScript.lua",
+        "sha": "828cb45fdc91458851e3a1acc3a88f7a7741b5f0",
+        "size": 235
+      },
+      {
+        "name": "FrameXML/Blizzard_FrameXML/AuraUtil.lua",
+        "sha": "54036039d9295f65b513eef900382e0644006707",
+        "size": 1568
+      },
+      {
+        "name": "FrameXML/Blizzard_FrameXML/BNet.lua",
+        "sha": "1015136d2bb790c781b530101b804ac9bfe3083f",
+        "size": 216
+      },
+      {
+        "name": "FrameXML/Blizzard_FrameXML/ItemUtil.lua",
+        "sha": "b6c0a0599d5c39a75dae6d4c00b1c49354490465",
+        "size": 870
+      },
+      {
+        "name": "FrameXML/Blizzard_FrameXML/ReportFrame.lua",
+        "sha": "a424c99e94af5932cebbca354eb3d8c498f9d920",
+        "size": 1412
+      },
+      {
+        "name": "FrameXML/Blizzard_FrameXML/TransmogUtil.lua",
+        "sha": "4b5364dd74359d0fcbe015ba7d0e31ec4af54b13",
+        "size": 1782
+      },
+      {
+        "name": "FrameXML/Blizzard_FrameXML/UIParent.lua",
+        "sha": "b9dab00a2fc1f026d8ebff10780ad2f571c6c78c",
+        "size": 1643
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/Menu.lua",
+        "sha": "fb7a3d8a8107b1e954889a18741023e25c419061",
+        "size": 1529
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/MenuTypes.lua",
+        "sha": "c935f9e219f596b7f14237d6d1ae664a3c146beb",
+        "size": 912
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/MenuUtil.lua",
+        "sha": "a45ea9446f2e34c7db47c7906f7ed23865edc414",
+        "size": 9127
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/Proxies/ElementMenuDescriptionProxy.lua",
+        "sha": "44225a85caadc0b1b48e51fe5dcfdd34f17786be",
+        "size": 4890
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/Proxies/MenuManagerProxy.lua",
+        "sha": "9f92359ff2348008e9a03d81050ccb8efb309d39",
+        "size": 1275
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/Proxies/MenuProxy.lua",
+        "sha": "1efd68f3aaf1912834bac51f7b3c8766a0a25ed3",
+        "size": 1174
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/Proxies/RootMenuDescriptionProxy.lua",
+        "sha": "e3f5729fd8ca94d399021711784e2b18c7416ccf",
+        "size": 738
+      },
+      {
+        "name": "FrameXML/Blizzard_Menu/Proxies/SharedMenuDescriptionProxy.lua",
+        "sha": "180e061aaf9373d5f22185155c829839631ac79b",
+        "size": 5855
+      },
+      {
+        "name": "FrameXML/Blizzard_NamePlates/Blizzard_NamePlates.lua",
+        "sha": "cbf5b83f3fb5dc0712ead4dbf204a966de8095a1",
+        "size": 1083
+      },
+      {
+        "name": "FrameXML/Blizzard_ObjectAPI/ContinuableContainer.lua",
+        "sha": "8000b27e206509bd5d0c9307f208940376355524",
+        "size": 804
+      },
+      {
+        "name": "FrameXML/Blizzard_ObjectAPI/Item.lua",
+        "sha": "f48156a6e4d8688dc94d9d63fdccaec7d1feb061",
+        "size": 2632
+      },
+      {
+        "name": "FrameXML/Blizzard_ObjectAPI/ItemLocation.lua",
+        "sha": "8df164bede4a0477b846487099dcd5f23ed4654a",
+        "size": 1776
+      },
+      {
+        "name": "FrameXML/Blizzard_ObjectAPI/PlayerLocation.lua",
+        "sha": "180cd72e13a06e99f07c20ad4895d724284990e4",
+        "size": 4388
+      },
+      {
+        "name": "FrameXML/Blizzard_ObjectAPI/Spell.lua",
+        "sha": "e74e96089f8717ace38d9d2ef29072be34ee89af",
+        "size": 1136
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/Backdrop.lua",
+        "sha": "604ce8f503b689723c52c597da40bd57e01e0d1c",
+        "size": 3389
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/CallbackRegistry.lua",
+        "sha": "aaedb833ed939c96fdd801304ec808a0bdf6696a",
+        "size": 1137
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/Color.lua",
+        "sha": "67b5cc4937b2e6b237eb3cffea96ce2d4d0ca8a8",
+        "size": 2555
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/ColorUtil.lua",
+        "sha": "7979e142cb013ddb43f43cdcf8b154f8200ceb7c",
+        "size": 1367
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/CvarUtil.lua",
+        "sha": "1536ae6e57d1a217a7921f76a87ee1ed5173be36",
+        "size": 1753
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/Dump.lua",
+        "sha": "01b5c9d7103eee3c35a875d54c35ad1ed9f793ff",
+        "size": 172
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/FormattingUtil.lua",
+        "sha": "25e40742b994dff04a8023d0b8137ae14114583f",
+        "size": 2651
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/GlobalCallbackRegistry.lua",
+        "sha": "38c0bd1bb1f43dcb91479c535088eedc4d384c74",
+        "size": 913
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/Mixin.lua",
+        "sha": "8990e733d4b2826da994234ab741b2c847dc9c86",
+        "size": 953
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/TableUtil.lua",
+        "sha": "6d16698496077518f4f042acb1288fba99b162d3",
+        "size": 5181
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/TextureUtil.lua",
+        "sha": "a694d840f516598fbbf2165a062fbc440e91d31d",
+        "size": 6462
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/TimeUtil.lua",
+        "sha": "d42f96618b64eca719f6e79d2a0aa2601ecada36",
+        "size": 1616
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/Vector2D.lua",
+        "sha": "a11b804c1872f63b3b86820c88609d3e138179ca",
+        "size": 2816
+      },
+      {
+        "name": "FrameXML/Blizzard_SharedXML/Vector3D.lua",
+        "sha": "6cd61f623e3dcc5c04ee8dba33afd5d1475416e0",
+        "size": 2590
+      },
+      {
+        "name": "Libraries/Ace3/AceAddon-3.0.lua",
+        "sha": "721b8cff69d814de253b25698112fbab7c557291",
+        "size": 6480
+      },
+      {
+        "name": "Libraries/Ace3/AceBucket-3.0.lua",
+        "sha": "afec41145cf733a3e363b9cc44aecc5fb973c3a7",
+        "size": 1777
+      },
+      {
+        "name": "Libraries/Ace3/AceComm-3.0.lua",
+        "sha": "c09bdf623ed0ed1d8ca868d89be7483818a4b2c5",
+        "size": 2510
+      },
+      {
+        "name": "Libraries/Ace3/AceConfig-3.0/AceConfig-3.0.lua",
+        "sha": "22017706c87aa70a590ee9e32d92c44c283085e8",
+        "size": 3699
+      },
+      {
+        "name": "Libraries/Ace3/AceConfig-3.0/AceConfigCmd-3.0.lua",
+        "sha": "883651b508edf5fb966a77ef6334fd0ce4c865d8",
+        "size": 1605
+      },
+      {
+        "name": "Libraries/Ace3/AceConfig-3.0/AceConfigDialog-3.0.lua",
+        "sha": "257f5d24ae4f853ca9d9d232d37341257d3cb7a8",
+        "size": 2898
+      },
+      {
+        "name": "Libraries/Ace3/AceConfig-3.0/AceConfigRegistry-3.0.lua",
+        "sha": "843781be31179fa730f7dd01e5ba4f980e974593",
+        "size": 2865
+      },
+      {
+        "name": "Libraries/Ace3/AceConsole-3.0.lua",
+        "sha": "cc29dd95325da035f3ea5d371ede07298ce5d641",
+        "size": 3095
+      },
+      {
+        "name": "Libraries/Ace3/AceDB-3.0.lua",
+        "sha": "f73f386badc3be1d7447c3f652ee8186f4b68542",
+        "size": 7936
+      },
+      {
+        "name": "Libraries/Ace3/AceDBOptions-3.0.lua",
+        "sha": "45344a72152baab796e722ea8407e069741a112f",
+        "size": 929
+      },
+      {
+        "name": "Libraries/Ace3/AceEvent-3.0.lua",
+        "sha": "47379d84af2b6407b8abeaf65b43f424da025006",
+        "size": 2352
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/AceGUI-3.0.lua",
+        "sha": "91c4a5b774ace6001bc0ed6089e33216d4b842e4",
+        "size": 7969
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-BlizOptionsGroup.lua",
+        "sha": "04635d947948f4f35f7cf469524ae4b24822ae36",
+        "size": 1037
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-DropDownGroup.lua",
+        "sha": "352dc7a4a0f77b4e3aaee66eb82246321f0fb5e4",
+        "size": 1666
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-Frame.lua",
+        "sha": "04010e14d7b7ea3a51f70b62ff5b151515447918",
+        "size": 1500
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-InlineGroup.lua",
+        "sha": "53038fc9ee85c82fba464d93b109af9c0f12c769",
+        "size": 595
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-ScrollFrame.lua",
+        "sha": "9c7fede5834e7ee7bcf176c628382229dfaad889",
+        "size": 1150
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-SimpleGroup.lua",
+        "sha": "fb1588963a6e82371a0c46b5498b7a403018c153",
+        "size": 390
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-TabGroup.lua",
+        "sha": "327d85edae23d889d1985474405d9a243c79ba35",
+        "size": 1758
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-TreeGroup.lua",
+        "sha": "aa921628acf2372bc0dc204bed391535c96677c9",
+        "size": 3131
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIContainer-Window.lua",
+        "sha": "cef4a810b57693ee100cef48f4cab4eca03bde04",
+        "size": 820
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-Button.lua",
+        "sha": "47f09e8cd4a8436aadf7d07cfb94da82d0ee46a7",
+        "size": 604
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-CheckBox.lua",
+        "sha": "fa872bdfb19cd29dc2a31f18d4fc228dd939b88c",
+        "size": 1771
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua",
+        "sha": "111972768893e44051d1f5ffd295667d5b82e572",
+        "size": 883
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-DropDown.lua",
+        "sha": "6a022faa63cdb257a1f9d282b9c6603f9d40fbf4",
+        "size": 2231
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-EditBox.lua",
+        "sha": "a0efc35f8ffe3ac32d0a9c5af329991b1fdac567",
+        "size": 1553
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-Heading.lua",
+        "sha": "17a5194fbf62c2bd8aa544b376d43c49e089aa4e",
+        "size": 338
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-Icon.lua",
+        "sha": "f18c6b04b33fdb14ce7437554add6db336e1b2df",
+        "size": 760
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-InteractiveLabel.lua",
+        "sha": "d8f540df5734003222e48dcf60947f7b37951709",
+        "size": 2026
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-Keybinding.lua",
+        "sha": "ac5130bf4f5a2fae3ef27cf7cfd155c12c574149",
+        "size": 885
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-Label.lua",
+        "sha": "bc07aa866bc9dd9fc5287f933d865ad023dc01d8",
+        "size": 1485
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-MultiLineEditBox.lua",
+        "sha": "8e43cd41db6b2267d02c36a5dfc7358315e7fe2e",
+        "size": 2162
+      },
+      {
+        "name": "Libraries/Ace3/AceGUI-3.0/widgets/AceGUIWidget-Slider.lua",
+        "sha": "366255f084d36f8dc803c5ad92f1c548d56869e5",
+        "size": 1357
+      },
+      {
+        "name": "Libraries/Ace3/AceHook-3.0.lua",
+        "sha": "3bbef4e93278db60a12096f57c2751c31b970d47",
+        "size": 10692
+      },
+      {
+        "name": "Libraries/Ace3/AceLocale-3.0.lua",
+        "sha": "d3b9394091d806175d7f409b3a39d12c0125e296",
+        "size": 1768
+      },
+      {
+        "name": "Libraries/Ace3/AceSerializer-3.0.lua",
+        "sha": "c0b670ab55197fb96b8ba03ac1e4d06d56cb745b",
+        "size": 667
+      },
+      {
+        "name": "Libraries/Ace3/AceTab-3.0.lua",
+        "sha": "58e4e5bd0eb07da95694c847ae3974ec81f69abc",
+        "size": 2580
+      },
+      {
+        "name": "Libraries/Ace3/AceTimer-3.0.lua",
+        "sha": "03c3e57ef1b76a541a89c8ce965ebaf2fcb83935",
+        "size": 1898
+      },
+      {
+        "name": "Libraries/CallbackHandler-1.0/CallbackHandler-1.0.lua",
+        "sha": "194d6a5dd884ee9c0db3bce7233ab573d7303cf9",
+        "size": 1516
+      },
+      {
+        "name": "Libraries/ChatThrottleLib/ChatThrottleLib.lua",
+        "sha": "e318ef6006e0b93cb01692a8739f616f2ea54cc8",
+        "size": 1821
+      },
+      {
+        "name": "Libraries/HereBeDragons-2.0/HereBeDragons-2.0.lua",
+        "sha": "5b5694bce573d18f5735f27dea8d29bf5e54a4ea",
+        "size": 8619
+      },
+      {
+        "name": "Libraries/HereBeDragons-2.0/HereBeDragons-Pins-2.0.lua",
+        "sha": "652a3d45f9605fc81d9d5a76135125f1e110f2f3",
+        "size": 5518
+      },
+      {
+        "name": "Libraries/LibDBIcon-1.0/LibDBIcon-1.0.lua",
+        "sha": "3fac09446703a12a04208736b99039650805198d",
+        "size": 2399
+      },
+      {
+        "name": "Libraries/LibDataBroker-1.1/LibDataBroker-1.1.lua",
+        "sha": "340da3d2776ac88af032685b51a0af8f6b7bec21",
+        "size": 6740
+      },
+      {
+        "name": "Libraries/LibDeflate/LibDeflate.lua",
+        "sha": "b3387729a3f1782a312ba23b9bd8b9a49b4ecd83",
+        "size": 13642
+      },
+      {
+        "name": "Libraries/LibDialog-1.0/LibDialog-1.0.lua",
+        "sha": "6a1a764c9a5feba1ded1769dc236650f7d3f291d",
+        "size": 9248
+      },
+      {
+        "name": "Libraries/LibDualSpec-1.0/LibDualSpec-1.0.lua",
+        "sha": "f4c81832a3792b281bec460c670b4dc546fcffd3",
+        "size": 425
+      },
+      {
+        "name": "Libraries/LibQTip-1.0/LibQTip-1.0.lua",
+        "sha": "c0e9016e55834e542ca5b7d084886215eec0c281",
+        "size": 17327
+      },
+      {
+        "name": "Libraries/LibSharedMedia-3.0/LibSharedMedia-3.0.lua",
+        "sha": "fb5b0ec10f1b9f82b1ce2b8d418bb108ead4d3dd",
+        "size": 2702
+      },
+      {
+        "name": "Libraries/LibSink-2.0/LibSink-2.0.lua",
+        "sha": "8cb24ddfd81c36572240903c934ae8874b1a58f6",
+        "size": 2181
+      },
+      {
+        "name": "Libraries/LibStub/LibStub.lua",
+        "sha": "0ec409274ec60c07ad60b542ed31ff6bca0174e7",
+        "size": 686
+      },
+      {
+        "name": "Libraries/LibTextDump-1.0/LibTextDump-1.0.lua",
+        "sha": "9fb7802e50367a0c92a5336358306b6bd6bc4340",
+        "size": 2095
+      },
+      {
+        "name": "Lua/basic.lua",
+        "sha": "61bc3861f84c20dbc0f155adf11f059526dbc77a",
+        "size": 13922
+      },
+      {
+        "name": "Lua/bit.lua",
+        "sha": "4f12b6d2e19cfbc8cd6dd5c3667759c5eb0b9dd8",
+        "size": 1202
+      },
+      {
+        "name": "Lua/compat.lua",
+        "sha": "78f99ff1739e535e9dd043b4075bece5994592e2",
+        "size": 1604
+      },
+      {
+        "name": "Lua/math.lua",
+        "sha": "1e2d4a55f6039efba69ab980dc78779297d430f9",
+        "size": 7648
+      },
+      {
+        "name": "Lua/os.lua",
+        "sha": "4bcaea69cfa5866a3ca2029da0872d04cd1a5e3f",
+        "size": 3973
+      },
+      {
+        "name": "Lua/string.lua",
+        "sha": "825158b29a8fc84da8fed59ecb5bb6e81f6bfdec",
+        "size": 7147
+      },
+      {
+        "name": "Lua/table.lua",
+        "sha": "802eb89a5bce6e328a8f83f20f170f3cfb5b454b",
+        "size": 4403
+      },
+      {
+        "name": "ScriptObject/AbbreviateConfig.lua",
+        "sha": "bfb6c39ecd69a546d451191c106230f959b7eecd",
+        "size": 547
+      },
+      {
+        "name": "ScriptObject/ColorCurveObject.lua",
+        "sha": "76f208b20b728d88980eb83b1d4d4027882765c0",
+        "size": 2781
+      },
+      {
+        "name": "ScriptObject/CurveObject.lua",
+        "sha": "371b2b82e68330da77d37fdc9997542a393f341a",
+        "size": 2243
+      },
+      {
+        "name": "ScriptObject/CurveObjectBase.lua",
+        "sha": "35e7f1537901cbe4e93ef863662c70c9eb77af0b",
+        "size": 871
+      },
+      {
+        "name": "ScriptObject/DurationObject.lua",
+        "sha": "6894fdbcdaba760dfd836771285c95c841ec6ccf",
+        "size": 6659
+      },
+      {
+        "name": "ScriptObject/HousingCatalogSearcher.lua",
+        "sha": "7cef6112b38bf37d7cc01016562897131427f159",
+        "size": 11683
+      },
+      {
+        "name": "ScriptObject/HousingFixturePointFrame.lua",
+        "sha": "c887f33aff5d66b777d5c8d669191e661d943b17",
+        "size": 1097
+      },
+      {
+        "name": "ScriptObject/HousingLayoutPinFrame.lua",
+        "sha": "6b51df6685257c85496a0b46fe8b13ead8308f5f",
+        "size": 3159
+      },
+      {
+        "name": "ScriptObject/UnitHealPredictionCalculator.lua",
+        "sha": "5ae30efab92659a8643680b6ef6fa0883921f91f",
+        "size": 10492
+      },
+      {
+        "name": "Type/BlizzardType.lua",
+        "sha": "be1d04ece7d93840e485d6ab57f6e77f0beef4ba",
+        "size": 1957
+      },
+      {
+        "name": "Type/EmoteToken.lua",
+        "sha": "ea474a709eb536876d9b0b38304a2321dcfb093e",
+        "size": 3325
+      },
+      {
+        "name": "Type/FunctionContainer.lua",
+        "sha": "3ad6269e882586b2f0202bafe979ab3a4f6db718",
+        "size": 216
+      },
+      {
+        "name": "Type/GlobalColors.lua",
+        "sha": "dde4da07ca261143948158b54e025efeeae1c59b",
+        "size": 18842
+      },
+      {
+        "name": "Type/Mixin.lua",
+        "sha": "4391858cb1075004f2e17b4f1f477270c2d94b61",
+        "size": 450
+      },
+      {
+        "name": "Type/Namespace.lua",
+        "sha": "1b5ce494abd4104aba52a9b173cd22787a260fec",
+        "size": 926
+      },
+      {
+        "name": "Type/StringEnum.lua",
+        "sha": "01b57613f552b9d04d739217def373c0002ef9c2",
+        "size": 1717
+      },
+      {
+        "name": "Type/Structure.lua",
+        "sha": "01f8ff5c4a6757094b1510fb2f3fa028cdc6cefc",
+        "size": 1725
+      },
+      {
+        "name": "Type/Type.lua",
+        "sha": "5a0a4391eedea6a8c7c1e4dcc15bfabc378adce2",
+        "size": 1795
+      },
+      {
+        "name": "Type/UnitId.lua",
+        "sha": "dcd29c20d02b93e1be26a940f9b43c8ca49ce9a4",
+        "size": 2064
+      },
+      {
+        "name": "Type/UnitToken.lua",
+        "sha": "a0624845846c409c42c5603144a85e2cf123fee2",
+        "size": 563
+      },
+      {
+        "name": "Widget/Animation/Alpha.lua",
+        "sha": "1e26c7def276a06bca830382693701ba5ab78fcd",
+        "size": 768
+      },
+      {
+        "name": "Widget/Animation/Animation.lua",
+        "sha": "812682c42ef78a97e0c49ec26ab29aa48406863c",
+        "size": 6074
+      },
+      {
+        "name": "Widget/Animation/AnimationGroup.lua",
+        "sha": "be85c26324795a2ef65876862429b3501d467009",
+        "size": 5285
+      },
+      {
+        "name": "Widget/Animation/ControlPoint.lua",
+        "sha": "83164974c8c619355f749c94fc7bda93345d4cab",
+        "size": 1163
+      },
+      {
+        "name": "Widget/Animation/FlipBook.lua",
+        "sha": "4090aa7982d5b87052a90fb8305ab1aa68683676",
+        "size": 1731
+      },
+      {
+        "name": "Widget/Animation/Path.lua",
+        "sha": "ea5d08d5728c750906b681045f8650bc24884838",
+        "size": 1011
+      },
+      {
+        "name": "Widget/Animation/Rotation.lua",
+        "sha": "9a0cddb6d7a46a4a9b17f5ccff35e73ecbf9fccc",
+        "size": 1130
+      },
+      {
+        "name": "Widget/Animation/Scale.lua",
+        "sha": "69576e912c261f3cd37f19199b443ad2e890fd4f",
+        "size": 1541
+      },
+      {
+        "name": "Widget/Animation/TextureCoordTranslation.lua",
+        "sha": "e587461b006835b0211ff3fd9b318192d9de68ac",
+        "size": 689
+      },
+      {
+        "name": "Widget/Animation/Translation.lua",
+        "sha": "7cb50f2ba50d4e975ffd3a4574a889c8c84bda4d",
+        "size": 665
+      },
+      {
+        "name": "Widget/Animation/VertexColor.lua",
+        "sha": "18147c27a56d3d7a4de8474c4a970319c371a026",
+        "size": 818
+      },
+      {
+        "name": "Widget/Base/AnimatableObject.lua",
+        "sha": "bdedbb415d4b10fa7b6708b276cd46f047d44481",
+        "size": 716
+      },
+      {
+        "name": "Widget/Base/Blob.lua",
+        "sha": "726a95b21e28db3ee88275df72498edf354f40c3",
+        "size": 2076
+      },
+      {
+        "name": "Widget/Base/CharacterModelBase.lua",
+        "sha": "482893e090ee71880e26e8c21a86c9d56917cb40",
+        "size": 4847
+      },
+      {
+        "name": "Widget/Base/FrameScriptObject.lua",
+        "sha": "604bebdc801e1cc92b44811dc706422ef452ba9b",
+        "size": 2118
+      },
+      {
+        "name": "Widget/Base/ModelSceneActorBase.lua",
+        "sha": "9fb9effa1b51efe7802ec8deab9f594d42a37259",
+        "size": 10125
+      },
+      {
+        "name": "Widget/Base/ModelSceneFrameActorBase.lua",
+        "sha": "91a5b5101b1f569df98443085c3953ca02fbcdf7",
+        "size": 9521
+      },
+      {
+        "name": "Widget/Base/Object.lua",
+        "sha": "3004dda1c6b4ab5b24573c5e055c4d797e417881",
+        "size": 870
+      },
+      {
+        "name": "Widget/Base/Region.lua",
+        "sha": "83456e693b80b131c686532034bced7676643e4f",
+        "size": 2988
+      },
+      {
+        "name": "Widget/Base/ScriptRegion.lua",
+        "sha": "4ac70a9680e2c669c917f273ae9e9aff76e1fd64",
+        "size": 8957
+      },
+      {
+        "name": "Widget/Base/ScriptRegionResizing.lua",
+        "sha": "7fdc9c93d0932154762669504491a22ecfe01647",
+        "size": 3228
+      },
+      {
+        "name": "Widget/Base/TabardModelBase.lua",
+        "sha": "33307139dbaa481aebe2bbafb35c46d1031865a5",
+        "size": 1242
+      },
+      {
+        "name": "Widget/Base/TextureBase.lua",
+        "sha": "e637add366bae6b8143195fd53303f60d7f05bc3",
+        "size": 8337
+      },
+      {
+        "name": "Widget/Font/Font.lua",
+        "sha": "1fbbb8b0fc7bf3f07134711cad22f12efaae67cc",
+        "size": 4208
+      },
+      {
+        "name": "Widget/Font/FontString.lua",
+        "sha": "b49a4c6d984e87f01cdaa8ef1acb3c5b58613747",
+        "size": 9149
+      },
+      {
+        "name": "Widget/Frame/Button/Button.lua",
+        "sha": "acba347831f86bcda3aea7edc79da40030900d53",
+        "size": 7617
+      },
+      {
+        "name": "Widget/Frame/Button/CheckButton.lua",
+        "sha": "cab86e302f879ccb679aee114cc51a219eb8206b",
+        "size": 1203
+      },
+      {
+        "name": "Widget/Frame/ColorSelect.lua",
+        "sha": "e8c0a6aa0191e8e436ed50bfb91284b009881c34",
+        "size": 4475
+      },
+      {
+        "name": "Widget/Frame/Cooldown.lua",
+        "sha": "c7cdc6a51e19b8daa9a656e59a925ec5c00430bf",
+        "size": 9011
+      },
+      {
+        "name": "Widget/Frame/EditBox.lua",
+        "sha": "b4febec60526960e834c176ba9de72a8fa8c3aae",
+        "size": 13565
+      },
+      {
+        "name": "Widget/Frame/FogOfWarFrame.lua",
+        "sha": "05baa91d05155dfa182d7b82c274674416eb7b0a",
+        "size": 3208
+      },
+      {
+        "name": "Widget/Frame/Frame.lua",
+        "sha": "330d65b107817f0bd0914692e8d9f461285240fc",
+        "size": 20690
+      },
+      {
+        "name": "Widget/Frame/GameTooltip.lua",
+        "sha": "a91bb5e4e986e260c5f3ec7333677547a8c248a6",
+        "size": 19230
+      },
+      {
+        "name": "Widget/Frame/MessageFrame.lua",
+        "sha": "36cafd5ef9e36078e9845d5c20209c320dbbc23e",
+        "size": 6126
+      },
+      {
+        "name": "Widget/Frame/Minimap.lua",
+        "sha": "09280e429ed957f01c38b3dede19443807d64995",
+        "size": 5009
+      },
+      {
+        "name": "Widget/Frame/Model/CinematicModel.lua",
+        "sha": "b09b7ee0d25286f00748ce1937eb8c0a03794acb",
+        "size": 4614
+      },
+      {
+        "name": "Widget/Frame/Model/DressUpModel.lua",
+        "sha": "bdea2819bceaac1b19d48b1d16e7867957815fd6",
+        "size": 4904
+      },
+      {
+        "name": "Widget/Frame/Model/Model.lua",
+        "sha": "a97071f1ee16a881c3c3f8a3fbbc1a171ef500ad",
+        "size": 11204
+      },
+      {
+        "name": "Widget/Frame/Model/PlayerModel.lua",
+        "sha": "b456c1927541689947c15336c6eda65b01507307",
+        "size": 126
+      },
+      {
+        "name": "Widget/Frame/Model/TabardModel.lua",
+        "sha": "eea2648f3bb36cb3cea4a33938adf04da10757a1",
+        "size": 1179
+      },
+      {
+        "name": "Widget/Frame/ModelScene.lua",
+        "sha": "f5db605131aead803cbf5ac073260d73d861b349",
+        "size": 9314
+      },
+      {
+        "name": "Widget/Frame/ModelSceneActor.lua",
+        "sha": "ddf5de87f8a9852304e35dd525f3b2b191090205",
+        "size": 6529
+      },
+      {
+        "name": "Widget/Frame/MovieFrame.lua",
+        "sha": "deb67c009133f82825dca4c9b122756ce666a33d",
+        "size": 1974
+      },
+      {
+        "name": "Widget/Frame/POIFrame/ArchaeologyDigSiteFrame.lua",
+        "sha": "bf7d509862b778292ed94748065109d93ff562c9",
+        "size": 172
+      },
+      {
+        "name": "Widget/Frame/POIFrame/QuestPOIFrame.lua",
+        "sha": "27af3704ff73d2070da256c02de6835ec2516f2f",
+        "size": 817
+      },
+      {
+        "name": "Widget/Frame/POIFrame/ScenarioPOIFrame.lua",
+        "sha": "627f677741a49193594b9a9ec70cd2b10a00bad2",
+        "size": 644
+      },
+      {
+        "name": "Widget/Frame/ScrollFrame.lua",
+        "sha": "b4056d946398dd59a0d4a5d56540f26481d88d2a",
+        "size": 2581
+      },
+      {
+        "name": "Widget/Frame/SimpleHTML.lua",
+        "sha": "0d5d5a289443931f1a09d72ea7ddaf4a6f5e2b02",
+        "size": 4996
+      },
+      {
+        "name": "Widget/Frame/Slider.lua",
+        "sha": "212c4748f5aa6c6f6e00322fad185c1f14be1d7d",
+        "size": 3891
+      },
+      {
+        "name": "Widget/Frame/StatusBar.lua",
+        "sha": "a5d94bcfdea57f173052c4756275f197dd45be70",
+        "size": 6213
+      },
+      {
+        "name": "Widget/Frame/UnitPositionFrame.lua",
+        "sha": "4f926fd5bba9768365aa055622c85f12e7c73ec7",
+        "size": 2764
+      },
+      {
+        "name": "Widget/Intrinsic/DropdownButton.lua",
+        "sha": "601f3fec6e90ace5e492db9c312c9a00121ab237",
+        "size": 303
+      },
+      {
+        "name": "Widget/Intrinsic/EventFrame.lua",
+        "sha": "9fcf6673bd71985ce65771221b93219cd41191d7",
+        "size": 390
+      },
+      {
+        "name": "Widget/Texture/Line.lua",
+        "sha": "8c178af55935d89ab9b57e8aa7c0969f3a50e23d",
+        "size": 1911
+      },
+      {
+        "name": "Widget/Texture/Texture.lua",
+        "sha": "6e025000b11ac88b29524ca6b3b1e88ec34f49f9",
+        "size": 952
+      },
+      {
+        "name": "Widget/UIType/Font.lua",
+        "sha": "428fef53fb0db266c8a1314228fabe0ca11b873f",
+        "size": 30000
+      },
+      {
+        "name": "Widget/UIType/FrameType.lua",
+        "sha": "1413c20ec42ac313fd734ba2f1ac67a7dba94c24",
+        "size": 1834
+      },
+      {
+        "name": "Widget/UIType/Intrinsic/EventFrame.lua",
+        "sha": "8fd8b248e79b96c1366b1335dc93399e6b0b5069",
+        "size": 469
+      },
+      {
+        "name": "Widget/UIType/ScriptType.lua",
+        "sha": "05d9125e33ac97b4db88afb0a8b5e2c6c60235c8",
+        "size": 4218
+      },
+      {
+        "name": "Widget/UIType/Template.lua",
+        "sha": "1442f237309667d45ae10326346fbed56c148b95",
+        "size": 1208
+      },
+      {
+        "name": "Widget/UIType/UIType.lua",
+        "sha": "efc22c586768e70b519d5b3830d61e0acdb30f12",
+        "size": 2305
+      }
+    ]
+  },
+  "blizzard_version": {
+    "repository": "Gethe/wow-ui-source",
+    "ref": "live",
+    "commit": "15881d522c44cd106d3d8660106ec9f9d2f44167",
+    "path": "",
+    "files": [
+      {
+        "name": "version.txt",
+        "sha": "9ddd81d0cdb1e34b4563808c11627840210df786",
+        "size": 13
+      }
+    ]
+  }
+}
