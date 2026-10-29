@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -96,21 +97,47 @@ return W
 	return fixture
 }
 
-// runNativeCheck runs the fixture checker, optionally through a Lua wrapper
-// that patches the compiler before the checker loads.
-func runNativeCheck(t *testing.T, fixture, source, wrapper string) (string, error) {
+// checkSource is a source file of one checker run.
+type checkSource struct{ name, text string }
+
+// caller is a fixture source that imports the wow declarations.
+func caller(source string) checkSource {
+	return checkSource{"caller.tl", "local type W = require(\"wow\")\n" + source + "\n"}
+}
+
+// execNativeCheck runs the fixture checker over sources, optionally through a
+// Lua wrapper that patches the compiler before the checker loads. It returns
+// the output and the source names.
+func execNativeCheck(t *testing.T, fixture, wrapper string, sources ...checkSource) (string, []string, error) {
 	t.Helper()
-	writeTest(t, filepath.Join(fixture, "caller.tl"), "local type W = require(\"wow\")\n"+source+"\n")
+	names := make([]string, len(sources))
+	for index, source := range sources {
+		writeTest(t, filepath.Join(fixture, source.name), source.text)
+		names[index] = source.name
+	}
 	checker := filepath.Join(fixture, "tools/check_secrets.lua")
 	script := checker
 	if wrapper != "" {
 		script = filepath.Join(fixture, "protocol.lua")
-		writeTest(t, script, "local tl = require(\"tl\")\n"+wrapper+fmt.Sprintf("\narg[0] = %q\ndofile(arg[0])\n", checker))
+		// The wrapper patches the compiler instance `tl run` already loaded.
+		writeTest(t, script, "local tl = package.loaded[\"tl\"]\n"+wrapper+fmt.Sprintf("\narg[0] = %q\ndofile(arg[0])\n", checker))
 	}
-	command := exec.CommandContext(t.Context(), teal(t), secretCheckArgs([]string{filepath.Join(fixture, "types/wow")}, script, "wow_env", "caller.tl", "wow_env")...)
+	command := exec.CommandContext(t.Context(), teal(t), secretCheckArgs([]string{filepath.Join(fixture, "types/wow")}, script, "wow_env", "wow_env", names)...)
 	command.Dir = fixture
 	output, err := command.CombinedOutput()
-	return string(output), err
+	return string(output), names, err
+}
+
+// runNativeCheck is execNativeCheck with the output grouped by source. Output
+// that names no source fails the test.
+func runNativeCheck(t *testing.T, fixture, wrapper string, sources ...checkSource) (string, map[string][]diagnostic, error) {
+	t.Helper()
+	output, names, err := execNativeCheck(t, fixture, wrapper, sources...)
+	diagnostics, parseErr := parseDiagnostics(output, names)
+	if parseErr != nil {
+		t.Fatalf("%v\n%s", parseErr, output)
+	}
+	return output, diagnostics, err
 }
 
 func TestNativePolicyContracts(t *testing.T) {
@@ -216,12 +243,14 @@ local function f(s: Secret<number>) if s then print(1) end end`, ""},
 					files[name] = strings.Replace(files[name], key, `["1:1"]={symbol="allow"`, 1)
 				}
 			}
-			output, err := runNativeCheck(t, nativeFixture(t, edit), tc.source, "")
+			output, diagnostics, err := runNativeCheck(t, nativeFixture(t, edit), "", caller(tc.source))
 			if tc.reject == "" {
 				if err != nil {
 					t.Fatalf("unexpected rejection: %v\n%s", err, output)
 				}
-			} else if err == nil || !hasDiagnostic(output, tc.reject) {
+			} else if err == nil || !slices.ContainsFunc(diagnostics["caller.tl"], func(d diagnostic) bool {
+				return d.failure() && strings.HasPrefix(d.message, tc.reject)
+			}) {
 				t.Fatalf("expected %q rejection at caller.tl, got %v\n%s", tc.reject, err, output)
 			}
 		})
@@ -258,26 +287,18 @@ func TestNativePolicyProtocolFailsClosed(t *testing.T) {
 	}})
 	for _, tc := range append(cases, []protocolCase{
 		{name: "compiler version", wrapper: `tl.version = function() return "0.24.8-wow.1" end`, want: "unsupported Teal version"},
+		{name: "declaration load", wrapper: `tl.new_env = function() return nil, "declarations unavailable" end`, want: "declarations unavailable"},
 		{name: "stdlib identity", wrapper: `local new_env = tl.new_env
 tl.new_env = function(...)
    local env, err = new_env(...)
    if env then env.globals.pcall = nil end
    return env, err
 end`, want: "compiler omitted stdlib identity: pcall"},
-		{name: "expression identity", wrapper: `local new_reporter = tl.new_type_reporter
-tl.new_type_reporter = function(...)
-   local reporter = new_reporter(...)
-   local get_collector = reporter.get_collector
-   reporter.get_collector = function(self, name)
-      -- Drop every type store, including the checker's own wrapper.
-      local collector = get_collector(self, name)
-      return setmetatable({}, {
-         __index = function(_, key) if key == "store_type" then return function() end end return collector[key] end,
-         __newindex = function() end,
-      })
-   end
-   return reporter
-end`, want: "secret check failed closed: "},
+		{name: "expression identity", wrapper: `local process = tl.process
+tl.process = function(filename, env, ...)
+   env.report_types = false
+   return process(filename, env, ...)
+end`, want: "compiler omitted expression identity"},
 		{name: "policy compiler", want: "missing or incompatible call policy", edit: func(t *testing.T, files map[string]string) {
 			name := "types/wow/call_policy.lua"
 			files[name] = strings.Replace(files[name], fmt.Sprintf("compiler=%q", TealVersion), `compiler="0.24.8-wow.1"`, 1)
@@ -297,10 +318,39 @@ end`, want: "secret check failed closed: "},
 			if tc.edit != nil {
 				edit = func(files map[string]string) { tc.edit(t, files) }
 			}
-			output, err := runNativeCheck(t, nativeFixture(t, edit), source, tc.wrapper)
-			if err == nil || !strings.Contains(output, tc.want) || !strings.Contains(output, "caller.tl:") {
-				t.Fatalf("missing fail-closed rejection %q: %v\n%s", tc.want, err, output)
+			// Drift affects every source, so each one reports it.
+			output, diagnostics, err := runNativeCheck(t, nativeFixture(t, edit), tc.wrapper, caller(source), checkSource{"other.tl", "print(1)\n"})
+			for _, name := range []string{"caller.tl", "other.tl"} {
+				if err == nil || !slices.ContainsFunc(diagnostics[name], func(d diagnostic) bool { return strings.Contains(d.message, tc.want) }) {
+					t.Fatalf("missing fail-closed rejection %q on %s: %v\n%s", tc.want, name, err, output)
+				}
 			}
 		})
+	}
+}
+
+// A type error in the shared declarations is reported where Teal found it, and
+// fails every source.
+func TestDeclarationErrorsFailEverySource(t *testing.T) {
+	t.Parallel()
+	fixture := nativeFixture(t, func(files map[string]string) {
+		files["types/wow/wow_env.d.tl"] += "global broken: nosuchtype\n"
+	})
+	output, names, err := execNativeCheck(t, fixture, "", caller(`deny(source())`), checkSource{"other.tl", "print(1)\n"})
+	declarations := filepath.Join(fixture, "types/wow/wow_env.d.tl")
+	diagnostics, parseErr := parseDiagnostics(output, append(names, declarations))
+	if parseErr != nil {
+		t.Fatalf("%v\n%s", parseErr, output)
+	}
+	contains := func(text string) func(diagnostic) bool {
+		return func(d diagnostic) bool { return strings.Contains(d.message, text) }
+	}
+	if err == nil || !slices.ContainsFunc(diagnostics[declarations], contains("unknown type nosuchtype")) {
+		t.Fatalf("declaration error not reported: %v\n%s", err, output)
+	}
+	for _, name := range names {
+		if !slices.ContainsFunc(diagnostics[name], contains("declarations do not type-check")) {
+			t.Fatalf("%s not failed: %v\n%s", name, err, output)
+		}
 	}
 }

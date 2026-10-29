@@ -81,7 +81,7 @@ func CheckTypes(ctx context.Context, root string, out, errout io.Writer) error {
 	}
 	for _, name := range modules {
 		fmt.Fprintln(out, "Checking "+filepath.Join(root, "types/wow", name+".d.tl"))
-		if _, err = tl.run(append(compilerFlags(inputs.search), "check", filepath.Join(inputs.packageRoot, "types/wow", name+".d.tl"))...); err != nil {
+		if _, err = tl.run(fileTimeout, append(compilerFlags(inputs.search), "check", filepath.Join(inputs.packageRoot, "types/wow", name+".d.tl"))...); err != nil {
 			return err
 		}
 	}
@@ -359,7 +359,7 @@ func resolveCompiler(ctx context.Context, root string, inputs *buildInputs, erro
 		paths:       strings.NewReplacer(inputs.packageRoot, root, filepath.Join(inputs.directory, "inputs")+string(filepath.Separator), string(filepath.Separator)),
 		errout:      errout,
 	}
-	version, err := c.run("--version")
+	version, err := c.run(fileTimeout, "--version")
 	if err != nil {
 		return compiler{}, fmt.Errorf("unsupported Teal version: %s --version failed; expected %s (%s): %w", path, TealVersion, tealInstall, err)
 	}
@@ -378,8 +378,12 @@ func admitTealVersion(output string) error {
 	return nil
 }
 
-func (c compiler) run(args ...string) (string, error) {
-	child, cancel := context.WithTimeout(c.ctx, 60*time.Second)
+// fileTimeout bounds the compiler's work on one file. An invocation over n
+// files is bounded by n times this.
+const fileTimeout = 60 * time.Second
+
+func (c compiler) run(timeout time.Duration, args ...string) (string, error) {
+	child, cancel := context.WithTimeout(c.ctx, timeout)
 	defer cancel()
 	process := exec.CommandContext(child, c.path, args...)
 	process.Dir = c.work
@@ -389,11 +393,15 @@ func (c compiler) run(args ...string) (string, error) {
 	process.Stderr = &stderr
 	err := process.Run()
 	if err != nil {
-		if child.Err() != nil {
-			return "", fmt.Errorf("compiler command: %w", child.Err())
-		}
 		detail := strings.TrimSpace(stdout.String() + stderr.String())
-		if detail == "" {
+		if child.Err() != nil {
+			// Keep what the compiler reported before it was stopped: a run over
+			// several sources has already reported the ones it checked.
+			err = fmt.Errorf("compiler command: %w", child.Err())
+			if detail == "" {
+				return "", err
+			}
+		} else if detail == "" {
 			detail = "compiler failed without diagnostics: " + err.Error()
 		}
 		return "", fmt.Errorf("%s: %w", c.paths.Replace(detail), err)
@@ -416,9 +424,10 @@ func compilerFlags(search []string) []string {
 }
 
 // secretCheckArgs is the one checker invocation shape: the selected type
-// environment, the source, and the native environment whose identity it pins.
-func secretCheckArgs(search []string, checker, environment, source, native string) []string {
-	return append(compilerFlags(search), "run", checker, "--", environment, source, native)
+// environment, the native environment whose identity it pins, and the sources.
+// One run checks every source against one load of the declarations.
+func secretCheckArgs(search []string, checker, environment, native string, sources []string) []string {
+	return append(append(compilerFlags(search), "run", checker, "--", environment, native), sources...)
 }
 
 // session owns the captured inputs and admitted compiler for one Check or Build.
@@ -518,14 +527,12 @@ func searchRoots(selected Selection, sources []string) ([]string, error) {
 }
 
 func (s *session) checkSources(out io.Writer) error {
-	checker := filepath.Join(s.inputs.packageRoot, "tools/check_secrets.lua")
-	for i, source := range s.captured {
-		fmt.Fprintln(out, "Checking "+s.sources[i])
-		if _, err := s.tl.run(secretCheckArgs(s.inputs.search, checker, s.environment, source, s.native)...); err != nil {
-			return err
-		}
+	for _, source := range s.sources {
+		fmt.Fprintln(out, "Checking "+source)
 	}
-	return nil
+	checker := filepath.Join(s.inputs.packageRoot, "tools/check_secrets.lua")
+	_, err := s.tl.run(time.Duration(len(s.captured))*fileTimeout, secretCheckArgs(s.inputs.search, checker, s.environment, s.native, s.captured)...)
+	return err
 }
 
 // build generates Lua for every checked source, then publishes it with an
@@ -546,10 +553,10 @@ func (s *session) build(sourceRoot, destination string) (int, error) {
 		if err = os.MkdirAll(filepath.Dir(target), 0755); err != nil {
 			return 0, err
 		}
-		if _, err = s.tl.run(append(slices.Clone(flags), "--global-env-def", s.environment, "gen", "--check", "-o", target, source)...); err != nil {
+		if _, err = s.tl.run(fileTimeout, append(slices.Clone(flags), "--global-env-def", s.environment, "gen", "--check", "-o", target, source)...); err != nil {
 			return 0, err
 		}
-		if _, err = s.tl.run(append(slices.Clone(flags), "run", imports, "--", target)...); err != nil {
+		if _, err = s.tl.run(fileTimeout, append(slices.Clone(flags), "run", imports, "--", target)...); err != nil {
 			return 0, err
 		}
 	}

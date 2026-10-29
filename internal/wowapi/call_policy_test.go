@@ -112,7 +112,7 @@ if pretendGuard(value) and not issecretvalue(value) and value is number then den
 			if strings.HasPrefix(tc.name, "secure origin") {
 				environment = "wow_secure_env"
 			}
-			command := exec.CommandContext(t.Context(), tl, "-I", filepath.Join(fixture, "types/wow"), "--gen-target", "5.1", "--gen-compat", "off", "run", filepath.Join(fixture, "tools/check_secrets.lua"), "--", environment, caller)
+			command := exec.CommandContext(t.Context(), tl, "-I", filepath.Join(fixture, "types/wow"), "--gen-target", "5.1", "--gen-compat", "off", "run", filepath.Join(fixture, "tools/check_secrets.lua"), "--", environment, environment, caller)
 			output, err := command.CombinedOutput()
 			if tc.rejection == "" {
 				if err != nil {

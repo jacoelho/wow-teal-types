@@ -3,7 +3,10 @@ package consumer
 import (
 	"archive/zip"
 	"bytes"
+	"context"
 	"encoding/json"
+	"errors"
+	"io"
 	"maps"
 	"os"
 	"os/exec"
@@ -13,6 +16,7 @@ import (
 	"strings"
 	"syscall"
 	"testing"
+	"time"
 )
 
 type addonFixture struct{ root, project, source, output string }
@@ -296,6 +300,24 @@ return helpers
 `)
 	f.check(t, Selection{Sources: []string{f.source}}, "secret-value comparison")
 }
+
+// One check reports every failing source, not only the first. The sources do
+// not import each other, so each is checked only because it was selected.
+func TestCheckReportsEveryFailingSource(t *testing.T) {
+	f := newAddon(t)
+	f.write(t, "A.tl", "local type W = require(\"wow\")\nlocal function f(value: W.MaybeSecret<number>)\n   if value == 0 then print(\"bad\") end\nend\n")
+	f.write(t, "B.tl", "local type W = require(\"wow\")\nlocal function f(s: W.Secret<number>)\n   if s then print(1) end\nend\n")
+	f.write(t, "C.tl", "print(\"ok\")\n")
+	text := f.check(t, Selection{Sources: []string{f.source}}, "secret-value")
+	for _, want := range []string{`(?m)/A\.tl:3:7: secret-value comparison`, `(?m)/B\.tl:3:7: secret-value truthiness`} {
+		if !regexp.MustCompile(want).MatchString(text) {
+			t.Errorf("missing %s in:\n%s", want, text)
+		}
+	}
+	if strings.Contains(text, "C.tl:") {
+		t.Errorf("clean source reported:\n%s", text)
+	}
+}
 func TestInvalidSourceSelectionAndTypeErrors(t *testing.T) {
 	f := newAddon(t)
 	f.write(t, "Bad.tl", "C_Spell.GetBaseSpell(true)\n")
@@ -325,7 +347,7 @@ func TestPackageResolutionAndDirectShadowFailure(t *testing.T) {
 	shadow := filepath.Join(f.project, "shadow")
 	writeTest(t, filepath.Join(shadow, "wow.d.tl"), "local record Fake\n type MaybeSecret<T> = T\nend\nreturn Fake\n")
 	f.check(t, Selection{Sources: []string{f.source}, Include: []string{shadow}}, "secret-value truthiness")
-	command := exec.CommandContext(t.Context(), teal(t), "run", filepath.Join(f.root, "tools/check_secrets.lua"), "--", "wow_env", source)
+	command := exec.CommandContext(t.Context(), teal(t), "run", filepath.Join(f.root, "tools/check_secrets.lua"), "--", "wow_env", "wow_env", source)
 	command.Dir = f.project
 	command.Env = append(os.Environ(), "TL_PATH="+shadow+"/?.lua;"+filepath.Join(f.root, "types/wow/?.lua"))
 	data, err := command.CombinedOutput()
@@ -552,5 +574,26 @@ func TestConsumerPackageIsReproducibleAndExcludesProducer(t *testing.T) {
 		if strings.HasSuffix(member.Name, ".py") || strings.Contains(member.Name, "/tools/teal/") || strings.Contains(member.Name, "/scripts/") || strings.Contains(member.Name, "/tools/cdn/") {
 			t.Fatalf("producer or Python in consumer archive: %s", member.Name)
 		}
+	}
+}
+
+// A compiler stopped at its deadline still reports what it printed: a run over
+// several sources has already reported the ones it checked.
+func TestCompilerDeadlineKeepsOutput(t *testing.T) {
+	for _, tc := range []struct{ name, script, want string }{
+		{"with output", "printf 'a.tl:1:1: first\\n'; ", "a.tl:1:1: first"},
+		{"without output", "", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// exec replaces the shell, so stopping the compiler closes its output.
+			c := compiler{ctx: t.Context(), path: "/bin/sh", work: t.TempDir(), paths: strings.NewReplacer(), errout: io.Discard}
+			output, err := c.run(200*time.Millisecond, "-c", tc.script+"exec sleep 5")
+			if output != "" || !errors.Is(err, context.DeadlineExceeded) || !strings.Contains(err.Error(), tc.want) {
+				t.Fatalf("run = %q, %v", output, err)
+			}
+			if tc.want == "" && err.Error() != "compiler command: "+context.DeadlineExceeded.Error() {
+				t.Fatalf("error without output = %v", err)
+			}
+		})
 	}
 }

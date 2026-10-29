@@ -15,7 +15,7 @@ consumer archive contains only consumer commands and tests.
 | Check and build an addon | `internal/consumer` | Capture bounded inputs, verify package bytes, admit the compiler by exact version, run all compiler phases against that capture, then publish checked Lua. |
 | Extract the selected client | `tools/cdn` | Independent Go module; verified acquisition feeds the release boundary. |
 | Validate locked source identities | `internal/sourcelock` | Concrete transport schemas and path validation shared by acquisition and interpretation. |
-| Enforce secret operations | `tools/check_secrets.lua` | Runs inside stock Teal 0.24.8; applies the `Secret` marker rules and canonical native call permissions from the finalized projection. |
+| Enforce secret operations | `tools/check_secrets.lua` | Runs inside stock Teal 0.24.8; applies the `Secret` marker rules and canonical native call permissions from the finalized projection to every selected source in one run. |
 | Reject native runtime imports | `tools/check_runtime_imports.lua` | Inspect generated Lua before publication. |
 
 CLI packages translate arguments and pass explicit dependencies. Release
@@ -62,6 +62,22 @@ present, or the check fails closed. Matching declaration lines with a pattern
 and comparing file and line was rejected: it read the file a second time,
 outside the compiler, and nested or reformatted declarations could disagree
 with what Teal loaded.
+
+One checker run loads the declarations once and checks every selected source.
+Each source gets its own Teal environment over that load: copies of the module,
+loaded-file and global tables, with each global's variable record copied
+because Teal marks variables as it checks. A source's globals and authored
+modules are therefore its own, as in a separate `tl check` run, and the
+markers stay the loaded `native_values` objects. A source that fails stock
+checks or fails closed is reported and the run continues with the next source;
+a compiler version, call policy or declaration load failure fails every source. The checker
+supplies its own type collector and records only the expression, callee and
+declaration positions it reads. A process per source was rejected: each one
+reloaded the 56,000-line declarations, which on PUC Lua 5.1 cost seconds per
+source. One shared environment, as stock `tl check` uses for several files,
+was rejected: globals declared by one source become visible to later ones.
+Teal's own type reporter was rejected because it numbers every loaded
+declaration type for each source.
 Selected sources and admitted `.tl`/`.lua` dependencies share one mirrored physical
 namespace, preserving identity for overlapping include roots. Teal retains control
 of module suffix and include-root precedence. Native declarations precede caller
@@ -75,8 +91,9 @@ resolution; copying makes the validated bytes the bytes used by every phase.
 
 The capture bounds caller inputs to 512 selected sources, 2 MiB per source or
 dependency, 16 MiB total and 10,000 dependency traversal entries. Package capture
-has a separate 16 MiB bound. Each compiler process has a 60-second deadline and
-inherits cancellation. Temporary inputs are removed on success or failure.
+has a separate 16 MiB bound. Each compiler process has a deadline of 60 seconds
+per file it processes and inherits cancellation; the secret check is one process
+for all selected sources, and a timeout keeps the diagnostics reported so far. Temporary inputs are removed on success or failure.
 
 Edits after capture affect the next invocation. Capture is not a filesystem-wide
 atomic snapshot or protection against hostile concurrent mutation. The build

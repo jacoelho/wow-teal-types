@@ -1,5 +1,8 @@
 -- Inspect generated syntax, never addon statements. A type-only import is erased.
-local tl = require("tl")
+-- `tl run` has already loaded the compiler. A `require("tl")` here would make
+-- `tl run` type-check all of tl.lua before this script starts.
+local tl = package.loaded["tl"]
+assert(type(tl) == "table" and type(tl.parse) == "function", "run with `tl run`")
 local filename = assert(arg[1], "expected generated Lua path")
 local input = assert(io.open(filename, "rb"))
 local text = input:read(4 * 1024 * 1024 + 1)
