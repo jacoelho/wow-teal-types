@@ -11,7 +11,7 @@
     "internal/consumer/snapshot.go": "466881cdacf3de793d1a3ddf9cbe474c710021f9776cba027527be68817a30ec",
     "internal/consumer/version.go": "ec32fe37c046bb93d7f1602a6463ba1108f0284af3ff24679923467ce84f3c76",
     "tools/check_runtime_imports.lua": "552e269e1a1cbec76e4e74e69715ee185c825bd5b0175782ab7d80af22d94817",
-    "tools/check_secrets.lua": "1b3653785a68fd3c727b3003e63dd4f2558c982a04dad860cf9898f9f9c61334",
+    "tools/check_secrets.lua": "94968e14fe2c468be64498016c9eb19ba6e954151d433a15af4de592b4c6f116",
     "tools/wow-teal/main.go": "2ca06d90d252482b62403c7cd61526b2bf2c3ba1358e31b44e224fbcca22159f",
     "types/wow/call_policy.lua": "53fcc2eba7319ca1354f728463a40028677c0f361c24180de6f23eb10f90fac4",
     "types/wow/native_values.d.tl": "04d41293a124d7546d842f22b9068704d4d4ceb904571516118bdecc90e4e251",

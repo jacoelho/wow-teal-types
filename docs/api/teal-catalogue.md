@@ -460,17 +460,55 @@ source bodies and runtime permissions remain outside this static claim.
   `any`/`Data` positions and casts keep the full rule, because `v as L` from
   `any` is unchecked and would reattach a lookalike's plain methods; storing a
   frame in an authored `{any}` is therefore rejected.
-- An upcast that hides an opaque value field is rejected, since a later
-  downcast could re-type the field as plain. A record with a `MaybeSecret`
-  field therefore cannot be passed, stored or returned as a supertype that
-  lacks the field (an interface, or `W.Frame` for `record Pane is W.Frame`). Hiding a method or
-  function-typed field is allowed so handle hierarchies keep working; the
-  lookalike rule catches a later downcast only when the hidden member belongs
-  to a generated handle, since only generated types are candidates. A member
-  only an authored type declares is a known gap: a record whose `get` returns
-  a Secret, upcast to an empty interface, to `W.Frame` (as `record Pane is
-  W.Frame`), or cast to `W.Frame` outright, and then cast to a lookalike whose
-  `get` returns `string`, is accepted.
+- An upcast that hides a field whose value reaches a Secret is rejected, at
+  every depth, since a later downcast could re-type the field as plain. A
+  record with a `MaybeSecret` field therefore cannot be passed, stored or
+  returned as a supertype that lacks the field (an interface, or `W.Frame` for
+  `record Pane is W.Frame`). The walk inside a hidden field also rejects
+  authored function members and stops only at members declared in generated
+  declarations, judged by declaration location because inheritance copies
+  members into authored records. A record holding a `W.Frame` field thus
+  upcasts, while one holding an authored `get: function(): W.Secret<number>`
+  does not. Hiding a method or function-typed field of the upcast record itself
+  stays allowed so handle hierarchies keep working; the lookalike rule catches
+  a later downcast only when the hidden member belongs to a generated handle,
+  since only generated types are candidates. Two gaps remain. A top-level
+  member only an authored type declares: a record whose `get` returns a Secret,
+  upcast to an empty interface, to `W.Frame` (as `record Pane is W.Frame`), or
+  cast to `W.Frame` outright, and then cast to a lookalike whose `get` returns
+  `string`, is accepted. A generated handle inside a hidden field: re-typing the
+  field with a lookalike of that handle is accepted.
+- A cast's every position is checked: the operand slots of a tuple assertion,
+  and in last position the values a call or `...` expands into, which a cast
+  does not stop. Each expanded value is judged at what receives it: a parameter
+  type or native policy, a declared result, a declared variable, a table's
+  element type, or iterator parameters 1 and
+  2 for the state and control of a generic `for`. Values no receiver declares
+  are judged as `any`, except that a `local function` never reassigned has its
+  body in view and drops them, as do a chunk's `return` and a variable list. A
+  function-typed variable, a record method or a native declaration does not
+  drop them: a `function(number)` slot can hold `function(n: number, ...: any)`,
+  an overload was chosen by the cast's width (`table.insert(t, g() as number)`
+  runs the three-argument form), and nothing proves a declaration lists every
+  parameter. So `canaccessallvalues(g() as number)` passes while
+  `tostring(g() as number)` needs the parentheses that truncate it. An uncast
+  generic `for` is a known gap: a Secret iterator state passes to `s: number`.
+  `pcall(UnitHealth, "player") as (boolean, any)` is rejected at `value 2`,
+  with or without a later guard, because `any` has no payload to compare. Cast
+  to the identical type, read a typed value inside the protected closure, or
+  leave the `pcall` uncast. A cast whose target is identical to the operand is
+  a no-op, so it needs no proof. Parentheses truncate a call to one value and
+  discard later positions. The chunk's own `...` is exempt beyond its first
+  position, because the client supplies it (`local _, ns = ... as (string,
+  NS)`).
+- Secret values may pass to `W.MaybeSecret<any>` parameters, which forward to
+  guards. Handles and records do not, because such parameters carry only
+  scalars; an API field typed `W.Global_issecretvalue` or
+  `W.Global_canaccessvalue` is a trusted sink that accepts both, so an injected
+  guard can inspect them. An injected guard proves nothing to its caller: only a
+  native global proves a value in the consuming function, so injected readers
+  return plain values (`function(W.MaybeSecret<number>): number | nil`) from an
+  adapter holding the native proof.
 - Casts between containers compare elements invariantly when either side is
   opaque, so `{number} as {MaybeSecret<number>}` is rejected.
 - Lookalike limit: casts from `any` or `Data` to an authored record without
@@ -561,11 +599,14 @@ source bodies and runtime permissions remain outside this static claim.
   read-only `SecretTable` rule (any same-shaped map bypasses an alias-name rule,
   and tl 0.24.8 raw types carry no alias identity); per-native re-emitter or
   allowlist policies (they break real senders such as `SetAttribute` and miss
-  unlisted natives). For the authored-lookalike gap: rejecting upcasts that
-  hide a Secret method (it rejects ordinary `{Unit}` lists of records with
-  extra methods, and every authored frame with such a method passed where
-  `W.Frame` is expected); adding authored records as lookalike candidates.
-  That is a partial fix with a false-positive cost: nominal ancestry would
+  unlisted natives). For hidden-field members: skipping every function member
+  (it lets an authored Secret getter escape through a nested record), or
+  rejecting every one (generated handles are full of them, so any frame field
+  would block an upcast). For the authored-lookalike gap: rejecting upcasts that
+  hide a Secret method (it adds 26 false positives across the workspace, and
+  rejects ordinary `{Unit}` lists of records with extra methods and every
+  authored frame with such a method passed where `W.Frame` is expected); adding
+  authored records as lookalike candidates. That is a partial fix with a false-positive cost: nominal ancestry would
   close an in-file `record Pane is W.Frame` upcast, but each selected file is
   checked alone, so records reached only through the addon namespace stay
   invisible, a sidecast `b as W.Frame` has no ancestry to follow, and every
@@ -577,9 +618,10 @@ source bodies and runtime permissions remain outside this static claim.
   alias can insert a wider element), function arguments are bivariant without
   arity or variadic storage checks, poly method receivers are not bound, and an
   undocumented `Data` value needs `is` narrowing before use.
-- Stock Teal 0.24.8 crashes (`find_nominal_type_decl` assertion) on a record field
-  whose type is a local alias of an instantiated generic, such as
-  `local type A = W.MaybeSecret<number>` used as `payload: A`. The crash is a
+- Stock Teal 0.24.8 crashes (`find_nominal_type_decl` assertion at `tl.lua:8890`)
+  when a value reaches a position typed by a local alias of an instantiated
+  generic: a record field, a function or method parameter, such as `local type
+  A = W.MaybeSecret<number>` used as `payload: A` or `value: A`. The crash is a
   non-zero exit, so checks fail closed; spell the instantiated type directly.
 
 ## Absence and call-site narrowing
@@ -626,7 +668,9 @@ GlobalStrings such as `ACCEPT` or `RAID_TARGET_1` are loaded by the client from
 outside `Interface/AddOns`, the only extracted subtree, so they are not declared;
 declare the names an addon uses in its own environment fragment. `_G` is stock
 Teal's record of declared globals: `_G.ChatFrame1` checks, while a computed key
-such as `_G["ChatFrame" .. i]` needs `getglobal`/`setglobal` or an `as` assertion.
+such as `_G["ChatFrame" .. i]` needs `getglobal`/`setglobal`; `_G` indexing with
+an `as` assertion, `_G as any` and `rawget(_G, name)` all fail. `getglobal`
+returns `W.Data`, so narrow at use: `(getglobal(name) as W.Frame):Hide()`.
 
 Exact heterogeneous variadic forwarding and repeated-tuple relationships remain
 precision limits. Optional libraries and legacy supplements are not a runtime
