@@ -40,7 +40,7 @@ APIDocumentation:AddDocumentationTable(Example);`
 func TestTypeExpressionsPreserveExplicitContracts(t *testing.T) {
 	// Interned names are content hashes; describe expands them into the
 	// contract they carry so expectations do not depend on hash values.
-	interned := regexp.MustCompile(`\b(?:Literal|Shape|Callback)_[0-9a-f]{12}\b`)
+	interned := regexp.MustCompile(`\b(?:Literal|Shape)_[0-9a-f]{12}\b`)
 	var describe func(c *catalogue, value string) string
 	describe = func(c *catalogue, value string) string {
 		return interned.ReplaceAllStringFunc(value, func(name string) string {
@@ -48,8 +48,6 @@ func TestTypeExpressionsPreserveExplicitContracts(t *testing.T) {
 			switch item.Kind {
 			case kindEnum:
 				return "enum(" + strings.Join(item.Values, ",") + ")"
-			case kindCallback:
-				return "callback(" + describe(c, item.Signature) + ")"
 			case kindConvertedRecord:
 				fields := []string{}
 				for _, field := range slices.Sorted(maps.Keys(item.Fields)) {
@@ -66,7 +64,7 @@ func TestTypeExpressionsPreserveExplicitContracts(t *testing.T) {
 		c := newCatalogue()
 		return describe(c, c.tealValue(raw, "Owner", nil, outputPosition)), nil
 	}
-	for _, test := range []struct{ raw, want string }{{"number|nil", "number | nil"}, {"table<string,number>", "{string: number}"}, {"(number|string)[]", "{number | string}"}, {"{[1]:string,[2]:number}", "{string, number}"}, {"fun(self, enabled?:boolean,...:string): number,string", "callback(function(Owner, ? boolean, string...): number, string)"}, {"'b'|'a'|'a'", "enum(a,b)"}, {"'one'?|'two'", "nil | enum(one,two)"}, {"{value:number}", "shape{value: number}"}, {"true|5", "boolean | number"}} {
+	for _, test := range []struct{ raw, want string }{{"number|nil", "number | nil"}, {"table<string,number>", "{string: number}"}, {"(number|string)[]", "{number | string}"}, {"{[1]:string,[2]:number}", "{string, number}"}, {"fun(self, enabled?:boolean,...:string): number,string", "function(Owner, ? boolean, string...): (number, string)"}, {"(fun():string)|'a'|'b'", "function(): (string) | enum(a,b)"}, {"'b'|'a'|'a'", "enum(a,b)"}, {"'one'?|'two'", "nil | enum(one,two)"}, {"{value:number}", "shape{value: number}"}, {"true|5", "boolean | number"}} {
 		got, e := convert(test.raw)
 		if e != nil || got != test.want {
 			t.Errorf("%s: %q, %v; want %q", test.raw, got, e, test.want)
@@ -93,6 +91,7 @@ func TestOmitNilRemovesOnlyNilUnionMembers(t *testing.T) {
 		{"nil", "nil"},
 		{"nilCount | number", "nilCount | number"},
 		{"function(): nil", "function(): nil"},
+		{"nil | function(): (string, number)", "function(): (string, number)"},
 	} {
 		if got, e := omit(test.expression); e != nil || got != test.want {
 			t.Errorf("%s: %q, %v; want %q", test.expression, got, e, test.want)
@@ -101,6 +100,27 @@ func TestOmitNilRemovesOnlyNilUnionMembers(t *testing.T) {
 	for _, expression := range []string{`"a" | nil`, "'a'", "`a`"} {
 		if _, e := omit(expression); e == nil {
 			t.Errorf("accepted quoted literal %q", expression)
+		}
+	}
+}
+
+// Secrecy marks only names outside converted function types, so the removed
+// span must cover each function type exactly, however it is nested or spaced.
+func TestFunctionTypesHideOnlyTheirOwnNames(t *testing.T) {
+	for _, test := range []struct {
+		expression string
+		want       []string
+	}{
+		{"function(Other): (string)", nil},
+		{"nil | function(Other)", []string{"nil"}},
+		{"function():(Made), Beside", []string{"Beside"}},
+		{"function(): (Made) | Beside", []string{"Beside"}},
+		{"function<T>(T): (T) | Other", []string{"Other"}},
+		{"{string: function(Other): (Other2)}", []string{"string"}},
+		{"function(function(A): (B)): (C), D", []string{"D"}},
+	} {
+		if got := dottedIdentifiers.FindAllString(withoutFunctionTypes(test.expression), -1); !slices.Equal(got, test.want) {
+			t.Errorf("%s: %q; want %q", test.expression, got, test.want)
 		}
 	}
 }

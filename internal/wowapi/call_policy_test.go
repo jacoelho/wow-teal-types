@@ -158,6 +158,97 @@ func TestOverloadsDifferingOnlyByNilCollapseUnlessPermissionsDiffer(t *testing.T
 	})
 }
 
+// An overload converts through the same whole-signature path as the declared
+// signature, so an identical overload collapses into it and a different one
+// becomes a second call signature.
+func TestAnnotationOverloadsCollapseOnlyIntoIdenticalSignatures(t *testing.T) {
+	source := `---@param a number
+---@param b? string
+---@return string
+---@return number
+---@overload fun(a:number,b?:string):string,number
+function same(a, b) end
+---@return string?
+---@overload fun():string?
+function optional() end
+---@param a number
+---@return string
+---@overload fun(a:number):number
+function differ(a) end
+`
+	doc, err := parseAnnotations([]byte(source), "overloads.lua")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := newCatalogue()
+	for _, function := range doc.Functions {
+		c.setGlobal(function.Name, functionFromAnnotation(function, "fixture"))
+	}
+	projection, err := c.finalize(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	outputs := projection.render()
+	environment := string(outputs["wow_env.d.tl"])
+	for _, expected := range []string{
+		"global same: function(number, ? string): string, number\n",
+		"global optional: function(): string\n",
+		"global differ: W.Global_differ\n",
+	} {
+		if !strings.Contains(environment, expected) {
+			t.Errorf("missing global:\n%s\nactual:\n%s", expected, environment)
+		}
+	}
+	declarations := string(outputs["wow.d.tl"])
+	if !strings.Contains(declarations, "   record Callable_differ\n      metamethod __call: function(self, number): string\n      metamethod __call: function(self, number): number\n   end") {
+		t.Errorf("differing overload is not a second call signature:\n%s", declarations)
+	}
+	if strings.Contains(declarations, "Callable_same") || strings.Contains(declarations, "Callable_optional") {
+		t.Errorf("identical overload did not collapse:\n%s", declarations)
+	}
+}
+
+// An overload's owning receiver renders as self, as the method's own signature
+// does, so an overload repeating the method collapses into it; any other first
+// parameter, a self parameter elsewhere, or a first parameter with another name
+// keeps its type.
+func TestMethodOverloadReceiversRenderAsSelf(t *testing.T) {
+	source := `---@param n number
+---@return string
+---@overload fun(self:Widget, n:number):string
+---@overload fun(self, s:string):number
+---@overload fun(self:Gadget, n:number):number
+---@overload fun(self:WidgetBase, n:number):boolean
+---@overload fun(n:number, self:Widget):string
+---@overload fun(other:Widget, b:boolean):string
+function Widget:Get(n) end
+`
+	doc, err := parseAnnotations([]byte(source), "widget.lua")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := newCatalogue()
+	c.record("WidgetBase", "fixture", kindRecord).Fields["id"] = &catalogueField{Type: "number"}
+	c.record("Gadget", "fixture", kindRecord).Fields["id"] = &catalogueField{Type: "number"}
+	widget := c.record("Widget", "fixture", kindRecord)
+	widget.Bases = []string{"WidgetBase"}
+	widget.Methods["Get"] = functionFromAnnotation(doc.Functions[0], "fixture")
+	projection, err := c.finalize(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	declarations := string(projection.render()["wow.d.tl"])
+	want := "      Get: function(self, number): string\n" +
+		"      Get: function(self, string): number\n" +
+		"      Get: function(Gadget, number): number\n" +
+		"      Get: function(WidgetBase, number): boolean\n" +
+		"      Get: function(number, Widget): string\n" +
+		"      Get: function(Widget, boolean): string\n"
+	if !strings.Contains(declarations, want) || strings.Count(declarations, "      Get: ") != 6 {
+		t.Errorf("overload receivers:\nwant\n%s\nactual:\n%s", want, declarations)
+	}
+}
+
 // A native-backed signature renders exactly one parameter per native slot, so
 // no permission can shift onto, or vanish from, a rendered parameter.
 func TestNativeSignatureArityMustMatchSlots(t *testing.T) {

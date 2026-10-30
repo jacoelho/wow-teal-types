@@ -11,13 +11,13 @@
     "internal/consumer/snapshot.go": "466881cdacf3de793d1a3ddf9cbe474c710021f9776cba027527be68817a30ec",
     "internal/consumer/version.go": "ec32fe37c046bb93d7f1602a6463ba1108f0284af3ff24679923467ce84f3c76",
     "tools/check_runtime_imports.lua": "552e269e1a1cbec76e4e74e69715ee185c825bd5b0175782ab7d80af22d94817",
-    "tools/check_secrets.lua": "1457eb88b3aa62bf6259ac64036076e9f987296dbc69128945e4ba82fbf847d1",
+    "tools/check_secrets.lua": "1b3653785a68fd3c727b3003e63dd4f2558c982a04dad860cf9898f9f9c61334",
     "tools/wow-teal/main.go": "2ca06d90d252482b62403c7cd61526b2bf2c3ba1358e31b44e224fbcca22159f",
-    "types/wow/call_policy.lua": "f4ce607059d427efa73d7a7d8aa0760dd03dc5f3b1173128a45c2df71eaa7d4f",
+    "types/wow/call_policy.lua": "53fcc2eba7319ca1354f728463a40028677c0f361c24180de6f23eb10f90fac4",
     "types/wow/native_values.d.tl": "04d41293a124d7546d842f22b9068704d4d4ceb904571516118bdecc90e4e251",
-    "types/wow/wow.d.tl": "65adaff6498a5183da74542dcf3aab78753701ee9b07b6fcdc451883da4d2344",
-    "types/wow/wow_env.d.tl": "9138d91e0e535519dd25943d75a1c9294259a7dd43351ca0781952deefa6cec7",
-    "types/wow/wow_secure_env.d.tl": "d56153d08736c12594cbd76dd136fe2b4940694d37964d318b0d33a02d5f75d9"
+    "types/wow/wow.d.tl": "5b14f134cdec9cf298e4581566d86de8aa735ec4255704de189851b0884e2912",
+    "types/wow/wow_env.d.tl": "1c551bdefd47bfaec5bdd509c5614ee9973c23fa08eb22eb0a19f98d80e181a3",
+    "types/wow/wow_secure_env.d.tl": "296f4504ce414a6611cc5ba80f512fbffdfe5b6f8e1b778369ac1248cccd3dfd"
   },
   "license": "MIT",
   "name": "wow-teal-types",

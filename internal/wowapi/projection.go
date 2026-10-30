@@ -15,7 +15,6 @@ type declarationKind uint8
 const (
 	declarationEnum declarationKind = iota + 1
 	declarationAlias
-	declarationCallback
 	declarationRecord
 	declarationInterface
 )
@@ -41,13 +40,13 @@ type projectedMethod struct {
 	signatures         []projectedSignature
 }
 type projectedDeclaration struct {
-	kind             declarationKind
-	name, source     string
-	expression       projectedType
-	generics, values []string
-	bases            []string
-	fields           []projectedField
-	methods          []projectedMethod
+	kind         declarationKind
+	name, source string
+	expression   projectedType
+	values       []string
+	bases        []string
+	fields       []projectedField
+	methods      []projectedMethod
 }
 type projectedGlobal struct {
 	name, ambientExpression string
@@ -163,12 +162,8 @@ func (c *catalogue) projectDeclarations() declarationProjection {
 				value = projectType(c.signatureValue(item, ""))
 			}
 			global := projectedGlobal{name: name, expression: value, public: !slices.Contains([]string{"math", "string", "table"}, name) && !c.secureGlobals[name] && !strings.HasPrefix(item.Source, "questie:Libraries/")}
-			direct := value
-			if def := c.defs[string(value)]; def != nil && def.Signature != "" {
-				direct = projectType(def.Signature)
-			}
-			if strings.HasPrefix(string(direct), "function") {
-				global.ambientExpression = qualifyExports(string(direct), exports)
+			if strings.HasPrefix(string(value), "function") {
+				global.ambientExpression = qualifyExports(string(value), exports)
 			} else {
 				global.ambientExpression = "W.Global_" + ident(name)
 			}
@@ -240,11 +235,6 @@ func (c *catalogue) projectDeclaration(name string) (projectedDeclaration, bool)
 		for _, value := range item.Values {
 			declaration.values = append(declaration.values, luaQuote(value))
 		}
-	case kindCallback:
-		declaration.kind = declarationCallback
-		declaration.name = name
-		declaration.generics = slices.Clone(item.Generics)
-		declaration.expression = projectType(item.Signature)
 	case kindRecord, kindInterface, kindConvertedRecord:
 		declaration.kind = declarationRecord
 		if kind == kindInterface {

@@ -12,7 +12,6 @@ type definitionKind uint8
 const (
 	kindAbsent definitionKind = iota
 	kindEnum
-	kindCallback
 	kindRecord
 	kindInterface
 	// kindConvertedRecord is an interned anonymous LuaLS table whose field
@@ -20,7 +19,7 @@ const (
 	kindConvertedRecord
 )
 
-var definitionKindNames = [...]string{"absent", "enum", "callback", "record", "interface", "converted_record"}
+var definitionKindNames = [...]string{"absent", "enum", "record", "interface", "converted_record"}
 
 func (k definitionKind) String() string { return definitionKindNames[k] }
 
@@ -44,8 +43,6 @@ type catalogueDefinition struct {
 	Bases                              []string
 	Opaque, NativeHandle, NativeObject bool
 	Values                             []string
-	Signature                          string
-	Generics                           []string
 }
 type catalogueAlias struct {
 	Expression, Source string

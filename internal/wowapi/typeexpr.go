@@ -278,7 +278,6 @@ type typeConverter struct {
 	resolve   func(string, typePosition) string
 	literal   func([]string) string
 	record    func([]recordField) string
-	callback  func(string) string
 	union     func([]string) string
 }
 
@@ -470,13 +469,79 @@ func (c typeConverter) function(text string, depth int) string {
 				unsupported(c.raw, "invalid callback return")
 			}
 		}
-		signature += ": " + strings.Join(values, ", ")
+		// Teal result lists are greedy: unparenthesized, a following parameter,
+		// result or union member would become another result. Callers compose
+		// this value into those positions, so the group always closes it.
+		signature += ": (" + strings.Join(values, ", ") + ")"
 	}
-	signature = c.callback(signature)
 	if optional {
 		return "nil | " + signature
 	}
 	return signature
+}
+
+// wholeSignature spells a converted function type used as a complete
+// declaration: its result group is the end of the declaration, so it is
+// written like every other generated signature and compares equal to them.
+func wholeSignature(converted string) string {
+	if !strings.HasPrefix(converted, "function(") {
+		return converted
+	}
+	closing := matchingClose(converted, len("function"))
+	results := converted[closing+1:]
+	if !strings.HasPrefix(results, ": (") || matchingClose(converted, closing+3) != len(converted)-1 {
+		return converted
+	}
+	return converted[:closing+1] + ": " + converted[closing+4:len(converted)-1]
+}
+
+// groupedSignature is the inverse of wholeSignature: a function type inside
+// another type needs its results grouped, or they would read as part of the
+// enclosing type.
+func groupedSignature(signature string) string {
+	if match := functionTypeKeyword.FindStringIndex(signature); match == nil || match[0] != 0 {
+		return signature
+	}
+	parameters := len("function")
+	if signature[parameters] == '<' {
+		parameters = matchingClose(signature, parameters) + 1
+	}
+	closing := matchingClose(signature, parameters)
+	if !strings.HasPrefix(signature[closing+1:], ": ") {
+		return signature
+	}
+	return signature[:closing+1] + ": (" + signature[closing+3:] + ")"
+}
+
+// functionTypeKeyword starts a converted function type; functionResultGroup
+// opens its result group, however the colon is spaced.
+var (
+	functionTypeKeyword = regexp.MustCompile(`\bfunction[(<]`)
+	functionResultGroup = regexp.MustCompile(`^\s*:\s*\(`)
+)
+
+// withoutFunctionTypes removes every function type from expression, which is
+// converted Teal text. A converted function type ends at its parameter list or
+// result group, so the span is exact at any depth.
+func withoutFunctionTypes(expression string) string {
+	var out strings.Builder
+	for {
+		match := functionTypeKeyword.FindStringIndex(expression)
+		if match == nil {
+			out.WriteString(expression)
+			return out.String()
+		}
+		out.WriteString(expression[:match[0]])
+		end := match[1] - 1
+		if expression[end] == '<' {
+			end = matchingClose(expression, end) + 1
+		}
+		end = matchingClose(expression, end) + 1
+		if group := functionResultGroup.FindStringIndex(expression[end:]); group != nil {
+			end = matchingClose(expression, end+group[1]-1) + 1
+		}
+		expression = expression[end:]
+	}
 }
 func (c typeConverter) table(body string, depth int) string {
 	parts := splitTop(body, ',')

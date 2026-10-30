@@ -27,6 +27,17 @@ var nativeDeclarations = []nativeDeclaration{
 	{"nested", "function({any})", `secret_parameters={}`},
 	{"tuple", "function(): number, W.MaybeSecret<number>", `secret_parameters={}`},
 	{"consume", "function(number, any)", `secret_parameters={}`},
+	{"onEach", "function<T>(function(T))", `secret_parameters={}`},
+	{"onUnion", "function<T>(function(T) | string)", `secret_parameters={}`},
+	{"withValue", "function<T>(T, function(T))", `secret_parameters={}`},
+	{"withUnion", "function<T>(T, function(T) | string)", `secret_parameters={}`},
+	{"withEither", "function<T>(T | function(T))", `secret_parameters={}`},
+	{"withTwo", "function<A, B>(A, B, function(A, B))", `secret_parameters={}`},
+	{"onEachArr", "function<T>(function({T}))", `secret_parameters={}`},
+	{"loop", "function<T>(function(T): T)", `secret_parameters={}`},
+	{"withOptional", "function<T>(function(T), ? T)", `secret_parameters={}`},
+	{"withOptional2", "function<A, B>(function(A, B), ? A)", `secret_parameters={}`},
+	{"withOptionalPair", "function<A, B>(function(A, B), ? A, ? B)", `secret_parameters={}`},
 }
 
 // nativeLocation is the policy key of a declaration: line 1 is the wow import.
@@ -190,6 +201,56 @@ nested(values)`, "secret-value flow"},
 		{"callback guarded unwrap", `local function f(sink: function(any), v: W.MaybeSecret<number>)
    if canaccessvalue(v) and not issecretvalue(v) then sink(v as number) end
 end`, ""},
+		// A native chooses a type variable no argument binds, so what it hands a
+		// callback may not reach a sink.
+		{"unbound native type variable to literal callback", `onEach(function(x: any) end)`, "secret-value flow: generic transport: type variable reaches any"},
+		{"unbound native type variable to named callback", `local function h(x: any) end
+onEach(h)`, "secret-value flow: generic transport: type variable reaches any"},
+		{"unbound native type variable to typed callback", `onEach(function(x: number) end)`, ""},
+		// A callback member of a declared union is compared like a callback.
+		{"native union callback member compared", `onUnion(function(x: any) end)`, "secret-value flow: argument 1: callback parameter 1"},
+		{"native union named callback member compared", `local function h(x: any) end
+onUnion(h)`, "secret-value flow: argument 1: callback parameter 1"},
+		{"native union typed callback member", `onUnion(function(x: number) end)`, ""},
+		{"native union callback position takes its plain member", `onUnion("s")`, ""},
+		{"native type-variable-or-callback union", `withEither(function(x: any) end)`, "secret-value flow: argument 1: callback parameter 1"},
+		// A bound native type variable transports the bound value.
+		{"native transport of secret to callback", `withValue(source(), function(x: any) end)`, "secret-value flow: generic transport: Secret reaches any"},
+		{"native transport of plain value to callback", `withValue(1, function(x: any) end)`, ""},
+		{"native transport beside nil callback", `withValue(source(), nil)`, ""},
+		// A vararg callback parameter receives every later value.
+		{"native transport of secret to vararg callback", `withTwo(1, source(), function(...: any) end)`, "secret-value flow: generic transport: Secret reaches any"},
+		{"native transport of plain values to vararg callback", `withTwo(1, 2, function(...: any) end)`, ""},
+		{"native transport of secret past callback arity", `withTwo(1, source(), function(a: any) end)`, ""},
+		// An omitted argument is nil, so it binds its type variable as nil does;
+		// a last argument with variadic results binds every later position to
+		// its own results.
+		{"omitted optional binds native type variable to nil", `withOptional(function(x: any) end)`, ""},
+		{"supplied plain optional", `withOptional(function(x: any) end, 1)`, ""},
+		{"supplied secret optional reaches callback", `withOptional(function(x: any) end, source())`, "secret-value flow: generic transport: Secret reaches any"},
+		{"omission binds only its own type variable", `withOptional2(function(a: number, b: any) end)`, "secret-value flow: generic transport: type variable reaches any"},
+		{"variadic last argument fills an omitted position", `local function g(): W.MaybeSecret<number>... return source(), source() end
+withOptionalPair(function(a: W.MaybeSecret<number>, b: any) end, g())`, "secret-value flow: generic transport: Secret reaches any"},
+		{"vararg expression as last argument fills an omitted position", `local function f(...: W.MaybeSecret<number>) withOptionalPair(function(a: W.MaybeSecret<number>, b: any) end, ...) end`, "secret-value flow: generic transport: Secret reaches any"},
+		{"fixed-result last argument leaves later positions omitted", `local function g(): W.MaybeSecret<number> return source() end
+withOptionalPair(function(a: W.MaybeSecret<number>, b: any) end, g())`, ""},
+		// What a callback returns or receives in a container does not bind the
+		// type variable: the native still chooses what it passes the callback.
+		{"callback container does not bind native type variable", `onEachArr(function(t: {any}) end)`, "secret-value flow: generic transport: type variable reaches any"},
+		{"typed callback container", `onEachArr(function(t: {number}) end)`, ""},
+		{"callback result does not bind native type variable", `loop(function(x: any): any return x end)`, "secret-value flow: generic transport: type variable reaches any"},
+		{"typed callback result", `loop(function(x: number): number return x end)`, ""},
+		// A callback result flows into the type variable: it is checked as a
+		// source and is not a destination of the callee's choice.
+		{"callback result is not a type variable destination", `loop(function(x: number): any return x end)`, ""},
+		{"callback result is checked as a type variable source", `loop(function(x: number): W.MaybeSecret<number> return source() end)`, "secret-value flow: generic transport: Secret reaches"},
+		{"unbound type variable reaches a callback parameter beside a plain result", `loop(function(x: any): number return 1 end)`, "secret-value flow: generic transport: type variable reaches any"},
+		// The union callback rejects even a plain value only because the checker
+		// does not model that shape, so withUnion(1, ...) is not pinned.
+		{"native transport of secret to union callback", `withUnion(source(), function(x: any) end)`, "secret-value flow: argument 2: callback parameter 1"},
+		{"native transport of secret to named union callback", `local function h(x: any) end
+withUnion(source(), h)`, "secret-value flow: argument 2: callback parameter 1"},
+		{"native transport of secret to typed union callback", `withUnion(source(), function(x: number) end)`, "secret-value flow"},
 		{"field narrowing", `local record R value: W.MaybeSecret<number> end
 local function f(r: R)
    local v = r.value
@@ -352,5 +413,56 @@ func TestDeclarationErrorsFailEverySource(t *testing.T) {
 		if !slices.ContainsFunc(diagnostics[name], contains("declarations do not type-check")) {
 			t.Fatalf("%s not failed: %v\n%s", name, err, output)
 		}
+	}
+}
+
+// Teal may type a call by a later overload than the first that fits, so
+// generated overloads whose arities overlap must agree on the opacity of every
+// result and callback parameter. A generated set that disagrees fails every
+// source.
+func TestGeneratedOverloadOpacityDisagreementFailsEverySource(t *testing.T) {
+	cases := []struct{ name, member, first, second, want string }{
+		{"overlapping arities", "get", "function(self): number", "function(self, ? number): N.Secret<number>", "get disagree on the opacity of result 1"},
+		{"opaque contents", "get", "function(self): {number}", "function(self, ? number): {N.Secret<number>}", "get disagree on the opacity of result 1"},
+		{"later result of the second overload", "get", "function(self): number", "function(self, ? number): number, N.Secret<number>", "get disagree on the opacity of result 2"},
+		{"later result of the first overload", "get", "function(self): number, N.Secret<number>", "function(self, ? number): number", "get disagree on the opacity of result 2"},
+		{"vararg overlap", "get", "function(self, string, ...: number): N.Secret<number>", "function(self, string, number, number, number): number", "get disagree on the opacity of result 1"},
+		{"callback parameter", "on", "function(self, function(N.Secret<number>), string): string", "function(self, function(number), number): number", "on disagree on the opacity of parameter 2 callback parameter 1"},
+		{"vararg callback of the first overload", "on", "function(self, ...: function(N.Secret<number>)): string", "function(self, function(N.Secret<number>), function(number)): number", "on disagree on the opacity of parameter 3 callback parameter 1"},
+		{"vararg callback of the second overload", "on", "function(self, function(N.Secret<number>), function(number)): number", "function(self, ...: function(N.Secret<number>)): string", "on disagree on the opacity of parameter 3 callback parameter 1"},
+		{"metamethod", "metamethod __call", "function(self, string): N.Secret<number>", "function(self, string | number): number", "__call disagree on the opacity of result 1"},
+		{"disjoint arities", "get", "function(self): number", "function(self, number): N.Secret<number>", ""},
+		{"agreeing opacity", "get", "function(self): number", "function(self, ? number): number", ""},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			fixture := nativeFixture(t, func(files map[string]string) {
+				const wow, end = "types/wow/wow.d.tl", "end\nreturn W\n"
+				if !strings.HasSuffix(files[wow], end) {
+					t.Fatalf("fixture %s does not end with %q", wow, end)
+				}
+				probe := "   record Probe\n      " + tc.member + ": " + tc.first + "\n      " + tc.member + ": " + tc.second + "\n   end\n"
+				files[wow] = strings.TrimSuffix(files[wow], end) + probe + end
+			})
+			// The check runs once per checker run; the second source shows a
+			// failure does not mark it done.
+			output, diagnostics, err := runNativeCheck(t, fixture, "", caller(`print(1)`), checkSource{"other.tl", "print(1)\n"})
+			if tc.want == "" {
+				if err != nil {
+					t.Fatalf("unexpected rejection: %v\n%s", err, output)
+				}
+				return
+			}
+			want := "generated overloads of wow.Probe." + tc.want
+			for _, name := range []string{"caller.tl", "other.tl"} {
+				if err == nil || !slices.ContainsFunc(diagnostics[name], func(d diagnostic) bool {
+					// The middle is Lua's error position inside the checker.
+					return strings.HasPrefix(d.message, "secret check failed closed: ") && strings.HasSuffix(d.message, ": "+want)
+				}) {
+					t.Fatalf("missing fail-closed rejection %q on %s: %v\n%s", want, name, err, output)
+				}
+			}
+		})
 	}
 }
