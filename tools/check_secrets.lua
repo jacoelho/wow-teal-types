@@ -529,10 +529,8 @@ local function check_source(filename)
       return t.typename == "function" or t.typename == "poly"
    end
    -- Opacity anywhere inside the type, including containers and signatures.
-   -- `values` skips function-typed record members (methods and function-valued
-   -- fields): a handle reaching a sink carries no secret value, and its method
-   -- contracts reattach wherever it is used at a declared type.
-   local function deep(t, seen, depth, values)
+   -- `skip(member)` excludes a record member from the walk.
+   local function deep(t, seen, depth, skip)
       if t == nil then return false end
       seen, depth = seen or {}, (depth or 0) + 1
       if depth > 64 then error("opaque contents exceed type depth") end
@@ -542,23 +540,28 @@ local function check_source(filename)
       if is_secret(t) then return true end
       if is_data(t) then return false end
       local name = t.typename
-      if name == "array" then return deep(t.elements, seen, depth, values) end
-      if name == "map" then return deep(t.keys, seen, depth, values) or deep(t.values, seen, depth, values) end
-      if name == "tuple" then for _, member in ipairs(t.tuple) do if deep(member, seen, depth, values) then return true end end end
+      if name == "array" then return deep(t.elements, seen, depth, skip) end
+      if name == "map" then return deep(t.keys, seen, depth, skip) or deep(t.values, seen, depth, skip) end
+      if name == "tuple" then for _, member in ipairs(t.tuple) do if deep(member, seen, depth, skip) then return true end end end
       if name == "union" or name == "tupletable" or name == "poly" then
-         for _, member in ipairs(t.types) do if deep(member, seen, depth, values) then return true end end
+         for _, member in ipairs(t.types) do if deep(member, seen, depth, skip) then return true end end
       end
       if name == "record" or name == "interface" then
          for _, field in pairs(t.fields or {}) do
-            if not (values and callable_member(field)) and deep(field, seen, depth, values) then return true end
+            if not (skip and skip(field)) and deep(field, seen, depth, skip) then return true end
          end
-         if t.elements and deep(t.elements, seen, depth, values) then return true end
+         if t.elements and deep(t.elements, seen, depth, skip) then return true end
       end
       if name == "function" then
-         return deep(t.args, seen, depth, values) or deep(t.rets, seen, depth, values)
+         return deep(t.args, seen, depth, skip) or deep(t.rets, seen, depth, skip)
       end
       return false
    end
+   -- A handle reaching a sink carries no secret value, and its method contracts
+   -- reattach wherever it is used at a declared type.
+   local function function_member(member) return callable_member(member) end
+   -- Assigned once the generated declarations are identified.
+   local generated_handle_member
    -- An authored type variable may be instantiated with a Secret
    -- (`Box<MaybeSecret<number>>` is legal), so a value of type-variable type,
    -- or a union holding one, is tested, compared, operated on and cast only
@@ -909,7 +912,7 @@ local function check_source(filename)
       -- casts keep the full rule, since `x as L` from `any` is unchecked.
       if sink(e, ctx) then
          local values = ctx.trusted and not ctx.cast
-         if deep(a, nil, nil, values) then return "Secret reaches " .. (is_data(e) and "Data" or e.typename == "any" and "any" or "type variable") end
+         if deep(a, nil, nil, values and function_member) then return "Secret reaches " .. (is_data(e) and "Data" or e.typename == "any" and "any" or "type variable") end
          if (e.typename == "any" or is_data(e)) and ctx.transport ~= "actual" and holds_variable(actual, values, ctx.inert) then
             return "type variable reaches " .. (is_data(e) and "Data" or "any")
          end
@@ -1037,13 +1040,15 @@ local function check_source(filename)
             local reason = actual_field and invariant(actual_field, expected_field, field_ctx, depth, "field " .. name)
             if reason then return reason end
          end
-         -- An upcast that hides an opaque value field lets a later downcast to a
+         -- An upcast that hides an opaque field lets a later downcast to a
          -- lookalike re-type it as plain. Hidden methods stay allowed (handle
-         -- hierarchies); see the method-hiding note in teal-catalogue.md.
+         -- hierarchies), and so do the methods of a generated handle inside a
+         -- hidden field; authored function members inside one still count. See
+         -- the method-hiding note in teal-catalogue.md.
          for _, name in ipairs(field_names(a)) do
             local actual_field = a.fields[name]
             if actual_field and not (e.fields and e.fields[name]) and not callable_member(actual_field) then
-               if deep(actual_field) then return "field " .. name .. ": Secret hidden by upcast" end
+               if deep(actual_field, nil, nil, generated_handle_member) then return "field " .. name .. ": Secret hidden by upcast" end
                if ctx.transport ~= "actual" and holds_variable(actual_field) then return "field " .. name .. ": type variable hidden by upcast" end
             end
          end
@@ -1144,6 +1149,21 @@ local function check_source(filename)
       return typ
    end
 
+   -- A cast generates no code, so it passes on every result of its operand
+   -- whatever its target declares; parentheses truncate them to one.
+   local function runtime_results(node)
+      if node.kind == "op" and node.op.op == "as" then return runtime_results(node.e1) end
+      if node.kind == "paren" then return nil end
+      local typ = node_type(node)
+      return typ and typ.typename == "tuple" and typ or nil
+   end
+   local function cast_targets(node)
+      local target = node.e2.casttype
+      return target.typename == "tuple" and target or { tuple = { target } }
+   end
+   -- The values a list passes at runtime. A cast in last position expands too,
+   -- since it does not stop its operand's results: those past its targets reach
+   -- positions its type never declared and are marked `past_cast`.
    local function argument_values(arguments)
       local values = {}
       for index, node in ipairs(arguments or {}) do
@@ -1154,6 +1174,15 @@ local function check_source(filename)
          else
             if typ.typename == "tuple" then typ = typ.tuple[1] end
             values[#values + 1] = { node = node, type = typ }
+         end
+      end
+      local last = arguments and arguments[#arguments]
+      local results = last and last.kind == "op" and last.op.op == "as" and runtime_results(last)
+      if results then
+         local width = #cast_targets(last).tuple
+         local count = results.is_va and math.max(#results.tuple, width + 1) or #results.tuple
+         for position = width + 1, count do
+            values[#values + 1] = { node = last, type = member_of(results, position), expanded = true, variadic = results.is_va, past_cast = true }
          end
       end
       return values
@@ -1198,7 +1227,7 @@ local function check_source(filename)
          local actual = item.value and node_type(item.value)
          -- A call or `...` as the last positional item fills every later index.
          local values = { { node = item.value, type = actual } }
-         if actual and actual.typename == "tuple" and index == #node and item.key_parsed == "implicit" then
+         if actual and index == #node and item.key_parsed == "implicit" then
             values = argument_values({ item.value })
          end
          local last, count = values[#values], #values
@@ -1215,7 +1244,8 @@ local function check_source(filename)
             elseif record and name then target = e.fields and e.fields[name]
             elseif e.typename == "tupletable" and at then target = e.types[at] or e.types[#e.types]
             elseif e.typename == "array" or (record and at) then target = e.elements
-            elseif e.typename == "map" then target = e.values end
+            elseif e.typename == "map" then target = e.values
+            elseif value.past_cast then target = ANY end
             local reason = target and value.node and value.type and
                (value.expanded and leak(value.type, target, item_ctx, depth) or flow_leak(value.node, value.type, target, item_ctx, depth))
             if reason then return reason end
@@ -1940,6 +1970,13 @@ local function check_source(filename)
       end
    end
 
+   -- One value at a receiver that declares `expected`, or nothing for it.
+   local function check_received(value, position, expected)
+      local ctx = { trusted = false, fresh = false }
+      local reason
+      if expected then reason = leak(value.type, expected, ctx) else reason = dropped_leak(value.type, ctx) end
+      if reason then reject_flow(value.node, "value " .. position .. ": " .. reason) end
+   end
    -- Each return expression is walked against the declared result at its own
    -- position only, so the further results a call or `...` in last position
    -- expands to are compared here. A variadic one fills every later declared
@@ -1951,12 +1988,26 @@ local function check_source(filename)
       local last, count = values[#values], #values
       if last and last.variadic then count = math.max(count, #declared.tuple + (declared.is_va and 0 or 1)) end
       for position = #node.exps + 1, count do
+         check_received(value_at(values, position), position, member_of(declared, position))
+      end
+   end
+   -- `local a, b: number, W.Secret<number> = g() as number`: a variable past the
+   -- expressions keeps its result, and later results are dropped.
+   local function check_declaration_tail(node)
+      local values = argument_values(node.exps)
+      for position, variable in ipairs(node.vars or {}) do
          local value = value_at(values, position)
-         local expected = member_of(declared, position)
-         local ctx = { trusted = false, fresh = false }
-         local reason
-         if expected then reason = leak(value.type, expected, ctx) else reason = dropped_leak(value.type, ctx) end
-         if reason then reject_flow(value.node, "value " .. position .. ": " .. reason) end
+         if value and value.past_cast then check_received(value, position, variable_type(variable)) end
+      end
+   end
+   -- A generic `for` keeps three values: the iterator, then the two it passes
+   -- to every call of itself.
+   local function check_iterator_tail(node)
+      local values = argument_values(node.exps)
+      local iterator = values[1] and callable(values[1].type)
+      for position = 2, 3 do
+         local value = value_at(values, position)
+         if value and value.past_cast then check_received(value, position, iterator and member_of(iterator.args, position - 1)) end
       end
    end
 
@@ -2001,6 +2052,21 @@ local function check_source(filename)
       return unmatched, matched
    end
 
+   -- A cast can pass more values than the callee declares parameters, which Teal
+   -- rejects without one. Only a body in view proves they are dropped: a
+   -- `function(number)` variable may hold `function(n: number, ...: any)`, and a
+   -- poly callee's overload was chosen by the cast's width, not the runtime count.
+   local function check_surplus(values, signature, callee, state)
+      local binding = local_binding(callee, state)
+      if signature.args.is_va or (binding and binding.body and not mutated_names[binding.body.name.tk]) then return end
+      local policy = native_policy(signature)
+      local first, last = #signature.args.tuple + 1, values[#values]
+      for index = first, math.max(#values, last and last.variadic and first or 0) do
+         local value = value_at(values, index)
+         if value and value.past_cast and not permitted(policy, index) then check_received(value, index) end
+      end
+   end
+
    local function check_call(node, state)
       local shape = call_shape(node)
       if not shape then error("compiler omitted callee identity") end
@@ -2021,7 +2087,8 @@ local function check_source(filename)
       if shape.indexing then
          -- `rawget(t, k)`, direct or protected, gets the indexing rules; the
          -- result keeps the indexed type and is compared where it flows.
-         if #values ~= 2 then error("unsupported rawget shape") end
+         if #values < 2 then error("unsupported rawget shape") end
+         check_surplus(values, { args = { tuple = { values[1], values[2] } } }, shape.callee or node.e1, state)
          -- Its result is typed as the member `t[k]`, which a caller may write.
          local body = record_table(values[1].type)
          if body then reject_flow(values[1].node, "argument 1: " .. record_table_reason(body)) end
@@ -2051,6 +2118,7 @@ local function check_source(filename)
          -- is coerced to an index (`select("1", s)` returns s).
          return
       end
+      check_surplus(values, signature, shape.callee, state)
       check_arguments(signature, values, 1, node, genuine and reading_sinks[builtin] or nil)
    end
 
@@ -2140,6 +2208,11 @@ local function check_source(filename)
       end
       return bases
    end
+   -- Judged by where the member is declared, since inheriting copies it: an
+   -- authored override of a generated name is an authored contract.
+   generated_handle_member = function(member)
+      return callable_member(member) and generated_type(member)
+   end
    -- Generated interfaces by member name, with each one's flattened ancestors.
    local handle_members
    local function handles_with(name)
@@ -2178,7 +2251,7 @@ local function check_source(filename)
       if not module or not module.fields then error("compiler omitted declaration module identity") end
       local function arity(f) return f.min_arity or 0, f.args.is_va and math.huge or #f.args.tuple end
       local function differ(x, y)
-         return opaque(x) ~= opaque(y) or (x ~= nil and deep(x, nil, nil, true)) ~= (y ~= nil and deep(y, nil, nil, true))
+         return opaque(x) ~= opaque(y) or (x ~= nil and deep(x, nil, nil, function_member)) ~= (y ~= nil and deep(y, nil, nil, function_member))
       end
       -- The first position of `left` and `right` whose opacity differs.
       local function disagreement(left, right, what)
@@ -2391,14 +2464,14 @@ local function check_source(filename)
    -- payload. When the other arms differ in kind (SecretData holds scalars and
    -- tables), a same-value `type(x)` proof selects the arm, so a public table with
    -- secret contents never unwraps as Atom and a scalar never unwraps as a table.
-   local function check_unwrap_opaque(node, state, operand, target, operand_type)
+   local function check_unwrap_opaque(node, state, operand, target, operand_type, at)
       local payloads, plain = arms(operand_type)
       local declared
       for _, candidate in ipairs(payloads) do
          if same_type(candidate, target) then declared = candidate; break end
       end
       if not declared then
-         report(node.e2, "unwrap target", ": " .. type_text(target) .. " is not the declared payload of " .. type_text(operand_type))
+         report(node.e2, "unwrap target", ": " .. at .. type_text(target) .. " is not the declared payload of " .. type_text(operand_type))
          return
       end
       local wants_table, other_table, other_scalar = table_capable(declared, true), false, false
@@ -2522,12 +2595,16 @@ local function check_source(filename)
       end
       return false
    end
-   local function check_unwrap(node, state)
-      local operand, target = node.e1, node.e2.casttype
-      local operand_type = value_type(operand)
-      if not target then error("compiler omitted cast target") end
-      if is_opaque(operand, state) and opaque(operand_type) then
-         check_unwrap_opaque(node, state, operand, target, operand_type)
+   -- One position of a cast. `operand_type` is the value at that position; proofs
+   -- live on the operand node, so a result of a call expanded past the first has
+   -- none and only the rules that need no proof can pass it.
+   local function check_cast_position(node, state, operand_type, target, position)
+      -- Casting to the identical type changes nothing, whatever the type holds.
+      if same_type(operand_type, target) then return end
+      local operand = node.e1
+      local at = position > 1 and "value " .. position .. ": " or ""
+      if is_opaque(operand, state, operand_type) and opaque(operand_type) then
+         check_unwrap_opaque(node, state, operand, target, operand_type, at)
          return
       end
       -- A target that is itself type-variable-typed or opaque keeps the rules a
@@ -2538,18 +2615,33 @@ local function check_source(filename)
       if check_unknown_source(node, operand_type, target) then return end
       if opaque(target) then check_wrap(node, operand_type, target) end
       local source, resolved_target = resolve(operand_type), resolve(target)
-      local exempt = mixin_bodies(operand, resolved_target)
+      local exempt = position == 1 and mixin_bodies(operand, resolved_target) or {}
       if table_capable(target, false) and not table_capable(operand_type, true) and not source.is_userdata then
-         report(node.e2, "unwrap target", ": " .. type_text(operand_type) .. " holds no table")
+         report(node.e2, "unwrap target", ": " .. at .. type_text(operand_type) .. " holds no table")
       elseif deep(operand_type) or deep(target) or (holds_variable(operand_type) and not scalar_target(target)) then
          -- Containers are mutable aliases, so a cast compares them invariantly in
          -- both directions: `plain as {MaybeSecret<T>}` would admit secret writes.
          -- A type variable read as a scalar takes the publicness proof above;
          -- anywhere else it may hold a Secret the target types plain.
          local reason = leak(operand_type, target, { trusted = false, fresh = false, cast = true, exempt = exempt })
-         if reason then report(node.e2, "unwrap target", ": " .. reason); return end
+         if reason then report(node.e2, "unwrap target", ": " .. at .. reason); return end
       end
       check_lookalike(node, source, resolved_target, exempt)
+   end
+   local function check_unwrap(node, state)
+      if not node.e2.casttype then error("compiler omitted cast target") end
+      local targets = cast_targets(node)
+      check_cast_position(node, state, value_type(node.e1), targets.tuple[1], 1)
+      local results = runtime_results(node.e1)
+      -- Teal types a chunk's `...` as strings; the client passes the addon name
+      -- and the addon's table, so past the name there is no type to judge.
+      if not results or (node.e1.kind == "..." and state.owner == result.ast) then return end
+      local count = #targets.tuple
+      if targets.is_va then count = math.max(count, #results.tuple) end
+      for position = 2, count do
+         local actual = member_of(results, position)
+         if actual then check_cast_position(node, state, actual, member_of(targets, position), position) end
+      end
    end
 
    -- A record table's parameter-typed fields are shared by every instance
@@ -2658,6 +2750,13 @@ local function check_source(filename)
             expression(item.key, state); require_access(item.key, state, "table key")
             expression(item.value, state)
          end
+         -- The table's own type receives what a cast in last position passes on:
+         -- with no expected type, or a generic parameter's, nothing else does.
+         local tail = node[#node]
+         if tail and tail.key_parsed == "implicit" and tail.value.kind == "op" and tail.value.op.op == "as" then
+            local reason = literal_leak(node, node_type(node), { trusted = false, fresh = true })
+            if reason then reject_flow(node, reason) end
+         end
          return
       elseif node.kind == "expression_list" then list(node, state); return
       elseif node.kind ~= "variable" and node.kind ~= "identifier" and node.kind ~= "argument"
@@ -2711,6 +2810,7 @@ local function check_source(filename)
       local kind = node.kind
       if kind == "local_declaration" or kind == "global_declaration" then
          list(node.exps, state)
+         check_declaration_tail(node)
          local aliases = {}
          for index in ipairs(node.vars or {}) do aliases[index] = native_guard(node.exps and node.exps[index], state) end
          for index, variable in ipairs(node.vars or {}) do
@@ -2742,7 +2842,7 @@ local function check_source(filename)
             end
          end
       elseif kind == "local_function" or kind == "global_function" or kind == "record_function" then
-         if node.name and node.name.tk and kind == "local_function" then state.bindings[node.name.tk] = { owner = state.owner } end
+         if node.name and node.name.tk and kind == "local_function" then state.bindings[node.name.tk] = { owner = state.owner, body = node } end
          if kind == "record_function" then check_record_method(node, state) end
          function_body(node, state)
       elseif kind == "if" then
@@ -2779,7 +2879,10 @@ local function check_source(filename)
          elseif iterator_result_opaque(node_type(node.exps[1])) and not table_iteration(node.exps[1]) then
             reject(node.exps[1], "generic for nil test")
          end
-         if kind == "forin" then state.context.epoch = state.context.epoch + 1 end
+         if kind == "forin" then
+            check_iterator_tail(node)
+            state.context.epoch = state.context.epoch + 1
+         end
          local inner = state_copy(state)
          invalidate_loop_writes(node.body, inner, {})
          if node.var then inner.bindings[node.var.tk] = { owner = state.owner } end
